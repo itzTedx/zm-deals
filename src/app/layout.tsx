@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "../styles/globals.css";
 
+import { Navbar } from "@/components/layout/navbar";
 import { Toaster } from "@/components/ui/sonner";
 
 import { geist, helvetica } from "@/assets/fonts";
@@ -19,7 +20,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(geist.className, helvetica.variable)}>
+      <body className={cn(helvetica.className, geist.variable)}>
+        <Navbar />
         {children}
         <Toaster />
       </body>

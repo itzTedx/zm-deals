@@ -20,8 +20,8 @@ export const Logo = (props: SvgProps) => {
 
 export const LogoIcon = () => {
   return (
-    <div className="flex size-12 items-center justify-center rounded-xl bg-brand-500 shadow-brand-md">
-      <Logo />
+    <div className="flex size-10 items-center justify-center rounded-xl bg-radial-[105%_100%_at_50%_0%] from-brand-400 via-brand-500 to-brand-700 shadow-brand-md">
+      <Logo className="size-5" />
       <span className="sr-only">ZM Deals</span>
     </div>
   );
