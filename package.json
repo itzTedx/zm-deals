@@ -7,25 +7,39 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "docker:up": "docker compose up -d"
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "auth:generate": "pnpx @better-auth/cli generate --config ./src/lib/auth/server.ts --yes --output ./src/server/schema/auth-schema.ts"
   },
   "dependencies": {
+    "@t3-oss/env-nextjs": "^0.13.8",
     "better-auth": "^1.3.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^17.2.1",
+    "drizzle-orm": "^0.44.4",
+    "ioredis": "^5.7.0",
     "lucide-react": "^0.540.0",
     "next": "15.4.7",
+    "pg": "^8.16.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "zod": "^4.0.17"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/pg": "^8.15.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.4",
     "tailwindcss": "^4",
+    "tsx": "^4.20.4",
     "tw-animate-css": "^1.3.7",
     "typescript": "^5"
   }
