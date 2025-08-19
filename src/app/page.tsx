@@ -1,10 +1,9 @@
 import Image from "next/image";
 
+import { FeedbackCard } from "@/components/feedback-card";
 import { SectionHeader } from "@/components/layout/section-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
-import { Rating } from "@/components/ui/rating";
 import { SeparatorBox } from "@/components/ui/separator";
 
 import { IconCurrency } from "@/assets/icons/currency";
@@ -109,18 +108,29 @@ export default function Home() {
         />
 
         <div className="mt-12 grid grid-cols-3 gap-6">
-          <Card>
-            <CardContent className="h-full">
-              <Rating value={5} />
-              <CardDescription className="mt-4 text-lg">
-                The suction phone holder is amazing! I drive a lot and it keeps my phone perfectly stable, even on bumpy
-                roads. Delivery was fast and packaging was great.
-              </CardDescription>
-            </CardContent>
-            <CardFooter>
-              <p className="font-medium text-gray-600 text-sm">Ahmed K</p>
-            </CardFooter>
-          </Card>
+          {Array.from({ length: 3 }).map((_, index) => (
+            <FeedbackCard key={index} />
+          ))}
+        </div>
+      </section>
+      <section className="container relative max-w-7xl border-x py-20">
+        <Badge variant="outline">F.A.Q.s</Badge>
+
+        <div className="grid grid-cols-10 gap-4">
+          <div className="col-span-4">
+            <h2 className="mt-6 font-bold text-4xl">Frequently Asked Questions.</h2>
+            <p className="mt-4 text-muted-foreground text-xl">
+              Get <span className="font-medium text-foreground">Answers</span> to{" "}
+              <span className="font-medium text-foreground">commonly</span> asked questions
+            </p>
+          </div>
+          <div className="col-span-6">
+            <div className="grid grid-cols-2 gap-4">
+              {Array.from({ length: 10 }).map((_, index) => (
+                <div key={index} />
+              ))}
+            </div>
+          </div>
         </div>
       </section>
     </main>
