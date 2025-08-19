@@ -32,8 +32,8 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return <div className={cn("font-medium text-lg leading-none", className)} data-slot="card-title" {...props} />;
 }
 
-function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
-  return <div className={cn("text-muted-foreground text-sm", className)} data-slot="card-description" {...props} />;
+function CardDescription({ className, ...props }: React.ComponentProps<"p">) {
+  return <p className={cn("text-muted-foreground", className)} data-slot="card-description" {...props} />;
 }
 
 function CardAction({ className, ...props }: React.ComponentProps<"div">) {
@@ -48,7 +48,7 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
 
 function CardContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <div className={cn("overflow-hidden rounded-lg bg-card p-3", className)} data-slot="card-content" {...props} />
+    <div className={cn("overflow-hidden rounded-lg bg-card p-6", className)} data-slot="card-content" {...props} />
   );
 }
 

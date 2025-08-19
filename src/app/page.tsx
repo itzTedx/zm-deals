@@ -3,6 +3,8 @@ import Image from "next/image";
 import { SectionHeader } from "@/components/layout/section-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
+import { Rating } from "@/components/ui/rating";
 import { SeparatorBox } from "@/components/ui/separator";
 
 import { IconCurrency } from "@/assets/icons/currency";
@@ -88,6 +90,37 @@ export default function Home() {
           {PAST_DEALS.map((product) => (
             <ProductCard data={product} key={product.id} />
           ))}
+        </div>
+        <p className="mt-6 text-center text-muted-foreground">
+          Be the <span className="font-medium text-foreground">First</span> to Know About the{" "}
+          <span className="font-medium text-foreground">Next Deal</span>
+        </p>
+      </section>
+      <section className="container relative max-w-7xl border-x py-20">
+        <div className="relative flex items-center justify-between gap-6 pb-12">
+          <SeparatorBox />
+          <Badge variant="outline">Happy Customers</Badge>
+          <SeparatorBox />
+        </div>
+        <SectionHeader
+          btnText="Testimonials"
+          description="Thousands of shoppers trust ZM Deals for their weekly steals. Here’s why they keep coming back."
+          title="What People Are Saying"
+        />
+
+        <div className="mt-12 grid grid-cols-3 gap-6">
+          <Card>
+            <CardContent className="h-full">
+              <Rating value={5} />
+              <CardDescription className="mt-4 text-lg">
+                The suction phone holder is amazing! I drive a lot and it keeps my phone perfectly stable, even on bumpy
+                roads. Delivery was fast and packaging was great.
+              </CardDescription>
+            </CardContent>
+            <CardFooter>
+              <p className="font-medium text-gray-600 text-sm">Ahmed K</p>
+            </CardFooter>
+          </Card>
         </div>
       </section>
     </main>
