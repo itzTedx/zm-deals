@@ -18,6 +18,7 @@
     "auth:generate": "pnpx @better-auth/cli generate --config ./src/lib/auth/server.ts --yes --output ./src/server/schema/auth-generated.ts"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.2.3",
     "@t3-oss/env-nextjs": "^0.13.8",
     "better-auth": "^1.3.7",
     "class-variance-authority": "^0.7.1",
@@ -49,6 +50,8 @@
     "typescript": "^5"
   },
   "lint-staged": {
-    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": ["biome check --write ."]
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
+      "biome check --write ."
+    ]
   }
 }
