@@ -12,7 +12,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "auth:generate": "pnpx @better-auth/cli generate --config ./src/lib/auth/server.ts --yes --output ./src/server/schema/auth-schema.ts"
+    "auth:generate": "pnpx @better-auth/cli generate --config ./src/lib/auth/server.ts --yes --output ./src/server/schema/auth-generated.ts"
   },
   "dependencies": {
     "@t3-oss/env-nextjs": "^0.13.8",
