@@ -2,6 +2,8 @@ import Link from "next/link";
 
 import { IconChevronRight } from "@/assets/icons/chevron";
 
+import { cn } from "@/lib/utils";
+
 import { Button } from "../ui/button";
 
 interface Props {
@@ -11,9 +13,16 @@ interface Props {
   link?: string;
 }
 
-export const SectionHeader = ({ title, description, btnText, link }: Props) => {
+export const SectionHeader = ({
+  title,
+  description,
+  btnText,
+  link,
+  className,
+  ...props
+}: Props & React.ComponentProps<"header">) => {
   return (
-    <header className="grid grid-cols-2 gap-6">
+    <header className={cn("grid grid-cols-2 gap-6", className)} {...props}>
       <div className="space-y-3">
         <h2 className="font-bold text-4xl">{title}</h2>
 

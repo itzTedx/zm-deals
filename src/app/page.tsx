@@ -7,6 +7,7 @@ import { SeparatorBox } from "@/components/ui/separator";
 
 import { IconCurrency } from "@/assets/icons/currency";
 
+import { HOW_WORKS } from "@/data/constants";
 import { PRODUCT } from "@/data/product";
 import { calculateDiscount } from "@/lib/utils";
 
@@ -56,11 +57,29 @@ export default function Home() {
           <Badge variant="outline">How ZM Deals works</Badge>
           <SeparatorBox />
         </div>
+        <div className="grid grid-cols-3 gap-6 pb-12">
+          {HOW_WORKS.map(({ title, description, icon: Icon }) => (
+            <div className="text-center" key={title}>
+              <Icon className="mx-auto size-10" />
+              <h3 className="mt-4 font-medium text-xl">{title}</h3>
+              <p className="mt-2 text-muted-foreground">{description}</p>
+            </div>
+          ))}
+        </div>
+        <SeparatorBox />
+      </section>
+      <section className="container relative max-w-7xl border-x py-20">
+        <Badge variant="outline">
+          Sold Out{" "}
+          <span className="ml-1 rounded-sm bg-brand-500/14 px-1.5 py-0.5 font-medium text-brand-500 text-xs">Fast</span>
+        </Badge>
+
         <SectionHeader
           btnText="Past Deals"
-          description="Thousands of shoppers trust ZM Deals for their weekly steals. Here’s why they keep coming back."
+          className="mt-6"
+          description="These exclusive offers didn’t last long! Here’s a glimpse of what our community scored before they sold out. Don’t miss the next one — subscribe and be ready when the new deal drops!"
           link="/past-deals"
-          title="What People Are Saying"
+          title="Previous Hot-Selling Deals"
         />
       </section>
     </main>
