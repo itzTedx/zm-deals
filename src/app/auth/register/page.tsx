@@ -1,52 +1,25 @@
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 import { LogoIcon } from "@/assets/logo";
 
+import { RegisterForm } from "@/modules/auth/components/register-form";
+
 export default function LoginPage() {
   return (
-    <section className="flex min-h-screen bg-zinc-50 px-4 py-16 dark:bg-transparent">
-      <form
-        action=""
-        className="m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border bg-muted shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]"
-      >
+    <section className="flex min-h-screen items-center justify-center">
+      <div className="m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border bg-muted shadow-md shadow-zinc-950/5">
         <div className="-m-px rounded-[calc(var(--radius)+.125rem)] border bg-card p-8 pb-6">
-          <div className="text-center">
+          <div className="mb-6 text-center">
             <Link aria-label="go home" className="mx-auto block w-fit" href="/">
               <LogoIcon />
             </Link>
-            <h1 className="mt-4 mb-1 font-semibold text-xl">Create a Tailark Account</h1>
+            <h1 className="mt-4 mb-1 font-semibold text-xl">Create a RM Deals Account</h1>
             <p className="text-sm">Welcome! Create an account to get started</p>
           </div>
 
-          <div className="mt-6 space-y-6">
-            <div className="space-y-2">
-              <Label className="block text-sm" htmlFor="username">
-                Username
-              </Label>
-              <Input id="username" name="username" required type="text" />
-            </div>
-
-            <div className="space-y-2">
-              <Label className="block text-sm" htmlFor="email">
-                Email
-              </Label>
-              <Input id="email" name="email" required type="email" />
-            </div>
-
-            <div className="space-y-0.5">
-              <Label className="text-sm" htmlFor="pwd">
-                Password
-              </Label>
-
-              <Input className="input sz-md variant-mixed" id="pwd" name="pwd" required type="password" />
-            </div>
-
-            <Button className="w-full">Sign In</Button>
-          </div>
+          <RegisterForm />
 
           <div className="my-6 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
             <hr className="border-dashed" />
@@ -96,7 +69,7 @@ export default function LoginPage() {
             </Button>
           </p>
         </div>
-      </form>
+      </div>
     </section>
   );
 }

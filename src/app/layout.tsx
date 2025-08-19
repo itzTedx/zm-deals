@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "../styles/globals.css";
 
+import { Toaster } from "@/components/ui/sonner";
+
 import { geist, helvetica } from "@/assets/fonts";
 
 import { cn } from "@/lib/utils";
@@ -17,7 +19,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(geist.className, helvetica.variable)}>{children}</body>
+      <body className={cn(geist.className, helvetica.variable)}>
+        {children}
+        <Toaster />
+      </body>
     </html>
   );
 }
