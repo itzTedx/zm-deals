@@ -1,12 +1,16 @@
 import Image from "next/image";
+import Link from "next/link";
 
+import Faqs from "@/components/faqs";
 import { FeedbackCard } from "@/components/feedback-card";
 import { SectionHeader } from "@/components/layout/section-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { SeparatorBox } from "@/components/ui/separator";
+import { Separator, SeparatorBox } from "@/components/ui/separator";
 
+import { IconChevronRight } from "@/assets/icons/chevron";
 import { IconCurrency } from "@/assets/icons/currency";
+import { Logo } from "@/assets/logo";
 
 import { HOW_WORKS } from "@/data/constants";
 import { PAST_DEALS, PRODUCT } from "@/data/product";
@@ -112,25 +116,41 @@ export default function Home() {
             <FeedbackCard key={index} />
           ))}
         </div>
+        <div className="-left-1.5 -bottom-1.5 pointer-events-none absolute z-10 size-2.5 shrink-0 rounded border bg-card" />
+        <div className="-right-1.5 -bottom-1.5 pointer-events-none absolute z-10 size-2.5 shrink-0 rounded border bg-card" />
       </section>
+      <Separator />
       <section className="container relative max-w-7xl border-x py-20">
-        <Badge variant="outline">F.A.Q.s</Badge>
-
-        <div className="grid grid-cols-10 gap-4">
-          <div className="col-span-4">
+        <div className="grid grid-cols-10 gap-9">
+          <div className="sticky top-20 col-span-4 h-fit">
+            <Badge variant="outline">F.A.Q.s</Badge>
             <h2 className="mt-6 font-bold text-4xl">Frequently Asked Questions.</h2>
             <p className="mt-4 text-muted-foreground text-xl">
               Get <span className="font-medium text-foreground">Answers</span> to{" "}
               <span className="font-medium text-foreground">commonly</span> asked questions
             </p>
           </div>
-          <div className="col-span-6">
-            <div className="grid grid-cols-2 gap-4">
-              {Array.from({ length: 10 }).map((_, index) => (
-                <div key={index} />
-              ))}
-            </div>
+          <div className="col-span-6 space-y-8">
+            <Faqs />
+            <Button asChild>
+              <Link href="/faqs">
+                See More <span className="text-muted-foreground">- FAQs</span>
+                <IconChevronRight className="size-3 text-muted-foreground" />
+              </Link>
+            </Button>
           </div>
+        </div>
+      </section>
+      <section className="container relative max-w-7xl border-x py-20">
+        <div className="container relative flex max-w-4xl items-center justify-between gap-6 pb-12">
+          <SeparatorBox />
+          <Badge className="size-7" variant="outline">
+            <Logo className="size-5 shrink-0 text-gray-300" />
+          </Badge>
+          <SeparatorBox />
+        </div>
+        <div>
+          <Badge variant="outline">Happy Customers</Badge>
         </div>
       </section>
     </main>
