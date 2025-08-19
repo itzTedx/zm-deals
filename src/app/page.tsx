@@ -33,7 +33,9 @@ export default function Home() {
                   </span>
                   <p className="">{originalPrice}</p>
                 </div>
-                <Badge variant="destructive">-{calculateDiscount(originalPrice, price)}%</Badge>
+                <Badge size="sm" variant="destructive">
+                  -{calculateDiscount(originalPrice, price)}%
+                </Badge>
               </div>
               <p className="relative flex items-center gap-1 font-bold text-2xl text-gray-800 normal-nums">
                 <span>
@@ -57,9 +59,9 @@ export default function Home() {
           <Badge variant="outline">How ZM Deals works</Badge>
           <SeparatorBox />
         </div>
-        <div className="grid grid-cols-3 gap-6 pb-12">
+        <div className="grid grid-cols-3 gap-6 divide-x pb-12">
           {HOW_WORKS.map(({ title, description, icon: Icon }) => (
-            <div className="text-center" key={title}>
+            <div className="px-6 text-center" key={title}>
               <Icon className="mx-auto size-10" />
               <h3 className="mt-4 font-medium text-xl">{title}</h3>
               <p className="mt-2 text-muted-foreground">{description}</p>
