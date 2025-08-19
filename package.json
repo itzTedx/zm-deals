@@ -50,8 +50,8 @@
     "typescript": "^5"
   },
   "lint-staged": {
-    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
-      "biome check --write ."
-    ]
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx}": ["biome check --write .", "biome format --write ."],
+    "*.{json,jsonc}": ["biome format --write ."],
+    "*.{md,mdx}": ["biome format --write ."]
   }
 }
