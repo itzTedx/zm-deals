@@ -1,4 +1,4 @@
-import { Didact_Gothic } from "next/font/google";
+import { Geist } from "next/font/google";
 import localFont from "next/font/local";
 
 export const helvetica = localFont({
@@ -22,8 +22,8 @@ export const helvetica = localFont({
   ],
 });
 
-export const didactGothic = Didact_Gothic({
-  variable: "--font-didact-gothic",
+export const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
   weight: ["400"],
 });

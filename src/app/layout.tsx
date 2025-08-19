@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import "../styles/globals.css";
 
-import { didactGothic, helvetica } from "@/assets/fonts";
+import { geist, helvetica } from "@/assets/fonts";
+
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -16,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(didactGothic.className, helvetica.variable)}>{children}</body>
+      <body className={cn(geist.className, helvetica.variable)}>{children}</body>
     </html>
   );
 }

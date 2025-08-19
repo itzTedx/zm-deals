@@ -124,6 +124,12 @@
               ["@ziron", "@ziron/**"],
               ":BLANK_LINE:",
 
+              ["@", "@/components/**"],
+              ":BLANK_LINE:",
+
+              ["@", "@/assets/**"],
+              ":BLANK_LINE:",
+
               ":ALIAS:",
               ":BLANK_LINE:",
               ":PATH:"
