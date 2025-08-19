@@ -8,8 +8,9 @@ import { SeparatorBox } from "@/components/ui/separator";
 import { IconCurrency } from "@/assets/icons/currency";
 
 import { HOW_WORKS } from "@/data/constants";
-import { PRODUCT } from "@/data/product";
+import { PAST_DEALS, PRODUCT } from "@/data/product";
 import { calculateDiscount } from "@/lib/utils";
+import { ProductCard } from "@/modules/product/components/product-card";
 
 export default function Home() {
   const { title, description, price, originalPrice, image } = PRODUCT;
@@ -83,6 +84,11 @@ export default function Home() {
           link="/past-deals"
           title="Previous Hot-Selling Deals"
         />
+        <div className="mt-12 grid grid-cols-3 gap-6">
+          {PAST_DEALS.map((product) => (
+            <ProductCard data={product} key={product.id} />
+          ))}
+        </div>
       </section>
     </main>
   );

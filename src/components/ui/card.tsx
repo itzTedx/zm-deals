@@ -5,7 +5,10 @@ import { cn } from "@/lib/utils";
 function Card({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      className={cn("flex flex-col gap-6 rounded-xl border bg-card py-6 text-card-foreground shadow-sm", className)}
+      className={cn(
+        "flex flex-col rounded-xl border border-card bg-card-background p-1.5 text-card-foreground shadow-lg",
+        className
+      )}
       data-slot="card"
       {...props}
     />
@@ -16,7 +19,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6",
+        "@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-1.5 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6",
         className
       )}
       data-slot="card-header"
@@ -26,7 +29,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
-  return <div className={cn("font-semibold leading-none", className)} data-slot="card-title" {...props} />;
+  return <div className={cn("font-medium text-lg leading-none", className)} data-slot="card-title" {...props} />;
 }
 
 function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
@@ -44,13 +47,13 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 function CardContent({ className, ...props }: React.ComponentProps<"div">) {
-  return <div className={cn("px-6", className)} data-slot="card-content" {...props} />;
+  return (
+    <div className={cn("overflow-hidden rounded-lg bg-card p-3", className)} data-slot="card-content" {...props} />
+  );
 }
 
 function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div className={cn("flex items-center px-6 [.border-t]:pt-6", className)} data-slot="card-footer" {...props} />
-  );
+  return <div className={cn("grid items-center px-2.5 pt-1.5", className)} data-slot="card-footer" {...props} />;
 }
 
 export { Card, CardHeader, CardFooter, CardTitle, CardAction, CardDescription, CardContent };
