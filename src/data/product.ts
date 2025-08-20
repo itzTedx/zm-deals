@@ -5,6 +5,9 @@ export const PRODUCT = {
   price: 39,
   originalPrice: 89,
   featuredImage: "/images/vacuum-holder.webp",
+  stock: 21,
+  overview:
+    "Drive safer and smarter with the Magnetic Car Phone Mount. Designed with powerful magnets and a sleek, compact design, it keeps your phone securely in place while you focus on the road. Whether you’re navigating maps, answering calls hands-free, or playing music, this mount makes your ride stress-free. Perfect for daily commutes and road trips alike.",
   images: ["/images/vacuum-1.webp", "/images/vacuum-2.webp", "/images/vacuum-3.webp", "/images/vacuum-4.webp"],
 };
 

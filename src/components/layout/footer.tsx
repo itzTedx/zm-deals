@@ -20,7 +20,7 @@ export const Footer = () => {
             {SOCIALS.map(({ icon: Icon, id, href }) => (
               <li key={id}>
                 <Link
-                  className="flex size-9 items-center justify-center rounded-lg bg-card shadow-lg transition-[background-color_box-shadow] hover:bg-transparent hover:shadow-none"
+                  className="flex size-9 items-center justify-center rounded-lg bg-card text-gray-400 shadow-lg transition-[background-color_box-shadow_color] hover:bg-transparent hover:text-gray-700 hover:shadow-none"
                   href={href}
                 >
                   <Icon />

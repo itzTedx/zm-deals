@@ -29,13 +29,14 @@ export const Hero = () => {
               <p className="text-muted-foreground text-sm sm:text-base md:text-lg">{description}</p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <p className="relative flex items-center gap-1 font-bold text-gray-800 text-lg normal-nums sm:text-xl md:text-2xl">
                 <span>
                   <IconCurrency className="size-3.5 sm:size-4 md:size-5" />
                 </span>
                 <span className="">{price}</span>
               </p>
+              <div className="hidden size-0.5 rounded-full bg-gray-400 md:block" />
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className="relative flex items-center gap-0.5 text-gray-400 normal-nums">
                   <span className="-translate-y-1/2 -translate-1/2 absolute top-1/2 left-1/2 h-px w-[115%] bg-gray-400" />
@@ -44,6 +45,7 @@ export const Hero = () => {
                   </span>
                   <p className="text-sm sm:text-base">{originalPrice}</p>
                 </div>
+                <div className="hidden size-0.5 rounded-full bg-gray-400 md:block" />
                 <Badge size="sm" variant="destructive">
                   Save {calculateDiscount(originalPrice, price)}% Today!
                 </Badge>
