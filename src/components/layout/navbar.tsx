@@ -26,7 +26,9 @@ export const Navbar = () => {
           <ul className="hidden items-center gap-6 md:flex">
             {NAV_LINKS.map((nav) => (
               <li key={nav.href}>
-                <Link href={nav.href}>{nav.label}</Link>
+                <Link className="font-medium text-gray-700 transition-colors hover:text-brand-600" href={nav.href}>
+                  {nav.label}
+                </Link>
               </li>
             ))}
           </ul>
