@@ -24,9 +24,9 @@ export const SectionHeader = ({
   ...props
 }: Props & React.ComponentProps<"header">) => {
   return (
-    <header className={cn("grid grid-cols-2 gap-6", className)} {...props}>
+    <header className={cn("grid gap-3 md:grid-cols-2 md:gap-6", className)} {...props}>
       <div className="space-y-3">
-        <h2 className="font-bold text-4xl">{title}</h2>
+        <h2 className="font-bold text-2xl sm:text-3xl md:text-4xl">{title}</h2>
 
         {hasButton &&
           (link ? (
@@ -43,7 +43,7 @@ export const SectionHeader = ({
             </Button>
           ))}
       </div>
-      <p className="text-muted-foreground">{description}</p>
+      <p className="text-muted-foreground text-sm sm:text-base">{description}</p>
     </header>
   );
 };

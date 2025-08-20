@@ -19,7 +19,7 @@ export const PastDeals = () => {
         link="/past-deals"
         title="Previous Hot-Selling Deals"
       />
-      <div className="mt-6 grid grid-cols-1 gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4 md:mt-12 lg:grid-cols-3">
+      <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 md:mt-12 lg:grid-cols-3">
         {PAST_DEALS.map((product) => (
           <ProductCard data={product} key={product.id} />
         ))}

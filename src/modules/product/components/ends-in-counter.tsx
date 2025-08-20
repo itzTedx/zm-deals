@@ -25,13 +25,13 @@ export const EndsInCounter = ({ endsIn }: { endsIn: Date }) => {
   }, [endsIn]);
 
   return (
-    <Banner variant="destructive">
+    <Banner size="sm" variant="destructive">
       <BannerContent>
         <BannerIcon>
           <IconHourglass />
         </BannerIcon>
         <BannerText>
-          <BannerTitle className="tracking-[0.0125em]">
+          <BannerTitle className="text-sm tracking-[0.0125em] sm:text-base">
             Deal ends in <span className="font-medium">{timeRemaining}</span>
           </BannerTitle>
         </BannerText>

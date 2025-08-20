@@ -21,7 +21,7 @@ const bannerVariants = cva(
       },
       size: {
         default: "p-3 px-4",
-        sm: "p-2",
+        sm: "p-2 px-3",
         lg: "p-4",
       },
     },
