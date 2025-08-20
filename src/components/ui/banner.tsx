@@ -2,84 +2,86 @@ import * as React from "react";
 
 import { cva, type VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
-import { Slot as SlotPrimitive } from "radix-ui";
-
-import { Button } from "@/components/ui/button";
 
 import { cn } from "@/lib/utils";
 
 const bannerVariants = cva(
-  "relative flex items-center justify-between gap-4 rounded-lg border p-4 text-sm transition-all",
+  "relative w-full overflow-hidden rounded-lg border [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:top-4 [&>svg]:left-4 [&>svg]:text-foreground [&>svg~*]:pl-7",
   {
     variants: {
       variant: {
-        default: "border-border bg-brand-500 text-foreground",
-        destructive: "border-destructive/50 bg-destructive/10 text-destructive",
-        warning: "border-yellow-500/50 bg-yellow-500/10 text-yellow-700 dark:text-yellow-300",
-        success: "border-green-500/50 bg-green-500/10 text-green-700 dark:text-green-300",
-        info: "border-blue-500/50 bg-blue-500/10 text-blue-700 dark:text-blue-300",
+        default: "bg-background text-foreground",
+        destructive:
+          "border-brand-800/70 bg-brand-500 text-destructive-foreground shadow-brand-lg dark:border-destructive [&>svg]:text-destructive",
+        success:
+          "border-green-500/50 text-green-700 dark:text-green-400 [&>svg]:text-green-600 dark:[&>svg]:text-green-400",
+        warning:
+          "border-yellow-500/50 text-yellow-700 dark:text-yellow-400 [&>svg]:text-yellow-600 dark:[&>svg]:text-yellow-400",
+        info: "border-blue-500/50 text-blue-700 dark:text-blue-400 [&>svg]:text-blue-600 dark:[&>svg]:text-blue-400",
       },
       size: {
-        inset: "mx-3",
-        full: "w-full",
+        default: "p-3 px-4",
+        sm: "p-2",
+        lg: "p-4",
       },
     },
     defaultVariants: {
       variant: "default",
-      size: "full",
+      size: "default",
     },
   }
 );
 
-interface BannerProps extends React.ComponentProps<"div">, VariantProps<typeof bannerVariants> {
-  asChild?: boolean;
-  dismissible?: boolean;
-  onDismiss?: () => void;
-  icon?: React.ReactNode;
-  action?: {
-    label: string;
-    onClick: () => void;
-    variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
-  };
-}
+const Banner = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof bannerVariants>
+>(({ className, variant, size, ...props }, ref) => (
+  <div className={cn(bannerVariants({ variant, size }), className)} ref={ref} role="banner" {...props} />
+));
+Banner.displayName = "Banner";
 
-function Banner({
-  className,
-  variant,
-  size,
-  asChild = false,
-  dismissible = false,
-  onDismiss,
-  icon,
-  action,
-  children,
-  ...props
-}: BannerProps) {
-  const Comp = asChild ? SlotPrimitive.Slot : "div";
+const BannerContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => <div className={cn("flex items-start gap-3", className)} ref={ref} {...props} />
+);
+BannerContent.displayName = "BannerContent";
 
-  return (
-    <Comp className={cn(bannerVariants({ variant, size }), className)} data-slot="banner" {...props}>
-      <div className="flex flex-1 items-start gap-3">
-        {icon && <div className="flex-shrink-0">{icon}</div>}
-        <div className="flex-1">{children}</div>
-      </div>
+const BannerIcon = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => <div className={cn("shrink-0", className)} ref={ref} {...props} />
+);
+BannerIcon.displayName = "BannerIcon";
 
-      <div className="flex items-center gap-2">
-        {action && (
-          <Button onClick={action.onClick} size="sm" variant={action.variant || "outline"}>
-            {action.label}
-          </Button>
-        )}
-        {dismissible && onDismiss && (
-          <Button className="h-8 w-8 p-0" onClick={onDismiss} size="sm" variant="ghost">
-            <X className="h-4 w-4" />
-            <span className="sr-only">Dismiss</span>
-          </Button>
-        )}
-      </div>
-    </Comp>
-  );
-}
+const BannerText = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => <div className={cn("flex-1", className)} ref={ref} {...props} />
+);
+BannerText.displayName = "BannerText";
 
-export { Banner, bannerVariants };
-export type { BannerProps };
+const BannerTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(
+  ({ className, ...props }, ref) => <h5 className={cn("leading-none tracking-tight", className)} ref={ref} {...props} />
+);
+BannerTitle.displayName = "BannerTitle";
+
+const BannerDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(
+  ({ className, ...props }, ref) => (
+    <div className={cn("text-sm [&_p]:leading-relaxed", className)} ref={ref} {...props} />
+  )
+);
+BannerDescription.displayName = "BannerDescription";
+
+const BannerClose = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
+  ({ className, ...props }, ref) => (
+    <button
+      className={cn(
+        "absolute top-2 right-2 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground",
+        className
+      )}
+      ref={ref}
+      {...props}
+    >
+      <X className="h-4 w-4" />
+      <span className="sr-only">Close</span>
+    </button>
+  )
+);
+BannerClose.displayName = "BannerClose";
+
+export { Banner, bannerVariants, BannerContent, BannerIcon, BannerText, BannerTitle, BannerDescription, BannerClose };

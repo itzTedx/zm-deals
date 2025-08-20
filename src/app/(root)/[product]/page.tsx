@@ -1,12 +1,14 @@
 import Image from "next/image";
 
 import { Badge } from "@/components/ui/badge";
+import { Banner, BannerContent, BannerIcon, BannerText, BannerTitle } from "@/components/ui/banner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 import { IconChevronRight } from "@/assets/icons/chevron";
 import { IconCurrency } from "@/assets/icons/currency";
+import { IconHourglass } from "@/assets/icons/hourglass";
 
 import { PRODUCT } from "@/data/product";
 import { calculateDiscount } from "@/lib/utils";
@@ -57,6 +59,18 @@ export default function ProductPage() {
           </div>
         </Carousel>
         <div className="space-y-8 py-2">
+          <Banner variant="destructive">
+            <BannerContent>
+              <BannerIcon>
+                <IconHourglass className="size-4" />
+              </BannerIcon>
+              <BannerText>
+                <BannerTitle className="tracking-[0.0125em]">
+                  Deal ends in <span className="font-medium">3d 14h 22m</span>
+                </BannerTitle>
+              </BannerText>
+            </BannerContent>
+          </Banner>
           <h1 className="font-bold text-4xl">{title}</h1>
           <div className="space-y-1">
             <p className="relative flex items-center gap-1 font-bold text-gray-800 text-lg normal-nums sm:text-2xl md:text-3xl">
