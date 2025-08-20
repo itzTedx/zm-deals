@@ -1,17 +1,16 @@
 import Image from "next/image";
 
 import { Badge } from "@/components/ui/badge";
-import { Banner, BannerContent, BannerIcon, BannerText, BannerTitle } from "@/components/ui/banner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 import { IconChevronRight } from "@/assets/icons/chevron";
 import { IconCurrency } from "@/assets/icons/currency";
-import { IconHourglass } from "@/assets/icons/hourglass";
 
 import { PRODUCT } from "@/data/product";
-import { calculateDiscount, formatTime } from "@/lib/utils";
+import { calculateDiscount } from "@/lib/utils";
+import { EndsInCounter } from "@/modules/product/components/ends-in-counter";
 
 export default function ProductPage() {
   const { title, price, originalPrice, featuredImage, images, stock, overview, endsIn } = PRODUCT;
@@ -52,18 +51,7 @@ export default function ProductPage() {
         {/* Product Details Section */}
         <div className="order-2 space-y-4 md:order-2 md:space-y-6 lg:space-y-8">
           {/* Countdown Banner */}
-          <Banner variant="destructive">
-            <BannerContent>
-              <BannerIcon>
-                <IconHourglass />
-              </BannerIcon>
-              <BannerText>
-                <BannerTitle className="tracking-[0.0125em]">
-                  Deal ends in <span className="font-medium">{formatTime(endsIn)}</span>
-                </BannerTitle>
-              </BannerText>
-            </BannerContent>
-          </Banner>
+          <EndsInCounter endsIn={endsIn} />
 
           {/* Product Title */}
           <h1 className="font-bold text-2xl leading-tight sm:text-3xl md:text-4xl">{title}</h1>
