@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
+import { Background } from "@/assets/background";
 import { IconCurrency } from "@/assets/icons/currency";
 import { IconHourglass } from "@/assets/icons/hourglass";
 
@@ -54,14 +55,15 @@ export const Hero = () => {
               <Link href={`/${slug}`}>Claim Your Deal Now</Link>
             </Button>
           </div>
-          <div className="flex justify-center md:justify-end">
+          <div className="relative flex justify-center md:justify-end">
             <Image
               alt={title}
-              className="w-full max-w-xs sm:max-w-sm md:max-w-none"
+              className="z-10 w-full max-w-xs sm:max-w-sm md:max-w-none"
               height={500}
               src={featuredImage}
               width={500}
             />
+            <Background className="absolute top-0 left-0" />
           </div>
         </div>
       </div>
@@ -75,7 +77,7 @@ export const Hero = () => {
         <CarouselContent className="-ml-3">
           {images.map((image, index) => (
             <CarouselItem className="pl-3 md:basis-1/2 lg:basis-1/3" key={index}>
-              <div className="relative aspect-4/3 overflow-hidden rounded-2xl">
+              <div className="relative aspect-4/3 overflow-hidden rounded-2xl bg-card">
                 <Image alt={title} className="object-cover" fill src={image.url} />
               </div>
             </CarouselItem>
