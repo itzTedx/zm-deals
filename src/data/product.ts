@@ -1,6 +1,7 @@
 export const PRODUCT = {
   title: "Vacuum Suction Phone Holder",
   description: "Secure your phone while driving - hands-free, safe, and stable.",
+  slug: "vacuum-suction-phone-holder",
   price: 39,
   originalPrice: 89,
   featuredImage: "/images/vacuum-holder.webp",

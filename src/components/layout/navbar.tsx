@@ -37,9 +37,11 @@ export const Navbar = () => {
             <Button size="icon" variant="outline">
               <IconUser />
             </Button>
-            <Button className="hidden sm:flex">
-              <IconDiamond className="text-brand-500" />
-              <span>Claim the Deal</span>
+            <Button asChild className="hidden sm:inline-flex">
+              <Link href="/current-deal">
+                <IconDiamond className="text-brand-500" />
+                <span>Claim the Deal</span>
+              </Link>
             </Button>
 
             {/* Mobile Sheet Menu */}

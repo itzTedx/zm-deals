@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,7 @@ import { PRODUCT } from "@/data/product";
 import { calculateDiscount } from "@/lib/utils";
 
 export const Hero = () => {
-  const { title, description, price, originalPrice, featuredImage, images } = PRODUCT;
+  const { title, description, price, originalPrice, featuredImage, images, slug } = PRODUCT;
   return (
     <section className="overflow-hidden pb-12">
       <div className="container relative max-w-7xl border-x">
@@ -48,8 +49,8 @@ export const Hero = () => {
                 </Badge>
               </div>
             </div>
-            <Button className="w-full text-sm sm:w-auto sm:text-base">
-              <span>Claim Your Deal Now</span>
+            <Button asChild className="w-full text-sm sm:w-auto sm:text-base">
+              <Link href={`/${slug}`}>Claim Your Deal Now</Link>
             </Button>
           </div>
           <div className="flex justify-center md:justify-end">
