@@ -21,7 +21,7 @@ export default function ProductPage() {
       <header className="container relative grid max-w-7xl grid-cols-1 gap-6 border-x py-6 md:grid-cols-2 md:gap-8 md:py-8 lg:gap-12 lg:py-12 xl:py-16">
         {/* Image Carousel Section */}
         <div>
-          <ImageCarousel images={[{ url: featuredImage }, ...images]} />
+          <ImageCarousel images={[{ url: featuredImage }, ...images]} thumbPosition="bottom" />
           {/* <Carousel
             className="w-full overflow-hidden rounded-xl md:rounded-2xl"
             opts={{

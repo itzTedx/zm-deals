@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
 
 import { type EmblaOptionsType } from "embla-carousel";
 import useEmblaCarousel from "embla-carousel-react";
@@ -52,7 +53,7 @@ const ImageContainer: React.FC<{
       <Dialog>
         <DialogTrigger asChild>
           <div className={"cursor-pointer"}>
-            <img
+            <Image
               alt={image.title || alt}
               className={cn(
                 "absolute inset-0 h-full w-full",
@@ -61,9 +62,9 @@ const ImageContainer: React.FC<{
                 fit === "fill" && "object-fill",
                 classNameThumbnail
               )}
-              height={600}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               src={image.url}
-              width={400}
             />
           </div>
         </DialogTrigger>
@@ -77,11 +78,13 @@ const ImageContainer: React.FC<{
               {({ zoomIn, zoomOut }) => (
                 <>
                   <TransformComponent>
-                    {/* You can swap this with your preferred image optization technique, like using  next/image */}
-                    <img
+                    <Image
                       alt={image.title || "Full size"}
                       className={cn("max-h-[90vh] max-w-[90vw] object-contain", classNameImage)}
+                      height={800}
+                      sizes="(max-width: 768px) 90vw, (max-width: 1200px) 80vw, 70vw"
                       src={image.url}
+                      width={1200}
                     />
                   </TransformComponent>
                   {showImageControls && (
@@ -142,16 +145,16 @@ const Thumb: React.FC<ThumbPropType> = (props) => {
         <div
           className={cn(
             "relative w-full overflow-hidden rounded-lg bg-gray-100",
-            selected ? "border-2 border-primary/50" : "",
+            selected ? "border-2 border-brand-500/50" : "",
             getAspectRatioClass("square")
           )}
         >
-          <img
+          <Image
             alt={title || `Thumbnail ${index + 1}`}
             className={cn("h-full w-full bg-card object-contain")}
-            height={600}
+            fill
+            sizes="(max-width: 768px) 20vw, 15vw"
             src={imgUrl}
-            width={400}
           />
         </div>
       </button>
@@ -371,36 +374,14 @@ const ImageCarousel: React.FC<ImageCarousel_BasicProps> = ({
             ))}
           </div>
         </div>
-
-        {showCarouselControls && (
-          <>
-            <Button
-              className="-translate-y-1/2 absolute top-1/2 left-[2%] z-10 h-8 w-8 rounded-full bg-background/80 backdrop-blur-xs hover:bg-background disabled:opacity-50 dark:bg-background/80 dark:hover:bg-background"
-              disabled={!canScrollPrev}
-              onClick={scrollPrev}
-              size="icon"
-              variant="outline"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              <span className="sr-only">Previous slide</span>
-            </Button>
-
-            <Button
-              className="-translate-y-1/2 absolute top-1/2 right-[2%] z-10 h-8 w-8 rounded-full bg-background/80 backdrop-blur-xs hover:bg-background disabled:opacity-50 dark:bg-background/80 dark:hover:bg-background"
-              disabled={!canScrollNext}
-              onClick={scrollNext}
-              size="icon"
-              variant="outline"
-            >
-              <ArrowRight className="h-4 w-4" />
-              <span className="sr-only">Next slide</span>
-            </Button>
-          </>
-        )}
       </div>
 
       {showThumbs && (thumbPosition === "bottom" || thumbPosition === "left" || thumbPosition === "right") && (
-        <div className={cn(thumbPosition === "left" || thumbPosition === "right" ? "relative flex-[0_0_20%]" : "mt-4")}>
+        <div
+          className={cn(
+            thumbPosition === "left" || thumbPosition === "right" ? "relative flex-[0_0_20%]" : "relative mt-4"
+          )}
+        >
           <div
             className={cn(
               "overflow-hidden",
@@ -427,6 +408,29 @@ const ImageCarousel: React.FC<ImageCarousel_BasicProps> = ({
               ))}
             </div>
           </div>
+          {showCarouselControls && (
+            <>
+              <Button
+                className="-translate-y-1/2 -translate-x-1/2 absolute top-1/2 left-0 z-10 h-8 w-8 rounded-full"
+                disabled={!canScrollPrev}
+                onClick={scrollPrev}
+                size="icon"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span className="sr-only">Previous slide</span>
+              </Button>
+
+              <Button
+                className="-translate-y-1/2 absolute top-1/2 right-0 z-10 h-8 w-8 translate-x-1/2 rounded-full"
+                disabled={!canScrollNext}
+                onClick={scrollNext}
+                size="icon"
+              >
+                <ArrowRight className="h-4 w-4" />
+                <span className="sr-only">Next slide</span>
+              </Button>
+            </>
+          )}
         </div>
       )}
     </div>
