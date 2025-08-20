@@ -6,16 +6,19 @@ import { FeedbackCard } from "@/components/feedback-card";
 import { SectionHeader } from "@/components/layout/section-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Separator, SeparatorBox } from "@/components/ui/separator";
 
 import { IconBook } from "@/assets/icons/book";
+import { IconCheckboxCircle } from "@/assets/icons/checkbox";
 import { IconChevronRight } from "@/assets/icons/chevron";
 import { IconCurrency } from "@/assets/icons/currency";
+import { IconEmail } from "@/assets/icons/email";
 import { IconTeamCircle } from "@/assets/icons/team";
 import { Logo } from "@/assets/logo";
 import { Pattern1 } from "@/assets/patterns";
 
-import { HOW_WORKS, SOCIALS } from "@/data/constants";
+import { HOW_WORKS, NEWSLETTER_LIST, SOCIALS } from "@/data/constants";
 import { PAST_DEALS, PRODUCT } from "@/data/product";
 import { calculateDiscount } from "@/lib/utils";
 import { ProductCard } from "@/modules/product/components/product-card";
@@ -187,6 +190,36 @@ export default function Home() {
           <p className="mx-auto mt-3 mb-9 max-w-lg text-lg text-muted-foreground">
             Get the latest product drops, coupon codes, and exclusive discounts delivered straight to your inbox.
           </p>
+          <div className="relative mx-auto max-w-md">
+            <Input
+              className="peer h-12 ps-10 pe-16"
+              id="email"
+              placeholder="Enter your email to start saving..."
+              type="email"
+            />
+            <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-muted-foreground/80 peer-disabled:opacity-50">
+              <IconEmail className="size-5" />
+            </div>
+            <Button
+              aria-label="Submit search"
+              className="absolute inset-y-0 end-3 my-auto h-7 bg-card shadow-lg"
+              type="submit"
+              variant="outline"
+            >
+              <IconChevronRight aria-hidden="true" className="size-3" />
+            </Button>
+          </div>
+          <p className="mx-auto mt-3 max-w-lg text-gray-500 text-lg">
+            We respect your privacy — no spam, just savings.
+          </p>
+          <div className="mx-auto mt-12 flex max-w-fit items-center gap-5">
+            {NEWSLETTER_LIST.map((item) => (
+              <p className="flex items-center gap-2 text-gray-600" key={item}>
+                <IconCheckboxCircle className="size-5 text-success" />
+                {item}
+              </p>
+            ))}
+          </div>
         </div>
       </section>
     </main>

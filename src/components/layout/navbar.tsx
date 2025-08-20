@@ -19,7 +19,7 @@ export const Navbar = () => {
         <nav className="z-999 mx-auto flex items-center gap-4 rounded-xl bg-card p-2.5 font-helvetica shadow-lg max-md:justify-between md:max-w-fit md:gap-8">
           <Link aria-label="go home" className="flex items-center gap-2" href="/">
             <LogoIcon />
-            <LogoWordMark />
+            <LogoWordMark className="md:hidden" />
           </Link>
 
           {/* Desktop Navigation */}

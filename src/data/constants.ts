@@ -65,3 +65,97 @@ export const SOCIALS = [
     href: "https://wa.me/971987654321",
   },
 ];
+
+export const NEWSLETTER_LIST = ["Weekly Deals", "Exclusive Coupons", "Early Access"];
+
+export const FOOTER_LINKS = [
+  {
+    heading: "Quick Links",
+    links: [
+      {
+        label: "Home",
+        href: "/",
+      },
+      {
+        label: "Past Deals",
+        href: "/past-deals",
+      },
+      {
+        label: "Testimonials",
+        href: "/testimonials",
+      },
+      {
+        label: "FAQs",
+        href: "/faqs",
+      },
+    ],
+  },
+  {
+    heading: "Company",
+    links: [
+      {
+        label: "About ZM Deals",
+        href: "/about",
+      },
+      {
+        label: "Contact Us",
+        href: "/contact",
+      },
+    ],
+  },
+  {
+    heading: "Past Deals",
+    links: [
+      {
+        label: "Magnetic Car Phone Mount",
+        href: "/deals/magnetic-car-phone-mount",
+      },
+      {
+        label: "USB Car Charger",
+        href: "/deals/usb-car-charger",
+      },
+      {
+        label: "Apple Airpods Pro 2",
+        href: "/deals/apple-airpods-pro-2",
+      },
+    ],
+  },
+  {
+    heading: "Legal",
+    links: [
+      {
+        label: "Terms & Conditions",
+        href: "/legal/terms-and-conditions",
+      },
+      {
+        label: "Privacy Policy",
+        href: "/legal/privacy-policy",
+      },
+      {
+        label: "Refund & Returns Policy",
+        href: "/legal/refund-and-returns-policy",
+      },
+      {
+        label: "Shipping Information",
+        href: "/legal/shipping-information",
+      },
+    ],
+  },
+  {
+    heading: "Customer Support",
+    links: [
+      {
+        label: "support@zmdeals.com",
+        href: "mailto:support@zmdeals.com",
+      },
+      {
+        label: "Whatsapp",
+        href: "https://wa.me/971987654321",
+      },
+      {
+        label: "+971-XXX-XXXXXX",
+        href: "tel:+971-XXX-XXXXXX",
+      },
+    ],
+  },
+];
