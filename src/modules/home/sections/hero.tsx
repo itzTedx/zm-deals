@@ -63,7 +63,13 @@ export const Hero = () => {
           </div>
         </div>
       </div>
-      <Carousel className="w-full">
+      <Carousel
+        className="w-full"
+        opts={{
+          align: "center",
+          loop: true,
+        }}
+      >
         <CarouselContent className="-ml-3">
           {images.map((image, index) => (
             <CarouselItem className="pl-3 md:basis-1/2 lg:basis-1/3" key={index}>

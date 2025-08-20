@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "next build --turbopack",
     "start": "next start",
     "lint": "biome lint ./src",
     "lint:fix": "biome lint ./src --write",
@@ -61,15 +61,8 @@
     "typescript": "^5"
   },
   "lint-staged": {
-    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx}": [
-      "biome check --write .",
-      "biome format --write ."
-    ],
-    "*.{json,jsonc}": [
-      "biome format --write ."
-    ],
-    "*.{md,mdx}": [
-      "biome format --write ."
-    ]
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx}": ["biome check --write .", "biome format --write ."],
+    "*.{json,jsonc}": ["biome format --write ."],
+    "*.{md,mdx}": ["biome format --write ."]
   }
 }
