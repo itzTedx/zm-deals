@@ -1,5 +1,6 @@
 import "../styles/globals.css";
 
+import { Providers } from "@/components/providers";
 import { Toaster } from "@/components/ui/sonner";
 
 import { geist, helvetica } from "@/assets/fonts";
@@ -14,9 +15,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn(helvetica.className, geist.variable, "max-sm:overflow-x-hidden")}>
-        {children}
+        <Providers>
+          {children}
 
-        <Toaster richColors />
+          <Toaster richColors />
+        </Providers>
       </body>
     </html>
   );

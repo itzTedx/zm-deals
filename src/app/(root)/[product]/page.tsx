@@ -1,7 +1,5 @@
-import { FeedbackCard } from "@/components/feedback-card";
 import { ShareCard } from "@/components/global/share-card";
 import { InfoTooltip } from "@/components/global/tooltip";
-import { SectionHeader } from "@/components/layout/section-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import ImageCarousel from "@/components/ui/carousel-with-thumbnail";
@@ -18,7 +16,7 @@ import { calculateAverageRating, calculateDiscount } from "@/lib/utils";
 import { PastDeals } from "@/modules/home/sections";
 import { EndsInCounter } from "@/modules/product/components/ends-in-counter";
 import { QuantityInput } from "@/modules/product/components/quantity-input";
-import { WriteReview } from "@/modules/product/components/write-review";
+import { Reviews } from "@/modules/product/sections/reviews";
 
 export default function ProductPage() {
   const { title, price, originalPrice, featuredImage, images, stock, overview, description, endsIn, reviews, slug } =
@@ -104,24 +102,7 @@ export default function ProductPage() {
           <p>{description}</p>
         </div>
       </section>
-      <section className="container relative max-w-7xl border-x py-12 md:py-16 lg:py-20">
-        <div className="mt-9 grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div className="sticky top-12 h-fit">
-            <SectionHeader description="What our customers are saying" hasButton={false} title="Ratings & Reviews" />
-            <WriteReview reviews={reviews} />
-          </div>
-
-          <div className="grid gap-5">
-            {reviews.slice(0, 6).map((review) => (
-              <FeedbackCard key={review.id} review={review} />
-            ))}
-            <Button className="mx-auto w-fit">
-              See More <span className="text-muted-foreground">- Reviews</span>{" "}
-              <IconChevronRight className="size-3 text-muted-foreground" />
-            </Button>
-          </div>
-        </div>
-      </section>
+      <Reviews reviews={reviews} />
       <PastDeals />
     </main>
   );
