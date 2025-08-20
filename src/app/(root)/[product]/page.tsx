@@ -81,7 +81,7 @@ export default function ProductPage() {
               <QuantityInput />
             </div>
             <div className="flex items-center gap-1">
-              <p className="font-medium text-brand-500 text-sm">{calculateAverageRating(reviews)}</p>
+              <p className="font-medium text-sm text-yellow-500">{calculateAverageRating(reviews)}</p>
               <StarRating readOnly value={calculateAverageRating(reviews)} />
               <p className="font-medium text-gray-500 text-sm">
                 {reviews.length} {pluralize("review", reviews.length)}
