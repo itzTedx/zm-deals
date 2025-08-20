@@ -11,10 +11,10 @@ import { IconCurrency } from "@/assets/icons/currency";
 import { IconHourglass } from "@/assets/icons/hourglass";
 
 import { PRODUCT } from "@/data/product";
-import { calculateDiscount } from "@/lib/utils";
+import { calculateDiscount, formatTime } from "@/lib/utils";
 
 export default function ProductPage() {
-  const { title, description, price, originalPrice, featuredImage, images, stock, overview } = PRODUCT;
+  const { title, price, originalPrice, featuredImage, images, stock, overview, endsIn } = PRODUCT;
   return (
     <main className="container relative max-w-7xl border-x">
       <div className="grid grid-cols-1 gap-6 py-6 md:grid-cols-2 md:gap-8 md:py-8 lg:gap-12 lg:py-12 xl:py-16">
@@ -59,7 +59,7 @@ export default function ProductPage() {
               </BannerIcon>
               <BannerText>
                 <BannerTitle className="tracking-[0.0125em]">
-                  Deal ends in <span className="font-medium">3d 14h 22m</span>
+                  Deal ends in <span className="font-medium">{formatTime(endsIn)}</span>
                 </BannerTitle>
               </BannerText>
             </BannerContent>
