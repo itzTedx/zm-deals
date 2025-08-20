@@ -1,10 +1,9 @@
 import { FeedbackCard } from "@/components/feedback-card";
 import { SectionHeader } from "@/components/layout/section-header";
-import { Button } from "@/components/ui/button";
-
-import { IconChevronRight } from "@/assets/icons/chevron";
 
 import { WriteReview } from "@/modules/product/components/write-review";
+
+import { SeeMoreReviews } from "../components/see-more-reviews-button";
 
 export const Reviews = ({ reviews }: { reviews: Review[] }) => {
   return (
@@ -19,10 +18,7 @@ export const Reviews = ({ reviews }: { reviews: Review[] }) => {
           {reviews.slice(0, 6).map((review) => (
             <FeedbackCard key={review.id} review={review} />
           ))}
-          <Button className="mx-auto w-fit">
-            See More <span className="text-muted-foreground">- Reviews</span>{" "}
-            <IconChevronRight className="size-3 text-muted-foreground" />
-          </Button>
+          <SeeMoreReviews />
         </div>
       </div>
     </section>
