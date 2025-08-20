@@ -6,7 +6,7 @@ import { ProductCard } from "@/modules/product/components/product-card";
 
 export const PastDeals = () => {
   return (
-    <section className="container relative max-w-7xl border-x px-4 py-8 sm:px-6 sm:py-12 md:py-16 lg:px-8 lg:py-20">
+    <section className="container relative max-w-7xl border-x py-8 sm:py-12 md:py-16 lg:py-20">
       <Badge variant="outline">
         Sold Out{" "}
         <span className="ml-1 rounded-sm bg-brand-500/14 px-1 py-0.5 font-medium text-brand-500 text-xs">Fast</span>

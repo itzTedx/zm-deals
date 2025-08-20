@@ -12,7 +12,7 @@ import { calculateDiscount } from "@/lib/utils";
 export const Hero = () => {
   const { title, description, price, originalPrice, image } = PRODUCT;
   return (
-    <section className="container relative max-w-7xl border-x px-4 sm:px-6 lg:px-8">
+    <section className="container relative max-w-7xl border-x">
       <div className="grid grid-cols-1 items-center gap-6 py-6 sm:gap-8 sm:py-8 md:grid-cols-2 md:gap-12 md:py-12 lg:py-16">
         <div className="space-y-4 sm:space-y-6 md:space-y-9">
           <Badge className="pl-2" variant="outline">
