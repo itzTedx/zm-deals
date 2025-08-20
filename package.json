@@ -28,6 +28,7 @@
     "clsx": "^2.1.1",
     "dotenv": "^17.2.1",
     "drizzle-orm": "^0.44.4",
+    "embla-carousel": "^8.6.0",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "embla-carousel-wheel-gestures": "^8.1.0",
@@ -41,6 +42,7 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-hook-form": "^7.62.0",
+    "react-zoom-pan-pinch": "^3.7.0",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
     "zod": "^4.0.17"
@@ -61,8 +63,15 @@
     "typescript": "^5"
   },
   "lint-staged": {
-    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx}": ["biome check --write .", "biome format --write ."],
-    "*.{json,jsonc}": ["biome format --write ."],
-    "*.{md,mdx}": ["biome format --write ."]
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx}": [
+      "biome check --write .",
+      "biome format --write ."
+    ],
+    "*.{json,jsonc}": [
+      "biome format --write ."
+    ],
+    "*.{md,mdx}": [
+      "biome format --write ."
+    ]
   }
 }

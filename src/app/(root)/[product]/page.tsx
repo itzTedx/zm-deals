@@ -1,11 +1,9 @@
-import Image from "next/image";
-
 import { FeedbackCard } from "@/components/feedback-card";
 import { SectionHeader } from "@/components/layout/section-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import ImageCarousel from "@/components/ui/carousel-with-thumbnail";
 import { SeparatorBox } from "@/components/ui/separator";
 
 import { IconChevronRight } from "@/assets/icons/chevron";
@@ -22,8 +20,9 @@ export default function ProductPage() {
     <main className="">
       <header className="container relative grid max-w-7xl grid-cols-1 gap-6 border-x py-6 md:grid-cols-2 md:gap-8 md:py-8 lg:gap-12 lg:py-12 xl:py-16">
         {/* Image Carousel Section */}
-        <div className="order-1 md:order-1">
-          <Carousel
+        <div>
+          <ImageCarousel images={[...images, { url: featuredImage }]} />
+          {/* <Carousel
             className="w-full overflow-hidden rounded-xl md:rounded-2xl"
             opts={{
               align: "start",
@@ -38,7 +37,7 @@ export default function ProductPage() {
               {images.map((image, index) => (
                 <CarouselItem key={index}>
                   <div className="relative aspect-square overflow-hidden rounded-xl md:aspect-9/8 md:rounded-2xl">
-                    <Image alt={title} className="object-cover" fill src={image} />
+                    <Image alt={title} className="object-cover" fill src={image.url} />
                   </div>
                 </CarouselItem>
               ))}
@@ -49,11 +48,11 @@ export default function ProductPage() {
               <div className="flex-1 md:hidden" />
               <CarouselNext className="relative right-0 h-8 w-8 translate-y-0 md:h-10 md:w-10" variant="default" />
             </div>
-          </Carousel>
+          </Carousel> */}
         </div>
 
         {/* Product Details Section */}
-        <div className="order-2 space-y-4 md:order-2 md:space-y-6 lg:space-y-8">
+        <div className="space-y-4 md:space-y-6 lg:space-y-8">
           {/* Countdown Banner */}
           <EndsInCounter endsIn={endsIn} />
 
