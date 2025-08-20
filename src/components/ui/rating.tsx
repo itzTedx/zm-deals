@@ -100,7 +100,7 @@ const StarRating = ({
       const ratingToUse = !readOnly && hoverRating !== null ? hoverRating : value;
       const difference = ratingToUse - index;
 
-      if (difference <= 0) return { color: "gray", fill: "transparent" };
+      if (difference <= 0) return { color: "#ebebeb", fill: "transparent" };
       if (difference >= 1) return { color: color, fill: color };
 
       return {
