@@ -11,6 +11,7 @@ interface Props {
   description: string;
   btnText?: string;
   link?: string;
+  hasButton?: boolean;
 }
 
 export const SectionHeader = ({
@@ -19,6 +20,7 @@ export const SectionHeader = ({
   btnText,
   link,
   className,
+  hasButton = true,
   ...props
 }: Props & React.ComponentProps<"header">) => {
   return (
@@ -26,19 +28,20 @@ export const SectionHeader = ({
       <div className="space-y-3">
         <h2 className="font-bold text-4xl">{title}</h2>
 
-        {link ? (
-          <Button asChild>
-            <Link href={link}>
-              See More {btnText && <span className="text-muted-foreground">- {btnText}</span>}
+        {hasButton &&
+          (link ? (
+            <Button asChild>
+              <Link href={link}>
+                See More {btnText && <span className="text-muted-foreground">- {btnText}</span>}
+                <IconChevronRight className="size-3 text-muted-foreground" />
+              </Link>
+            </Button>
+          ) : (
+            <Button>
+              See More {btnText && <span className="text-muted-foreground">- {btnText}</span>}{" "}
               <IconChevronRight className="size-3 text-muted-foreground" />
-            </Link>
-          </Button>
-        ) : (
-          <Button>
-            See More {btnText && <span className="text-muted-foreground">- {btnText}</span>}{" "}
-            <IconChevronRight className="size-3 text-muted-foreground" />
-          </Button>
-        )}
+            </Button>
+          ))}
       </div>
       <p className="text-muted-foreground">{description}</p>
     </header>

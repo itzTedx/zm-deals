@@ -1,9 +1,12 @@
 import Image from "next/image";
 
+import { FeedbackCard } from "@/components/feedback-card";
+import { SectionHeader } from "@/components/layout/section-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { SeparatorBox } from "@/components/ui/separator";
 
 import { IconChevronRight } from "@/assets/icons/chevron";
 import { IconCurrency } from "@/assets/icons/currency";
@@ -13,10 +16,10 @@ import { calculateDiscount } from "@/lib/utils";
 import { EndsInCounter } from "@/modules/product/components/ends-in-counter";
 
 export default function ProductPage() {
-  const { title, price, originalPrice, featuredImage, images, stock, overview, endsIn } = PRODUCT;
+  const { title, price, originalPrice, featuredImage, images, stock, overview, endsIn, reviews } = PRODUCT;
   return (
     <main className="container relative max-w-7xl border-x">
-      <div className="grid grid-cols-1 gap-6 py-6 md:grid-cols-2 md:gap-8 md:py-8 lg:gap-12 lg:py-12 xl:py-16">
+      <header className="grid grid-cols-1 gap-6 py-6 md:grid-cols-2 md:gap-8 md:py-8 lg:gap-12 lg:py-12 xl:py-16">
         {/* Image Carousel Section */}
         <div className="order-1 md:order-1">
           <Carousel
@@ -103,7 +106,16 @@ export default function ProductPage() {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </header>
+      <SeparatorBox className="max-w-7xl" />
+      <section className="py-12 md:py-16 lg:py-20">
+        <SectionHeader description="What our customers are saying" hasButton={false} title="Ratings & Reviews" />
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {reviews.map((review) => (
+            <FeedbackCard key={review.id} review={review} />
+          ))}
+        </div>
+      </section>
     </main>
   );
 }
