@@ -38,7 +38,7 @@ export const AnimatedCountdown = ({ endsIn, className = "" }: AnimatedCountdownP
     if (timeComponents.days > 0) {
       parts.push(
         <span key="days">
-          <NumberFlow value={timeComponents.days} />
+          <NumberFlow trend={-1} value={timeComponents.days} />
           <TimeText>d</TimeText>
         </span>
       );

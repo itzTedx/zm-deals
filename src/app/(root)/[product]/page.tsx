@@ -32,7 +32,7 @@ export default function ProductPage() {
           <ImageCarousel images={[{ url: featuredImage }, ...images]} thumbPosition="bottom" />
           <div className="mt-4 hidden space-y-1 md:block">
             <h2 className="font-medium text-gray-500 text-sm">Product Overview</h2>
-            <p>{description}</p>
+            <p className="leading-relaxed">{description}</p>
           </div>
         </div>
 
