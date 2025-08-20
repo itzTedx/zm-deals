@@ -2,16 +2,6 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogOverlay,
-  DialogPortal,
-  DialogTitle,
-  DialogTrigger,
-} from "@radix-ui/react-dialog";
 import { type EmblaOptionsType } from "embla-carousel";
 import useEmblaCarousel from "embla-carousel-react";
 import { ArrowLeft, ArrowRight, MinusCircle, PlusCircle, X } from "lucide-react";
@@ -20,6 +10,8 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { Button } from "@/components/ui/button";
 
 import { cn } from "@/lib/utils";
+
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "./dialog";
 
 type ThumbPropType = {
   selected: boolean;
@@ -37,6 +29,8 @@ const getAspectRatioClass = (ratio?: string) => {
       return "aspect-video"; // 16:9
     case "wide":
       return "aspect-4/3"; // 4:3
+    case "5/4":
+      return "aspect-5/4";
     case "auto":
       return "aspect-auto"; // Natural image aspect ratio
     default:
@@ -54,7 +48,7 @@ const ImageContainer: React.FC<{
   classNameThumbnail?: string;
 }> = ({ alt, aspectRatio, classNameImage, classNameThumbnail, fit = "cover", image, showImageControls }) => {
   return (
-    <div className={cn("relative w-full overflow-hidden rounded-lg bg-gray-100", getAspectRatioClass(aspectRatio))}>
+    <div className={cn("relative w-full overflow-hidden rounded-lg bg-card", getAspectRatioClass(aspectRatio))}>
       <Dialog>
         <DialogTrigger asChild>
           <div className={"cursor-pointer"}>
@@ -74,56 +68,53 @@ const ImageContainer: React.FC<{
           </div>
         </DialogTrigger>
 
-        <DialogPortal>
-          <DialogOverlay className="fixed inset-0 z-50 bg-black/80" />
-          <DialogContent className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background p-0">
-            <DialogTitle className="sr-only">{image.title || "Image"}</DialogTitle>
-            <DialogDescription className="sr-only">{image.title || "Image"}</DialogDescription>
+        <DialogContent className="lg:max-w-fit" showCloseButton={false}>
+          <DialogTitle className="sr-only">{image.title || "Image"}</DialogTitle>
+          <DialogDescription className="sr-only">{image.title || "Image"}</DialogDescription>
 
-            <div className="relative flex h-screen w-screen items-center justify-center">
-              <TransformWrapper initialPositionX={0} initialPositionY={0} initialScale={1}>
-                {({ zoomIn, zoomOut }) => (
-                  <>
-                    <TransformComponent>
-                      {/* You can swap this with your preferred image optization technique, like using  next/image */}
-                      <img
-                        alt={image.title || "Full size"}
-                        className={cn("max-h-[90vh] max-w-[90vw] object-contain", classNameImage)}
-                        src={image.url}
-                      />
-                    </TransformComponent>
-                    {showImageControls && (
-                      <div className="-translate-x-1/2 absolute bottom-4 left-1/2 z-10 flex gap-2">
-                        <button
-                          aria-label="Zoom out"
-                          className="cursor-pointer rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
-                          onClick={() => zoomOut()}
-                        >
-                          <MinusCircle className="size-6" />
-                        </button>
-                        <button
-                          aria-label="Zoom in"
-                          className="cursor-pointer rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
-                          onClick={() => zoomIn()}
-                        >
-                          <PlusCircle className="size-6" />
-                        </button>
-                      </div>
-                    )}
-                  </>
-                )}
-              </TransformWrapper>
-              <DialogClose asChild>
-                <button
-                  aria-label="Close"
-                  className="absolute top-4 right-4 z-10 cursor-pointer rounded-full border bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
-                >
-                  <X className="size-6" />
-                </button>
-              </DialogClose>
-            </div>
-          </DialogContent>
-        </DialogPortal>
+          <div>
+            <TransformWrapper initialPositionX={0} initialPositionY={0} initialScale={1}>
+              {({ zoomIn, zoomOut }) => (
+                <>
+                  <TransformComponent>
+                    {/* You can swap this with your preferred image optization technique, like using  next/image */}
+                    <img
+                      alt={image.title || "Full size"}
+                      className={cn("max-h-[90vh] max-w-[90vw] object-contain", classNameImage)}
+                      src={image.url}
+                    />
+                  </TransformComponent>
+                  {showImageControls && (
+                    <div className="-translate-x-1/2 absolute bottom-4 left-1/2 z-10 flex gap-2">
+                      <button
+                        aria-label="Zoom out"
+                        className="cursor-pointer rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
+                        onClick={() => zoomOut()}
+                      >
+                        <MinusCircle className="size-6" />
+                      </button>
+                      <button
+                        aria-label="Zoom in"
+                        className="cursor-pointer rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
+                        onClick={() => zoomIn()}
+                      >
+                        <PlusCircle className="size-6" />
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </TransformWrapper>
+            <DialogClose asChild>
+              <button
+                aria-label="Close"
+                className="absolute top-4 right-4 z-10 cursor-pointer rounded-full border bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
+              >
+                <X className="size-6" />
+              </button>
+            </DialogClose>
+          </div>
+        </DialogContent>
       </Dialog>
     </div>
   );
@@ -136,9 +127,9 @@ const Thumb: React.FC<ThumbPropType> = (props) => {
     <div
       className={cn(
         "transition-opacity duration-200",
-        selected ? "opacity-100" : "opacity-50 hover:opacity-70",
+
         // Horizontal layout (top/bottom)
-        "group-[.thumbs-horizontal]:min-w-0 group-[.thumbs-horizontal]:flex-[0_0_22%] group-[.thumbs-horizontal]:pl-3 sm:group-[.thumbs-horizontal]:flex-[0_0_15%]",
+        "group-[.thumbs-horizontal]:min-w-0 group-[.thumbs-horizontal]:flex-[0_0_22%] group-[.thumbs-horizontal]:pl-3 sm:group-[.thumbs-horizontal]:flex-[0_0_20%]",
         // Vertical layout (left/right)
         "group-[.thumbs-vertical]:w-full group-[.thumbs-vertical]:pt-3"
       )}
@@ -148,10 +139,16 @@ const Thumb: React.FC<ThumbPropType> = (props) => {
         onClick={onClick}
         type="button"
       >
-        <div className={cn("relative w-full overflow-hidden rounded-lg bg-gray-100", getAspectRatioClass("square"))}>
+        <div
+          className={cn(
+            "relative w-full overflow-hidden rounded-lg bg-gray-100",
+            selected ? "border-2 border-primary/50" : "",
+            getAspectRatioClass("square")
+          )}
+        >
           <img
             alt={title || `Thumbnail ${index + 1}`}
-            className={cn("h-full w-full object-cover")}
+            className={cn("h-full w-full bg-card object-contain")}
             height={600}
             src={imgUrl}
             width={400}
@@ -168,13 +165,13 @@ type CarouselImage = {
 };
 
 type CarouselImages = CarouselImage[];
-interface ImageCarouselProps extends React.HTMLAttributes<HTMLDivElement> {
+interface ImageCarousel_BasicProps extends React.HTMLAttributes<HTMLDivElement> {
   images: CarouselImages;
   opts?: EmblaOptionsType;
   showCarouselControls?: boolean;
   showImageControls?: boolean;
   imageFit?: "cover" | "contain" | "fill";
-  aspectRatio?: "square" | "video" | "wide" | "auto";
+  aspectRatio?: "square" | "video" | "wide" | "auto" | "5/4";
   thumbPosition?: "bottom" | "top" | "left" | "right";
   showThumbs?: boolean;
   // Controlled mode props
@@ -184,7 +181,7 @@ interface ImageCarouselProps extends React.HTMLAttributes<HTMLDivElement> {
   classNameThumbnail?: string;
 }
 
-const ImageCarousel: React.FC<ImageCarouselProps> = ({
+const ImageCarousel: React.FC<ImageCarousel_BasicProps> = ({
   aspectRatio = "wide",
   className,
   classNameImage,
@@ -315,7 +312,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
     <div
       aria-roledescription="carousel"
       className={cn(
-        "relative w-full max-w-3xl",
+        "relative w-full max-w-4xl",
         {
           "flex-row-reverse": showThumbs && thumbPosition === "left",
           "flex gap-4": showThumbs && (thumbPosition === "left" || thumbPosition === "right"),
