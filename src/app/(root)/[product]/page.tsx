@@ -4,6 +4,7 @@ import { InfoTooltip } from "@/components/global/tooltip";
 import { SectionHeader } from "@/components/layout/section-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import ImageCarousel from "@/components/ui/carousel-with-thumbnail";
 import StarRating from "@/components/ui/rating";
 import { SeparatorBox } from "@/components/ui/separator";
@@ -104,11 +105,35 @@ export default function ProductPage() {
         </div>
       </section>
       <section className="container relative max-w-7xl border-x py-12 md:py-16 lg:py-20">
-        <SectionHeader description="What our customers are saying" hasButton={false} title="Ratings & Reviews" />
-        <div className="mt-9 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {reviews.map((review) => (
-            <FeedbackCard key={review.id} review={review} />
-          ))}
+        <div className="mt-9 grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="sticky top-12 h-fit">
+            <SectionHeader description="What our customers are saying" hasButton={false} title="Ratings & Reviews" />
+            <Card className="mt-4">
+              <CardContent>
+                <div className="flex items-center divide-x">
+                  <p className="pr-3 font-medium text-4xl text-gray-800">{calculateAverageRating(reviews)}</p>
+                  <div className="space-y-1 pl-3">
+                    <StarRating readOnly value={calculateAverageRating(reviews)} />
+                    <div className="flex items-center gap-2">
+                      <p className="text-gray-500 text-sm">
+                        {reviews.reduce((sum, review) => sum + review.rating, 0)} Ratings
+                      </p>
+                      <div className="size-0.5 rounded-full bg-gray-300 sm:size-1" />
+                      <p className="font-medium text-gray-500 text-sm underline">
+                        {reviews.length} {pluralize("review", reviews.length)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid gap-3">
+            {reviews.splice(0, 6).map((review) => (
+              <FeedbackCard key={review.id} review={review} />
+            ))}
+          </div>
         </div>
       </section>
       <PastDeals />

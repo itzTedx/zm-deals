@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
-import { Rating } from "@/components/ui/rating";
+import StarRating from "@/components/ui/rating";
 
 import { formatDate } from "@/lib/functions/format-date";
 
@@ -7,7 +7,7 @@ export const FeedbackCard = ({ review }: { review: Review }) => {
   return (
     <Card>
       <CardContent className="h-full">
-        <Rating value={review.rating} />
+        <StarRating readOnly value={review.rating} />
         <CardDescription className="mt-4 text-balance text-base text-foreground">{review.comment}</CardDescription>
       </CardContent>
       <CardFooter className="flex items-center justify-between">

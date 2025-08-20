@@ -2,34 +2,9 @@
 
 import React from "react";
 
-import { IconStar, IconStarHalf } from "@/assets/icons/star";
+import { IconStar } from "@/assets/icons/star";
 
 import { cn } from "@/lib/utils";
-
-interface Props {
-  value: number;
-}
-
-export const Rating = ({ value, className, ...props }: Props & React.ComponentProps<"div">) => {
-  return (
-    <div className={cn("flex items-center gap-1", className)} {...props}>
-      {Array.from({ length: 5 }).map((_, index) => {
-        const starValue = value - index;
-
-        if (starValue >= 1) {
-          // Full star
-          return <IconStar className="text-yellow-500" key={index} />;
-        }
-        if (starValue > 0) {
-          // Half star
-          return <IconStarHalf className="text-yellow-500" key={index} />;
-        }
-        // Empty star
-        return <IconStar className="text-gray-200" key={index} />;
-      })}
-    </div>
-  );
-};
 
 interface StarRatingBasicProps {
   value: number;
@@ -45,13 +20,13 @@ const StarIcon = React.memo(
     index,
     isInteractive,
     onClick,
-    onMouseEnter,
+    onMouseMove,
     style,
   }: {
     index: number;
     style: React.CSSProperties;
-    onClick: () => void;
-    onMouseEnter: () => void;
+    onClick: (e: React.MouseEvent<SVGElement>) => void;
+    onMouseMove: (e: React.MouseEvent<SVGElement>) => void;
     isInteractive: boolean;
   }) => (
     <IconStar
@@ -60,7 +35,7 @@ const StarIcon = React.memo(
       fill={style.fill}
       key={index}
       onClick={onClick}
-      onMouseEnter={onMouseEnter}
+      onMouseMove={onMouseMove}
       style={style}
     />
   )
@@ -77,22 +52,41 @@ const StarRating = ({
 }: StarRatingBasicProps) => {
   const [hoverRating, setHoverRating] = React.useState<number | null>(null);
 
+  // Generate stable IDs based on component props to avoid hydration issues
+  const starIds = React.useMemo(() => Array.from({ length: maxStars }, (_, i) => `star-${maxStars}-${i}`), [maxStars]);
+
+  const calculateRating = React.useCallback((index: number, event: React.MouseEvent<SVGElement>) => {
+    const star = event.currentTarget;
+    const rect = star.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const width = rect.width;
+    const clickPosition = x / width;
+
+    let fraction = 1;
+    if (clickPosition <= 0.25) fraction = 0.25;
+    else if (clickPosition <= 0.5) fraction = 0.5;
+    else if (clickPosition <= 0.75) fraction = 0.75;
+
+    return index + fraction;
+  }, []);
+
   const handleStarClick = React.useCallback(
-    (index: number) => {
+    (index: number, event: React.MouseEvent<SVGElement>) => {
       if (readOnly || !onChange) return;
-      const newRating = index + 1;
+      const newRating = calculateRating(index, event);
       onChange(newRating);
     },
-    [readOnly, onChange]
+    [readOnly, onChange, calculateRating]
   );
 
   const handleStarHover = React.useCallback(
-    (index: number) => {
+    (index: number, event: React.MouseEvent<SVGElement>) => {
       if (!readOnly) {
-        setHoverRating(index + 1);
+        const previewRating = calculateRating(index, event);
+        setHoverRating(previewRating);
       }
     },
-    [readOnly]
+    [readOnly, calculateRating]
   );
 
   const handleMouseLeave = React.useCallback(() => {
@@ -104,13 +98,35 @@ const StarRating = ({
   const getStarStyle = React.useCallback(
     (index: number) => {
       const ratingToUse = !readOnly && hoverRating !== null ? hoverRating : value;
+      const difference = ratingToUse - index;
+
+      if (difference <= 0) return { color: "gray", fill: "transparent" };
+      if (difference >= 1) return { color: color, fill: color };
+
       return {
-        color: ratingToUse > index ? color : "gray",
-        fill: ratingToUse > index ? color : "transparent",
+        color: color,
+        fill: `url(#${starIds[index]})`,
       } as React.CSSProperties;
     },
-    [readOnly, hoverRating, value, color]
+    [readOnly, hoverRating, value, color, starIds]
   );
+
+  const renderGradientDefs = () => {
+    const ratingToUse = !readOnly && hoverRating !== null ? hoverRating : value;
+    const partialStarIndex = Math.floor(ratingToUse);
+    const partialFill = (ratingToUse % 1) * 100;
+
+    // Only create gradient for partial star
+    if (partialFill > 0 && partialStarIndex < maxStars) {
+      return (
+        <linearGradient id={starIds[partialStarIndex]} x1="0%" x2="100%" y1="0%" y2="0%">
+          <stop offset={`${partialFill}%`} stopColor={color} />
+          <stop offset={`${partialFill}%`} stopColor="transparent" />
+        </linearGradient>
+      );
+    }
+    return null;
+  };
 
   const stars = React.useMemo(() => {
     return Array.from({ length: maxStars }).map((_, index) => {
@@ -119,17 +135,20 @@ const StarRating = ({
         <StarIcon
           index={index}
           isInteractive={!readOnly}
-          key={index}
-          onClick={() => handleStarClick(index)}
-          onMouseEnter={() => handleStarHover(index)}
+          key={starIds[index]}
+          onClick={(e) => handleStarClick(index, e)}
+          onMouseMove={(e) => handleStarHover(index, e)}
           style={style}
         />
       );
     });
-  }, [maxStars, getStarStyle, handleStarClick, handleStarHover, readOnly]);
+  }, [maxStars, getStarStyle, handleStarClick, handleStarHover, readOnly, starIds]);
 
   return (
-    <div className={cn("flex items-center gap-x-0.5", className)} onMouseLeave={handleMouseLeave}>
+    <div className={cn("relative flex items-center gap-x-0.5", className)} onMouseLeave={handleMouseLeave}>
+      <svg height="0" style={{ position: "absolute" }} width="0">
+        <defs>{renderGradientDefs()}</defs>
+      </svg>
       {stars}
     </div>
   );

@@ -24,7 +24,14 @@ export const SectionHeader = ({
   ...props
 }: Props & React.ComponentProps<"header">) => {
   return (
-    <header className={cn("grid gap-3 md:grid-cols-2 md:gap-6", className)} {...props}>
+    <header
+      className={cn(
+        "grid md:grid-cols-2",
+        hasButton ? "gap-3 md:grid-cols-2 md:gap-6" : "gap-3 md:grid-cols-1",
+        className
+      )}
+      {...props}
+    >
       <div className="space-y-3">
         <h2 className="font-bold text-2xl sm:text-3xl md:text-4xl">{title}</h2>
 
