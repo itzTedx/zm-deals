@@ -1,13 +1,13 @@
 export const PRODUCT = {
   title: "Vacuum Suction Phone Holder",
-  description: "Secure your phone while driving - hands-free, safe, and stable.",
+  overview: "Secure your phone while driving - hands-free, safe, and stable.",
   slug: "vacuum-suction-phone-holder",
   price: "39.00",
   originalPrice: "89.50",
   featuredImage: "/images/vacuum-holder.webp",
   stock: 21,
   endsIn: new Date("2025-08-23T23:59:59Z"), // Deal ends on August 23rd, 2025
-  overview:
+  description:
     "Drive safer and smarter with the Magnetic Car Phone Mount. Designed with powerful magnets and a sleek, compact design, it keeps your phone securely in place while you focus on the road. Whether you're navigating maps, answering calls hands-free, or playing music, this mount makes your ride stress-free. Perfect for daily commutes and road trips alike.",
   images: [
     { url: "/images/vacuum-1.webp" },
