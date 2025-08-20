@@ -22,13 +22,14 @@ import { QuantityInput } from "@/modules/product/components/quantity-input";
 export default function ProductPage() {
   const { title, price, originalPrice, featuredImage, images, stock, overview, description, endsIn, reviews, slug } =
     PRODUCT;
+
   return (
     <main className="">
       <header className="container relative grid max-w-7xl grid-cols-1 gap-6 border-x py-6 md:grid-cols-2 md:gap-8 md:py-8 lg:gap-12 lg:py-12">
         {/* Image Carousel Section */}
         <div>
           <ImageCarousel images={[{ url: featuredImage }, ...images]} thumbPosition="bottom" />
-          <div className="mt-4 space-y-1">
+          <div className="mt-4 hidden space-y-1 md:block">
             <h2 className="font-medium text-gray-500 text-sm">Product Overview</h2>
             <p>{description}</p>
           </div>
@@ -58,7 +59,9 @@ export default function ProductPage() {
               <span>{price}</span>
             </p>
 
-            <p className="text-muted-foreground text-xs line-through sm:text-sm md:text-base">{originalPrice}</p>
+            <p className="text-muted-foreground text-xs line-through decoration-brand-500 sm:text-sm md:text-base">
+              {originalPrice}
+            </p>
 
             <div className="size-0.5 rounded-full bg-gray-300 sm:size-1" />
 
@@ -91,19 +94,15 @@ export default function ProductPage() {
           <Button className="w-full" size="lg">
             Claim this deal now <IconChevronRight />
           </Button>
-
-          {/* Product Description Card */}
-          {/* <Card>
-            <CardHeader>
-              <p className="font-medium text-muted-foreground text-sm">Product Description</p>
-            </CardHeader>
-            <CardContent>
-              <p className="text-base text-gray-800 leading-relaxed md:text-lg">{overview}</p>
-            </CardContent>
-          </Card> */}
         </div>
       </header>
       <SeparatorBox className="container mx-auto max-w-7xl border-x" />
+      <section className="container relative max-w-7xl border-x py-12 md:py-16 lg:py-20">
+        <div className="mt-4 space-y-1 md:hidden">
+          <h2 className="font-medium text-gray-500 text-sm">Product Overview</h2>
+          <p>{description}</p>
+        </div>
+      </section>
       <section className="container relative max-w-7xl border-x py-12 md:py-16 lg:py-20">
         <SectionHeader description="What our customers are saying" hasButton={false} title="Ratings & Reviews" />
         <div className="mt-9 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
