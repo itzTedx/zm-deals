@@ -45,7 +45,7 @@ export const Navbar = () => {
             {/* Mobile Sheet Menu */}
             <Sheet>
               <SheetTrigger asChild>
-                <Button className="md:hidden" size="icon" variant="outline">
+                <Button className="md:hidden" size="icon">
                   <IconMenu className="size-5" />
                 </Button>
               </SheetTrigger>

@@ -72,6 +72,7 @@
 
   --shadow-brand-md: var(--shadow-md);
   --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
 }
 
 :root {
@@ -136,6 +137,7 @@
 
   --shadow-md: 0 4px 4px 0 color-mix(in oklab, var(--brand-500) 20%, transparent), 0 0 0 1px var(--brand-700), inset 0 -1px 1px -0.5px var(--brand-200);
   --shadow-lg: 0 24px 24px -12px color-mix(in oklab, var(--primary) 4%, transparent), 0 12px 12px -6px color-mix(in oklab, var(--primary) 4%, transparent), 0 6px 6px -3px color-mix(in oklab, var(--primary) 4%, transparent), 0 3px 3px -1.5px color-mix(in oklab, var(--primary) 4%, transparent), 0 1px 1px 0.5px color-mix(in oklab, var(--primary) 4%, transparent), 0 0 0 1px color-mix(in oklab, var(--primary) 4%, transparent);
+  --shadow-xl: 0 1px 1px 0.5px color-mix(in oklab, var(--gray-900) 4%, transparent), 0 3px 3px -1.5px color-mix(in oklab, var(--gray-900) 4%, transparent), 0 6px 6px -3px color-mix(in oklab, var(--gray-900) 4%, transparent), 0 12px 12px -6px color-mix(in oklab, var(--gray-900) 4%, transparent), 0 24px 24px -12px color-mix(in oklab, var(--gray-900) 4%, transparent), 0 48px 48px -24px color-mix(in oklab, var(--gray-900) 4%, transparent), 0 0 0 1px color-mix(in oklab, var(--gray-900) 4%, transparent);
 }
 
 @layer base {

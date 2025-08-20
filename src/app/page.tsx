@@ -8,11 +8,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator, SeparatorBox } from "@/components/ui/separator";
 
+import { IconBook } from "@/assets/icons/book";
 import { IconChevronRight } from "@/assets/icons/chevron";
 import { IconCurrency } from "@/assets/icons/currency";
+import { IconTeamCircle } from "@/assets/icons/team";
 import { Logo } from "@/assets/logo";
+import { Pattern1 } from "@/assets/patterns";
 
-import { HOW_WORKS } from "@/data/constants";
+import { HOW_WORKS, SOCIALS } from "@/data/constants";
 import { PAST_DEALS, PRODUCT } from "@/data/product";
 import { calculateDiscount } from "@/lib/utils";
 import { ProductCard } from "@/modules/product/components/product-card";
@@ -149,8 +152,41 @@ export default function Home() {
           </Badge>
           <SeparatorBox />
         </div>
-        <div>
-          <Badge variant="outline">Happy Customers</Badge>
+        <div className="text-center">
+          <Badge variant="outline">
+            <IconTeamCircle />
+            Happy Customers
+          </Badge>
+          <h2 className="mt-8 font-medium text-3xl">Join our community</h2>
+          <p className="mt-3 mb-9 text-lg text-muted-foreground">
+            Be the first to know about upcoming deals, share your experiences
+          </p>
+          <div className="container grid max-w-6xl grid-cols-3 gap-4">
+            {SOCIALS.map(({ id, title, href, description, icon: Icon }) => (
+              <div
+                className="relative flex flex-col items-center justify-center rounded-3xl bg-card px-6 py-10 shadow-xl"
+                key={id}
+              >
+                <Link className="absolute inset-0" href={href} />
+                <Icon className="mx-auto size-12 text-gray-400" />
+                <h3 className="mt-2 font-medium text-lg">{title}</h3>
+                <p className="text-muted-foreground">{description}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mx-auto mt-12 max-w-lg text-lg text-muted-foreground">
+            Be part of a community that saves together. Connect, share, and enjoy unbeatable weekly deals.
+          </p>
+          <Pattern1 className="mx-auto my-9" />
+
+          <Badge variant="outline">
+            <IconBook />
+            Stay Informed
+          </Badge>
+          <h2 className="mt-8 font-medium text-3xl">Subscribe to our newsletter</h2>
+          <p className="mx-auto mt-3 mb-9 max-w-lg text-lg text-muted-foreground">
+            Get the latest product drops, coupon codes, and exclusive discounts delivered straight to your inbox.
+          </p>
         </div>
       </section>
     </main>
