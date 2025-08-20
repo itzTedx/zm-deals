@@ -1,4 +1,5 @@
 import { FeedbackCard } from "@/components/feedback-card";
+import { InfoTooltip } from "@/components/global/tooltip";
 import { SectionHeader } from "@/components/layout/section-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,78 +23,46 @@ export default function ProductPage() {
         {/* Image Carousel Section */}
         <div>
           <ImageCarousel images={[{ url: featuredImage }, ...images]} thumbPosition="bottom" />
-          {/* <Carousel
-            className="w-full overflow-hidden rounded-xl md:rounded-2xl"
-            opts={{
-              align: "start",
-            }}
-          >
-            <CarouselContent>
-              <CarouselItem>
-                <div className="relative aspect-square overflow-hidden rounded-xl bg-card p-4 md:aspect-9/8 md:rounded-2xl md:p-6">
-                  <Image alt={title} className="object-cover" fill src={featuredImage} />
-                </div>
-              </CarouselItem>
-              {images.map((image, index) => (
-                <CarouselItem key={index}>
-                  <div className="relative aspect-square overflow-hidden rounded-xl md:aspect-9/8 md:rounded-2xl">
-                    <Image alt={title} className="object-cover" fill src={image.url} />
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-
-            <div className="mt-3 flex w-full items-center justify-between gap-2 md:justify-start">
-              <CarouselPrevious className="relative left-0 h-8 w-8 translate-y-0 md:h-10 md:w-10" variant="default" />
-              <div className="flex-1 md:hidden" />
-              <CarouselNext className="relative right-0 h-8 w-8 translate-y-0 md:h-10 md:w-10" variant="default" />
-            </div>
-          </Carousel> */}
         </div>
 
         {/* Product Details Section */}
-        <div className="space-y-4 md:space-y-6 lg:space-y-8">
+        <div className="space-y-4 md:space-y-6">
           {/* Countdown Banner */}
           <EndsInCounter endsIn={endsIn} />
 
           {/* Product Title */}
-          <h1 className="font-bold text-2xl leading-tight sm:text-3xl md:text-4xl">{title}</h1>
+          <h1 className="font-medium text-2xl sm:text-3xl">{title}</h1>
 
           {/* Pricing Section */}
-          <div className="space-y-2 md:space-y-3">
-            <p className="relative flex items-center gap-1 font-bold text-2xl text-gray-800 normal-nums md:text-3xl lg:text-4xl">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <p className="relative flex items-center gap-1 font-bold text-2xl text-brand-600 normal-nums">
               <span>
-                <IconCurrency className="size-5 text-muted-foreground lg:size-7" />
+                <IconCurrency className="size-5 text-brand-400" />
               </span>
               <span>{price}</span>
             </p>
 
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-              <div className="relative flex items-center gap-0.5 text-gray-400 normal-nums">
-                <span className="-translate-y-1/2 -translate-1/2 absolute top-1/2 left-1/2 h-px w-[115%] bg-gray-400" />
-                <span>
-                  <IconCurrency className="size-2.5 sm:size-3 md:size-3.5" />
-                </span>
-                <p className="text-xs sm:text-sm md:text-base">{originalPrice}</p>
-              </div>
+            <div className="size-0.5 rounded-full bg-gray-300 sm:size-1" />
 
-              <div className="hidden size-1 rounded-full bg-gray-400 sm:block" />
+            <p className="text-muted-foreground text-xs line-through sm:text-sm md:text-base">{originalPrice}</p>
 
-              <Badge className="text-xs sm:text-sm" size="sm" variant="destructive">
-                Save {calculateDiscount(originalPrice, price)}% Today!
-              </Badge>
+            <div className="size-0.5 rounded-full bg-gray-300 sm:size-1" />
 
-              <div className="hidden size-1 rounded-full bg-gray-400 sm:block" />
+            <Badge className="text-xs sm:text-sm" size="sm" variant="destructive">
+              Save {calculateDiscount(originalPrice, price)}% Today!
+            </Badge>
 
-              <p className="text-xs sm:text-sm md:text-base">
-                Only <span className="font-medium">{stock}</span> left in stock!
-              </p>
-            </div>
+            <div className="size-0.5 rounded-full bg-gray-300 sm:size-1" />
+
+            <Badge size="sm">
+              Only <span className="font-medium">{stock}</span> left
+              <InfoTooltip info="The Stock tag shows the available units for the selected item. Sellers control whether to display it and manage their own inventory." />
+            </Badge>
           </div>
 
           {/* CTA Button */}
-          <Button className="w-full text-sm sm:text-base md:text-lg" size="lg">
-            Claim Your Deal Now <IconChevronRight />
+          <Button className="w-full" size="lg">
+            Claim this deal now <IconChevronRight />
           </Button>
 
           {/* Product Description Card */}

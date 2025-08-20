@@ -56,7 +56,7 @@ const BannerText = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
 BannerText.displayName = "BannerText";
 
 const BannerTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(
-  ({ className, ...props }, ref) => <h5 className={cn("leading-none tracking-tight", className)} ref={ref} {...props} />
+  ({ className, ...props }, ref) => <h5 className={cn("leading-none", className)} ref={ref} {...props} />
 );
 BannerTitle.displayName = "BannerTitle";
 

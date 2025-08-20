@@ -31,7 +31,7 @@ export const EndsInCounter = ({ endsIn }: { endsIn: Date }) => {
           <IconHourglass />
         </BannerIcon>
         <BannerText>
-          <BannerTitle className="text-sm tracking-[0.0125em] sm:text-base">
+          <BannerTitle className="text-sm leading-none sm:text-base">
             Deal ends in <span className="font-medium">{timeRemaining}</span>
           </BannerTitle>
         </BannerText>
