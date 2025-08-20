@@ -1,0 +1,33 @@
+import { SectionHeader } from "@/components/layout/section-header";
+import { Badge } from "@/components/ui/badge";
+
+import { PAST_DEALS } from "@/data/product";
+import { ProductCard } from "@/modules/product/components/product-card";
+
+export const PastDeals = () => {
+  return (
+    <section className="container relative max-w-7xl border-x px-4 py-8 sm:px-6 sm:py-12 md:py-16 lg:px-8 lg:py-20">
+      <Badge variant="outline">
+        Sold Out{" "}
+        <span className="ml-1 rounded-sm bg-brand-500/14 px-1 py-0.5 font-medium text-brand-500 text-xs">Fast</span>
+      </Badge>
+
+      <SectionHeader
+        btnText="Past Deals"
+        className="mt-4 sm:mt-6"
+        description="These exclusive offers didn't last long! Here's a glimpse of what our community scored before they sold out. Don't miss the next one — subscribe and be ready when the new deal drops!"
+        link="/past-deals"
+        title="Previous Hot-Selling Deals"
+      />
+      <div className="mt-6 grid grid-cols-1 gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4 md:mt-12 lg:grid-cols-3">
+        {PAST_DEALS.map((product) => (
+          <ProductCard data={product} key={product.id} />
+        ))}
+      </div>
+      <p className="mt-4 text-center text-muted-foreground text-sm sm:mt-6 md:text-lg">
+        Be the <span className="font-medium text-foreground">First</span> to Know About the{" "}
+        <span className="font-medium text-foreground">Next Deal</span>
+      </p>
+    </section>
+  );
+};

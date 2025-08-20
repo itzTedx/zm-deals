@@ -1,117 +1,120 @@
 export const Background = (props: SvgProps) => {
   return (
-    <svg {...props} fill="none" height="1059" viewBox="0 0 1139 1059" width="1139" xmlns="http://www.w3.org/2000/svg">
+    <svg {...props} fill="none" height="788" viewBox="0 0 828 788" width="828" xmlns="http://www.w3.org/2000/svg">
       <g filter="url(#filter0_f_59_290)">
-        <ellipse cx="679.99" cy="304.118" fill="#FEAFAF" rx="131.164" ry="131.164" />
+        <ellipse cx="374.154" cy="343.411" fill="#FEAFAF" rx="72.1711" ry="72.1711" />
       </g>
       <g filter="url(#filter1_f_59_290)">
-        <ellipse cx="823.489" cy="304.118" fill="#FFEFC5" rx="131.164" ry="131.164" />
+        <ellipse cx="453.112" cy="343.411" fill="#FFEFC5" rx="72.1711" ry="72.1711" />
       </g>
       <g filter="url(#filter2_f_59_290)">
-        <ellipse cx="743.385" cy="434.332" fill="#FF0303" fillOpacity="0.35" rx="131.164" ry="131.164" />
+        <ellipse cx="409.036" cy="415.059" fill="#FF0303" fillOpacity="0.35" rx="72.1711" ry="72.1711" />
       </g>
       <mask fill="white" id="path-4-inside-1_59_290">
-        <path d="M406.236 947.41L1300.61 53.04L1356.28 108.718L461.914 1003.09L406.236 947.41Z" />
+        <path d="M223.525 697.372L715.638 205.259L746.273 235.895L254.161 728.008L223.525 697.372Z" />
       </mask>
       <path
-        d="M406.236 947.41L1300.61 53.04L1356.28 108.718L461.914 1003.09L406.236 947.41Z"
+        d="M223.525 697.372L715.638 205.259L746.273 235.895L254.161 728.008L223.525 697.372Z"
         fill="url(#paint0_radial_59_290)"
       />
       <path
-        d="M1356.28 108.718L1355.43 107.867L461.063 1002.24L461.914 1003.09L462.765 1003.94L1357.13 109.569L1356.28 108.718Z"
+        d="M746.273 235.895L745.422 235.044L253.31 727.157L254.161 728.008L255.012 728.859L747.124 236.746L746.273 235.895Z"
         fill="url(#paint1_radial_59_290)"
         mask="url(#path-4-inside-1_59_290)"
       />
       <mask fill="white" id="path-6-inside-2_59_290">
-        <path d="M60.9131 624.598L955.283 -269.772L1010.96 -214.094L116.591 680.276L60.9131 624.598Z" />
+        <path d="M33.5165 519.75L525.629 27.6372L556.265 58.273L64.1523 550.386L33.5165 519.75Z" />
       </mask>
       <path
-        d="M60.9131 624.598L955.283 -269.772L1010.96 -214.094L116.591 680.276L60.9131 624.598Z"
+        d="M33.5165 519.75L525.629 27.6372L556.265 58.273L64.1523 550.386L33.5165 519.75Z"
         fill="url(#paint2_radial_59_290)"
       />
       <path
-        d="M1010.96 -214.094L1010.11 -214.945L115.74 679.425L116.591 680.276L117.442 681.127L1011.81 -213.243L1010.96 -214.094Z"
+        d="M556.265 58.273L555.414 57.4221L63.3014 549.535L64.1523 550.386L65.0033 551.237L557.116 59.124L556.265 58.273Z"
         fill="url(#paint3_radial_59_290)"
         mask="url(#path-6-inside-2_59_290)"
       />
       <mask fill="white" id="path-8-inside-3_59_290">
-        <path d="M0 574.37L894.37 -320L950.048 -264.322L55.6778 630.048L0 574.37Z" />
+        <path d="M0 492.113L492.113 1.21812e-05L522.749 30.6359L30.6358 522.749L0 492.113Z" />
       </mask>
-      <path d="M0 574.37L894.37 -320L950.048 -264.322L55.6778 630.048L0 574.37Z" fill="url(#paint4_radial_59_290)" />
       <path
-        d="M950.048 -264.322L949.197 -265.173L54.8269 629.197L55.6778 630.048L56.5288 630.899L950.899 -263.471L950.048 -264.322Z"
+        d="M0 492.113L492.113 1.21812e-05L522.749 30.6359L30.6358 522.749L0 492.113Z"
+        fill="url(#paint4_radial_59_290)"
+      />
+      <path
+        d="M522.749 30.6359L521.898 29.7849L29.7849 521.898L30.6358 522.749L31.4868 523.599L523.599 31.4868L522.749 30.6359Z"
         fill="url(#paint5_radial_59_290)"
         mask="url(#path-8-inside-3_59_290)"
       />
       <mask fill="white" id="path-10-inside-4_59_290">
-        <path d="M461.915 1003.09L1448.61 16.3919L1504.29 72.0697L517.592 1058.77L461.915 1003.09Z" />
+        <path d="M254.161 728.008L797.075 185.094L827.711 215.73L284.797 758.644L254.161 728.008Z" />
       </mask>
       <path
-        d="M461.915 1003.09L1448.61 16.3919L1504.29 72.0697L517.592 1058.77L461.915 1003.09Z"
+        d="M254.161 728.008L797.075 185.094L827.711 215.73L284.797 758.644L254.161 728.008Z"
         fill="url(#paint6_radial_59_290)"
       />
       <path
-        d="M1504.29 72.0697L1503.44 71.2188L516.741 1057.92L517.592 1058.77L518.443 1059.62L1505.14 72.9207L1504.29 72.0697Z"
+        d="M827.711 215.73L826.86 214.879L283.946 757.793L284.797 758.644L285.648 759.495L828.562 216.581L827.711 215.73Z"
         fill="url(#paint7_radial_59_290)"
         mask="url(#path-10-inside-4_59_290)"
       />
       <mask fill="white" id="path-12-inside-5_59_290">
-        <path d="M116.592 680.277L1103.29 -306.42L1158.97 -250.742L172.269 735.954L116.592 680.277Z" />
+        <path d="M64.1526 550.386L607.066 7.47215L637.702 38.108L94.7884 581.022L64.1526 550.386Z" />
       </mask>
       <path
-        d="M116.592 680.277L1103.29 -306.42L1158.97 -250.742L172.269 735.954L116.592 680.277Z"
+        d="M64.1526 550.386L607.066 7.47215L637.702 38.108L94.7884 581.022L64.1526 550.386Z"
         fill="url(#paint8_radial_59_290)"
       />
       <path
-        d="M1158.97 -250.742L1158.11 -251.593L171.418 735.103L172.269 735.954L173.12 736.805L1159.82 -249.891L1158.97 -250.742Z"
+        d="M637.702 38.108L636.851 37.257L93.9375 580.171L94.7884 581.022L95.6394 581.873L638.553 38.9589L637.702 38.108Z"
         fill="url(#paint9_radial_59_290)"
         mask="url(#path-12-inside-5_59_290)"
       />
       <mask fill="white" id="path-14-inside-6_59_290">
-        <path d="M172.27 735.952L1158.97 -250.745L1214.64 -195.067L227.948 791.629L172.27 735.952Z" />
+        <path d="M94.7888 581.02L637.703 38.1064L668.339 68.7423L125.425 611.656L94.7888 581.02Z" />
       </mask>
       <path
-        d="M172.27 735.952L1158.97 -250.745L1214.64 -195.067L227.948 791.629L172.27 735.952Z"
+        d="M94.7888 581.02L637.703 38.1064L668.339 68.7423L125.425 611.656L94.7888 581.02Z"
         fill="url(#paint10_radial_59_290)"
       />
       <path
-        d="M1214.64 -195.067L1213.79 -195.918L227.097 790.778L227.948 791.629L228.799 792.48L1215.5 -194.216L1214.64 -195.067Z"
+        d="M668.339 68.7423L667.488 67.8913L124.574 610.805L125.425 611.656L126.276 612.507L669.19 69.5932L668.339 68.7423Z"
         fill="url(#paint11_radial_59_290)"
         mask="url(#path-14-inside-6_59_290)"
       />
       <mask fill="white" id="path-16-inside-7_59_290">
-        <path d="M227.948 791.63L1122.32 -102.74L1178 -47.0622L283.626 847.308L227.948 791.63Z" />
+        <path d="M125.425 611.656L617.538 119.544L648.174 150.18L156.061 642.292L125.425 611.656Z" />
       </mask>
       <path
-        d="M227.948 791.63L1122.32 -102.74L1178 -47.0622L283.626 847.308L227.948 791.63Z"
+        d="M125.425 611.656L617.538 119.544L648.174 150.18L156.061 642.292L125.425 611.656Z"
         fill="url(#paint12_radial_59_290)"
       />
       <path
-        d="M1178 -47.0622L1177.15 -47.9132L282.775 846.457L283.626 847.308L284.477 848.159L1178.85 -46.2112L1178 -47.0622Z"
+        d="M648.174 150.18L647.323 149.329L155.21 641.441L156.061 642.292L156.912 643.143L649.025 151.031L648.174 150.18Z"
         fill="url(#paint13_radial_59_290)"
         mask="url(#path-16-inside-7_59_290)"
       />
       <mask fill="white" id="path-18-inside-8_59_290">
-        <path d="M283.627 847.308L1270.32 -139.388L1326 -83.7103L339.305 902.986L283.627 847.308Z" />
+        <path d="M156.061 642.293L698.975 99.3788L729.611 130.015L186.697 672.928L156.061 642.293Z" />
       </mask>
       <path
-        d="M283.627 847.308L1270.32 -139.388L1326 -83.7103L339.305 902.986L283.627 847.308Z"
+        d="M156.061 642.293L698.975 99.3788L729.611 130.015L186.697 672.928L156.061 642.293Z"
         fill="url(#paint14_radial_59_290)"
       />
       <path
-        d="M1326 -83.7103L1325.15 -84.5613L338.454 902.135L339.305 902.986L340.156 903.837L1326.85 -82.8594L1326 -83.7103Z"
+        d="M729.611 130.015L728.76 129.164L185.846 672.078L186.697 672.928L187.548 673.779L730.462 130.866L729.611 130.015Z"
         fill="url(#paint15_radial_59_290)"
         mask="url(#path-18-inside-8_59_290)"
       />
       <mask fill="white" id="path-20-inside-9_59_290">
-        <path d="M339.302 902.987L1326 -83.7097L1381.68 -28.0318L394.98 958.665L339.302 902.987Z" />
+        <path d="M186.696 672.929L729.609 130.015L760.245 160.651L217.331 703.565L186.696 672.929Z" />
       </mask>
       <path
-        d="M339.302 902.987L1326 -83.7097L1381.68 -28.0318L394.98 958.665L339.302 902.987Z"
+        d="M186.696 672.929L729.609 130.015L760.245 160.651L217.331 703.565L186.696 672.929Z"
         fill="url(#paint16_radial_59_290)"
       />
       <path
-        d="M1381.68 -28.0318L1380.83 -28.8828L394.129 957.814L394.98 958.665L395.831 959.516L1382.53 -27.1809L1381.68 -28.0318Z"
+        d="M760.245 160.651L759.394 159.8L216.48 702.714L217.331 703.565L218.182 704.416L761.096 161.502L760.245 160.651Z"
         fill="url(#paint17_radial_59_290)"
         mask="url(#path-20-inside-9_59_290)"
       />
@@ -119,11 +122,11 @@ export const Background = (props: SvgProps) => {
         <filter
           colorInterpolationFilters="sRGB"
           filterUnits="userSpaceOnUse"
-          height="862.329"
+          height="744.342"
           id="filter0_f_59_290"
-          width="862.329"
-          x="248.826"
-          y="-127.047"
+          width="744.342"
+          x="1.98267"
+          y="-28.7603"
         >
           <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feBlend in="SourceGraphic" in2="BackgroundImageFix" mode="normal" result="shape" />
@@ -132,11 +135,11 @@ export const Background = (props: SvgProps) => {
         <filter
           colorInterpolationFilters="sRGB"
           filterUnits="userSpaceOnUse"
-          height="862.329"
+          height="744.342"
           id="filter1_f_59_290"
-          width="862.329"
-          x="392.325"
-          y="-127.047"
+          width="744.342"
+          x="80.9407"
+          y="-28.7603"
         >
           <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feBlend in="SourceGraphic" in2="BackgroundImageFix" mode="normal" result="shape" />
@@ -145,11 +148,11 @@ export const Background = (props: SvgProps) => {
         <filter
           colorInterpolationFilters="sRGB"
           filterUnits="userSpaceOnUse"
-          height="862.329"
+          height="744.342"
           id="filter2_f_59_290"
-          width="862.329"
-          x="312.22"
-          y="3.16772"
+          width="744.342"
+          x="36.8645"
+          y="42.888"
         >
           <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feBlend in="SourceGraphic" in2="BackgroundImageFix" mode="normal" result="shape" />
@@ -158,7 +161,7 @@ export const Background = (props: SvgProps) => {
         <radialGradient
           cx="0"
           cy="0"
-          gradientTransform="translate(909.099 555.903) rotate(45) scale(69.2717 345.005)"
+          gradientTransform="translate(500.217 481.951) rotate(45) scale(38.1156 189.833)"
           gradientUnits="userSpaceOnUse"
           id="paint0_radial_59_290"
           r="1"
@@ -169,7 +172,7 @@ export const Background = (props: SvgProps) => {
         <radialGradient
           cx="0"
           cy="0"
-          gradientTransform="translate(909.099 555.903) rotate(-135) scale(472.442 235.429)"
+          gradientTransform="translate(500.217 481.951) rotate(-135) scale(259.954 129.541)"
           gradientUnits="userSpaceOnUse"
           id="paint1_radial_59_290"
           r="1"
@@ -180,7 +183,7 @@ export const Background = (props: SvgProps) => {
         <radialGradient
           cx="0"
           cy="0"
-          gradientTransform="translate(563.776 233.091) rotate(45) scale(69.2717 345.005)"
+          gradientTransform="translate(310.209 304.329) rotate(45) scale(38.1156 189.833)"
           gradientUnits="userSpaceOnUse"
           id="paint2_radial_59_290"
           r="1"
@@ -191,7 +194,7 @@ export const Background = (props: SvgProps) => {
         <radialGradient
           cx="0"
           cy="0"
-          gradientTransform="translate(563.776 233.091) rotate(-135) scale(472.442 235.429)"
+          gradientTransform="translate(310.209 304.329) rotate(-135) scale(259.954 129.541)"
           gradientUnits="userSpaceOnUse"
           id="paint3_radial_59_290"
           r="1"
@@ -202,7 +205,7 @@ export const Background = (props: SvgProps) => {
         <radialGradient
           cx="0"
           cy="0"
-          gradientTransform="translate(502.863 182.863) rotate(45) scale(69.2717 345.005)"
+          gradientTransform="translate(276.692 276.692) rotate(45) scale(38.1156 189.833)"
           gradientUnits="userSpaceOnUse"
           id="paint4_radial_59_290"
           r="1"
@@ -213,7 +216,7 @@ export const Background = (props: SvgProps) => {
         <radialGradient
           cx="0"
           cy="0"
-          gradientTransform="translate(502.863 182.863) rotate(-135) scale(472.442 235.429)"
+          gradientTransform="translate(276.692 276.692) rotate(-135) scale(259.954 129.541)"
           gradientUnits="userSpaceOnUse"
           id="paint5_radial_59_290"
           r="1"
@@ -224,7 +227,7 @@ export const Background = (props: SvgProps) => {
         <radialGradient
           cx="0"
           cy="0"
-          gradientTransform="translate(1010.94 565.418) rotate(45) scale(69.2716 380.62)"
+          gradientTransform="translate(556.254 487.187) rotate(45) scale(38.1156 209.43)"
           gradientUnits="userSpaceOnUse"
           id="paint6_radial_59_290"
           r="1"
@@ -235,7 +238,7 @@ export const Background = (props: SvgProps) => {
         <radialGradient
           cx="0"
           cy="0"
-          gradientTransform="translate(1010.94 565.418) rotate(-136.491) scale(277.248 152.422)"
+          gradientTransform="translate(556.254 487.187) rotate(-136.491) scale(152.552 83.8676)"
           gradientUnits="userSpaceOnUse"
           id="paint7_radial_59_290"
           r="1"
@@ -246,7 +249,7 @@ export const Background = (props: SvgProps) => {
         <radialGradient
           cx="0"
           cy="0"
-          gradientTransform="translate(665.618 242.606) rotate(45) scale(69.2716 380.62)"
+          gradientTransform="translate(366.245 309.565) rotate(45) scale(38.1156 209.43)"
           gradientUnits="userSpaceOnUse"
           id="paint8_radial_59_290"
           r="1"
@@ -257,7 +260,7 @@ export const Background = (props: SvgProps) => {
         <radialGradient
           cx="0"
           cy="0"
-          gradientTransform="translate(665.618 242.606) rotate(-136.491) scale(277.248 152.422)"
+          gradientTransform="translate(366.245 309.565) rotate(-136.491) scale(152.552 83.8676)"
           gradientUnits="userSpaceOnUse"
           id="paint9_radial_59_290"
           r="1"
@@ -268,7 +271,7 @@ export const Background = (props: SvgProps) => {
         <radialGradient
           cx="0"
           cy="0"
-          gradientTransform="translate(721.296 298.281) rotate(45) scale(69.2716 380.62)"
+          gradientTransform="translate(396.882 340.199) rotate(45) scale(38.1156 209.43)"
           gradientUnits="userSpaceOnUse"
           id="paint10_radial_59_290"
           r="1"
@@ -279,7 +282,7 @@ export const Background = (props: SvgProps) => {
         <radialGradient
           cx="0"
           cy="0"
-          gradientTransform="translate(721.296 298.281) rotate(-135) scale(472.442 259.733)"
+          gradientTransform="translate(396.882 340.199) rotate(-135) scale(259.954 142.914)"
           gradientUnits="userSpaceOnUse"
           id="paint11_radial_59_290"
           r="1"
@@ -290,7 +293,7 @@ export const Background = (props: SvgProps) => {
         <radialGradient
           cx="0"
           cy="0"
-          gradientTransform="translate(730.811 400.123) rotate(45) scale(69.2717 345.005)"
+          gradientTransform="translate(402.117 396.236) rotate(45) scale(38.1156 189.833)"
           gradientUnits="userSpaceOnUse"
           id="paint12_radial_59_290"
           r="1"
@@ -301,7 +304,7 @@ export const Background = (props: SvgProps) => {
         <radialGradient
           cx="0"
           cy="0"
-          gradientTransform="translate(757.827 372.284) rotate(-131.281) scale(597.645 297.821)"
+          gradientTransform="translate(416.982 380.918) rotate(-131.281) scale(328.845 163.871)"
           gradientUnits="userSpaceOnUse"
           id="paint13_radial_59_290"
           r="1"
@@ -312,7 +315,7 @@ export const Background = (props: SvgProps) => {
         <radialGradient
           cx="0"
           cy="0"
-          gradientTransform="translate(832.653 409.638) rotate(45) scale(69.2716 380.62)"
+          gradientTransform="translate(458.154 401.472) rotate(45) scale(38.1156 209.43)"
           gradientUnits="userSpaceOnUse"
           id="paint14_radial_59_290"
           r="1"
@@ -323,7 +326,7 @@ export const Background = (props: SvgProps) => {
         <radialGradient
           cx="0"
           cy="0"
-          gradientTransform="translate(832.653 409.638) rotate(-131.675) scale(569.411 313.043)"
+          gradientTransform="translate(458.154 401.472) rotate(-131.675) scale(313.309 172.247)"
           gradientUnits="userSpaceOnUse"
           id="paint15_radial_59_290"
           r="1"
@@ -334,7 +337,7 @@ export const Background = (props: SvgProps) => {
         <radialGradient
           cx="0"
           cy="0"
-          gradientTransform="translate(888.328 465.316) rotate(45) scale(69.2716 380.62)"
+          gradientTransform="translate(488.788 432.108) rotate(45) scale(38.1156 209.43)"
           gradientUnits="userSpaceOnUse"
           id="paint16_radial_59_290"
           r="1"
@@ -345,7 +348,7 @@ export const Background = (props: SvgProps) => {
         <radialGradient
           cx="0"
           cy="0"
-          gradientTransform="translate(888.328 465.317) rotate(-136.532) scale(926.058 509.115)"
+          gradientTransform="translate(488.788 432.108) rotate(-136.532) scale(509.549 280.132)"
           gradientUnits="userSpaceOnUse"
           id="paint17_radial_59_290"
           r="1"
