@@ -8,13 +8,14 @@ export const FeedbackCard = ({ review }: { review: Review }) => {
     <Card>
       <CardContent className="h-full">
         <Rating value={5} />
-        <CardDescription className="mt-4 text-lg">{review.comment}</CardDescription>
+        <CardDescription className="mt-4 text-balance text-base">{review.comment}</CardDescription>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex items-center justify-between">
         <p className="font-medium text-gray-600 text-sm">{review.name}</p>
-        <dt className="col-start-2 row-span-2 row-start-1 self-start justify-self-end">
+        <dt className="text-gray-400 text-xs">
           {formatDate(review.date, {
             relative: true,
+            includeTime: true,
           })}
         </dt>
       </CardFooter>

@@ -20,7 +20,7 @@ export const Testimonials = () => {
       />
 
       <div className="mt-6 grid grid-cols-1 gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4 md:mt-12 lg:grid-cols-3">
-        {FEEDBACKS.map((review, index) => (
+        {FEEDBACKS.slice(0, 6).map((review, index) => (
           <FeedbackCard key={index} review={review} />
         ))}
       </div>

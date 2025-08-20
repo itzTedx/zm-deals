@@ -13,13 +13,14 @@ import { IconCurrency } from "@/assets/icons/currency";
 
 import { PRODUCT } from "@/data/product";
 import { calculateDiscount } from "@/lib/utils";
+import { PastDeals } from "@/modules/home/sections";
 import { EndsInCounter } from "@/modules/product/components/ends-in-counter";
 
 export default function ProductPage() {
   const { title, price, originalPrice, featuredImage, images, stock, overview, endsIn, reviews } = PRODUCT;
   return (
-    <main className="container relative max-w-7xl border-x">
-      <header className="grid grid-cols-1 gap-6 py-6 md:grid-cols-2 md:gap-8 md:py-8 lg:gap-12 lg:py-12 xl:py-16">
+    <main className="">
+      <header className="container relative grid max-w-7xl grid-cols-1 gap-6 border-x py-6 md:grid-cols-2 md:gap-8 md:py-8 lg:gap-12 lg:py-12 xl:py-16">
         {/* Image Carousel Section */}
         <div className="order-1 md:order-1">
           <Carousel
@@ -107,15 +108,16 @@ export default function ProductPage() {
           </Card>
         </div>
       </header>
-      <SeparatorBox className="max-w-7xl" />
-      <section className="py-12 md:py-16 lg:py-20">
+      <SeparatorBox className="container mx-auto max-w-7xl border-x" />
+      <section className="container relative max-w-7xl border-x py-12 md:py-16 lg:py-20">
         <SectionHeader description="What our customers are saying" hasButton={false} title="Ratings & Reviews" />
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-9 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {reviews.map((review) => (
             <FeedbackCard key={review.id} review={review} />
           ))}
         </div>
       </section>
+      <PastDeals />
     </main>
   );
 }
