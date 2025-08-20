@@ -13,10 +13,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(helvetica.className, geist.variable)}>
+      <body className={cn(helvetica.className, geist.variable, "max-sm:overflow-x-hidden")}>
         {children}
 
-        <Toaster />
+        <Toaster richColors />
       </body>
     </html>
   );

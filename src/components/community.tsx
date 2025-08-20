@@ -49,7 +49,7 @@ export const Community = () => {
         <p className="mx-auto mt-8 max-w-lg text-base text-muted-foreground sm:mt-12 sm:text-lg">
           Be part of a community that saves together. Connect, share, and enjoy unbeatable weekly deals.
         </p>
-        <Pattern1 className="mx-auto my-6 sm:my-9" />
+        <Pattern1 className="mx-auto my-6 w-full sm:my-9 md:w-auto" />
 
         <Badge variant="outline">
           <IconBook />

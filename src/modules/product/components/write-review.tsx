@@ -1,6 +1,11 @@
+"use client";
+
+import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import StarRating from "@/components/ui/rating";
+import { StarRatingCells } from "@/components/ui/rating-cell";
 import { SeparatorBox } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -44,12 +49,16 @@ export const ReviewCard = ({ reviews }: { reviews: Review[] }) => {
 };
 
 export const WriteReview = ({ reviews }: { reviews: Review[] }) => {
+  const [starValue, setStarValue] = useState("0");
   return (
     <Card className="mt-4">
       <CardContent className="space-y-4">
         <ReviewCard reviews={reviews} />
         <SeparatorBox />
         <div className="space-y-3">
+          <div className="flex w-full max-w-[360px] flex-col items-center gap-6">
+            <StarRatingCells onValueChange={setStarValue} value={starValue} />
+          </div>
           <Textarea className="min-h-[20ch]" />
           <Button className="w-full" variant="outline">
             <IconEdit className="size-4 text-muted-foreground" />
