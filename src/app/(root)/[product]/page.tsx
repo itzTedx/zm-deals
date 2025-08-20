@@ -5,6 +5,7 @@ import { SectionHeader } from "@/components/layout/section-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import ImageCarousel from "@/components/ui/carousel-with-thumbnail";
+import StarRating from "@/components/ui/rating";
 import { SeparatorBox } from "@/components/ui/separator";
 
 import { IconChevronRight } from "@/assets/icons/chevron";
@@ -12,7 +13,8 @@ import { IconCurrency } from "@/assets/icons/currency";
 
 import { PRODUCT } from "@/data/product";
 import { env } from "@/lib/env/client";
-import { calculateDiscount } from "@/lib/utils";
+import { pluralize } from "@/lib/functions/pluralize";
+import { calculateAverageRating, calculateDiscount } from "@/lib/utils";
 import { PastDeals } from "@/modules/home/sections";
 import { EndsInCounter } from "@/modules/product/components/ends-in-counter";
 import { QuantityInput } from "@/modules/product/components/quantity-input";
@@ -22,14 +24,18 @@ export default function ProductPage() {
     PRODUCT;
   return (
     <main className="">
-      <header className="container relative grid max-w-7xl grid-cols-1 gap-6 border-x py-6 md:grid-cols-2 md:gap-8 md:py-8 lg:gap-12 lg:py-12 xl:py-16">
+      <header className="container relative grid max-w-7xl grid-cols-1 gap-6 border-x py-6 md:grid-cols-2 md:gap-8 md:py-8 lg:gap-12 lg:py-12">
         {/* Image Carousel Section */}
         <div>
           <ImageCarousel images={[{ url: featuredImage }, ...images]} thumbPosition="bottom" />
+          <div className="mt-4 space-y-1">
+            <h2 className="font-medium text-gray-500 text-sm">Product Overview</h2>
+            <p>{description}</p>
+          </div>
         </div>
 
         {/* Product Details Section */}
-        <div className="space-y-4 md:space-y-6">
+        <div className="sticky top-12 h-fit space-y-4 py-2 md:space-y-6">
           {/* Countdown Banner */}
           <EndsInCounter endsIn={endsIn} />
 
@@ -69,7 +75,19 @@ export default function ProductPage() {
           </div>
 
           {/* CTA Button */}
-          <QuantityInput />
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <p className="font-medium text-gray-500 text-sm">Qty</p>
+              <QuantityInput />
+            </div>
+            <div className="flex items-center gap-1">
+              <p className="font-medium text-brand-500 text-sm">{calculateAverageRating(reviews)}</p>
+              <StarRating readOnly value={calculateAverageRating(reviews)} />
+              <p className="font-medium text-gray-500 text-sm">
+                {reviews.length} {pluralize("review", reviews.length)}
+              </p>
+            </div>
+          </div>
           <Button className="w-full" size="lg">
             Claim this deal now <IconChevronRight />
           </Button>

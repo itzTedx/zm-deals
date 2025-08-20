@@ -74,11 +74,11 @@ const QuantityInput = ({
   };
 
   return (
-    <div className={cn("inline-flex cursor-pointer rounded-lg", className)}>
+    <div className={cn("inline-flex cursor-pointer rounded-lg bg-card shadow-sm", className)}>
       <button
         aria-label="Decrease quantity"
         className={cn(
-          "flex cursor-pointer items-center justify-center rounded-s-lg border px-3 py-1 hover:bg-muted-foreground/10 focus-visible:z-10 disabled:cursor-not-allowed disabled:opacity-50",
+          "flex cursor-pointer items-center justify-center rounded-s-lg border border-gray-300 px-3 py-1 hover:bg-muted-foreground/10 focus-visible:z-10 disabled:cursor-not-allowed disabled:opacity-50",
           disabled && "pointer-events-none"
         )}
         disabled={disabled || quantity <= min}
@@ -88,7 +88,7 @@ const QuantityInput = ({
       </button>
       <input
         aria-label="Quantity"
-        className="w-12 border-y px-2 py-1 text-center font-mono outline-none"
+        className="w-12 border-gray-300 border-y px-2 py-1 text-center font-mono outline-none"
         disabled={disabled}
         max={max !== null ? max : undefined}
         min={min}
@@ -100,7 +100,7 @@ const QuantityInput = ({
       <button
         aria-label="Increase quantity"
         className={cn(
-          "flex cursor-pointer items-center justify-center rounded-e-lg border px-3 py-1 hover:bg-muted-foreground/10 focus-visible:z-10 disabled:cursor-not-allowed disabled:opacity-50",
+          "flex cursor-pointer items-center justify-center rounded-e-lg border border-gray-300 px-3 py-1 hover:bg-muted-foreground/10 focus-visible:z-10 disabled:cursor-not-allowed disabled:opacity-50",
           disabled && "pointer-events-none"
         )}
         disabled={disabled || (max !== null && quantity >= max)}

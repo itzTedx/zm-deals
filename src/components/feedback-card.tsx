@@ -7,7 +7,7 @@ export const FeedbackCard = ({ review }: { review: Review }) => {
   return (
     <Card>
       <CardContent className="h-full">
-        <Rating value={5} />
+        <Rating value={review.rating} />
         <CardDescription className="mt-4 text-balance text-base text-foreground">{review.comment}</CardDescription>
       </CardContent>
       <CardFooter className="flex items-center justify-between">
