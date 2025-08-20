@@ -15,10 +15,6 @@ export const NAV_LINKS = [
     label: "FAQs",
     href: "/faqs",
   },
-  {
-    label: "Contact",
-    href: "/contact",
-  },
 ];
 
 export const HOW_WORKS = [
@@ -96,10 +92,6 @@ export const FOOTER_LINKS = [
       {
         label: "About ZM Deals",
         href: "/about",
-      },
-      {
-        label: "Contact Us",
-        href: "/contact",
       },
     ],
   },

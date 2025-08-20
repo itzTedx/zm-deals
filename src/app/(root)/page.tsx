@@ -1,7 +1,6 @@
 import { Community } from "@/components/community";
-import { Separator } from "@/components/ui/separator";
 
-import { FaqsSection, Hero, HowWeWorks, PastDeals, Testimonials } from "@/modules/home/sections";
+import { Hero, HowWeWorks, PastDeals, Testimonials } from "@/modules/home/sections";
 
 export default function Home() {
   return (
@@ -17,11 +16,6 @@ export default function Home() {
 
       {/* Testimonials Section */}
       <Testimonials />
-
-      <Separator />
-
-      {/* FAQ Section */}
-      <FaqsSection />
 
       {/* Community & Newsletter Section */}
       <Community />
