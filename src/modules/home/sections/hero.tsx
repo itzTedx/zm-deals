@@ -77,7 +77,7 @@ export const Hero = () => {
           {images.map((image, index) => (
             <CarouselItem className="pl-3 md:basis-1/2 lg:basis-1/3" key={index}>
               <div className="relative aspect-4/3 overflow-hidden rounded-2xl">
-                <Image alt={title} className="object-cover" fill src={image} />
+                <Image alt={title} className="object-cover" fill src={image.url} />
               </div>
             </CarouselItem>
           ))}

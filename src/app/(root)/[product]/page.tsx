@@ -1,4 +1,5 @@
 import { FeedbackCard } from "@/components/feedback-card";
+import { ShareCard } from "@/components/global/share-card";
 import { InfoTooltip } from "@/components/global/tooltip";
 import { SectionHeader } from "@/components/layout/section-header";
 import { Badge } from "@/components/ui/badge";
@@ -11,12 +12,13 @@ import { IconChevronRight } from "@/assets/icons/chevron";
 import { IconCurrency } from "@/assets/icons/currency";
 
 import { PRODUCT } from "@/data/product";
+import { env } from "@/lib/env/client";
 import { calculateDiscount } from "@/lib/utils";
 import { PastDeals } from "@/modules/home/sections";
 import { EndsInCounter } from "@/modules/product/components/ends-in-counter";
 
 export default function ProductPage() {
-  const { title, price, originalPrice, featuredImage, images, stock, overview, endsIn, reviews } = PRODUCT;
+  const { title, price, originalPrice, featuredImage, images, stock, overview, endsIn, reviews, slug } = PRODUCT;
   return (
     <main className="">
       <header className="container relative grid max-w-7xl grid-cols-1 gap-6 border-x py-6 md:grid-cols-2 md:gap-8 md:py-8 lg:gap-12 lg:py-12 xl:py-16">
@@ -31,7 +33,14 @@ export default function ProductPage() {
           <EndsInCounter endsIn={endsIn} />
 
           {/* Product Title */}
-          <h1 className="font-medium text-2xl sm:text-3xl">{title}</h1>
+          <div className="grid grid-cols-[1fr_auto] items-center gap-2">
+            <h1 className="font-medium text-2xl sm:text-3xl">{title}</h1>
+            <ShareCard
+              description={`Check out this amazing deal: ${title} - Save ${calculateDiscount(Number(originalPrice), Number(price))}% off!`}
+              link={`${env.NEXT_PUBLIC_BASE_URL}/${slug}`}
+              title={title}
+            />
+          </div>
 
           {/* Pricing Section */}
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
@@ -49,7 +58,7 @@ export default function ProductPage() {
             <div className="size-0.5 rounded-full bg-gray-300 sm:size-1" />
 
             <Badge className="text-xs sm:text-sm" size="sm" variant="destructive">
-              Save {calculateDiscount(originalPrice, price)}% Today!
+              Save {calculateDiscount(Number(originalPrice), Number(price))}% Today!
             </Badge>
 
             <div className="size-0.5 rounded-full bg-gray-300 sm:size-1" />

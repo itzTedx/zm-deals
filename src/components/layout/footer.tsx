@@ -11,7 +11,7 @@ export const Footer = () => {
     <footer className="relative">
       <Separator />
       <div className="container relative max-w-7xl border-x">
-        <div className="flex flex-col items-center gap-6 py-8 sm:gap-4 sm:py-12 md:py-16">
+        <div className="flex flex-col items-center gap-6 py-8 sm:gap-4 sm:py-12">
           <FullLogo />
           <h2 className="mx-auto max-w-xs text-center font-medium text-muted-foreground text-xl sm:max-w-sm sm:text-2xl md:text-4xl">
             One Deal. Every Week. <span className="text-foreground">Big Savings.</span>
