@@ -12,9 +12,9 @@ import { PRODUCT } from "@/data/product";
 import { calculateDiscount } from "@/lib/utils";
 
 export const Hero = () => {
-  const { title, description, price, originalPrice, featuredImage, images, slug } = PRODUCT;
+  const { title, overview, price, originalPrice, featuredImage, images, slug } = PRODUCT;
   return (
-    <section className="overflow-hidden pb-12">
+    <section className="overflow-hidden">
       <div className="container relative max-w-7xl border-x">
         <div className="grid grid-cols-1 items-center gap-6 pt-6 pb-6 sm:gap-8 sm:pt-8 md:grid-cols-2 md:gap-12 md:pt-12">
           <div className="space-y-4 sm:space-y-6 md:space-y-9">
@@ -26,30 +26,26 @@ export const Hero = () => {
               <h1 className="font-bold text-2xl leading-tight sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
                 {title}
               </h1>
-              <p className="text-muted-foreground text-sm sm:text-base md:text-lg">{description}</p>
+              <p className="text-muted-foreground text-sm sm:text-base md:text-lg">{overview}</p>
             </div>
 
-            <div className="flex items-center gap-3">
-              <p className="relative flex items-center gap-1 font-bold text-gray-800 text-lg normal-nums sm:text-xl md:text-2xl">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              <p className="relative flex items-center gap-1 font-bold text-2xl text-brand-600 normal-nums">
                 <span>
-                  <IconCurrency className="size-3.5 sm:size-4 md:size-5" />
+                  <IconCurrency className="size-5 text-brand-400" />
                 </span>
-                <span className="">{price}</span>
+                <span>{price}</span>
               </p>
-              <div className="hidden size-0.5 rounded-full bg-gray-400 md:block" />
-              <div className="flex items-center gap-2 sm:gap-3">
-                <div className="relative flex items-center gap-0.5 text-gray-400 normal-nums">
-                  <span className="-translate-y-1/2 -translate-1/2 absolute top-1/2 left-1/2 h-px w-[115%] bg-gray-400" />
-                  <span>
-                    <IconCurrency className="size-3 sm:size-3.5" />
-                  </span>
-                  <p className="text-sm sm:text-base">{originalPrice}</p>
-                </div>
-                <div className="hidden size-0.5 rounded-full bg-gray-400 md:block" />
-                <Badge size="sm" variant="destructive">
-                  Save {calculateDiscount(originalPrice, price)}% Today!
-                </Badge>
-              </div>
+
+              <p className="text-muted-foreground text-xs line-through decoration-brand-500 sm:text-sm md:text-base">
+                {originalPrice}
+              </p>
+
+              <div className="size-0.5 rounded-full bg-gray-300 sm:size-1" />
+
+              <Badge className="text-xs sm:text-sm" size="sm" variant="destructive">
+                Save {calculateDiscount(Number(originalPrice), Number(price))}% Today!
+              </Badge>
             </div>
             <Button asChild className="w-full text-sm sm:w-auto sm:text-base">
               <Link href={`/${slug}`}>Claim Your Deal Now</Link>
