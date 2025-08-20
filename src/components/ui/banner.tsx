@@ -46,7 +46,9 @@ const BannerContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTML
 BannerContent.displayName = "BannerContent";
 
 const BannerIcon = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => <div className={cn("shrink-0", className)} ref={ref} {...props} />
+  ({ className, ...props }, ref) => (
+    <div className={cn("flex shrink-0 items-center justify-center", className)} ref={ref} {...props} />
+  )
 );
 BannerIcon.displayName = "BannerIcon";
 

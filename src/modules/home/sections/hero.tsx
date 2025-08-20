@@ -10,9 +10,10 @@ import { IconHourglass } from "@/assets/icons/hourglass";
 
 import { PRODUCT } from "@/data/product";
 import { calculateDiscount } from "@/lib/utils";
+import { AnimatedCountdown } from "@/modules/product/components/ends-in-counter";
 
 export const Hero = () => {
-  const { title, overview, price, originalPrice, featuredImage, images, slug } = PRODUCT;
+  const { title, overview, price, originalPrice, featuredImage, images, slug, endsIn } = PRODUCT;
   return (
     <section className="overflow-hidden">
       <div className="container relative max-w-7xl border-x">
@@ -20,7 +21,9 @@ export const Hero = () => {
           <div className="space-y-4 sm:space-y-6 md:space-y-9">
             <Badge className="pl-2" variant="outline">
               <IconHourglass className="text-brand-500" /> Offer ends in{" "}
-              <span className="font-semibold text-foreground">2d 14h 23m</span>
+              <span className="font-semibold text-foreground">
+                <AnimatedCountdown endsIn={endsIn} />
+              </span>
             </Badge>
             <div className="space-y-2 sm:space-y-3">
               <h1 className="font-bold text-2xl leading-tight sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">

@@ -182,3 +182,31 @@ export function calculateAverageRating(reviews: Review[]): number {
   // Round to 1 decimal place for better precision
   return Math.round(averageRating * 10) / 10;
 }
+
+/**
+ * Parses a date into individual time components for animation
+ * @param date - The date to parse
+ * @returns Object with individual time components
+ */
+export function parseTimeComponents(date: Date | string | number): {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+} {
+  const targetDate = new Date(date);
+  const now = new Date();
+  const diffInMs = Math.abs(targetDate.getTime() - now.getTime());
+
+  const diffInSeconds = Math.floor(diffInMs / 1000);
+  const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+  const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+  return {
+    days: diffInDays,
+    hours: diffInHours % 24,
+    minutes: diffInMinutes % 60,
+    seconds: diffInSeconds % 60,
+  };
+}
