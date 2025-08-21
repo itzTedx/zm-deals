@@ -6,6 +6,14 @@ import { ShareCard } from "@/components/global/share-card";
 import { InfoTooltip } from "@/components/global/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { Banner, BannerContent, BannerDescription, BannerIcon, BannerText, BannerTitle } from "@/components/ui/banner";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import ImageCarousel from "@/components/ui/carousel-with-thumbnail";
 import StarRating from "@/components/ui/rating";
@@ -43,9 +51,24 @@ export default function ProductPage({ params }: { params: Params }) {
 
   return (
     <main className="">
-      <header className="container relative grid max-w-7xl grid-cols-1 gap-6 border-x py-6 md:grid-cols-5 md:gap-8 md:py-8 lg:gap-12 lg:py-12">
+      <header className="container relative grid max-w-7xl grid-cols-1 gap-6 border-x pt-6 pb-6 md:grid-cols-5 md:gap-8 md:pb-8 lg:gap-12 lg:pb-12">
         {/* Image Carousel Section */}
         <div className="md:col-span-3">
+          <Breadcrumb className="pb-3">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/deals">Deals</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage> {data.title}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
           <ImageCarousel images={[{ url: data.featuredImage }, ...data.images]} thumbPosition="bottom" />
           <div className="mt-4 hidden space-y-2 md:block">
             <h2 className="font-medium text-gray-500 text-sm">Product Overview</h2>
@@ -62,7 +85,7 @@ export default function ProductPage({ params }: { params: Params }) {
         </div>
 
         {/* Product Details Section */}
-        <div className="sticky top-12 h-fit space-y-4 py-2 md:col-span-2 md:space-y-6">
+        <div className="sticky top-24 h-fit space-y-4 py-2 md:col-span-2 md:space-y-6">
           {/* Countdown Banner */}
           <EndsInCounter endsIn={data.endsIn} />
 
