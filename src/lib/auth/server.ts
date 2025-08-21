@@ -21,6 +21,13 @@ export const auth = betterAuth({
     minPasswordLength: 8,
   },
 
+  socialProviders: {
+    google: {
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+    },
+  },
+
   secondaryStorage: {
     get: async (key) => {
       const value = await redis.get(`session:${key}`);
@@ -35,7 +42,7 @@ export const auth = betterAuth({
     },
   },
   advanced: {
-    cookiePrefix: "foneflip",
+    cookiePrefix: "zmdeals",
     database: {
       generateId: false,
     },

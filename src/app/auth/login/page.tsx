@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 
 import { LogoIcon } from "@/assets/logo";
 
-import { RegisterForm } from "@/modules/auth/components/register-form";
+import { LoginForm } from "@/modules/auth/components/login-form";
 
-export default function RegisterPage() {
+export default function LoginPage() {
   return (
     <section className="flex min-h-screen items-center justify-center">
       <div className="m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border bg-muted shadow-md shadow-zinc-950/5">
@@ -15,11 +15,11 @@ export default function RegisterPage() {
             <Link aria-label="go home" className="mx-auto block w-fit" href="/">
               <LogoIcon />
             </Link>
-            <h1 className="mt-4 mb-1 font-semibold text-xl">Create a RM Deals Account</h1>
-            <p className="text-sm">Welcome! Create an account to get started</p>
+            <h1 className="mt-4 mb-1 font-semibold text-xl">Login to RM Deals</h1>
+            <p className="text-sm">Welcome! Login to your account to get started</p>
           </div>
 
-          <RegisterForm />
+          <LoginForm />
 
           <div className="my-6 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
             <hr className="border-dashed" />
@@ -63,9 +63,9 @@ export default function RegisterPage() {
 
         <div className="p-3">
           <p className="text-center text-accent-foreground text-sm">
-            Have an account ?
+            Don't have an account?{" "}
             <Button asChild className="px-2" variant="link">
-              <Link href="#">Sign In</Link>
+              <Link href="/auth/register">Create an account</Link>
             </Button>
           </p>
         </div>

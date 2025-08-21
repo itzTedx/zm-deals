@@ -8,6 +8,9 @@ export const env = createEnv({
     BETTER_AUTH_SECRET: z.string(),
     REDIS_HOST: z.string(),
     REDIS_PORT: z.coerce.number(),
+
+    GOOGLE_CLIENT_ID: z.string(),
+    GOOGLE_CLIENT_SECRET: z.string(),
   },
 
   // biome-ignore lint/style/noProcessEnv: We have to use process.env here

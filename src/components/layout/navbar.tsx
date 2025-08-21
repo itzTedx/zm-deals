@@ -8,11 +8,15 @@ import { IconUser } from "@/assets/icons/user";
 import { LogoIcon, LogoWordMark } from "@/assets/logo";
 
 import { NAV_LINKS } from "@/data/constants";
+import { useSession } from "@/lib/auth/client";
 
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
 
 export const Navbar = () => {
+  const { data: session } = useSession();
+
   return (
     <header className="relative h-fit max-md:sticky max-md:top-0 max-md:z-999">
       <div className="container relative z-999 mx-auto max-w-7xl pt-3 md:border-x">
@@ -36,9 +40,18 @@ export const Navbar = () => {
           <div className="hidden size-0.5 rounded-full bg-muted-foreground md:block" />
 
           <div className="flex items-center gap-2 md:gap-4">
-            <Button size="icon" variant="outline">
-              <IconUser />
-            </Button>
+            {session ? (
+              <Avatar>
+                <AvatarFallback>{session.user?.name?.charAt(0)}</AvatarFallback>
+                <AvatarImage src={session.user.image ?? undefined} />
+              </Avatar>
+            ) : (
+              <Button asChild size="icon" variant="outline">
+                <Link href="/auth/login">
+                  <IconUser />
+                </Link>
+              </Button>
+            )}
             <Button asChild className="hidden sm:inline-flex">
               <Link href="/current-deal">
                 <IconDiamond className="text-brand-500" />
