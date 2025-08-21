@@ -64,6 +64,30 @@ export const PRODUCT = {
       comment:
         "This is a well-made phone holder with excellent suction power. It holds my phone securely and the positioning is flexible. The only minor issue is that it can be a bit tricky to remove from the windshield, but that's actually a good sign of how strong the suction is.",
     },
+    {
+      id: 7,
+      name: "John D.",
+      rating: 5,
+      date: new Date("2025-08-05"),
+      comment:
+        "I'm impressed with the quality of this phone holder. The suction mechanism is very reliable and the phone stays in place even on rough roads. The installation was straightforward and it's easy to remove when needed. Highly recommend!",
+    },
+    {
+      id: 8,
+      name: "Jane S.",
+      rating: 5,
+      date: new Date("2025-08-01"),
+      comment:
+        "Used this on a 6-hour road trip and it performed flawlessly. The phone stayed perfectly positioned the entire time, making navigation much easier and safer. The suction is incredibly strong - I was worried it might fall off but it never budged.",
+    },
+    {
+      id: 9,
+      name: "James T.",
+      rating: 4,
+      date: new Date("2025-08-28"),
+      comment:
+        "This is a well-made phone holder with excellent suction power. It holds my phone securely and the positioning is flexible. The only minor issue is that it can be a bit tricky to remove from the windshield, but that's actually a good sign of how strong the suction is.",
+    },
   ],
 };
 

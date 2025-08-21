@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { parseAsBoolean, useQueryState } from "nuqs";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import StarRating from "@/components/ui/rating";
@@ -15,6 +17,7 @@ import { pluralize } from "@/lib/functions/pluralize";
 import { calculateAverageRating } from "@/lib/utils";
 
 export const ReviewCard = ({ reviews }: { reviews: Review[] }) => {
+  const [_, setReviewsDialog] = useQueryState("reviews", parseAsBoolean.withDefault(false));
   if (!reviews || !Array.isArray(reviews) || reviews.length === 0) {
     return (
       <div className="flex items-center divide-x">
@@ -39,9 +42,13 @@ export const ReviewCard = ({ reviews }: { reviews: Review[] }) => {
         <div className="flex items-center gap-2">
           <p className="text-gray-500 text-sm">{reviews.reduce((sum, review) => sum + review.rating, 0)} Ratings</p>
           <div className="size-0.5 rounded-full bg-gray-300 sm:size-1" />
-          <p className="font-medium text-gray-500 text-sm underline">
+          <Button
+            className="font-medium text-gray-500 text-sm underline"
+            onClick={() => setReviewsDialog(true)}
+            variant="link"
+          >
             {reviews.length} {pluralize("review", reviews.length)}
-          </p>
+          </Button>
         </div>
       </div>
     </div>
