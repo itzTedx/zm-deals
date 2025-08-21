@@ -91,11 +91,11 @@ export const PRODUCT = {
   ],
 };
 
-export const PAST_DEALS = [
+export const DEALS = [
   {
     id: 1,
     title: "USB Car Charger (Fast Charger USB-C)",
-    image: "/images/vacuum-holder.webp",
+    image: "/images/usb-c-car-charger.webp",
   },
   {
     id: 2,

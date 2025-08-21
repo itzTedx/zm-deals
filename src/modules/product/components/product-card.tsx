@@ -14,11 +14,13 @@ interface Props {
 export const ProductCard = ({ data }: Props) => {
   return (
     <Card>
-      <CardContent className="h-full max-md:p-3">
-        <Image alt={data.title} height={500} src={data.image} width={500} />
-        <CardHeader>
+      <CardContent className="h-full pb-0 max-md:p-3">
+        <div className="relative aspect-square overflow-hidden rounded-lg">
+          <Image alt={data.title} className="object-cover" fill src={data.image} />
+        </div>
+        <CardHeader className="py-2">
           <CardTitle className="max-md:text-sm">
-            <h3>{data.title}</h3>
+            <h3 className="text-balance leading-snug">{data.title}</h3>
           </CardTitle>
         </CardHeader>
       </CardContent>
