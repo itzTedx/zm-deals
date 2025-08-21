@@ -11,8 +11,8 @@ export const NAV_LINKS: { label: string; href: Route }[] = [
     href: "/",
   },
   {
-    label: "Past Deals",
-    href: "/past-deals",
+    label: "Deals",
+    href: "/deals",
   },
   {
     label: "FAQs",
@@ -82,8 +82,8 @@ export const FOOTER_LINKS: { heading: string; links: { label: string; href: Rout
         href: "/",
       },
       {
-        label: "Past Deals",
-        href: "/past-deals",
+        label: "Deals",
+        href: "/deals",
       },
       {
         label: "Testimonials",
