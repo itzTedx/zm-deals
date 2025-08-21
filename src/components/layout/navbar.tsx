@@ -82,7 +82,7 @@ export const Navbar = () => {
                       </Button>
                       <Button className="w-full" size="lg">
                         <IconDiamond className="mr-2 text-brand-500" />
-                        <span>Claim the Combo</span>
+                        <span>Claim the Combo Deal</span>
                       </Button>
                     </div>
                   </div>

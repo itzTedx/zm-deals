@@ -136,6 +136,7 @@ export const DEALS: Deal[] = [
       { url: "/images/vacuum-4.webp" },
     ],
     reviews: [...REVIEWS, ...REVIEWS, ...REVIEWS, ...REVIEWS, ...REVIEWS, ...REVIEWS, ...REVIEWS],
+    delivery: "30.00",
   },
   {
     id: 3,
@@ -178,6 +179,7 @@ export const DEALS: Deal[] = [
       { url: "/images/usb-c-car-charger.webp" },
     ],
     reviews: [...REVIEWS, ...REVIEWS, ...REVIEWS],
+    delivery: null,
   },
 ];
 

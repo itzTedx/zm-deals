@@ -47,7 +47,7 @@ export default function ProductPage({ params }: { params: Params }) {
         {/* Image Carousel Section */}
         <div className="md:col-span-3">
           <ImageCarousel images={[{ url: data.featuredImage }, ...data.images]} thumbPosition="bottom" />
-          <div className="mt-4 hidden space-y-1 md:block">
+          <div className="mt-4 hidden space-y-2 md:block">
             <h2 className="font-medium text-gray-500 text-sm">Product Overview</h2>
             <p className="leading-relaxed">{data.description}</p>
             <div className="mt-4 space-y-4">
@@ -57,6 +57,7 @@ export default function ProductPage({ params }: { params: Params }) {
                 </div>
               ))}
             </div>
+            <p className="leading-relaxed">{data.overview}</p>
           </div>
         </div>
 
@@ -127,23 +128,29 @@ export default function ProductPage({ params }: { params: Params }) {
                   <IconPackage className="size-6 text-gray-500" />
                 </BannerIcon>
                 <BannerText>
-                  <BannerTitle className="font-medium text-gray-500">
-                    {data.delivery ? "Free Shipping" : "Shipping Fee"}
+                  <BannerTitle className="font-medium text-gray-600">
+                    {data.delivery ? "Shipping Fee" : " Free Shipping"}
                   </BannerTitle>
                   <BannerDescription>
-                    <p>{data.delivery ? "Free shipping on all orders over $100" : "Shipping fee of $10"}</p>
+                    {data.delivery ? (
+                      <p>
+                        Shipping fee of <span className="font-medium">AED{data.delivery}</span>
+                      </p>
+                    ) : (
+                      <p className="text-muted-foreground">Free shipping on all orders over AED100</p>
+                    )}
                   </BannerDescription>
                 </BannerText>
               </BannerContent>
             </Banner>
 
-            <Banner variant="success">
+            <Banner>
               <BannerContent>
                 <BannerIcon>
-                  <IconDocument className="size-6 text-green-500" />
+                  <IconDocument className="size-5 text-gray-500" />
                 </BannerIcon>
                 <BannerText>
-                  <BannerTitle className="font-medium text-green-700">Order Guarantee</BannerTitle>
+                  <BannerTitle className="font-medium text-gray-500">Order Guarantee</BannerTitle>
                   <BannerDescription className="flex flex-wrap gap-2">
                     <Badge size="sm" variant="success">
                       <IconCheckboxCircle /> Free Returns
@@ -162,7 +169,7 @@ export default function ProductPage({ params }: { params: Params }) {
             <Banner className="bg-green-100" size="sm" variant="success">
               <BannerContent className="items-center">
                 <BannerIcon>
-                  <IconShield className="size-6 text-green-500" />
+                  <IconShield className="size-6 text-green-600" />
                 </BannerIcon>
                 <BannerText>
                   <BannerTitle className="font-medium text-green-700">Secure Payment</BannerTitle>
