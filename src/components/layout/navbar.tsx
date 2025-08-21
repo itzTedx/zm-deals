@@ -12,15 +12,16 @@ import { useSession } from "@/lib/auth/client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
 
 export const Navbar = () => {
   const { data: session } = useSession();
 
   return (
-    <header className="relative h-fit max-md:sticky max-md:top-0 max-md:z-999">
+    <header className="sticky top-0 z-999 h-fit">
       <div className="container relative z-999 mx-auto max-w-7xl pt-3 md:border-x">
-        <nav className="z-999 mx-auto flex items-center gap-4 rounded-xl bg-card p-2.5 font-helvetica shadow-lg max-md:justify-between md:max-w-7xl md:gap-8">
+        <nav className="relative z-999 mx-auto flex items-center gap-4 rounded-xl bg-card/90 p-2.5 font-helvetica shadow-lg backdrop-blur-2xl max-md:justify-between md:max-w-7xl md:gap-8">
           <Link aria-label="go home" className="flex items-center gap-2" href="/">
             <LogoIcon />
             <LogoWordMark className="md:hidden" />
@@ -103,17 +104,15 @@ export const Navbar = () => {
               </SheetContent>
             </Sheet>
           </div>
+
+          <div className="-right-1.5 -translate-y-1/2 pointer-events-none absolute top-1/2 size-2.5 rounded border bg-card" />
+          <div className="-left-1.5 -translate-y-1/2 pointer-events-none absolute top-1/2 size-2.5 rounded border bg-card" />
         </nav>
 
-        <div className="-left-1.5 pointer-events-none absolute top-1/2 hidden size-2.5 rounded border bg-card md:block" />
-        <div className="-right-1.5 pointer-events-none absolute top-1/2 hidden size-2.5 rounded border bg-card md:block" />
+        <div className="-left-1.5 pointer-events-none absolute top-1/2 hidden size-2.5 translate-y-0.5 rounded border bg-card md:block" />
+        <div className="-right-1.5 pointer-events-none absolute top-1/2 hidden size-2.5 translate-y-0.5 rounded border bg-card md:block" />
       </div>
-      <div className="absolute top-1/2 left-0 hidden h-px w-[10%] translate-y-1 bg-border md:block">
-        <div className="-right-1.5 -translate-y-1/2 pointer-events-none absolute top-1/2 size-2.5 rounded border bg-card" />
-      </div>
-      <div className="absolute top-1/2 right-0 hidden h-px w-[10%] translate-y-1 bg-border md:block">
-        <div className="-left-1.5 -translate-y-1/2 pointer-events-none absolute top-1/2 size-2.5 rounded border bg-card" />
-      </div>
+      <Separator className="absolute top-1/2 left-0 translate-y-1.5" />
     </header>
   );
 };
