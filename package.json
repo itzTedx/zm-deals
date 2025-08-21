@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "biome check",
     "lint:fix": "biome check --write",
+    "postinstall": "fumadocs-mdx",
     "format": "biome format --write",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
@@ -28,6 +29,7 @@
     "@radix-ui/react-toggle-group": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@t3-oss/env-nextjs": "^0.13.8",
+    "@types/mdx": "^2.0.13",
     "better-auth": "^1.3.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -37,6 +39,9 @@
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "embla-carousel-wheel-gestures": "^8.1.0",
+    "fumadocs-core": "^15.6.12",
+    "fumadocs-mdx": "^11.7.5",
+    "fumadocs-ui": "^15.6.12",
     "ioredis": "^5.7.0",
     "lucide-react": "^0.540.0",
     "motion": "^12.23.12",
@@ -69,16 +74,9 @@
     "typescript": "^5"
   },
   "lint-staged": {
-    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx}": [
-      "biome check --write .",
-      "biome format --write ."
-    ],
-    "*.{json,jsonc}": [
-      "biome format --write ."
-    ],
-    "*.{md,mdx}": [
-      "biome format --write ."
-    ]
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx}": ["biome check --write .", "biome format --write ."],
+    "*.{json,jsonc}": ["biome format --write ."],
+    "*.{md,mdx}": ["biome format --write ."]
   },
   "pnpm": {
     "overrides": {

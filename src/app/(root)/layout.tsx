@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { RootProvider } from "fumadocs-ui/provider";
+
 import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
 
@@ -14,10 +16,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <RootProvider>
       <Navbar />
       {children}
       <Footer />
-    </>
+    </RootProvider>
   );
 }

@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={cn(helvetica.className, geist.variable, "max-sm:overflow-x-hidden")}>
         <Providers>
           {children}

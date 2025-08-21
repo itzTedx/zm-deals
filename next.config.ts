@@ -1,5 +1,9 @@
 import type { NextConfig } from "next";
 
+import { createMDX } from "fumadocs-mdx/next";
+
+const withMDX = createMDX();
+
 const nextConfig: NextConfig = {
   typedRoutes: true, // Now stable!
   typescript: {
@@ -33,4 +37,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withMDX(nextConfig);
