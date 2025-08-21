@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import NumberFlow from "@number-flow/react";
 
@@ -10,97 +10,181 @@ import { IconHourglass } from "@/assets/icons/hourglass";
 
 import { parseTimeComponents } from "@/lib/utils";
 
+interface TimeComponents {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
+
 interface AnimatedCountdownProps {
   endsIn: Date;
   className?: string;
+  showSeconds?: boolean;
+  showLeadingZeros?: boolean;
 }
 
-export const AnimatedCountdown = ({ endsIn, className = "" }: AnimatedCountdownProps) => {
-  const [timeComponents, setTimeComponents] = useState(parseTimeComponents(endsIn));
+interface TimeUnitProps {
+  value: number;
+  unit: string;
+  showLeadingZero?: boolean;
+  trend?: number;
+}
 
-  useEffect(() => {
-    // Update time immediately
-    setTimeComponents(parseTimeComponents(endsIn));
+// Memoized time unit component for better performance
+const TimeUnit = React.memo<TimeUnitProps>(({ value, unit, showLeadingZero = false, trend }) => {
+  const displayValue = showLeadingZero && value < 10 ? `0${value}` : value;
 
-    // Update time every second for smooth animation
-    const interval = setInterval(() => {
+  return (
+    <span className="flex items-center leading-none">
+      <NumberFlow className="tabular-nums" trend={trend} value={value} />
+      <TimeText>{unit}</TimeText>
+    </span>
+  );
+});
+
+TimeUnit.displayName = "TimeUnit";
+
+// Memoized time text component
+const TimeText = React.memo<{ children: React.ReactNode }>(({ children }) => (
+  <span className="font-medium">{children}</span>
+));
+
+TimeText.displayName = "TimeText";
+
+export const AnimatedCountdown = React.memo<AnimatedCountdownProps>(
+  ({ endsIn, className = "", showSeconds = true, showLeadingZeros = false }) => {
+    const [timeComponents, setTimeComponents] = useState<TimeComponents>(() => parseTimeComponents(endsIn));
+
+    // Memoize the time calculation to prevent unnecessary recalculations
+    const updateTime = useCallback(() => {
       setTimeComponents(parseTimeComponents(endsIn));
-    }, 1000); // 1 second
+    }, [endsIn]);
 
-    // Cleanup interval on unmount
-    return () => clearInterval(interval);
-  }, [endsIn]);
+    useEffect(() => {
+      // Update time immediately
+      updateTime();
 
-  // Build the animated time string
-  const renderAnimatedTime = () => {
-    const parts: React.JSX.Element[] = [];
+      // Update time every second for smooth animation
+      const interval = setInterval(updateTime, 1000);
 
-    if (timeComponents.days > 0) {
-      parts.push(
-        <span className="flex items-center leading-none" key="days">
-          <NumberFlow trend={-1} value={timeComponents.days} />
-          <TimeText>d</TimeText>
+      // Cleanup interval on unmount
+      return () => clearInterval(interval);
+    }, [updateTime]);
+
+    // Memoize the time parts to prevent unnecessary re-renders
+    const timeParts = useMemo(() => {
+      const parts: React.JSX.Element[] = [];
+
+      // Show days if greater than 0
+      if (timeComponents.days > 0) {
+        parts.push(
+          <TimeUnit key="days" showLeadingZero={showLeadingZeros} trend={-1} unit="d" value={timeComponents.days} />
+        );
+      }
+
+      // Show hours if greater than 0 or if days are shown
+      if (timeComponents.hours > 0 || timeComponents.days > 0) {
+        parts.push(<TimeUnit key="hours" showLeadingZero={showLeadingZeros} unit="h" value={timeComponents.hours} />);
+      }
+
+      // Show minutes if greater than 0 or if hours/days are shown
+      if (timeComponents.minutes > 0 || timeComponents.hours > 0 || timeComponents.days > 0) {
+        parts.push(
+          <TimeUnit key="minutes" showLeadingZero={showLeadingZeros} unit="m" value={timeComponents.minutes} />
+        );
+      }
+
+      // Always show seconds for the most dynamic animation (unless disabled)
+      if (showSeconds) {
+        parts.push(
+          <TimeUnit key="seconds" showLeadingZero={showLeadingZeros} unit="s" value={timeComponents.seconds} />
+        );
+      }
+
+      return parts;
+    }, [timeComponents, showSeconds, showLeadingZeros]);
+
+    // Memoize the rendered time string
+    const renderedTime = useMemo(() => {
+      return timeParts.map((part, index) => (
+        <span className="inline-flex items-center gap-0.5" key={index}>
+          {part}
+          {index < timeParts.length - 1 && <span>&nbsp;</span>}
         </span>
-      );
+      ));
+    }, [timeParts]);
+
+    // Check if the countdown has expired
+    const isExpired = useMemo(() => {
+      const now = new Date();
+      return endsIn <= now;
+    }, [endsIn]);
+
+    // Don't render if expired
+    if (isExpired) {
+      return null;
     }
 
-    if (timeComponents.hours > 0 || timeComponents.days > 0) {
-      parts.push(
-        <span className="flex items-center leading-none" key="hours">
-          <NumberFlow value={timeComponents.hours} />
-          <TimeText>h</TimeText>
-        </span>
-      );
-    }
-
-    if (timeComponents.minutes > 0 || timeComponents.hours > 0 || timeComponents.days > 0) {
-      parts.push(
-        <span className="flex items-center leading-none" key="minutes">
-          <NumberFlow value={timeComponents.minutes} />
-          <TimeText>m</TimeText>
-        </span>
-      );
-    }
-
-    // Always show seconds for the most dynamic animation
-    parts.push(
-      <span className="flex items-center leading-none" key="seconds">
-        <NumberFlow value={timeComponents.seconds} />
-        <TimeText>s</TimeText>
+    return (
+      <span className={className} role="timer">
+        {renderedTime}
       </span>
     );
+  }
+);
 
-    return parts.map((part, index) => (
-      <span className="inline-flex items-center gap-0.5" key={index}>
-        {part}
-        {index < parts.length - 1 && <span>&nbsp;</span>}
-      </span>
-    ));
-  };
+AnimatedCountdown.displayName = "AnimatedCountdown";
 
-  return <span className={className}>{renderAnimatedTime()}</span>;
-};
-
-export const EndsInCounter = ({ endsIn }: { endsIn: Date }) => {
-  return (
-    <Banner size="sm" variant="destructive">
-      <BannerContent className="items-center">
-        <BannerIcon>
-          <IconHourglass />
-        </BannerIcon>
-        <BannerText>
-          <BannerTitle className="text-sm leading-none sm:text-base">
-            Deal ends in{" "}
-            <span className="font-medium">
-              <AnimatedCountdown endsIn={endsIn} />
-            </span>
-          </BannerTitle>
-        </BannerText>
-      </BannerContent>
-    </Banner>
-  );
-};
-
-function TimeText({ children }: { children: React.ReactNode }) {
-  return <span className="font-medium">{children}</span>;
+interface EndsInCounterProps {
+  endsIn: Date;
+  className?: string;
+  showSeconds?: boolean;
+  showLeadingZeros?: boolean;
 }
+
+export const EndsInCounter = React.memo<EndsInCounterProps>(
+  ({ endsIn, className = "", showSeconds = true, showLeadingZeros = false }) => {
+    // Validate the endsIn prop
+    const isValidDate = useMemo(() => {
+      const date = new Date(endsIn);
+      return !isNaN(date.getTime());
+    }, [endsIn]);
+
+    // Check if the deal has already expired
+    const isExpired = useMemo(() => {
+      const now = new Date();
+      return endsIn <= now;
+    }, [endsIn]);
+
+    // Early return for invalid or expired dates
+    if (!isValidDate) {
+      console.warn("EndsInCounter: Invalid date provided for endsIn prop", endsIn);
+      return null;
+    }
+
+    if (isExpired) {
+      return null;
+    }
+
+    return (
+      <Banner className={className} size="sm" variant="destructive">
+        <BannerContent className="items-center">
+          <BannerIcon>
+            <IconHourglass />
+          </BannerIcon>
+          <BannerText>
+            <BannerTitle className="text-sm leading-none sm:text-base">
+              Deal ends in{" "}
+              <span className="font-medium">
+                <AnimatedCountdown endsIn={endsIn} showLeadingZeros={showLeadingZeros} showSeconds={showSeconds} />
+              </span>
+            </BannerTitle>
+          </BannerText>
+        </BannerContent>
+      </Banner>
+    );
+  }
+);
+
+EndsInCounter.displayName = "EndsInCounter";
