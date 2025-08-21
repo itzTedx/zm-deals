@@ -29,7 +29,7 @@ export const Deals = () => {
           className="mt-4 sm:mt-6"
           description="Grab the best discounts on trending products. These deals are live for a limited time – shop them before they’re gone!"
           link="/deals"
-          title="Previous Hot-Selling Deals"
+          title="This Week's Hot Picks"
         />
         <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-3">
           {DEALS.map((product) => (
@@ -45,6 +45,7 @@ export const Deals = () => {
           </Link>
         </div>
       </div>
+
       <SeparatorBox />
       {getLastMinuteDeals(DEALS, 24).length > 0 && (
         <div>
@@ -82,9 +83,10 @@ export const Deals = () => {
           </Badge>
 
           <SectionHeader
+            btnText="Combos"
             className="mt-4 sm:mt-6"
             description="Bundle your favorites and save on delivery costs. Specially curated combos give you the best value with free delivery included."
-            hasButton={false}
+            link="/deals/combo"
             title="Save More with Combos"
           />
           <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-3">

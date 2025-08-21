@@ -19,7 +19,7 @@ interface Props {
 export const ProductCard = ({ data }: Props) => {
   return (
     <Card className="relative">
-      <Link className="absolute inset-0 z-10" href={`/deals/${data.slug}`} />
+      <Link className="absolute inset-0 z-10" href={`/${data.slug}`} />
 
       {/* <CardHeader className="flex items-center justify-between px-2 pb-2">
         <Badge size="sm">
