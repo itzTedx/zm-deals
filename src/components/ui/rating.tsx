@@ -30,7 +30,10 @@ const StarIcon = React.memo(
     isInteractive: boolean;
   }) => (
     <IconStar
-      className={cn("size-4 transition-colors duration-200", isInteractive && "cursor-pointer hover:scale-110")}
+      className={cn(
+        "size-3 transition-colors duration-200 md:size-4",
+        isInteractive && "cursor-pointer hover:scale-110"
+      )}
       color={style.color}
       fill={style.fill}
       key={index}

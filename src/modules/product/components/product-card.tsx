@@ -65,11 +65,11 @@ export const ProductCard = ({ data }: Props) => {
         </CardHeader>
       </CardContent>
       <CardFooter className="flex items-center justify-between">
-        <Badge size="sm">
+        <Badge className="text-[10px] sm:text-xs" size="sm">
           <AnimatedCountdown endsIn={data.endsIn} />
         </Badge>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 md:gap-2">
           <StarRating readOnly value={calculateAverageRating(data.reviews)} />
 
           <p className="text-gray-600 text-xs">{data.reviews.reduce((sum, review) => sum + review.rating, 0)}</p>

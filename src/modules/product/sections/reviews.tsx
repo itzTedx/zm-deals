@@ -10,7 +10,7 @@ export const Reviews = ({ reviews }: { reviews: Review[] }) => {
   return (
     <section className="container relative max-w-7xl border-x py-12 md:py-16 lg:py-20">
       <div className="mt-9 grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div className="sticky top-12 h-fit">
+        <div className="top-12 h-fit md:sticky">
           <SectionHeader description="What our customers are saying" hasButton={false} title="Ratings & Reviews" />
           <WriteReview reviews={reviews} />
         </div>
