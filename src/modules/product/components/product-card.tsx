@@ -72,7 +72,9 @@ export const ProductCard = ({ data }: Props) => {
         <div className="flex items-center gap-1 md:gap-2">
           <StarRating readOnly value={calculateAverageRating(data.reviews)} />
 
-          <p className="text-gray-600 text-xs">{data.reviews.reduce((sum, review) => sum + review.rating, 0)}</p>
+          <p className="hidden text-gray-600 text-xs sm:block">
+            {data.reviews.reduce((sum, review) => sum + review.rating, 0)}
+          </p>
         </div>
       </CardFooter>
     </Card>
