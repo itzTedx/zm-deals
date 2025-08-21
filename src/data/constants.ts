@@ -1,8 +1,10 @@
+import type { Route } from "next";
+
 import { IconShoppingBag, IconWallet } from "@/assets/icons/bag";
 import { IconRocket } from "@/assets/icons/rocket";
 import { IconBrandInstagram, IconBrandWhatsapp, IconBrandX } from "@/assets/icons/socials";
 
-export const NAV_LINKS = [
+export const NAV_LINKS: { label: string; href: Route }[] = [
   {
     label: "Home",
     href: "/",
@@ -64,7 +66,7 @@ export const SOCIALS = [
 
 export const NEWSLETTER_LIST = ["Weekly Deals", "Exclusive Coupons", "Early Access"];
 
-export const FOOTER_LINKS = [
+export const FOOTER_LINKS: { heading: string; links: { label: string; href: Route }[] }[] = [
   {
     heading: "Quick Links",
     links: [
@@ -100,15 +102,15 @@ export const FOOTER_LINKS = [
     links: [
       {
         label: "Magnetic Car Phone Mount",
-        href: "/deals/magnetic-car-phone-mount",
+        href: "/deals",
       },
       {
         label: "USB Car Charger",
-        href: "/deals/usb-car-charger",
+        href: "/deals",
       },
       {
         label: "Apple Airpods Pro 2",
-        href: "/deals/apple-airpods-pro-2",
+        href: "/deals",
       },
     ],
   },
