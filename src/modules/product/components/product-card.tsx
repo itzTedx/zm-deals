@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,7 +18,9 @@ interface Props {
 
 export const ProductCard = ({ data }: Props) => {
   return (
-    <Card>
+    <Card className="relative">
+      <Link className="absolute inset-0 z-10" href={`/deals/${data.slug}`} />
+
       {/* <CardHeader className="flex items-center justify-between px-2 pb-2">
         <Badge size="sm">
           <AnimatedCountdown endsIn={data.endsIn} />
@@ -53,7 +56,7 @@ export const ProductCard = ({ data }: Props) => {
 
                 <div className="size-0.5 rounded-full bg-gray-300 sm:size-1" />
 
-                <Badge className="text-xs" size="sm" variant="destructive">
+                <Badge className="text-xs" size="sm" variant="success">
                   - {calculateDiscount(Number(data.originalPrice), Number(data.price))}%
                 </Badge>
               </>

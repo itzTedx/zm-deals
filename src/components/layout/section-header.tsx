@@ -13,6 +13,7 @@ interface Props {
   btnText?: string;
   link?: Route;
   hasButton?: boolean;
+  variant?: "default" | "compact";
 }
 
 export const SectionHeader = ({
@@ -21,6 +22,7 @@ export const SectionHeader = ({
   btnText,
   link,
   className,
+  variant = "default",
   hasButton = true,
   ...props
 }: Props & React.ComponentProps<"header">) => {
@@ -28,7 +30,7 @@ export const SectionHeader = ({
     <header
       className={cn(
         "grid md:grid-cols-2",
-        hasButton ? "gap-3 md:grid-cols-2 md:gap-6" : "gap-3 md:grid-cols-1",
+        variant === "default" ? "gap-3 md:grid-cols-2 md:gap-6" : "gap-3 md:grid-cols-1",
         className
       )}
       {...props}

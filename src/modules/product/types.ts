@@ -34,6 +34,7 @@ export interface Product {
 // Deal Types (extends Product with id)
 export interface Deal extends Product {
   id: number;
+  combo?: boolean;
 }
 
 // Last Minute Deal Types (simplified version)

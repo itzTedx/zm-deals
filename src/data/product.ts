@@ -1,3 +1,5 @@
+import { Deal } from "@/modules/product/types";
+
 const REVIEWS = [
   {
     id: 1,
@@ -93,7 +95,7 @@ export const PRODUCT = {
   reviews: REVIEWS,
 };
 
-export const DEALS = [
+export const DEALS: Deal[] = [
   {
     id: 1,
     title: "Vacuum Suction Phone Holder",
@@ -151,6 +153,28 @@ export const DEALS = [
       { url: "/images/vacuum-2.webp" },
       { url: "/images/vacuum-3.webp" },
       { url: "/images/vacuum-4.webp" },
+    ],
+    reviews: [...REVIEWS, ...REVIEWS, ...REVIEWS],
+  },
+  {
+    id: 4,
+    title: "Car Combo Essential",
+    combo: true,
+    overview:
+      "Secure your phone while driving - hands-free, safe, and stable. Plus, stay protected from the sun with our foldable windshield umbrella.",
+    slug: "car-combo-essential",
+    price: "99.00",
+    originalPrice: "219.50",
+    featuredImage: "/images/combo.webp",
+    stock: 20,
+    endsIn: new Date("2025-08-26T21:29:59Z"), // Deal ends on August 26th, 2025
+    description:
+      "Drive safer and smarter with the Magnetic Car Phone Mount, designed with powerful magnets and a sleek, compact design. It keeps your phone securely in place while you focus on the road. Additionally, our Foldable Automobile Windshield Umbrella provides shade and protection from the sun, making your driving experience even more comfortable. Perfect for daily commutes and road trips alike.",
+    images: [
+      { url: "/images/magnetic-phone-mount.webp" },
+      { url: "/images/car-umbrella.webp" },
+      { url: "/images/vacuum-1.webp" },
+      { url: "/images/vacuum-2.webp" },
     ],
     reviews: [...REVIEWS, ...REVIEWS, ...REVIEWS],
   },
