@@ -21,7 +21,7 @@ import { calculateDiscount } from "@/lib/utils";
 import { AnimatedCountdown } from "@/modules/product/components/ends-in-counter";
 
 export const Hero = () => {
-  const { title, overview, price, originalPrice, featuredImage, images, slug, endsIn } = PRODUCT;
+  const { title, overview, price, originalPrice, featuredImage, slug, endsIn } = PRODUCT;
   return (
     <section>
       <div className="container relative max-w-7xl gap-4 border-x pt-9 pb-12 md:pb-14 lg:pb-16 xl:pb-20">
@@ -36,9 +36,9 @@ export const Hero = () => {
               <CarouselItem className="basis-1/1 rounded-2xl py-5 pl-4 lg:basis-2/3">
                 <div className="grid grid-cols-1 items-center gap-4 overflow-hidden rounded-2xl bg-card p-6 shadow-lg sm:gap-8 md:grid-cols-2 md:p-12">
                   <div className="space-y-4">
-                    <Badge className="pl-2" variant="outline">
-                      <IconHourglass className="text-brand-500" /> Offer ends in{" "}
-                      <AnimatedCountdown className="font-semibold text-foreground" endsIn={endsIn} />
+                    <Badge className="pl-2 font-normal" variant="default">
+                      <IconHourglass className="text-brand-50" /> Offer ends in{" "}
+                      <AnimatedCountdown className="font-medium text-card" endsIn={endsIn} />
                     </Badge>
                     <div className="space-y-2 sm:space-y-3">
                       <h1 className="font-bold text-2xl leading-tight md:text-3xl">{title}</h1>
