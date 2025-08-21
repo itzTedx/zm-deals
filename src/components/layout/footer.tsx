@@ -35,7 +35,7 @@ export const Footer = () => {
             <ul key={footer.heading}>
               <li>
                 <h3 className="font-medium text-sm sm:text-base">{footer.heading}</h3>
-                <ul className="mt-3 space-y-2 sm:mt-4 sm:space-y-3">
+                <ul className="mt-3 space-y-3 sm:mt-4 sm:space-y-4">
                   {footer.links.map((link) => (
                     <li className="text-muted-foreground text-xs sm:text-sm" key={link.label}>
                       <Link href={link.href}>{link.label}</Link>

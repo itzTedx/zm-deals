@@ -42,7 +42,7 @@ export const Navbar = () => {
             <Button asChild className="hidden sm:inline-flex">
               <Link href="/current-deal">
                 <IconDiamond className="text-brand-500" />
-                <span>Claim the Deal</span>
+                <span>Claim the Combo</span>
               </Link>
             </Button>
 
@@ -82,7 +82,7 @@ export const Navbar = () => {
                       </Button>
                       <Button className="w-full" size="lg">
                         <IconDiamond className="mr-2 text-brand-500" />
-                        <span>Claim the Deal</span>
+                        <span>Claim the Combo</span>
                       </Button>
                     </div>
                   </div>
