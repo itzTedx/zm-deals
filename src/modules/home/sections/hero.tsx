@@ -22,9 +22,7 @@ export const Hero = () => {
           <div className="space-y-4 sm:space-y-6 md:space-y-9">
             <Badge className="pl-2" variant="outline">
               <IconHourglass className="text-brand-500" /> Offer ends in{" "}
-              <span className="font-semibold text-foreground">
-                <AnimatedCountdown endsIn={endsIn} />
-              </span>
+              <AnimatedCountdown className="font-semibold text-foreground" endsIn={endsIn} />
             </Badge>
             <div className="space-y-2 sm:space-y-3">
               <h1 className="font-bold text-2xl leading-tight sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">

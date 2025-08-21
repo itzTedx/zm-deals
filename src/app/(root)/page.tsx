@@ -8,11 +8,11 @@ export default function Home() {
       {/* Hero Section */}
       <Hero />
 
-      {/* How It Works Section */}
-      <HowWeWorks />
-
       {/* Past Deals Section */}
       <Deals />
+
+      {/* How It Works Section */}
+      <HowWeWorks />
 
       {/* Testimonials Section */}
       <Testimonials />
