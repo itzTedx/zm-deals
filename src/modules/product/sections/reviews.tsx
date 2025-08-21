@@ -3,6 +3,7 @@ import { SectionHeader } from "@/components/layout/section-header";
 
 import { WriteReview } from "@/modules/product/components/write-review";
 
+import { ReviewsModal } from "../components/reviews-modal";
 import { SeeMoreReviews } from "../components/see-more-reviews-button";
 
 export const Reviews = ({ reviews }: { reviews: Review[] }) => {
@@ -21,6 +22,7 @@ export const Reviews = ({ reviews }: { reviews: Review[] }) => {
           <SeeMoreReviews />
         </div>
       </div>
+      <ReviewsModal />
     </section>
   );
 };
