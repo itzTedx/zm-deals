@@ -1,3 +1,4 @@
+import { JSX } from "react";
 import type { Route } from "next";
 
 import { IconShoppingBag, IconWallet } from "@/assets/icons/bag";
@@ -40,7 +41,13 @@ export const HOW_WORKS = [
   },
 ];
 
-export const SOCIALS = [
+export const SOCIALS: {
+  id: number;
+  icon: (props: SvgProps) => JSX.Element;
+  title: string;
+  description: string;
+  href: Route;
+}[] = [
   {
     id: 1,
     icon: IconBrandX,
