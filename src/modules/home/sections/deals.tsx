@@ -44,27 +44,30 @@ export const Deals = () => {
         </Link>
       </div>
       <SeparatorBox />
-      <div className="pt-12 md:pt-16">
-        <Badge variant="outline">
-          <IconHourglass />
-          Deals{" "}
-          <span className="ml-1 rounded-sm bg-brand-500/10 px-1 py-0.5 font-medium text-brand-500 text-xs">
-            Last Minute
-          </span>
-        </Badge>
+      {getLastMinuteDeals(DEALS, 24).length > 0 && (
+        <div className="pt-12 md:pt-16">
+          <Badge variant="outline">
+            <IconHourglass className="text-gray-400" />
+            Deals{" "}
+            <span className="ml-1 rounded-sm bg-brand-500/10 px-1 py-0.5 font-medium text-brand-500 text-xs">
+              Last Minute
+            </span>
+          </Badge>
 
-        <SectionHeader
-          className="mt-4 sm:mt-6"
-          description="Hurry up! These deals are ending soon. Don’t miss your chance to save big before time runs out."
-          hasButton={false}
-          title="Last Minute Deals"
-        />
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 md:mt-12 lg:grid-cols-3">
-          {getLastMinuteDeals(DEALS, 24).map((product) => (
-            <ProductCard data={product} key={product.id} />
-          ))}
+          <SectionHeader
+            btnText="Deals"
+            className="mt-4 sm:mt-6"
+            description="Hurry up! These deals are ending soon. Don’t miss your chance to save big before time runs out."
+            link="/deals"
+            title="Last Minute Deals"
+          />
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-3">
+            {getLastMinuteDeals(DEALS, 24).map((product) => (
+              <ProductCard data={product} key={product.id} />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 };
