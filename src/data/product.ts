@@ -10,7 +10,7 @@ const REVIEWS = [
   {
     id: 2,
     name: "Mike R.",
-    rating: 5,
+    rating: 3,
     date: new Date("2025-08-10"),
     comment:
       "I've tried several phone mounts before, but this one is by far the best. The vacuum suction is incredibly strong and it's easy to position. My phone stays put even during sharp turns. The build quality is excellent and it looks great in my car.",
@@ -26,7 +26,7 @@ const REVIEWS = [
   {
     id: 4,
     name: "David K.",
-    rating: 5,
+    rating: 2,
     date: new Date("2025-08-05"),
     comment:
       "I'm impressed with the quality of this phone holder. The suction mechanism is very reliable and the phone stays in place even on rough roads. The installation was straightforward and it's easy to remove when needed. Highly recommend!",
@@ -42,7 +42,7 @@ const REVIEWS = [
   {
     id: 6,
     name: "Robert J.",
-    rating: 4,
+    rating: 2,
     date: new Date("2025-08-28"),
     comment:
       "This is a well-made phone holder with excellent suction power. It holds my phone securely and the positioning is flexible. The only minor issue is that it can be a bit tricky to remove from the windshield, but that's actually a good sign of how strong the suction is.",
@@ -58,7 +58,7 @@ const REVIEWS = [
   {
     id: 8,
     name: "Jane S.",
-    rating: 5,
+    rating: 3,
     date: new Date("2025-08-01"),
     comment:
       "Used this on a 6-hour road trip and it performed flawlessly. The phone stayed perfectly positioned the entire time, making navigation much easier and safer. The suction is incredibly strong - I was worried it might fall off but it never budged.",
@@ -122,8 +122,8 @@ export const DEALS = [
     price: "50.00",
     originalPrice: "109.50",
     featuredImage: "/images/usb-c-car-charger.webp",
-    stock: 21,
-    endsIn: new Date("2025-08-22T21:59:59Z"), // Deal ends on August 23rd, 2025
+    stock: 16,
+    endsIn: new Date("2025-08-21T21:59:59Z"), // Deal ends on August 23rd, 2025
     description:
       "Drive safer and smarter with the Magnetic Car Phone Mount. Designed with powerful magnets and a sleek, compact design, it keeps your phone securely in place while you focus on the road. Whether you're navigating maps, answering calls hands-free, or playing music, this mount makes your ride stress-free. Perfect for daily commutes and road trips alike.",
     images: [
@@ -142,7 +142,7 @@ export const DEALS = [
     price: "10.00",
     originalPrice: "20.50",
     featuredImage: "/images/car-umbrella.webp",
-    stock: 21,
+    stock: 10,
     endsIn: new Date("2025-08-26T21:29:59Z"), // Deal ends on August 23rd, 2025
     description:
       "Drive safer and smarter with the Magnetic Car Phone Mount. Designed with powerful magnets and a sleek, compact design, it keeps your phone securely in place while you focus on the road. Whether you're navigating maps, answering calls hands-free, or playing music, this mount makes your ride stress-free. Perfect for daily commutes and road trips alike.",

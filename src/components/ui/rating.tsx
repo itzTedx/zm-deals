@@ -30,7 +30,7 @@ const StarIcon = React.memo(
     isInteractive: boolean;
   }) => (
     <IconStar
-      className={cn("transition-colors duration-200", isInteractive && "cursor-pointer hover:scale-110")}
+      className={cn("size-4 transition-colors duration-200", isInteractive && "cursor-pointer hover:scale-110")}
       color={style.color}
       fill={style.fill}
       key={index}
@@ -100,7 +100,7 @@ const StarRating = ({
       const ratingToUse = !readOnly && hoverRating !== null ? hoverRating : value;
       const difference = ratingToUse - index;
 
-      if (difference <= 0) return { color: "#ebebeb", fill: "transparent" };
+      if (difference <= 0) return { color: "#E0E0E0", fill: "transparent" };
       if (difference >= 1) return { color: color, fill: color };
 
       return {

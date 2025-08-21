@@ -13,12 +13,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html className={cn("scroll-smooth")} lang="en">
       <body className={cn(helvetica.className, geist.variable, "max-sm:overflow-x-hidden")}>
         <Providers>
           {children}
 
-          <Toaster richColors />
+          <Toaster position="top-center" richColors />
         </Providers>
       </body>
     </html>

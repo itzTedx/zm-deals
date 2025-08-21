@@ -1,11 +1,15 @@
+import Link from "next/link";
+
 import { SectionHeader } from "@/components/layout/section-header";
 import { Badge } from "@/components/ui/badge";
 import { SeparatorBox } from "@/components/ui/separator";
 
+import { IconChevronRight } from "@/assets/icons/chevron";
 import { IconFire } from "@/assets/icons/fire";
 import { IconHourglass } from "@/assets/icons/hourglass";
 
 import { DEALS } from "@/data/product";
+import { getLastMinuteDeals } from "@/lib/utils";
 import { ProductCard } from "@/modules/product/components/product-card";
 
 export const Deals = () => {
@@ -30,6 +34,14 @@ export const Deals = () => {
         {DEALS.map((product) => (
           <ProductCard data={product} key={product.id} />
         ))}
+        <Link
+          className="col-span-full mt-4 text-center text-muted-foreground text-sm sm:mt-6 md:text-lg"
+          href="/#community"
+        >
+          Be the <span className="font-medium text-foreground">First</span> to Know About the{" "}
+          <span className="font-medium text-foreground">Next Deal</span>
+          <IconChevronRight className="ml-2 inline-block size-3" />
+        </Link>
       </div>
       <SeparatorBox />
       <div className="pt-12 md:pt-16">
@@ -48,16 +60,11 @@ export const Deals = () => {
           title="Last Minute Deals"
         />
         <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 md:mt-12 lg:grid-cols-3">
-          {DEALS.map((product) => (
+          {getLastMinuteDeals(DEALS, 24).map((product) => (
             <ProductCard data={product} key={product.id} />
           ))}
         </div>
       </div>
-
-      <p className="mt-4 text-center text-muted-foreground text-sm sm:mt-6 md:text-lg">
-        Be the <span className="font-medium text-foreground">First</span> to Know About the{" "}
-        <span className="font-medium text-foreground">Next Deal</span>
-      </p>
     </section>
   );
 };
