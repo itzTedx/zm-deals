@@ -13,7 +13,7 @@ import { PRODUCT } from "@/data/product";
 import { env } from "@/lib/env/client";
 import { pluralize } from "@/lib/functions/pluralize";
 import { calculateAverageRating, calculateDiscount } from "@/lib/utils";
-import { PastDeals } from "@/modules/home/sections";
+import { Deals } from "@/modules/home/sections";
 import { EndsInCounter } from "@/modules/product/components/ends-in-counter";
 import { QuantityInput } from "@/modules/product/components/quantity-input";
 import { Reviews } from "@/modules/product/sections/reviews";
@@ -103,7 +103,7 @@ export default function ProductPage() {
         </div>
       </section>
       <Reviews reviews={reviews} />
-      <PastDeals />
+      <Deals />
     </main>
   );
 }

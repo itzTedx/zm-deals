@@ -1,6 +1,6 @@
 import { Community } from "@/components/community";
 
-import { Hero, HowWeWorks, PastDeals, Testimonials } from "@/modules/home/sections";
+import { Deals, Hero, HowWeWorks, Testimonials } from "@/modules/home/sections";
 
 export default function Home() {
   return (
@@ -12,7 +12,7 @@ export default function Home() {
       <HowWeWorks />
 
       {/* Past Deals Section */}
-      <PastDeals />
+      <Deals />
 
       {/* Testimonials Section */}
       <Testimonials />

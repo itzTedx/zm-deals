@@ -37,7 +37,7 @@ export const AnimatedCountdown = ({ endsIn, className = "" }: AnimatedCountdownP
 
     if (timeComponents.days > 0) {
       parts.push(
-        <span key="days">
+        <span className="flex items-center" key="days">
           <NumberFlow trend={-1} value={timeComponents.days} />
           <TimeText>d</TimeText>
         </span>
@@ -46,7 +46,7 @@ export const AnimatedCountdown = ({ endsIn, className = "" }: AnimatedCountdownP
 
     if (timeComponents.hours > 0 || timeComponents.days > 0) {
       parts.push(
-        <span key="hours">
+        <span className="flex items-center" key="hours">
           <NumberFlow value={timeComponents.hours} />
           <TimeText>h</TimeText>
         </span>
@@ -55,7 +55,7 @@ export const AnimatedCountdown = ({ endsIn, className = "" }: AnimatedCountdownP
 
     if (timeComponents.minutes > 0 || timeComponents.hours > 0 || timeComponents.days > 0) {
       parts.push(
-        <span key="minutes">
+        <span className="flex items-center" key="minutes">
           <NumberFlow value={timeComponents.minutes} />
           <TimeText>m</TimeText>
         </span>
@@ -64,7 +64,7 @@ export const AnimatedCountdown = ({ endsIn, className = "" }: AnimatedCountdownP
 
     // Always show seconds for the most dynamic animation
     parts.push(
-      <span key="seconds">
+      <span className="flex items-center" key="seconds">
         <NumberFlow value={timeComponents.seconds} />
         <TimeText>s</TimeText>
       </span>

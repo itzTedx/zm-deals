@@ -1,3 +1,78 @@
+const REVIEWS = [
+  {
+    id: 1,
+    name: "Sarah M.",
+    rating: 5,
+    date: new Date("2025-08-15"),
+    comment:
+      "This vacuum suction phone holder is a game-changer for my daily commute. It's incredibly stable and holds my phone securely even on bumpy roads. The suction is so strong that I don't worry about it falling off. Perfect for using GPS and taking hands-free calls.",
+  },
+  {
+    id: 2,
+    name: "Mike R.",
+    rating: 5,
+    date: new Date("2025-08-10"),
+    comment:
+      "I've tried several phone mounts before, but this one is by far the best. The vacuum suction is incredibly strong and it's easy to position. My phone stays put even during sharp turns. The build quality is excellent and it looks great in my car.",
+  },
+  {
+    id: 3,
+    name: "Jennifer L.",
+    rating: 4,
+    date: new Date("2025-08-08"),
+    comment:
+      "This phone holder works really well! The suction is strong and it holds my phone securely. The only reason I'm giving it 4 stars instead of 5 is that it took a couple of tries to get the perfect angle for my windshield. Once positioned correctly, it's perfect.",
+  },
+  {
+    id: 4,
+    name: "David K.",
+    rating: 5,
+    date: new Date("2025-08-05"),
+    comment:
+      "I'm impressed with the quality of this phone holder. The suction mechanism is very reliable and the phone stays in place even on rough roads. The installation was straightforward and it's easy to remove when needed. Highly recommend!",
+  },
+  {
+    id: 5,
+    name: "Amanda T.",
+    rating: 5,
+    date: new Date("2025-08-01"),
+    comment:
+      "Used this on a 6-hour road trip and it performed flawlessly. The phone stayed perfectly positioned the entire time, making navigation much easier and safer. The suction is incredibly strong - I was worried it might fall off but it never budged.",
+  },
+  {
+    id: 6,
+    name: "Robert J.",
+    rating: 4,
+    date: new Date("2025-08-28"),
+    comment:
+      "This is a well-made phone holder with excellent suction power. It holds my phone securely and the positioning is flexible. The only minor issue is that it can be a bit tricky to remove from the windshield, but that's actually a good sign of how strong the suction is.",
+  },
+  {
+    id: 7,
+    name: "John D.",
+    rating: 5,
+    date: new Date("2025-08-05"),
+    comment:
+      "I'm impressed with the quality of this phone holder. The suction mechanism is very reliable and the phone stays in place even on rough roads. The installation was straightforward and it's easy to remove when needed. Highly recommend!",
+  },
+  {
+    id: 8,
+    name: "Jane S.",
+    rating: 5,
+    date: new Date("2025-08-01"),
+    comment:
+      "Used this on a 6-hour road trip and it performed flawlessly. The phone stayed perfectly positioned the entire time, making navigation much easier and safer. The suction is incredibly strong - I was worried it might fall off but it never budged.",
+  },
+  {
+    id: 9,
+    name: "James T.",
+    rating: 4,
+    date: new Date("2025-08-28"),
+    comment:
+      "This is a well-made phone holder with excellent suction power. It holds my phone securely and the positioning is flexible. The only minor issue is that it can be a bit tricky to remove from the windshield, but that's actually a good sign of how strong the suction is.",
+  },
+];
+
 export const PRODUCT = {
   title: "Vacuum Suction Phone Holder",
   overview: "Secure your phone while driving - hands-free, safe, and stable.",
@@ -15,83 +90,73 @@ export const PRODUCT = {
     { url: "/images/vacuum-3.webp" },
     { url: "/images/vacuum-4.webp" },
   ],
-  reviews: [
-    {
-      id: 1,
-      name: "Sarah M.",
-      rating: 5,
-      date: new Date("2025-08-15"),
-      comment:
-        "This vacuum suction phone holder is a game-changer for my daily commute. It's incredibly stable and holds my phone securely even on bumpy roads. The suction is so strong that I don't worry about it falling off. Perfect for using GPS and taking hands-free calls.",
-    },
-    {
-      id: 2,
-      name: "Mike R.",
-      rating: 5,
-      date: new Date("2025-08-10"),
-      comment:
-        "I've tried several phone mounts before, but this one is by far the best. The vacuum suction is incredibly strong and it's easy to position. My phone stays put even during sharp turns. The build quality is excellent and it looks great in my car.",
-    },
-    {
-      id: 3,
-      name: "Jennifer L.",
-      rating: 4,
-      date: new Date("2025-08-08"),
-      comment:
-        "This phone holder works really well! The suction is strong and it holds my phone securely. The only reason I'm giving it 4 stars instead of 5 is that it took a couple of tries to get the perfect angle for my windshield. Once positioned correctly, it's perfect.",
-    },
-    {
-      id: 4,
-      name: "David K.",
-      rating: 5,
-      date: new Date("2025-08-05"),
-      comment:
-        "I'm impressed with the quality of this phone holder. The suction mechanism is very reliable and the phone stays in place even on rough roads. The installation was straightforward and it's easy to remove when needed. Highly recommend!",
-    },
-    {
-      id: 5,
-      name: "Amanda T.",
-      rating: 5,
-      date: new Date("2025-08-01"),
-      comment:
-        "Used this on a 6-hour road trip and it performed flawlessly. The phone stayed perfectly positioned the entire time, making navigation much easier and safer. The suction is incredibly strong - I was worried it might fall off but it never budged.",
-    },
-    {
-      id: 6,
-      name: "Robert J.",
-      rating: 4,
-      date: new Date("2025-08-28"),
-      comment:
-        "This is a well-made phone holder with excellent suction power. It holds my phone securely and the positioning is flexible. The only minor issue is that it can be a bit tricky to remove from the windshield, but that's actually a good sign of how strong the suction is.",
-    },
-    {
-      id: 7,
-      name: "John D.",
-      rating: 5,
-      date: new Date("2025-08-05"),
-      comment:
-        "I'm impressed with the quality of this phone holder. The suction mechanism is very reliable and the phone stays in place even on rough roads. The installation was straightforward and it's easy to remove when needed. Highly recommend!",
-    },
-    {
-      id: 8,
-      name: "Jane S.",
-      rating: 5,
-      date: new Date("2025-08-01"),
-      comment:
-        "Used this on a 6-hour road trip and it performed flawlessly. The phone stayed perfectly positioned the entire time, making navigation much easier and safer. The suction is incredibly strong - I was worried it might fall off but it never budged.",
-    },
-    {
-      id: 9,
-      name: "James T.",
-      rating: 4,
-      date: new Date("2025-08-28"),
-      comment:
-        "This is a well-made phone holder with excellent suction power. It holds my phone securely and the positioning is flexible. The only minor issue is that it can be a bit tricky to remove from the windshield, but that's actually a good sign of how strong the suction is.",
-    },
-  ],
+  reviews: REVIEWS,
 };
 
 export const DEALS = [
+  {
+    id: 1,
+    title: "Vacuum Suction Phone Holder",
+    overview: "Secure your phone while driving - hands-free, safe, and stable.",
+    slug: "vacuum-suction-phone-holder",
+    price: "39.00",
+    originalPrice: "89.50",
+    featuredImage: "/images/vacuum-holder.webp",
+    stock: 21,
+    endsIn: new Date("2025-08-23T23:59:59Z"), // Deal ends on August 23rd, 2025
+    description:
+      "Drive safer and smarter with the Magnetic Car Phone Mount. Designed with powerful magnets and a sleek, compact design, it keeps your phone securely in place while you focus on the road. Whether you're navigating maps, answering calls hands-free, or playing music, this mount makes your ride stress-free. Perfect for daily commutes and road trips alike.",
+    images: [
+      { url: "/images/vacuum-1.webp" },
+      { url: "/images/vacuum-2.webp" },
+      { url: "/images/vacuum-3.webp" },
+      { url: "/images/vacuum-4.webp" },
+    ],
+    reviews: REVIEWS,
+  },
+  {
+    id: 2,
+    title: "USB C Car Charger (Fast Charger USB-C)",
+    overview: "Secure your phone while driving - hands-free, safe, and stable.",
+    slug: "usb-c-car-charger",
+    price: "50.00",
+    originalPrice: "109.50",
+    featuredImage: "/images/usb-c-car-charger.webp",
+    stock: 21,
+    endsIn: new Date("2025-08-22T21:59:59Z"), // Deal ends on August 23rd, 2025
+    description:
+      "Drive safer and smarter with the Magnetic Car Phone Mount. Designed with powerful magnets and a sleek, compact design, it keeps your phone securely in place while you focus on the road. Whether you're navigating maps, answering calls hands-free, or playing music, this mount makes your ride stress-free. Perfect for daily commutes and road trips alike.",
+    images: [
+      { url: "/images/vacuum-1.webp" },
+      { url: "/images/vacuum-2.webp" },
+      { url: "/images/vacuum-3.webp" },
+      { url: "/images/vacuum-4.webp" },
+    ],
+    reviews: [...REVIEWS, ...REVIEWS, ...REVIEWS, ...REVIEWS, ...REVIEWS, ...REVIEWS, ...REVIEWS],
+  },
+  {
+    id: 3,
+    title: "Foldable Automobile Windshield Umbrella",
+    overview: "Secure your phone while driving - hands-free, safe, and stable.",
+    slug: "foldable-automobile-windshield-umbrella",
+    price: "10.00",
+    originalPrice: "20.50",
+    featuredImage: "/images/car-umbrella.webp",
+    stock: 21,
+    endsIn: new Date("2025-08-26T21:29:59Z"), // Deal ends on August 23rd, 2025
+    description:
+      "Drive safer and smarter with the Magnetic Car Phone Mount. Designed with powerful magnets and a sleek, compact design, it keeps your phone securely in place while you focus on the road. Whether you're navigating maps, answering calls hands-free, or playing music, this mount makes your ride stress-free. Perfect for daily commutes and road trips alike.",
+    images: [
+      { url: "/images/vacuum-1.webp" },
+      { url: "/images/vacuum-2.webp" },
+      { url: "/images/vacuum-3.webp" },
+      { url: "/images/vacuum-4.webp" },
+    ],
+    reviews: [...REVIEWS, ...REVIEWS, ...REVIEWS],
+  },
+];
+
+export const LAST_MINUTE_DEALS = [
   {
     id: 1,
     title: "USB Car Charger (Fast Charger USB-C)",

@@ -1,3 +1,4 @@
+import type { Route } from "next";
 import Link from "next/link";
 
 import { IconChevronRight } from "@/assets/icons/chevron";
@@ -10,7 +11,7 @@ interface Props {
   title: string;
   description: string;
   btnText?: string;
-  link?: string;
+  link?: Route;
   hasButton?: boolean;
 }
 
