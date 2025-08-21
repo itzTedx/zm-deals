@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 
+import { IconShoppingBag } from "@/assets/icons/bag";
 import { IconDiamond } from "@/assets/icons/diamonds";
 import { IconMenu } from "@/assets/icons/menu";
 import { IconUser } from "@/assets/icons/user";
@@ -21,26 +22,29 @@ export const Navbar = () => {
   return (
     <header className="sticky top-0 z-999 h-fit">
       <div className="container relative z-999 mx-auto max-w-7xl pt-3 md:border-x">
-        <nav className="relative z-999 mx-auto flex items-center gap-4 rounded-xl bg-card/90 p-2.5 font-helvetica shadow-lg backdrop-blur-2xl max-md:justify-between md:max-w-7xl md:gap-8">
-          <Link aria-label="go home" className="flex items-center gap-2" href="/">
-            <LogoIcon />
-            <LogoWordMark className="md:hidden" />
-          </Link>
-          <div className="hidden size-0.5 rounded-full bg-muted-foreground md:block" />
-          {/* Desktop Navigation */}
-          <ul className="hidden items-center gap-6 md:flex">
-            {NAV_LINKS.map((nav) => (
-              <li key={nav.href}>
-                <Link className="font-medium text-gray-700 transition-colors hover:text-brand-600" href={nav.href}>
-                  {nav.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          <div className="hidden size-0.5 rounded-full bg-muted-foreground md:block" />
+        <nav className="relative z-999 mx-auto flex items-center justify-between gap-4 rounded-xl bg-card/90 p-2.5 font-helvetica shadow-lg backdrop-blur-2xl max-md:justify-between md:max-w-7xl md:gap-8">
+          <div className="flex items-center gap-2 md:gap-6">
+            <Link aria-label="go home" className="flex items-center gap-2" href="/">
+              <LogoIcon />
+              <LogoWordMark className="md:hidden" />
+            </Link>
+            <div className="hidden size-0.5 rounded-full bg-muted-foreground md:block" />
+            {/* Desktop Navigation */}
+            <ul className="hidden items-center gap-6 md:flex">
+              {NAV_LINKS.map((nav) => (
+                <li key={nav.href}>
+                  <Link className="font-medium text-gray-700 transition-colors hover:text-brand-600" href={nav.href}>
+                    {nav.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           <div className="flex items-center gap-2 md:gap-4">
+            <Button className="hidden sm:inline-flex" variant="outline">
+              <IconShoppingBag className="text-brand-500" />
+            </Button>
             {session ? (
               <Avatar>
                 <AvatarFallback>{session.user?.name?.charAt(0)}</AvatarFallback>
@@ -53,12 +57,6 @@ export const Navbar = () => {
                 </Link>
               </Button>
             )}
-            <Button asChild className="hidden sm:inline-flex">
-              <Link href="/current-deal">
-                <IconDiamond className="text-brand-500" />
-                <span>Claim the Combo</span>
-              </Link>
-            </Button>
 
             {/* Mobile Sheet Menu */}
             <Sheet>
