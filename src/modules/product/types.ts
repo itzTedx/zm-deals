@@ -29,6 +29,7 @@ export interface Product {
   description: string;
   images: ProductImage[];
   reviews: Review[];
+  delivery?: string;
 }
 
 // Deal Types (extends Product with id)

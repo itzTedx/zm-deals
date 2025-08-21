@@ -11,3 +11,17 @@ export const IconBook = (props: SvgProps) => {
     </svg>
   );
 };
+
+export const IconDocument = (props: SvgProps) => {
+  return (
+    <svg {...props} fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9.75 1.875L3.375 8.25V18.75H19.875V1.875H9.75Z" fill="currentColor" opacity="0.2" />
+      <path
+        clipRule="evenodd"
+        d="M7.81065 1.62868C8.3733 1.06607 9.13635 0.75 9.93195 0.75H18.75C20.4068 0.75 21.75 2.09314 21.75 3.75V20.25C21.75 21.9068 20.4068 23.25 18.75 23.25H5.25C3.59314 23.25 2.25 21.9068 2.25 20.25V8.43195C2.25 7.63635 2.56607 6.87327 3.12868 6.31066L7.81065 1.62868ZM9.75 2.25V8.25H3.75L9.75 2.25ZM6 15.75V17.25H18V15.75H6ZM6 11.25H18V12.75H6V11.25ZM12.75 6.75V8.25H18V6.75H12.75Z"
+        fill="currentColor"
+        fillRule="evenodd"
+      />
+    </svg>
+  );
+};

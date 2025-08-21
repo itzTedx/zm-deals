@@ -115,6 +115,7 @@ export const DEALS: Deal[] = [
       { url: "/images/vacuum-4.webp" },
     ],
     reviews: REVIEWS,
+    delivery: "30.00",
   },
   {
     id: 2,
@@ -155,6 +156,7 @@ export const DEALS: Deal[] = [
       { url: "/images/vacuum-4.webp" },
     ],
     reviews: [...REVIEWS, ...REVIEWS, ...REVIEWS],
+    delivery: "10.00",
   },
   {
     id: 4,
@@ -171,10 +173,9 @@ export const DEALS: Deal[] = [
     description:
       "Drive safer and smarter with the Magnetic Car Phone Mount, designed with powerful magnets and a sleek, compact design. It keeps your phone securely in place while you focus on the road. Additionally, our Foldable Automobile Windshield Umbrella provides shade and protection from the sun, making your driving experience even more comfortable. Perfect for daily commutes and road trips alike.",
     images: [
-      { url: "/images/magnetic-phone-mount.webp" },
+      { url: "/images/vacuum-holder.webp" },
       { url: "/images/car-umbrella.webp" },
-      { url: "/images/vacuum-1.webp" },
-      { url: "/images/vacuum-2.webp" },
+      { url: "/images/usb-c-car-charger.webp" },
     ],
     reviews: [...REVIEWS, ...REVIEWS, ...REVIEWS],
   },
