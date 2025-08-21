@@ -29,6 +29,8 @@ type CarouselContextProps = {
   scrollNext: () => void;
   canScrollPrev: boolean;
   canScrollNext: boolean;
+  selectedIndex: number;
+  scrollTo: (index: number) => void;
 } & CarouselProps;
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null);
@@ -61,11 +63,13 @@ function Carousel({
   );
   const [canScrollPrev, setCanScrollPrev] = React.useState(false);
   const [canScrollNext, setCanScrollNext] = React.useState(false);
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
 
   const onSelect = React.useCallback((api: CarouselApi) => {
     if (!api) return;
     setCanScrollPrev(api.canScrollPrev());
     setCanScrollNext(api.canScrollNext());
+    setSelectedIndex(api.selectedScrollSnap());
   }, []);
 
   const scrollPrev = React.useCallback(() => {
@@ -75,6 +79,13 @@ function Carousel({
   const scrollNext = React.useCallback(() => {
     api?.scrollNext();
   }, [api]);
+
+  const scrollTo = React.useCallback(
+    (index: number) => {
+      api?.scrollTo(index);
+    },
+    [api]
+  );
 
   const handleKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -116,6 +127,8 @@ function Carousel({
         scrollNext,
         canScrollPrev,
         canScrollNext,
+        selectedIndex,
+        scrollTo,
       }}
     >
       <div
@@ -216,4 +229,94 @@ function CarouselNext({
   );
 }
 
-export { type CarouselApi, Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext };
+function CarouselIndicator({ className, ...props }: React.ComponentProps<"div">) {
+  const { api, selectedIndex, scrollTo } = useCarousel();
+  const [slidesCount, setSlidesCount] = React.useState(0);
+
+  const onSelect = React.useCallback(() => {
+    if (!api) return;
+    setSlidesCount(api.slideNodes().length);
+  }, [api]);
+
+  React.useEffect(() => {
+    if (!api) return;
+    onSelect();
+    api.on("reInit", onSelect);
+    api.on("select", onSelect);
+
+    return () => {
+      api.off("select", onSelect);
+    };
+  }, [api, onSelect]);
+
+  return (
+    <div
+      className={cn("mx-auto flex h-2.5 w-fit items-center justify-center gap-1 rounded bg-gray-200 px-1", className)}
+      data-slot="carousel-indicator"
+      {...props}
+    >
+      {Array.from({ length: slidesCount }, (_, index) => (
+        <button
+          aria-current={selectedIndex === index ? "true" : "false"}
+          aria-label={`Go to slide ${index + 1}`}
+          className={cn(
+            "size-1.5 shrink-0 rounded-full transition-all duration-200 ease-in-out",
+            selectedIndex === index ? "bg-muted-foreground" : "bg-gray-300 hover:bg-muted-foreground/50"
+          )}
+          key={index}
+          onClick={() => scrollTo(index)}
+          type="button"
+        >
+          <span className="sr-only">Go to slide {index + 1}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function CarouselProgress({ className, ...props }: React.ComponentProps<"div">) {
+  const { api, selectedIndex } = useCarousel();
+  const [slidesCount, setSlidesCount] = React.useState(0);
+
+  const onSelect = React.useCallback(() => {
+    if (!api) return;
+    setSlidesCount(api.slideNodes().length);
+  }, [api]);
+
+  React.useEffect(() => {
+    if (!api) return;
+    onSelect();
+    api.on("reInit", onSelect);
+    api.on("select", onSelect);
+
+    return () => {
+      api.off("select", onSelect);
+    };
+  }, [api, onSelect]);
+
+  // Don't render if there are no slides or only one slide
+  if (slidesCount <= 1) return null;
+
+  const progress = ((selectedIndex + 1) / slidesCount) * 100;
+
+  return (
+    <div
+      className={cn("relative h-1 w-full overflow-hidden rounded-full bg-muted", className)}
+      data-slot="carousel-progress"
+      {...props}
+    >
+      <div className="h-full bg-primary transition-all duration-300 ease-out" style={{ width: `${progress}%` }} />
+    </div>
+  );
+}
+
+export {
+  type CarouselApi,
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+  CarouselIndicator,
+  CarouselProgress,
+};
