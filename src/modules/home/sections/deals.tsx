@@ -71,31 +71,34 @@ export const Deals = () => {
           </div>
         </div>
       )}
-      <SeparatorBox />
-      {getLastMinuteDeals(DEALS, 24).length > 0 && (
-        <div>
+
+      <div className="relative">
+        <div className="flex items-center gap-6">
+          <SeparatorBox />
           <Badge variant="outline">
             <IconHourglass className="text-gray-400" />
-            Deals{" "}
+            Combo{" "}
             <span className="ml-1 rounded-sm bg-brand-500/10 px-1 py-0.5 font-medium text-brand-500 text-xs">
-              Combo
+              Deals
             </span>
           </Badge>
-
-          <SectionHeader
-            btnText="Combos"
-            className="mt-4 sm:mt-6"
-            description="Bundle your favorites and save on delivery costs. Specially curated combos give you the best value with free delivery included."
-            link="/deals/combo"
-            title="Save More with Combos"
-          />
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-3">
-            {DEALS.filter((product) => product.combo).map((product) => (
-              <ProductCard data={product} key={product.id} />
-            ))}
-          </div>
+          <SeparatorBox />
         </div>
-      )}
+
+        <SectionHeader
+          btnText="Combos"
+          className="mt-4 sm:mt-6"
+          description="Bundle your favorites and save on delivery costs. Specially curated combos give you the best value with free delivery included."
+          link="/deals/combo"
+          title="Save More with Combos"
+        />
+
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-3">
+          {DEALS.filter((product) => product.combo).map((product) => (
+            <ProductCard data={product} key={product.id} />
+          ))}
+        </div>
+      </div>
     </section>
   );
 };

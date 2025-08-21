@@ -181,6 +181,50 @@ export const DEALS: Deal[] = [
     reviews: [...REVIEWS, ...REVIEWS, ...REVIEWS],
     delivery: null,
   },
+  {
+    id: 5,
+    title: "Car Combo Essential",
+    combo: true,
+    overview:
+      "Secure your phone while driving - hands-free, safe, and stable. Plus, stay protected from the sun with our foldable windshield umbrella.",
+    slug: "car-combo-essential",
+    price: "99.00",
+    originalPrice: "219.50",
+    featuredImage: "/images/combo.webp",
+    stock: 20,
+    endsIn: new Date("2025-08-26T21:29:59Z"), // Deal ends on August 26th, 2025
+    description:
+      "Drive safer and smarter with the Magnetic Car Phone Mount, designed with powerful magnets and a sleek, compact design. It keeps your phone securely in place while you focus on the road. Additionally, our Foldable Automobile Windshield Umbrella provides shade and protection from the sun, making your driving experience even more comfortable. Perfect for daily commutes and road trips alike.",
+    images: [
+      { url: "/images/vacuum-holder.webp" },
+      { url: "/images/car-umbrella.webp" },
+      { url: "/images/usb-c-car-charger.webp" },
+    ],
+    reviews: [...REVIEWS, ...REVIEWS, ...REVIEWS],
+    delivery: null,
+  },
+  {
+    id: 6,
+    title: "Car Combo Essential",
+    combo: true,
+    overview:
+      "Secure your phone while driving - hands-free, safe, and stable. Plus, stay protected from the sun with our foldable windshield umbrella.",
+    slug: "car-combo-essential",
+    price: "99.00",
+    originalPrice: "219.50",
+    featuredImage: "/images/combo.webp",
+    stock: 20,
+    endsIn: new Date("2025-08-26T21:29:59Z"), // Deal ends on August 26th, 2025
+    description:
+      "Drive safer and smarter with the Magnetic Car Phone Mount, designed with powerful magnets and a sleek, compact design. It keeps your phone securely in place while you focus on the road. Additionally, our Foldable Automobile Windshield Umbrella provides shade and protection from the sun, making your driving experience even more comfortable. Perfect for daily commutes and road trips alike.",
+    images: [
+      { url: "/images/vacuum-holder.webp" },
+      { url: "/images/car-umbrella.webp" },
+      { url: "/images/usb-c-car-charger.webp" },
+    ],
+    reviews: [...REVIEWS, ...REVIEWS, ...REVIEWS],
+    delivery: null,
+  },
 ];
 
 export const LAST_MINUTE_DEALS = [
