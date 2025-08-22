@@ -4,9 +4,10 @@ import * as React from "react";
 
 import useEmblaCarousel, { type UseEmblaCarouselType } from "embla-carousel-react";
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
-import { ArrowLeft, ArrowRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+
+import { MoveLeftIcon, MoveLeftIconHandle, MoveRightIcon, MoveRightIconHandle } from "@/assets/icons/arrow";
 
 import { cn } from "@/lib/utils";
 
@@ -176,7 +177,7 @@ function CarouselPrevious({
   ...props
 }: React.ComponentProps<typeof Button>) {
   const { orientation, scrollPrev, canScrollPrev } = useCarousel();
-
+  const ref = React.useRef<MoveLeftIconHandle>(null);
   return (
     <Button
       className={cn(
@@ -189,11 +190,13 @@ function CarouselPrevious({
       data-slot="carousel-previous"
       disabled={!canScrollPrev}
       onClick={scrollPrev}
+      onMouseEnter={() => ref.current?.startAnimation()}
+      onMouseLeave={() => ref.current?.stopAnimation()}
       size={size}
       variant={variant}
       {...props}
     >
-      <ArrowLeft />
+      <MoveLeftIcon ref={ref} />
       <span className="sr-only">Previous slide</span>
     </Button>
   );
@@ -206,6 +209,7 @@ function CarouselNext({
   ...props
 }: React.ComponentProps<typeof Button>) {
   const { orientation, scrollNext, canScrollNext } = useCarousel();
+  const ref = React.useRef<MoveRightIconHandle>(null);
 
   return (
     <Button
@@ -219,11 +223,13 @@ function CarouselNext({
       data-slot="carousel-next"
       disabled={!canScrollNext}
       onClick={scrollNext}
+      onMouseEnter={() => ref.current?.startAnimation()}
+      onMouseLeave={() => ref.current?.stopAnimation()}
       size={size}
       variant={variant}
       {...props}
     >
-      <ArrowRight />
+      <MoveRightIcon ref={ref} />
       <span className="sr-only">Next slide</span>
     </Button>
   );
