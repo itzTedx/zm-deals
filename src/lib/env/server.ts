@@ -14,6 +14,8 @@ export const env = createEnv({
 
     STRIPE_SECRET_KEY: z.string(),
     STRIPE_WEBHOOK_SECRET: z.string(),
+
+    BASE_URL: z.string(),
   },
 
   // biome-ignore lint/style/noProcessEnv: We have to use process.env here

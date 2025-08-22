@@ -139,7 +139,9 @@ export default function ProductPage({ params }: { params: Params }) {
               </p>
             </div>
           </div>
-          <BuyButton />
+
+          <BuyButton data={data} />
+
           <SeparatorBox />
           <div className="space-y-4">
             <Banner>
