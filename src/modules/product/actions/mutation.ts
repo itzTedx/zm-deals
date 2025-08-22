@@ -12,7 +12,6 @@ import { CheckoutSchema, checkoutSchema } from "../schema";
 
 export async function createCheckoutSession(checkoutData: CheckoutSchema) {
   try {
-    console.log("🔐 [DEBUG] Authenticating user session...");
     const session = await auth.api.getSession({
       headers: await headers(),
     });
@@ -32,7 +31,7 @@ export async function createCheckoutSession(checkoutData: CheckoutSchema) {
       throw new Error(error.message);
     }
 
-    const { productId, quantity, name, description, price, image } = data;
+    const { productId, quantity, name, description, price } = data;
 
     const stripeParams = {
       mode: "payment" as const,
@@ -54,8 +53,8 @@ export async function createCheckoutSession(checkoutData: CheckoutSchema) {
         productId,
       },
       customer_email: session.user.email,
-      success_url: `${env.BASE_URL}/payment?success=1`,
-      cancel_url: `${env.BASE_URL}/payment?cancelled=1`,
+      success_url: `${env.BASE_URL}/checkout?success=1`,
+      cancel_url: `${env.BASE_URL}/checkout?cancelled=1`,
     };
 
     const checkout = await stripeClient.checkout.sessions.create(stripeParams);

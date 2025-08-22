@@ -2,6 +2,7 @@ import { stripe } from "@better-auth/stripe";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { openAPI } from "better-auth/plugins";
+import Stripe from "stripe";
 
 import { db } from "@/server/db";
 
@@ -36,9 +37,18 @@ export const auth = betterAuth({
       stripeClient,
       stripeWebhookSecret: env.STRIPE_WEBHOOK_SECRET,
       createCustomerOnSignUp: true,
-      onCustomerCreate: async ({ stripeCustomer, user }, request) => {
+      onCustomerCreate: async ({ stripeCustomer, user }) => {
         // Do something with the newly created customer
         console.log(`Customer ${stripeCustomer.id} created for user ${user.id}`);
+      },
+
+      onEvent: async ({ request, type, data }) => {
+        console.log(`Event ${type} triggered for user ${request}`);
+        if (type === "checkout.session.completed") {
+          const session = data.object as Stripe.Checkout.Session;
+          const customer = await stripeClient.customers.retrieve(session.customer as string);
+          console.log(`Customer ${customer.id} retrieved for user ${session.customer}`);
+        }
       },
     }),
     openAPI(),
