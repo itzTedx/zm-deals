@@ -1,29 +1,31 @@
-import { useId } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
-import { SidebarGroup, SidebarGroupContent, SidebarInput } from "@/components/ui/sidebar";
-
+import { IconChevronRight } from "@/assets/icons/chevron";
 import { IconSearch } from "@/assets/icons/search";
 
 export function SearchForm({ ...props }: React.ComponentProps<"form">) {
-  const id = useId();
-
   return (
-    <form {...props}>
-      <SidebarGroup className="py-0">
-        <SidebarGroupContent className="relative">
-          <div className="relative">
-            <SidebarInput aria-label="Search" className="ps-9 pe-9" id={id} />
-            <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-2 text-muted-foreground/60 peer-disabled:opacity-50">
-              <IconSearch aria-hidden="true" className="shrink-0 text-gray-400" />
-            </div>
-            <div className="pointer-events-none absolute inset-y-0 end-0 flex items-center justify-center pe-2 text-muted-foreground">
-              <kbd className="inline-flex size-5 max-h-full items-center justify-center rounded bg-input px-1 font-[inherit] font-medium text-[0.625rem] text-muted-foreground/70">
-                /
-              </kbd>
-            </div>
-          </div>
-        </SidebarGroupContent>
-      </SidebarGroup>
+    <form {...props} className="flex-1">
+      <div className="relative mx-auto max-w-sm">
+        <Input
+          className="peer h-9 ps-9 pe-14 text-sm shadow-lg sm:ps-10 sm:pe-16 sm:text-base"
+          id="search"
+          placeholder="Search for products..."
+          type="search"
+        />
+        <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-muted-foreground/80 peer-disabled:opacity-50">
+          <IconSearch className="size-4 sm:size-5" />
+        </div>
+        <Button
+          aria-label="Submit search"
+          className="absolute inset-y-0 end-2 my-auto h-6 bg-card shadow-lg sm:end-3 sm:h-7"
+          type="submit"
+          variant="outline"
+        >
+          <IconChevronRight aria-hidden="true" className="size-2.5 sm:size-3" />
+        </Button>
+      </div>
     </form>
   );
 }

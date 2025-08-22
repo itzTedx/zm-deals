@@ -2,6 +2,7 @@ import { IconLogout } from "@/assets/icons/auth";
 import { LogoIcon } from "@/assets/logo";
 
 import { Button } from "../ui/button";
+import { SearchForm } from "./sidebar/search-bar";
 
 export const AppNavbar = () => {
   return (
@@ -9,6 +10,7 @@ export const AppNavbar = () => {
       <div>
         <LogoIcon />
       </div>
+      <SearchForm />
       <div>
         <Button size="btn" variant="outline">
           <IconLogout />

@@ -1,13 +1,11 @@
-import { TabsContent } from "@/components/ui/tabs";
-
 import { isAdmin } from "@/lib/auth/permissions";
 
 export default async function StudioPage() {
   await isAdmin();
 
   return (
-    <TabsContent value="tab-1">
+    <main>
       <p className="pt-1 text-center text-muted-foreground text-xs">Content for Tab 1</p>
-    </TabsContent>
+    </main>
   );
 }
