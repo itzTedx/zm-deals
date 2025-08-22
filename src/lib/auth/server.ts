@@ -1,14 +1,35 @@
+import { cache } from "react";
+import { headers } from "next/headers";
+
 import { stripe } from "@better-auth/stripe";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { openAPI } from "better-auth/plugins";
-import Stripe from "stripe";
+import { nextCookies } from "better-auth/next-js";
+import { admin as adminPlugin, openAPI } from "better-auth/plugins";
+import { createAccessControl } from "better-auth/plugins/access";
+import { adminAc } from "better-auth/plugins/admin/access";
 
 import { db } from "@/server/db";
 
 import { env } from "../env/server";
 import redis from "../redis";
 import { stripeClient } from "../stripe/client";
+import { PERMISSIONS } from "./constants";
+
+// Create access control instance
+const ac = createAccessControl(PERMISSIONS);
+
+// Define roles
+const admin = ac.newRole({
+  coupons: ["create", "update", "delete"],
+  products: ["create", "update", "delete"],
+  ...adminAc.statements,
+});
+
+const user = ac.newRole({
+  coupons: [],
+  products: [],
+});
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -18,42 +39,47 @@ export const auth = betterAuth({
   baseURL: env.BETTER_AUTH_URL,
   secret: env.BETTER_AUTH_SECRET,
   appName: "ZM Deals",
-
   emailAndPassword: {
     enabled: true,
     maxPasswordLength: 40,
     minPasswordLength: 8,
   },
-
   socialProviders: {
     google: {
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     },
   },
-
+  user: {
+    additionalFields: {
+      role: {
+        type: ["user", "admin"],
+        input: false,
+      },
+    },
+  },
   plugins: [
+    adminPlugin({
+      ac,
+      roles: {
+        admin,
+        user,
+      },
+    }),
     stripe({
       stripeClient,
       stripeWebhookSecret: env.STRIPE_WEBHOOK_SECRET,
       createCustomerOnSignUp: true,
       onCustomerCreate: async ({ stripeCustomer, user }) => {
-        // Do something with the newly created customer
         console.log(`Customer ${stripeCustomer.id} created for user ${user.id}`);
       },
-
       onEvent: async ({ request, type, data }) => {
         console.log(`Event ${type} triggered for user ${request}`);
-        if (type === "checkout.session.completed") {
-          const session = data.object as Stripe.Checkout.Session;
-          const customer = await stripeClient.customers.retrieve(session.customer as string);
-          console.log(`Customer ${customer.id} retrieved for user ${session.customer}`);
-        }
       },
     }),
     openAPI(),
+    nextCookies(),
   ],
-
   secondaryStorage: {
     get: async (key) => {
       const value = await redis.get(`session:${key}`);
@@ -76,7 +102,9 @@ export const auth = betterAuth({
   session: {
     cookieCache: {
       enabled: true,
-      maxAge: 5 * 60, // Cache duration in seconds
+      maxAge: 5 * 60,
     },
   },
 });
+
+export const getSession = cache(async () => auth.api.getSession({ headers: await headers() }));

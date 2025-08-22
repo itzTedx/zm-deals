@@ -12,8 +12,13 @@ export const users = pgTable("users", {
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
   updatedAt: timestamp("updated_at")
-    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .defaultNow()
+    .$onUpdate(() => new Date())
     .notNull(),
+  role: text("role"),
+  banned: boolean("banned"),
+  banReason: text("ban_reason"),
+  banExpires: timestamp("ban_expires"),
   stripeCustomerId: text("stripe_customer_id"),
 });
 

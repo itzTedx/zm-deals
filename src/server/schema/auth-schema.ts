@@ -1,4 +1,6 @@
-import { boolean, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { boolean, pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+
+export const rolesEnum = pgEnum("roles", ["user", "admin"]);
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom().notNull(),
@@ -9,6 +11,10 @@ export const users = pgTable("users", {
     .notNull(),
   image: text("image"),
   stripeCustomerId: text("stripe_customer_id"),
+  role: rolesEnum("role").default("user"),
+  banned: boolean("banned"),
+  banReason: text("ban_reason"),
+  banExpires: timestamp("ban_expires"),
   createdAt: timestamp("created_at")
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),

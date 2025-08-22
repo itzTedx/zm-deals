@@ -7,7 +7,7 @@ import { geist, helvetica } from "@/assets/fonts";
 
 import { cn } from "@/lib/utils";
 
-export default function RootLayout({
+export default function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
