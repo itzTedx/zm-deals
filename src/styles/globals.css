@@ -27,11 +27,11 @@
   --color-gray-800: var(--gray-800);
   --color-gray-900: var(--gray-900);
   --color-gray-950: var(--gray-950);
-  
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-helvetica: var(--font-helvetica);
-  
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
@@ -78,6 +78,15 @@
 
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
+
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
 }
 
 :root {
@@ -108,7 +117,7 @@
   --gray-800: oklch(0.2809 0 0);
   --gray-900: oklch(0.2264 0 0);
   --gray-950: oklch(0.2046 0 0);
-  
+
   --primary: oklch(0.2809 0 0);
   --primary-foreground: oklch(0.985 0 0);
 
@@ -119,7 +128,7 @@
 
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
-  
+
   --card: oklch(1 0 0);
   --card-background: oklch(0.9551 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -132,7 +141,7 @@
 
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(100% 0.00011 271.152);
-  
+
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
@@ -145,9 +154,18 @@
 
   --shadow-lg: 0 24px 24px -12px color-mix(in oklab, var(--primary) 4%, transparent), 0 12px 12px -6px color-mix(in oklab, var(--primary) 4%, transparent), 0 6px 6px -3px color-mix(in oklab, var(--primary) 4%, transparent), 0 3px 3px -1.5px color-mix(in oklab, var(--primary) 4%, transparent), 0 1px 1px 0.5px color-mix(in oklab, var(--primary) 4%, transparent), 0 0 0 1px color-mix(in oklab, var(--primary) 4%, transparent);
   --shadow-xl: 0 1px 1px 0.5px color-mix(in oklab, var(--gray-900) 4%, transparent), 0 3px 3px -1.5px color-mix(in oklab, var(--gray-900) 4%, transparent), 0 6px 6px -3px color-mix(in oklab, var(--gray-900) 4%, transparent), 0 12px 12px -6px color-mix(in oklab, var(--gray-900) 4%, transparent), 0 24px 24px -12px color-mix(in oklab, var(--gray-900) 4%, transparent), 0 48px 48px -24px color-mix(in oklab, var(--gray-900) 4%, transparent), 0 0 0 1px color-mix(in oklab, var(--gray-900) 4%, transparent);
-  
+
   --shadow-brand-md: 0 4px 4px 0 color-mix(in oklab, var(--brand-500) 20%, transparent), 0 0 0 1px var(--brand-700), inset 0 -1px 1px -0.5px var(--brand-200);
   --shadow-brand-lg: 0 1px 2px -0.5px color-mix(in oklab, var(--brand-800) 20%, transparent), 0 4px 4px -2px color-mix(in oklab, var(--brand-800) 16%, transparent), 0 10px 6px -3px color-mix(in oklab, var(--brand-800) 10%, transparent), 0 17px 8px -4px color-mix(in oklab, var(--brand-800) 5%, transparent), 0 27px 8px -4px color-mix(in oklab, var(--brand-800) 1%, transparent);
+
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.37 0.013 285.805);
+  --sidebar-primary: oklch(0.21 0.006 285.885);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.967 0.001 286.375);
+  --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
+  --sidebar-border: oklch(0.92 0.004 286.32);
+  --sidebar-ring: oklch(0.871 0.006 286.286);
 }
 
 @layer base {
@@ -156,9 +174,9 @@
   }
   body {
     @apply bg-background text-foreground;
-    
+
     /* Debug CSS - uncomment to enable */
-    
+
     /* * {
       outline: 1px solid red !important;
     }
@@ -171,7 +189,7 @@
     div:hover {
       outline: 2px solid rgba(0, 0, 255, 0.5) !important;
     } */
-   
+
   }
 }
 
@@ -196,5 +214,16 @@
     padding-inline: 5rem;
     max-width: 120rem;
   }
+}
+
+.dark {
+  --sidebar: hsl(240 5.9% 10%);
+  --sidebar-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-primary: hsl(224.3 76.3% 48%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(240 3.7% 15.9%);
+  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-border: hsl(240 3.7% 15.9%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
 }
 
