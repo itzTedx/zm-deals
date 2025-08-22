@@ -2,8 +2,7 @@
 
 import * as React from "react";
 
-import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group";
-import { type ToggleGroupSingleProps } from "@radix-ui/react-toggle-group";
+import { ToggleGroup as ToggleGroupPrimitive, type ToggleGroupSingleProps } from "radix-ui";
 
 import { IconStar } from "@/assets/icons/star";
 

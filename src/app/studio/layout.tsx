@@ -10,5 +10,11 @@ export default function StudioLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <>{children}</>;
+  return (
+    // <SidebarProvider>
+    //   <AppSidebar />
+    //   <SidebarInset>{children}</SidebarInset>
+    // </SidebarProvider>
+    <>{children}</>
+  );
 }
