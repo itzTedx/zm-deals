@@ -22,7 +22,7 @@ export const Navbar = () => {
   return (
     <header className="sticky top-0 z-999 h-fit">
       <div className="container relative z-999 mx-auto max-w-7xl pt-3 md:border-x">
-        <nav className="relative z-999 mx-auto flex items-center justify-between gap-4 rounded-xl bg-card/90 p-2.5 font-helvetica shadow-lg backdrop-blur-2xl max-md:justify-between md:max-w-7xl md:gap-8">
+        <nav className="relative inset-shadow-[0_1px_12px_5px_oklch(1_0_0)] z-999 mx-auto flex items-center justify-between gap-4 rounded-xl bg-card/85 p-2.5 font-helvetica shadow-lg backdrop-blur-2xl max-md:justify-between md:max-w-7xl md:gap-8">
           <div className="flex items-center gap-2 md:gap-6">
             <Link aria-label="go home" className="flex items-center gap-2" href="/">
               <LogoIcon />
