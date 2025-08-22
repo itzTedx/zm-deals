@@ -20,7 +20,7 @@ export default function StudioLayout({
       <div className="sticky top-0 z-999 bg-card">
         <AppNavbar />
         <ScrollArea>
-          <div className="container flex w-full items-center gap-6 py-2">
+          <div className="container flex w-full items-center gap-7 border-b py-2.5">
             <Link className="flex items-center gap-0.5 font-medium text-sm [&_svg]:size-3.5" href="/studio">
               <HouseIcon aria-hidden="true" className="-ms-0.5 me-1.5 opacity-60" size={16} />
               Overview
