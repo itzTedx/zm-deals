@@ -216,7 +216,7 @@ export const ProductForm = () => {
                     <FormItem>
                       <FormLabel>Schedule</FormLabel>
                       <FormControl>
-                        <Popover>
+                        <Popover onOpenChange={setOpen} open={open}>
                           <PopoverTrigger asChild>
                             <Button className="w-48 justify-between font-normal" id="date" variant="outline">
                               {field.value ? field.value.toLocaleString() : "Select date"}
