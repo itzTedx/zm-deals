@@ -1,3 +1,4 @@
+import { stripe } from "@better-auth/stripe";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
@@ -5,6 +6,7 @@ import { db } from "@/server/db";
 
 import { env } from "../env/server";
 import redis from "../redis";
+import { stripeClient } from "../stripe/client";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -27,6 +29,18 @@ export const auth = betterAuth({
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     },
   },
+
+  plugins: [
+    stripe({
+      stripeClient,
+      stripeWebhookSecret: env.STRIPE_WEBHOOK_SECRET,
+      createCustomerOnSignUp: true,
+      onCustomerCreate: async ({ stripeCustomer, user }, request) => {
+        // Do something with the newly created customer
+        console.log(`Customer ${stripeCustomer.id} created for user ${user.id}`);
+      },
+    }),
+  ],
 
   secondaryStorage: {
     get: async (key) => {

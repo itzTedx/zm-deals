@@ -11,6 +11,9 @@ export const env = createEnv({
 
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
+
+    STRIPE_SECRET_KEY: z.string(),
+    STRIPE_WEBHOOK_SECRET: z.string(),
   },
 
   // biome-ignore lint/style/noProcessEnv: We have to use process.env here

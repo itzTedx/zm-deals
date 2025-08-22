@@ -14,6 +14,7 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at")
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
+  stripeCustomerId: text("stripe_customer_id"),
 });
 
 export const accounts = pgTable("accounts", {
