@@ -24,7 +24,7 @@ export const Hero = () => {
   const { title, overview, price, originalPrice, featuredImage, slug, endsIn } = PRODUCT;
   return (
     <section>
-      <div className="container relative max-w-7xl gap-4 border-x pt-9 pb-12 md:pb-14 lg:pb-16 xl:pb-20">
+      <div className="container relative max-w-7xl gap-4 border-x pb-12 md:pb-14 lg:pb-16 xl:pb-20">
         <div className="relative">
           <Carousel
             className="w-full"
@@ -34,21 +34,21 @@ export const Hero = () => {
           >
             <CarouselContent className="-ml-3">
               <CarouselItem className="basis-1/1 rounded-2xl py-5 pl-4 lg:basis-2/3">
-                <div className="grid grid-cols-1 items-center gap-4 overflow-hidden rounded-2xl bg-card p-6 shadow-lg sm:gap-8 md:grid-cols-2 md:p-12">
-                  <div className="space-y-4">
+                <div className="grid grid-cols-2 items-center gap-4 overflow-hidden rounded-2xl bg-card p-6 shadow-lg sm:gap-8 md:p-12">
+                  <div className="relative z-10 space-y-2 sm:space-y-4">
                     <Badge className="pl-2 font-normal" variant="default">
                       <IconHourglass className="text-brand-50" /> Offer ends in{" "}
-                      <AnimatedCountdown className="font-medium text-card" endsIn={endsIn} />
+                      <AnimatedCountdown className="font-medium text-card text-xs sm:text-sm" endsIn={endsIn} />
                     </Badge>
                     <div className="space-y-2 sm:space-y-3">
-                      <h1 className="font-bold text-2xl leading-tight md:text-3xl">{title}</h1>
-                      <p className="text-muted-foreground text-sm sm:text-base">{overview}</p>
+                      <h1 className="font-bold leading-tight sm:text-2xl md:text-3xl">{title}</h1>
+                      <p className="text-muted-foreground text-xs sm:text-sm md:text-base">{overview}</p>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                      <p className="relative flex items-center gap-1 font-bold text-2xl text-brand-600 normal-nums">
+                      <p className="relative flex items-center gap-1 font-bold text-brand-600 text-lg normal-nums md:text-2xl">
                         <span>
-                          <IconCurrency className="size-5 text-brand-400" />
+                          <IconCurrency className="size-4 text-brand-400 md:size-5" />
                         </span>
                         <span>{price}</span>
                       </p>
@@ -80,7 +80,7 @@ export const Hero = () => {
                 </div>
               </CarouselItem>
               <CarouselItem className="basis-1/1 py-5 pl-4 lg:basis-1/3">
-                <div className="relative col-span-1 h-full overflow-hidden rounded-2xl bg-card shadow-lg">
+                <div className="relative h-full overflow-hidden rounded-2xl bg-card shadow-lg">
                   <div className="relative z-10 flex items-center rounded-xl p-6">
                     <p className="font-medium text-card text-sm uppercase">Sale</p>
                   </div>
@@ -88,21 +88,21 @@ export const Hero = () => {
                 </div>
               </CarouselItem>
               <CarouselItem className="basis-1/1 rounded-2xl py-5 pl-4 lg:basis-2/3">
-                <div className="grid grid-cols-1 items-center gap-4 overflow-hidden rounded-2xl bg-card p-6 shadow-lg sm:gap-8 md:grid-cols-2 md:p-12">
-                  <div className="space-y-4">
-                    <Badge className="pl-2" variant="outline">
-                      <IconHourglass className="text-brand-500" /> Offer ends in{" "}
-                      <AnimatedCountdown className="font-semibold text-foreground" endsIn={endsIn} />
+                <div className="grid grid-cols-2 items-center gap-4 overflow-hidden rounded-2xl bg-card p-6 shadow-lg sm:gap-8 md:p-12">
+                  <div className="relative z-10 space-y-2 sm:space-y-4">
+                    <Badge className="pl-2 font-normal" variant="default">
+                      <IconHourglass className="text-brand-50" /> Offer ends in{" "}
+                      <AnimatedCountdown className="font-medium text-card text-xs sm:text-sm" endsIn={endsIn} />
                     </Badge>
                     <div className="space-y-2 sm:space-y-3">
-                      <h1 className="font-bold text-2xl leading-tight md:text-3xl">{title}</h1>
-                      <p className="text-muted-foreground text-sm sm:text-base">{overview}</p>
+                      <h1 className="font-bold leading-tight sm:text-2xl md:text-3xl">{title}</h1>
+                      <p className="text-muted-foreground text-xs sm:text-sm md:text-base">{overview}</p>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                      <p className="relative flex items-center gap-1 font-bold text-2xl text-brand-600 normal-nums">
+                      <p className="relative flex items-center gap-1 font-bold text-brand-600 text-lg normal-nums md:text-2xl">
                         <span>
-                          <IconCurrency className="size-5 text-brand-400" />
+                          <IconCurrency className="size-4 text-brand-400 md:size-5" />
                         </span>
                         <span>{price}</span>
                       </p>

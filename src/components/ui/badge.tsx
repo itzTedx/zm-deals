@@ -19,7 +19,7 @@ const badgeVariants = cva(
         outline: "bg-card text-muted-foreground shadow-lg [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
       },
       size: {
-        default: "rounded-lg px-3 py-1.5 text-sm",
+        default: "rounded-lg px-3 py-1 text-sm sm:py-1.5",
         sm: "rounded-md px-1.5 py-0.5 text-xs",
       },
     },

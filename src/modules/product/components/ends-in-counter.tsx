@@ -161,7 +161,7 @@ export const EndsInCounter = React.memo<EndsInCounterProps>(({ endsIn, className
           <IconHourglass />
         </BannerIcon>
         <BannerText>
-          <BannerTitle className="text-sm leading-none sm:text-base">
+          <BannerTitle className="text-xs leading-none sm:text-sm md:text-base">
             Deal ends in{" "}
             <span className="font-medium">
               <AnimatedCountdown endsIn={endsIn} showSeconds={showSeconds} />
