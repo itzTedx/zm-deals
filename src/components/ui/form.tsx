@@ -3,7 +3,6 @@
 import * as React from "react";
 
 import { Label as LabelPrimitive, Slot as SlotPrimitive } from "radix-ui";
-
 import {
   Controller,
   type ControllerProps,
@@ -15,6 +14,8 @@ import {
 } from "react-hook-form";
 
 import { Label } from "@/components/ui/label";
+
+import { IconWarnCircle } from "@/assets/icons/info";
 
 import { cn } from "@/lib/utils";
 
@@ -131,7 +132,13 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
   }
 
   return (
-    <p className={cn("text-destructive text-sm", className)} data-slot="form-message" id={formMessageId} {...props}>
+    <p
+      className={cn("flex items-center gap-1 text-brand-700 text-xs", className)}
+      data-slot="form-message"
+      id={formMessageId}
+      {...props}
+    >
+      <IconWarnCircle className="size-3.5" />
       {body}
     </p>
   );

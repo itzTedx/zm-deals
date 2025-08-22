@@ -6,6 +6,7 @@ export const checkoutSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
   price: z.number().min(1),
+
   image: z.string().min(1),
 });
 
@@ -18,13 +19,18 @@ export const productImageSchema = z.object({
 });
 
 export const productSchema = z.object({
-  title: z.string().min(1, { message: "Title is required" }),
+  title: z.string("Title is required").min(1, { message: "Title can't be blank" }),
+  overview: z.string().min(1, { message: "Overview is required" }),
   description: z.string().min(1, { message: "Description is required" }),
   price: z.number().min(1, { message: "Price is required" }),
+  slug: z.string().min(1, { message: "Slug can't be blank" }),
+  compareAtPrice: z.number().optional(),
+  inventory: z.number("Inventory is required"),
   images: z.array(productImageSchema).min(1, { message: "Images are required" }),
-  category: z.string().min(1, { message: "Category is required" }),
-  tags: z.array(z.string()).min(1, { message: "Tags are required" }),
+
   isFeatured: z.boolean(),
+  endsIn: z.date().optional(),
+  schedule: z.date().optional(),
 });
 
 export type ProductSchema = z.infer<typeof productSchema>;
