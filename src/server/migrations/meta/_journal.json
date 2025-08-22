@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1755592710907,
-      "tag": "0000_stale_skullbuster",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1755843743044,
-      "tag": "0001_noisy_ultragirl",
+      "when": 1755846796289,
+      "tag": "0000_exotic_yellow_claw",
       "breakpoints": true
     }
   ]

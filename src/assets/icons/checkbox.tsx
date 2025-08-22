@@ -1,3 +1,12 @@
+"use client";
+
+import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
+
+import type { HTMLMotionProps, Variants } from "motion/react";
+import { motion, useAnimation } from "motion/react";
+
+import { cn } from "@/lib/utils";
+
 export const IconCheckboxCircle = (props: SvgProps) => {
   return (
     <svg {...props} fill="none" height="24" viewBox="0 0 25 24" width="25" xmlns="http://www.w3.org/2000/svg">
@@ -8,3 +17,106 @@ export const IconCheckboxCircle = (props: SvgProps) => {
     </svg>
   );
 };
+
+export interface CircleCheckBigIconHandle {
+  startAnimation: () => void;
+  stopAnimation: () => void;
+}
+
+interface CircleCheckBigIconProps extends HTMLMotionProps<"div"> {
+  size?: number;
+}
+
+const CircleCheckBigIcon = forwardRef<CircleCheckBigIconHandle, CircleCheckBigIconProps>(
+  ({ className, size = 24, ...props }, ref) => {
+    const controls = useAnimation();
+    const tickControls = useAnimation();
+    const isControlled = useRef(false);
+
+    useImperativeHandle(ref, () => {
+      isControlled.current = true;
+      return {
+        startAnimation: () => {
+          controls.start("animate");
+          tickControls.start("animate");
+        },
+        stopAnimation: () => {
+          controls.start("normal");
+          tickControls.start("normal");
+        },
+      };
+    });
+
+    const handleEnter = useCallback(() => {
+      if (!isControlled.current) {
+        controls.start("animate");
+        tickControls.start("animate");
+      }
+    }, [controls, tickControls]);
+
+    const handleLeave = useCallback(() => {
+      if (!isControlled.current) {
+        controls.start("normal");
+        tickControls.start("normal");
+      }
+    }, [controls, tickControls]);
+
+    const svgVariants: Variants = {
+      normal: { scale: 1 },
+      animate: {
+        scale: [1, 1.05, 0.98, 1],
+        transition: {
+          duration: 1,
+          ease: [0.42, 0, 0.58, 1],
+        },
+      },
+    };
+
+    const circleVariants: Variants = {
+      normal: { pathLength: 1, opacity: 1 },
+      animate: { pathLength: 1, opacity: 1 },
+    };
+
+    const tickVariants: Variants = {
+      normal: { pathLength: 1, opacity: 1 },
+      animate: {
+        pathLength: [0, 1],
+        opacity: 1,
+        transition: {
+          duration: 0.8,
+          ease: [0.42, 0, 0.58, 1],
+        },
+      },
+    };
+
+    return (
+      <motion.div
+        className={cn("inline-flex", className)}
+        onMouseEnter={handleEnter}
+        onMouseLeave={handleLeave}
+        {...props}
+      >
+        <motion.svg
+          animate={controls}
+          fill="none"
+          height={size}
+          initial="normal"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          variants={svgVariants}
+          viewBox="0 0 24 24"
+          width={size}
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <motion.path d="M21.801 10A10 10 0 1 1 17 3.335" initial="normal" variants={circleVariants} />
+          <motion.path animate={tickControls} d="m9 11 3 3L22 4" initial="normal" variants={tickVariants} />
+        </motion.svg>
+      </motion.div>
+    );
+  }
+);
+
+CircleCheckBigIcon.displayName = "CircleCheckBigIcon";
+export { CircleCheckBigIcon };

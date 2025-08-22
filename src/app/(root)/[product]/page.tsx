@@ -14,15 +14,12 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
 import ImageCarousel from "@/components/ui/carousel-with-thumbnail";
 import StarRating from "@/components/ui/rating";
 import { SeparatorBox } from "@/components/ui/separator";
 
 import { IconPackage } from "@/assets/icons/bag";
 import { IconDocument } from "@/assets/icons/book";
-import { IconCheckboxCircle } from "@/assets/icons/checkbox";
-import { IconChevronRight } from "@/assets/icons/chevron";
 import { IconCurrency } from "@/assets/icons/currency";
 import { IconShield } from "@/assets/icons/shield";
 
@@ -33,6 +30,8 @@ import { calculateAverageRating, calculateDiscount } from "@/lib/utils";
 import { Deals } from "@/modules/home/sections";
 import { EndsInCounter } from "@/modules/product/components/ends-in-counter";
 import { QuantityInput } from "@/modules/product/components/quantity-input";
+import { BuyButton } from "@/modules/product/components/ui/buy-button";
+import { CheckboxBadge } from "@/modules/product/components/ui/checkbox-badge";
 import { Reviews } from "@/modules/product/sections/reviews";
 
 type Params = Promise<{ product: string }>;
@@ -140,9 +139,7 @@ export default function ProductPage({ params }: { params: Params }) {
               </p>
             </div>
           </div>
-          <Button className="w-full" size="lg">
-            Claim this deal now <IconChevronRight />
-          </Button>
+          <BuyButton />
           <SeparatorBox />
           <div className="space-y-4">
             <Banner>
@@ -175,15 +172,9 @@ export default function ProductPage({ params }: { params: Params }) {
                 <BannerText>
                   <BannerTitle className="font-medium text-gray-500">Order Guarantee</BannerTitle>
                   <BannerDescription className="flex flex-wrap gap-2">
-                    <Badge size="sm" variant="success">
-                      <IconCheckboxCircle /> Free Returns
-                    </Badge>
-                    <Badge size="sm" variant="success">
-                      <IconCheckboxCircle /> Return if item damaged
-                    </Badge>
-                    <Badge size="sm" variant="success">
-                      <IconCheckboxCircle /> Cash on Delivery
-                    </Badge>
+                    <CheckboxBadge>Free Returns</CheckboxBadge>
+                    <CheckboxBadge>Return if item damaged</CheckboxBadge>
+                    <CheckboxBadge>Cash on Delivery</CheckboxBadge>
                   </BannerDescription>
                 </BannerText>
               </BannerContent>

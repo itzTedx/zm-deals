@@ -20,6 +20,7 @@ CREATE TABLE "users" (
 	"email" text NOT NULL,
 	"email_verified" boolean NOT NULL,
 	"image" text,
+	"stripe_customer_id" text,
 	"created_at" timestamp NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "users_email_unique" UNIQUE("email")
