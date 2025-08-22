@@ -85,7 +85,7 @@ export default function ProductPage({ params }: { params: Params }) {
         </div>
 
         {/* Product Details Section */}
-        <div className="sticky top-24 h-fit space-y-4 py-2 md:col-span-2 md:space-y-6">
+        <div className="sticky top-24 h-fit space-y-4 py-2 md:col-span-2 md:space-y-6 md:py-6">
           {/* Countdown Banner */}
           <EndsInCounter endsIn={data.endsIn} />
 
