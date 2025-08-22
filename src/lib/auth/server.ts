@@ -1,6 +1,7 @@
 import { stripe } from "@better-auth/stripe";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { openAPI } from "better-auth/plugins";
 
 import { db } from "@/server/db";
 
@@ -40,6 +41,7 @@ export const auth = betterAuth({
         console.log(`Customer ${stripeCustomer.id} created for user ${user.id}`);
       },
     }),
+    openAPI(),
   ],
 
   secondaryStorage: {
