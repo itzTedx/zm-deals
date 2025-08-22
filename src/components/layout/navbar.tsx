@@ -2,49 +2,61 @@
 
 import Link from "next/link";
 
+import { IconShoppingBag } from "@/assets/icons/bag";
 import { IconDiamond } from "@/assets/icons/diamonds";
 import { IconMenu } from "@/assets/icons/menu";
 import { IconUser } from "@/assets/icons/user";
 import { LogoIcon, LogoWordMark } from "@/assets/logo";
 
 import { NAV_LINKS } from "@/data/constants";
+import { useSession } from "@/lib/auth/client";
 
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
 
 export const Navbar = () => {
+  const { data: session } = useSession();
+
   return (
-    <header className="relative h-fit max-md:sticky max-md:top-0 max-md:z-999">
+    <header className="sticky top-0 z-999 h-fit">
       <div className="container relative z-999 mx-auto max-w-7xl pt-3 md:border-x">
-        <nav className="z-999 mx-auto flex items-center gap-4 rounded-xl bg-card p-2.5 font-helvetica shadow-lg max-md:justify-between md:max-w-fit md:gap-8">
-          <Link aria-label="go home" className="flex items-center gap-2" href="/">
-            <LogoIcon />
-            <LogoWordMark className="md:hidden" />
-          </Link>
-
-          {/* Desktop Navigation */}
-          <ul className="hidden items-center gap-6 md:flex">
-            {NAV_LINKS.map((nav) => (
-              <li key={nav.href}>
-                <Link className="font-medium text-gray-700 transition-colors hover:text-brand-600" href={nav.href}>
-                  {nav.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          <div className="hidden size-0.5 rounded-full bg-muted-foreground md:block" />
+        <nav className="relative z-999 mx-auto flex items-center justify-between gap-4 rounded-xl bg-card/90 p-2.5 font-helvetica shadow-lg backdrop-blur-2xl max-md:justify-between md:max-w-7xl md:gap-8">
+          <div className="flex items-center gap-2 md:gap-6">
+            <Link aria-label="go home" className="flex items-center gap-2" href="/">
+              <LogoIcon />
+              <LogoWordMark className="md:hidden" />
+            </Link>
+            <div className="hidden size-0.5 rounded-full bg-muted-foreground md:block" />
+            {/* Desktop Navigation */}
+            <ul className="hidden items-center gap-6 md:flex">
+              {NAV_LINKS.map((nav) => (
+                <li key={nav.href}>
+                  <Link className="font-medium text-gray-700 transition-colors hover:text-brand-600" href={nav.href}>
+                    {nav.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           <div className="flex items-center gap-2 md:gap-4">
-            <Button size="icon" variant="outline">
-              <IconUser />
+            <Button className="hidden sm:inline-flex" variant="outline">
+              <IconShoppingBag className="text-brand-500" />
             </Button>
-            <Button asChild className="hidden sm:inline-flex">
-              <Link href="/current-deal">
-                <IconDiamond className="text-brand-500" />
-                <span>Claim the Combo</span>
-              </Link>
-            </Button>
+            {session ? (
+              <Avatar>
+                <AvatarFallback>{session.user?.name?.charAt(0)}</AvatarFallback>
+                <AvatarImage alt={session.user.name ?? ""} src={session.user.image ?? undefined} />
+              </Avatar>
+            ) : (
+              <Button asChild size="icon" variant="outline">
+                <Link href="/auth/login">
+                  <IconUser />
+                </Link>
+              </Button>
+            )}
 
             {/* Mobile Sheet Menu */}
             <Sheet>
@@ -90,17 +102,15 @@ export const Navbar = () => {
               </SheetContent>
             </Sheet>
           </div>
+
+          <div className="-right-1.5 -translate-y-1/2 pointer-events-none absolute top-1/2 size-2.5 rounded border bg-card" />
+          <div className="-left-1.5 -translate-y-1/2 pointer-events-none absolute top-1/2 size-2.5 rounded border bg-card" />
         </nav>
 
-        <div className="-left-1.5 pointer-events-none absolute top-1/2 hidden size-2.5 rounded border bg-card md:block" />
-        <div className="-right-1.5 pointer-events-none absolute top-1/2 hidden size-2.5 rounded border bg-card md:block" />
+        <div className="-left-1.5 pointer-events-none absolute top-1/2 hidden size-2.5 translate-y-0.5 rounded border bg-card md:block" />
+        <div className="-right-1.5 pointer-events-none absolute top-1/2 hidden size-2.5 translate-y-0.5 rounded border bg-card md:block" />
       </div>
-      <div className="absolute top-1/2 left-0 hidden h-px w-1/4 translate-y-1 bg-border md:block">
-        <div className="-right-1.5 -translate-y-1/2 pointer-events-none absolute top-1/2 size-2.5 rounded border bg-card" />
-      </div>
-      <div className="absolute top-1/2 right-0 hidden h-px w-1/4 translate-y-1 bg-border md:block">
-        <div className="-left-1.5 -translate-y-1/2 pointer-events-none absolute top-1/2 size-2.5 rounded border bg-card" />
-      </div>
+      <Separator className="absolute top-1/2 left-0 translate-y-1.5" />
     </header>
   );
 };

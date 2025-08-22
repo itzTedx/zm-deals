@@ -126,7 +126,7 @@ export const DEALS: Deal[] = [
     originalPrice: "109.50",
     featuredImage: "/images/usb-c-car-charger.webp",
     stock: 16,
-    endsIn: new Date("2025-08-21T21:59:46Z"), // Deal ends on August 23rd, 2025
+    endsIn: new Date("2025-08-22T21:59:46Z"), // Deal ends on August 23rd, 2025
     description:
       "Drive safer and smarter with the Magnetic Car Phone Mount. Designed with powerful magnets and a sleek, compact design, it keeps your phone securely in place while you focus on the road. Whether you're navigating maps, answering calls hands-free, or playing music, this mount makes your ride stress-free. Perfect for daily commutes and road trips alike.",
     images: [
