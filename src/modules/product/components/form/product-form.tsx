@@ -1,14 +1,19 @@
 "use client";
 
+import { useTransition } from "react";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { LoadingSwap } from "@/components/ui/loading-swap";
 
 import { IconChevronRight } from "@/assets/icons/chevron";
 import { IconProduct } from "@/assets/icons/product";
 
+import { upsertProduct } from "../../actions/mutation";
 import { ProductSchema, productSchema } from "../../schema";
 import { Classification } from "./sections/classification";
 import { ProductMeta } from "./sections/meta";
@@ -17,20 +22,40 @@ import { ProductDetails } from "./sections/product-details";
 import { Scheduling } from "./sections/scheduling";
 
 export const ProductForm = () => {
+  const [isLoading, startTransition] = useTransition();
   const form = useForm<ProductSchema>({
     resolver: zodResolver(productSchema),
     defaultValues: {
       title: "",
       description: "",
+      overview: "",
+      slug: "",
       price: 0,
-      images: [],
+      compareAtPrice: undefined,
+      inventory: 0,
+      images: [{ url: "/images/vacuum-holder.webp", isFeatured: true, order: 1 }],
       isFeatured: false,
+      endsIn: undefined,
       schedule: undefined,
+      meta: {
+        title: undefined,
+        description: undefined,
+        keywords: undefined,
+      },
     },
   });
 
+  const validation = productSchema.safeParse(form.watch());
+  console.log(validation);
+
   function onSubmit(values: ProductSchema) {
-    console.log(values);
+    startTransition(async () => {
+      const { success, message } = await upsertProduct(values);
+
+      if (!success) {
+        toast.error(message);
+      }
+    });
   }
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 pt-4 pb-12">
@@ -43,7 +68,9 @@ export const ProductForm = () => {
                 Product
               </h1>
             </div>
-            <Button size="sm">Save Product</Button>
+            <Button disabled={isLoading} size="sm">
+              <LoadingSwap isLoading={isLoading}>Save Product</LoadingSwap>
+            </Button>
           </div>
           <div className="relative col-span-2 space-y-4">
             <ProductDetails />

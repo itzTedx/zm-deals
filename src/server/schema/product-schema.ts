@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { boolean, integer, pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { boolean, decimal, integer, pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 import { metaTable } from "./meta-schema";
 
@@ -12,8 +12,8 @@ export const products = pgTable("products", {
   description: text("description").notNull(),
   slug: text("slug").notNull().unique(),
 
-  price: integer("price").notNull(),
-  compareAtPrice: integer("compare_at_price"),
+  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  compareAtPrice: decimal("compare_at_price", { precision: 10, scale: 2 }),
   inventory: integer("inventory").notNull().default(0),
   image: text("image").notNull(),
 

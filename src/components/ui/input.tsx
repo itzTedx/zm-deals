@@ -1,8 +1,8 @@
-import * as React from "react";
+import { type ComponentProps } from "react";
 
 import { cn } from "@/lib/utils";
 
-function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+function Input({ className, type, ...props }: ComponentProps<"input">) {
   return (
     <input
       className={cn(
@@ -18,4 +18,25 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   );
 }
 
-export { Input };
+function NumberInput({
+  onChange,
+  value,
+  ...props
+}: Omit<ComponentProps<typeof Input>, "type" | "onChange" | "value"> & {
+  onChange: (value: number | null) => void;
+  value: undefined | null | number;
+}) {
+  return (
+    <Input
+      {...props}
+      onChange={(e) => {
+        const number = e.target.valueAsNumber;
+        onChange(isNaN(number) ? null : number);
+      }}
+      type="number"
+      value={value ?? ""}
+    />
+  );
+}
+
+export { Input, NumberInput };

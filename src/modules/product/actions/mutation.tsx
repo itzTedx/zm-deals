@@ -11,7 +11,7 @@ import { metaTable, products } from "@/server/schema";
 
 import { productSchema } from "../schema";
 
-export async function upsertProduct(rawData: unknown) {
+export async function upsertProduct(rawData: unknown): Promise<{ success: boolean; message: string }> {
   const session = await auth.api.getSession({ headers: await headers() });
 
   if (!session) {
@@ -40,8 +40,8 @@ export async function upsertProduct(rawData: unknown) {
           description: data.description,
           slug: data.slug,
 
-          price: data.price,
-          compareAtPrice: data.compareAtPrice,
+          price: data.price.toString(),
+          compareAtPrice: data.compareAtPrice?.toString(),
           inventory: data.inventory,
           image: data.images[0].url,
 
@@ -88,5 +88,11 @@ export async function upsertProduct(rawData: unknown) {
         message: `Product ${product.title} created successfully`,
       };
     });
-  } catch {}
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      message: "Failed to create product",
+    };
+  }
 }

@@ -68,7 +68,7 @@ export const Scheduling = () => {
         />
         <FormField
           control={form.control}
-          name="schedule"
+          name="endsIn"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Offer Ends on</FormLabel>

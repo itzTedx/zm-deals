@@ -2,7 +2,7 @@ import { useFormContext } from "react-hook-form";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { NumberInput } from "@/components/ui/input";
 
 import { ProductSchema } from "@/modules/product/schema";
 
@@ -22,7 +22,7 @@ export const PricingInventory = () => {
             <FormItem>
               <FormLabel>Price</FormLabel>
               <FormControl>
-                <Input placeholder="Product Price" {...field} />
+                <NumberInput placeholder="Product Price" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -35,7 +35,7 @@ export const PricingInventory = () => {
             <FormItem>
               <FormLabel>Compare At Price</FormLabel>
               <FormControl>
-                <Input placeholder="Product Compare At Price" {...field} />
+                <NumberInput placeholder="Product Compare At Price" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -48,7 +48,7 @@ export const PricingInventory = () => {
             <FormItem>
               <FormLabel>Stock</FormLabel>
               <FormControl>
-                <Input placeholder="Product Stock" {...field} />
+                <NumberInput min={0} placeholder="Product Stock" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
