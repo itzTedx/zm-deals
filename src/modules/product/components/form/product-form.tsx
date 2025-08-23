@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -23,6 +24,8 @@ import { Scheduling } from "./sections/scheduling";
 
 export const ProductForm = () => {
   const [isLoading, startTransition] = useTransition();
+  const router = useRouter();
+
   const form = useForm<ProductSchema>({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -45,8 +48,9 @@ export const ProductForm = () => {
     },
   });
 
-  const validation = productSchema.safeParse(form.watch());
-  console.log(validation);
+  // DEBUG
+  // const validation = productSchema.safeParse(form.watch());
+  // console.log(validation);
 
   function onSubmit(values: ProductSchema) {
     startTransition(async () => {
@@ -54,6 +58,12 @@ export const ProductForm = () => {
 
       if (!success) {
         toast.error(message);
+        return;
+      }
+
+      if (success) {
+        toast.success(message);
+        router.push("/studio/products");
       }
     });
   }
