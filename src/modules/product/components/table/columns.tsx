@@ -1,4 +1,6 @@
-import { RiCheckLine, RiVerifiedBadgeFill } from "@remixicon/react";
+import Image from "next/image";
+
+import { RiCheckLine } from "@remixicon/react";
 import { ColumnDef, FilterFn } from "@tanstack/react-table";
 
 import { Badge } from "@/components/ui/badge";
@@ -6,23 +8,24 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
+import { IconCurrency } from "@/assets/icons/currency";
+
 import { cn } from "@/lib/utils";
 
-import { Item } from "./data-table";
+import { ProductQueryResult } from "../../types";
 import { RowActions } from "./row-actions";
 
 interface GetColumnsProps {
-  data: Item[];
-  setData: React.Dispatch<React.SetStateAction<Item[]>>;
+  data: ProductQueryResult[];
 }
 
-const statusFilterFn: FilterFn<Item> = (row, columnId, filterValue: string[]) => {
+const statusFilterFn: FilterFn<ProductQueryResult> = (row, columnId, filterValue: string[]) => {
   if (!filterValue?.length) return true;
   const status = row.getValue(columnId) as string;
   return filterValue.includes(status);
 };
 
-export const getColumns = ({ data, setData }: GetColumnsProps): ColumnDef<Item>[] => [
+export const getColumns = ({ data }: GetColumnsProps): ColumnDef<ProductQueryResult>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -44,23 +47,18 @@ export const getColumns = ({ data, setData }: GetColumnsProps): ColumnDef<Item>[
     enableHiding: false,
   },
   {
-    header: "Name",
-    accessorKey: "name",
+    header: "Title",
+    accessorKey: "title",
     cell: ({ row }) => (
       <div className="flex items-center gap-3">
-        <img alt={row.getValue("name")} className="rounded-full" height={32} src={row.original.image} width={32} />
-        <div className="font-medium">{row.getValue("name")}</div>
+        <Image alt={row.getValue("title")} className="rounded-full" height={32} src={row.original.image} width={32} />
+        <div className="font-medium">{row.getValue("title")}</div>
       </div>
     ),
     size: 180,
     enableHiding: false,
   },
-  {
-    header: "ID",
-    accessorKey: "id",
-    cell: ({ row }) => <span className="text-muted-foreground">{row.getValue("id")}</span>,
-    size: 110,
-  },
+
   {
     header: "Status",
     accessorKey: "status",
@@ -68,15 +66,16 @@ export const getColumns = ({ data, setData }: GetColumnsProps): ColumnDef<Item>[
       <div className="flex h-full items-center">
         <Badge
           className={cn(
-            "gap-1 px-2 py-0.5 text-sm",
-            row.original.status === "Inactive" ? "text-muted-foreground" : "text-primary-foreground"
+            "capitalize",
+            row.original.status === "published" ? "text-muted-foreground" : "text-primary-foreground"
           )}
+          size="sm"
           variant="outline"
         >
-          {row.original.status === "Active" && (
+          {row.original.status === "published" && (
             <RiCheckLine aria-hidden="true" className="text-emerald-500" size={14} />
           )}
-          {row.original.status === "Inactive" && "- "}
+          {row.original.status === "expired" && "- "}
           {row.original.status}
         </Badge>
       </div>
@@ -85,58 +84,62 @@ export const getColumns = ({ data, setData }: GetColumnsProps): ColumnDef<Item>[
     filterFn: statusFilterFn,
   },
   {
-    header: "Location",
-    accessorKey: "location",
-    cell: ({ row }) => <span className="text-muted-foreground">{row.getValue("location")}</span>,
-    size: 140,
-  },
-  {
-    header: "Verified",
-    accessorKey: "verified",
+    header: "Price",
+    accessorKey: "price",
     cell: ({ row }) => (
-      <div>
-        <span className="sr-only">{row.original.verified ? "Verified" : "Not Verified"}</span>
-        <RiVerifiedBadgeFill
-          aria-hidden="true"
-          className={cn(row.original.verified ? "fill-emerald-600" : "fill-muted-foreground/50")}
-          size={20}
-        />
-      </div>
-    ),
-    size: 90,
-  },
-  {
-    header: "Referral",
-    accessorKey: "referral",
-    cell: ({ row }) => (
-      <div className="flex items-center gap-3">
-        <img
-          alt={row.original.referral.name}
-          className="rounded-full"
-          height={20}
-          src={row.original.referral.image}
-          width={20}
-        />
-        <div className="text-muted-foreground">{row.original.referral.name}</div>
-      </div>
+      <span className="flex items-center gap-1 text-muted-foreground">
+        <IconCurrency className="size-3" /> {row.getValue("price")}
+      </span>
     ),
     size: 140,
   },
+  //   {
+  //     header: "Verified",
+  //     accessorKey: "verified",
+  //     cell: ({ row }) => (
+  //       <div>
+  //         <span className="sr-only">{row.original.verified ? "Verified" : "Not Verified"}</span>
+  //         <RiVerifiedBadgeFill
+  //           aria-hidden="true"
+  //           className={cn(row.original.verified ? "fill-emerald-600" : "fill-muted-foreground/50")}
+  //           size={20}
+  //         />
+  //       </div>
+  //     ),
+  //     size: 90,
+  //   },
+  //   {
+  //     header: "Referral",
+  //     accessorKey: "referral",
+  //     cell: ({ row }) => (
+  //       <div className="flex items-center gap-3">
+  //         <img
+  //           alt={row.original.referral.name}
+  //           className="rounded-full"
+  //           height={20}
+  //           src={row.original.referral.image}
+  //           width={20}
+  //         />
+  //         <div className="text-muted-foreground">{row.original.referral.name}</div>
+  //       </div>
+  //     ),
+  //     size: 140,
+  //   },
   {
-    header: "Value",
-    accessorKey: "value",
+    header: "Stock",
+    accessorKey: "inventory",
     cell: ({ row }) => {
-      const value = row.getValue("value") as number;
+      const stock = row.getValue("inventory") as number;
       return (
         <TooltipProvider delayDuration={0}>
           <Tooltip>
             <TooltipTrigger asChild>
               <div className="flex h-full w-full items-center">
-                <Progress className="h-1 max-w-14" value={value} />
+                <Progress className="h-1 max-w-14" value={stock} />
               </div>
             </TooltipTrigger>
             <TooltipContent align="start" sideOffset={-8}>
-              <p>{value}%</p>
+              <p>{stock}%</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -147,7 +150,7 @@ export const getColumns = ({ data, setData }: GetColumnsProps): ColumnDef<Item>[
   {
     id: "actions",
     header: () => <span className="sr-only">Actions</span>,
-    cell: ({ row }) => <RowActions data={data} item={row.original} setData={setData} />,
+    cell: ({ row }) => <RowActions data={data} item={row.original} />,
     size: 60,
     enableHiding: false,
   },

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { RiArrowDownSLine, RiArrowUpSLine } from "@remixicon/react";
 import {
@@ -23,6 +23,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 import { cn } from "@/lib/utils";
 
+import { ProductQueryResult } from "../../types";
 import { getColumns } from "./columns";
 import { Header } from "./header";
 
@@ -41,7 +42,7 @@ export type Item = {
   joinDate: string;
 };
 
-export default function ContactsTable() {
+export function ProductsTable({ data }: { data: ProductQueryResult[] }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [pagination, setPagination] = useState<PaginationState>({
@@ -51,32 +52,15 @@ export default function ContactsTable() {
 
   const [sorting, setSorting] = useState<SortingState>([
     {
-      id: "name",
+      id: "title",
       desc: false,
     },
   ]);
 
-  const [data, setData] = useState<Item[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  //   const [data, setData] = useState<Item[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const columns = useMemo(() => getColumns({ data, setData }), [data]);
-
-  useEffect(() => {
-    async function fetchPosts() {
-      try {
-        const res = await fetch(
-          "https://raw.githubusercontent.com/origin-space/origin-images/refs/heads/main/users-02_mohkpe.json"
-        );
-        const data = await res.json();
-        setData(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchPosts();
-  }, []);
+  const columns = useMemo(() => getColumns({ data }), [data]);
 
   const table = useReactTable({
     data,
@@ -111,7 +95,7 @@ export default function ContactsTable() {
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead
-                    className="relative h-9 select-none border-border border-y bg-sidebar first:rounded-l-lg first:border-l last:rounded-r-lg last:border-r"
+                    className="relative h-9 select-none border-border border-y bg-card first:rounded-l-lg first:border-l last:rounded-r-lg last:border-r"
                     key={header.id}
                     style={{ width: `${header.getSize()}px` }}
                   >

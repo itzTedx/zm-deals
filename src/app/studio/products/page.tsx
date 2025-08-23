@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 import { getProducts } from "@/modules/product/actions/query";
-import ContactsTable from "@/modules/product/components/table/data-table";
+import { ProductsTable } from "@/modules/product/components/table/data-table";
 
 export default async function ProductsUpsertPage() {
   const products = await getProducts();
@@ -16,11 +16,8 @@ export default async function ProductsUpsertPage() {
         </Button>
       </div>
       <div>
-        <ContactsTable />
+        <ProductsTable data={products} />
         {/* <pre className="text-wrap text-sm">{JSON.stringify(products, null, 2)}</pre> */}
-        {products.map((product) => (
-          <div key={product.id}>{product.title}</div>
-        ))}
       </div>
     </div>
   );

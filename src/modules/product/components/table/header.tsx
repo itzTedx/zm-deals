@@ -29,11 +29,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 
 import { cn } from "@/lib/utils";
 
-import { Item } from "./data-table";
+import { ProductQueryResult } from "../../types";
 
 interface Props {
-  table: Table<Item>;
-  data: Item[];
+  table: Table<ProductQueryResult>;
+  data: ProductQueryResult[];
 }
 
 export const Header = ({ table, data }: Props) => {
@@ -87,30 +87,30 @@ export const Header = ({ table, data }: Props) => {
     <div className="flex flex-wrap items-center justify-between gap-3">
       {/* Left side */}
       <div className="flex items-center gap-3">
-        {/* Filter by name */}
+        {/* Filter by title */}
         <div className="relative">
           <Input
-            aria-label="Search by name"
+            aria-label="Search by title"
             className={cn(
               "peer min-w-60 bg-background bg-gradient-to-br from-accent/60 to-accent ps-9",
-              Boolean(table.getColumn("name")?.getFilterValue()) && "pe-9"
+              Boolean(table.getColumn("title")?.getFilterValue()) && "pe-9"
             )}
             id={`${id}-input`}
-            onChange={(e) => table.getColumn("name")?.setFilterValue(e.target.value)}
-            placeholder="Search by name"
+            onChange={(e) => table.getColumn("title")?.setFilterValue(e.target.value)}
+            placeholder="Search by title"
             ref={inputRef}
             type="text"
-            value={(table.getColumn("name")?.getFilterValue() ?? "") as string}
+            value={(table.getColumn("title")?.getFilterValue() ?? "") as string}
           />
           <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-2 text-muted-foreground/60 peer-disabled:opacity-50">
             <RiSearch2Line aria-hidden="true" size={20} />
           </div>
-          {Boolean(table.getColumn("name")?.getFilterValue()) && (
+          {Boolean(table.getColumn("title")?.getFilterValue()) && (
             <button
               aria-label="Clear filter"
               className="absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-lg text-muted-foreground/60 outline-offset-2 transition-colors hover:text-foreground focus:z-10 focus-visible:outline-2 focus-visible:outline-ring/70 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
               onClick={() => {
-                table.getColumn("name")?.setFilterValue("");
+                table.getColumn("title")?.setFilterValue("");
                 if (inputRef.current) {
                   inputRef.current.focus();
                 }

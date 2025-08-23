@@ -22,54 +22,44 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Item } from "./data-table";
+import { ProductQueryResult } from "../../types";
 
-export function RowActions({
-  setData,
-  data,
-  item,
-}: {
-  setData: React.Dispatch<React.SetStateAction<Item[]>>;
-  data: Item[];
-  item: Item;
-}) {
+export function RowActions({ data, item }: { data: ProductQueryResult[]; item: ProductQueryResult }) {
   const [isUpdatePending, startUpdateTransition] = useTransition();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const handleStatusToggle = () => {
     startUpdateTransition(() => {
-      const updatedData = data.map((dataItem) => {
+      data.map((dataItem) => {
         if (dataItem.id === item.id) {
           return {
             ...dataItem,
-            status: item.status === "Active" ? "Inactive" : "Active",
+            status: item.status === "published" ? "Published" : "Expired",
           };
         }
         return dataItem;
       });
-      setData(updatedData);
     });
   };
 
-  const handleVerifiedToggle = () => {
-    startUpdateTransition(() => {
-      const updatedData = data.map((dataItem) => {
-        if (dataItem.id === item.id) {
-          return {
-            ...dataItem,
-            verified: !item.verified,
-          };
-        }
-        return dataItem;
-      });
-      setData(updatedData);
-    });
-  };
+  // const handleVerifiedToggle = () => {
+  //   startUpdateTransition(() => {
+  //     data.map((dataItem) => {
+  //       if (dataItem.id === item.id) {
+  //         return {
+  //           ...dataItem,
+  //           verified: !item.verified,
+  //         };
+  //       }
+  //       return dataItem;
+  //     });
+  //   });
+  // };
 
   const handleDelete = () => {
     startUpdateTransition(() => {
-      const updatedData = data.filter((dataItem) => dataItem.id !== item.id);
-      setData(updatedData);
+      data.filter((dataItem) => dataItem.id !== item.id);
+
       setShowDeleteDialog(false);
     });
   };
@@ -87,11 +77,11 @@ export function RowActions({
         <DropdownMenuContent align="end" className="w-auto">
           <DropdownMenuGroup>
             <DropdownMenuItem disabled={isUpdatePending} onClick={handleStatusToggle}>
-              {item.status === "Active" ? "Deactivate contact" : "Activate contact"}
+              {item.status === "published" ? "Deactivate contact" : "Activate contact"}
             </DropdownMenuItem>
-            <DropdownMenuItem disabled={isUpdatePending} onClick={handleVerifiedToggle}>
+            {/* <DropdownMenuItem disabled={isUpdatePending} onClick={handleVerifiedToggle}>
               {item.verified ? "Unverify contact" : "Verify contact"}
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem
