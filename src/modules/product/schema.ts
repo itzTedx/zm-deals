@@ -32,7 +32,6 @@ export const productSchema = z.object({
     title: z.string().optional(),
     description: z.string().optional(),
     keywords: z.string().optional(),
-    slug: z.string().min(1, { message: "Slug is required" }),
   }),
 
   isFeatured: z.boolean(),

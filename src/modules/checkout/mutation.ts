@@ -8,7 +8,7 @@ import { auth } from "@/lib/auth/server";
 import { env } from "@/lib/env/server";
 import { stripeClient } from "@/lib/stripe/client";
 
-import { CheckoutSchema, checkoutSchema } from "../schema";
+import { CheckoutSchema, checkoutSchema } from "../product/schema";
 
 export async function createCheckoutSession(checkoutData: CheckoutSchema) {
   try {

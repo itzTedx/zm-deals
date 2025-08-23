@@ -9,7 +9,8 @@ import { LoadingSwap } from "@/components/ui/loading-swap";
 
 import { ChevronRightIcon, ChevronRightIconHandle } from "@/assets/icons/chevron";
 
-import { createCheckoutSession } from "../../actions/mutation";
+import { createCheckoutSession } from "@/modules/checkout/mutation";
+
 import { Deal } from "../../types";
 
 interface Props {
