@@ -29,6 +29,13 @@
       "when": 1755945271275,
       "tag": "0003_giant_mikhail_rasputin",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1755947422612,
+      "tag": "0004_bumpy_dracula",
+      "breakpoints": true
     }
   ]
 }

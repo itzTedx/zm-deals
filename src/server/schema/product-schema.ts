@@ -1,8 +1,20 @@
 import { relations } from "drizzle-orm";
-import { boolean, decimal, index, pgEnum, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  decimal,
+  index,
+  integer,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid,
+} from "drizzle-orm/pg-core";
 
 import { createdAt, id, updatedAt } from "./helpers";
 import { inventory } from "./inventory-schema";
+import { mediaTable } from "./media-schema";
 import { metaTable } from "./meta-schema";
 
 export const productStatus = pgEnum("product_status", ["draft", "published", "expired"]);
@@ -42,8 +54,28 @@ export const products = pgTable(
   ]
 );
 
+export const productImages = pgTable(
+  "product_images",
+  {
+    id,
+    isFeatured: boolean("is_featured").default(false),
+    sortOrder: integer("sort_order").default(0),
+
+    productId: uuid("product_id").references(() => products.id, { onDelete: "cascade" }),
+    mediaId: uuid("media_id").references(() => mediaTable.id, { onDelete: "cascade" }),
+
+    createdAt,
+    updatedAt,
+  },
+  (table) => [
+    index("product_images_product_id_idx").on(table.productId),
+    index("product_images_media_id_idx").on(table.mediaId),
+    index("product_images_is_featured_idx").on(table.isFeatured),
+  ]
+);
+
 // Relations
-export const productRelation = relations(products, ({ one }) => ({
+export const productRelation = relations(products, ({ one, many }) => ({
   meta: one(metaTable, {
     fields: [products.metaId],
     references: [metaTable.id],
@@ -53,6 +85,9 @@ export const productRelation = relations(products, ({ one }) => ({
     fields: [products.id],
     references: [inventory.productId],
     relationName: "product-inventory-relations",
+  }),
+  images: many(productImages, {
+    relationName: "product-images-relations",
   }),
 }));
 

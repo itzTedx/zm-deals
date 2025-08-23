@@ -17,6 +17,7 @@
     "auth:generate": "pnpx @better-auth/cli generate --config ./src/lib/auth/server.ts --yes --output ./src/server/schema/auth-generated.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.873.0",
     "@better-auth/stripe": "^1.3.7",
     "@bprogress/next": "^3.2.12",
     "@hookform/resolvers": "^5.2.1",
@@ -34,6 +35,7 @@
     "@t3-oss/env-nextjs": "^0.13.8",
     "@tanstack/react-table": "^8.21.3",
     "better-auth": "^1.3.7",
+    "better-upload": "^1.1.1",
     "chalk": "^5.6.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -55,6 +57,7 @@
     "react": "19.1.1",
     "react-day-picker": "^9.9.0",
     "react-dom": "19.1.1",
+    "react-dropzone": "^14.3.8",
     "react-hook-form": "^7.62.0",
     "react-zoom-pan-pinch": "^3.7.0",
     "sonner": "^2.0.7",
