@@ -20,15 +20,13 @@ export const inventory = pgTable(
     updatedAt,
   },
   (table) => [
-    {
-      // Indexes for better query performance
-      productIdIdx: index("inventory_product_id_idx").on(table.productId),
-      stockIdx: index("inventory_stock_idx").on(table.stock),
-      outOfStockIdx: index("inventory_out_of_stock_idx").on(table.isOutOfStock),
+    // Indexes for better query performance
+    index("inventory_product_id_idx").on(table.productId),
+    index("inventory_stock_idx").on(table.stock),
+    index("inventory_out_of_stock_idx").on(table.isOutOfStock),
 
-      // Unique constraint to ensure one inventory per product
-      productIdUnique: uniqueIndex("inventory_product_id_unique").on(table.productId),
-    },
+    // Unique constraint to ensure one inventory per product
+    uniqueIndex("inventory_product_id_unique").on(table.productId),
   ]
 );
 

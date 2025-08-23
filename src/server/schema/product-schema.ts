@@ -32,15 +32,13 @@ export const products = pgTable(
     updatedAt,
   },
   (table) => [
-    {
-      // Indexes for better query performance
-      slugIdx: uniqueIndex("products_slug_idx").on(table.slug),
-      statusIdx: index("products_status_idx").on(table.status),
-      featuredIdx: index("products_featured_idx").on(table.isFeatured),
-      priceIdx: index("products_price_idx").on(table.price),
-      endsInIdx: index("products_ends_in_idx").on(table.endsIn),
-      metaIdIdx: index("products_meta_id_idx").on(table.metaId),
-    },
+    // Indexes for better query performance
+    uniqueIndex("products_slug_idx").on(table.slug),
+    index("products_status_idx").on(table.status),
+    index("products_featured_idx").on(table.isFeatured),
+    index("products_price_idx").on(table.price),
+    index("products_ends_in_idx").on(table.endsIn),
+    index("products_meta_id_idx").on(table.metaId),
   ]
 );
 

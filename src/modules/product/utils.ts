@@ -1,7 +1,7 @@
 import { ProductSchema } from "./schema";
 import { ProductQueryResult } from "./types";
 
-export function transformProduct(product: ProductQueryResult | undefined): ProductSchema | null {
+export function transformProduct(product: ProductQueryResult | null): ProductSchema | null {
   if (!product) return null;
 
   return {

@@ -17,6 +17,8 @@ export async function getProducts() {
 }
 
 export async function getProduct(id: string) {
+  if (id === "create") return null;
+
   const product = await db.query.products.findFirst({
     where: eq(products.id, id),
     with: {
@@ -24,6 +26,8 @@ export async function getProduct(id: string) {
       inventory: true,
     },
   });
+
+  if (!product) return null;
 
   return product;
 }

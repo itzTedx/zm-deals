@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { RiCheckLine } from "@remixicon/react";
 import { ColumnDef, FilterFn } from "@tanstack/react-table";
@@ -10,6 +11,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 
 import { IconCurrency } from "@/assets/icons/currency";
 
+import { formatDate } from "@/lib/functions/format-date";
 import { cn } from "@/lib/utils";
 
 import { ProductQueryResult } from "../../types";
@@ -50,10 +52,12 @@ export const getColumns = ({ data }: GetColumnsProps): ColumnDef<ProductQueryRes
     header: "Title",
     accessorKey: "title",
     cell: ({ row }) => (
-      <div className="flex items-center gap-3">
-        <Image alt={row.getValue("title")} className="rounded-full" height={32} src={row.original.image} width={32} />
-        <div className="font-medium">{row.getValue("title")}</div>
-      </div>
+      <Link href={`/studio/products/${row.original.id}`}>
+        <div className="flex items-center gap-3">
+          <Image alt={row.getValue("title")} className="rounded-full" height={32} src={row.original.image} width={32} />
+          <div className="font-medium">{row.getValue("title")}</div>
+        </div>
+      </Link>
     ),
     size: 180,
     enableHiding: false,
@@ -80,7 +84,7 @@ export const getColumns = ({ data }: GetColumnsProps): ColumnDef<ProductQueryRes
         </Badge>
       </div>
     ),
-    size: 110,
+    size: 70,
     filterFn: statusFilterFn,
   },
   {
@@ -91,60 +95,58 @@ export const getColumns = ({ data }: GetColumnsProps): ColumnDef<ProductQueryRes
         <IconCurrency className="size-3" /> {row.getValue("price")}
       </span>
     ),
-    size: 140,
+    size: 60,
   },
-  //   {
-  //     header: "Verified",
-  //     accessorKey: "verified",
-  //     cell: ({ row }) => (
-  //       <div>
-  //         <span className="sr-only">{row.original.verified ? "Verified" : "Not Verified"}</span>
-  //         <RiVerifiedBadgeFill
-  //           aria-hidden="true"
-  //           className={cn(row.original.verified ? "fill-emerald-600" : "fill-muted-foreground/50")}
-  //           size={20}
-  //         />
-  //       </div>
-  //     ),
-  //     size: 90,
-  //   },
-  //   {
-  //     header: "Referral",
-  //     accessorKey: "referral",
-  //     cell: ({ row }) => (
-  //       <div className="flex items-center gap-3">
-  //         <img
-  //           alt={row.original.referral.name}
-  //           className="rounded-full"
-  //           height={20}
-  //           src={row.original.referral.image}
-  //           width={20}
-  //         />
-  //         <div className="text-muted-foreground">{row.original.referral.name}</div>
-  //       </div>
-  //     ),
-  //     size: 140,
-  //   },
+
   {
     header: "Stock",
     accessorKey: "inventory",
     cell: ({ row }) => {
-      const stock = row.getValue("inventory") as number;
+      const stock = row.original.inventory.stock;
+      const initialStock = row.original.inventory.initialStock;
+
+      const percentage = (stock / initialStock) * 100;
       return (
         <TooltipProvider delayDuration={0}>
           <Tooltip>
             <TooltipTrigger asChild>
               <div className="flex h-full w-full items-center">
-                <Progress className="h-1 max-w-14" value={stock} />
+                <Progress className="h-1 max-w-14" value={percentage} />
               </div>
             </TooltipTrigger>
-            <TooltipContent align="start" sideOffset={-8}>
-              <p>{stock}%</p>
+            <TooltipContent align="start" sideOffset={-10}>
+              <p>{stock === initialStock ? "All" : `${stock} of ${initialStock}`} in stock</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
       );
     },
+    size: 80,
+  },
+  {
+    header: "Schedule",
+    accessorKey: "schedule",
+    cell: ({ row }) => (
+      <div className="font-medium text-muted-foreground text-sm">
+        {row.original.schedule &&
+          formatDate(row.original.schedule, {
+            includeTime: true,
+          })}
+      </div>
+    ),
+    size: 80,
+  },
+  {
+    header: "Offer Ends At",
+    accessorKey: "endsIn",
+    cell: ({ row }) => (
+      <div className="font-medium text-muted-foreground text-sm">
+        {row.original.endsIn &&
+          formatDate(row.original.endsIn, {
+            includeTime: true,
+          })}
+      </div>
+    ),
     size: 80,
   },
   {

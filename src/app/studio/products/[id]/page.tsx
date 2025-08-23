@@ -7,7 +7,7 @@ type Params = Promise<{ id: string }>;
 export default async function ProductPage({ params }: { params: Params }) {
   const { id } = await params;
 
-  const isEditMode = id !== "new";
+  const isEditMode = id !== "create";
 
   const product = await getProduct(id);
 

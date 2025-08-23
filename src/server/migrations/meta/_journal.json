@@ -22,6 +22,13 @@
       "when": 1755943578958,
       "tag": "0002_confused_pride",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1755945271275,
+      "tag": "0003_giant_mikhail_rasputin",
+      "breakpoints": true
     }
   ]
 }

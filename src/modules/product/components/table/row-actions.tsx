@@ -1,4 +1,5 @@
 import { useState, useTransition } from "react";
+import Link from "next/link";
 
 import { RiMoreLine } from "@remixicon/react";
 
@@ -28,34 +29,6 @@ export function RowActions({ data, item }: { data: ProductQueryResult[]; item: P
   const [isUpdatePending, startUpdateTransition] = useTransition();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const handleStatusToggle = () => {
-    startUpdateTransition(() => {
-      data.map((dataItem) => {
-        if (dataItem.id === item.id) {
-          return {
-            ...dataItem,
-            status: item.status === "published" ? "Published" : "Expired",
-          };
-        }
-        return dataItem;
-      });
-    });
-  };
-
-  // const handleVerifiedToggle = () => {
-  //   startUpdateTransition(() => {
-  //     data.map((dataItem) => {
-  //       if (dataItem.id === item.id) {
-  //         return {
-  //           ...dataItem,
-  //           verified: !item.verified,
-  //         };
-  //       }
-  //       return dataItem;
-  //     });
-  //   });
-  // };
-
   const handleDelete = () => {
     startUpdateTransition(() => {
       data.filter((dataItem) => dataItem.id !== item.id);
@@ -70,18 +43,17 @@ export function RowActions({ data, item }: { data: ProductQueryResult[]; item: P
         <DropdownMenuTrigger asChild>
           <div className="flex justify-end">
             <Button aria-label="Edit item" className="text-muted-foreground/60 shadow-none" size="icon" variant="ghost">
-              <RiMoreLine aria-hidden="true" className="size-5" size={20} />
+              <RiMoreLine aria-hidden="true" className="size-5" />
             </Button>
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-auto">
           <DropdownMenuGroup>
-            <DropdownMenuItem disabled={isUpdatePending} onClick={handleStatusToggle}>
-              {item.status === "published" ? "Deactivate contact" : "Activate contact"}
+            <DropdownMenuItem>
+              <Link className="w-full" href={`/studio/products/${item.id}`}>
+                Edit
+              </Link>
             </DropdownMenuItem>
-            {/* <DropdownMenuItem disabled={isUpdatePending} onClick={handleVerifiedToggle}>
-              {item.verified ? "Unverify contact" : "Verify contact"}
-            </DropdownMenuItem> */}
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem

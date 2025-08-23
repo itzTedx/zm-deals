@@ -66,12 +66,12 @@ export const ProductForm = ({ initialData, isEditMode }: Props) => {
           <div className="col-span-full flex items-center justify-between">
             <div className="flex items-center gap-2">
               <h1 className="flex items-center gap-2 font-medium text-gray-600 text-xl leading-none">
-                <IconProduct className="size-4 text-gray-500" /> <IconChevronRight className="text-gray-400" /> Add
-                Product
+                <IconProduct className="size-4 text-gray-500" /> <IconChevronRight className="text-gray-400" />{" "}
+                {isEditMode ? "Edit" : "Add"} Product
               </h1>
             </div>
             <Button disabled={isLoading} size="sm">
-              <LoadingSwap isLoading={isLoading}>Save Product</LoadingSwap>
+              <LoadingSwap isLoading={isLoading}>{isEditMode ? "Update" : "Create"} Product</LoadingSwap>
             </Button>
           </div>
           <div className="relative col-span-2 space-y-4">
