@@ -36,6 +36,13 @@
       "when": 1755947422612,
       "tag": "0004_bumpy_dracula",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1755950832407,
+      "tag": "0005_curly_viper",
+      "breakpoints": true
     }
   ]
 }

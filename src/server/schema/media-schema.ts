@@ -6,12 +6,10 @@ export const mediaTable = pgTable(
   "media",
   {
     id,
-    url: text("url").notNull(),
+    url: text("url"),
     alt: text("alt"),
-    fileName: text("file_name"),
     width: integer("width"),
     height: integer("height"),
-    fileSize: integer("file_size"),
     blurData: text("blur_data"),
     key: text("key"),
     createdAt,
