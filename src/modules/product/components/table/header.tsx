@@ -42,7 +42,7 @@ export const Header = ({ table, data }: Props) => {
 
   const handleDeleteRows = () => {
     const selectedRows = table.getSelectedRowModel().rows;
-    const updatedData = data.filter((item) => !selectedRows.some((row) => row.original.id === item.id));
+    data.filter((item) => !selectedRows.some((row) => row.original.id === item.id));
     // setData(updatedData);
     table.resetRowSelection();
   };

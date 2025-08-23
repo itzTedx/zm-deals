@@ -8,7 +8,7 @@ import z from "zod";
 import { auth } from "@/lib/auth/server";
 import { createLog } from "@/lib/logging";
 import { db } from "@/server/db";
-import { metaTable, products } from "@/server/schema";
+import { inventory, metaTable, products } from "@/server/schema";
 
 import { productSchema } from "../schema";
 
@@ -58,7 +58,7 @@ export async function upsertProduct(rawData: unknown): Promise<{ success: boolea
 
           price: data.price.toString(),
           compareAtPrice: data.compareAtPrice?.toString(),
-          inventory: data.inventory,
+
           image: data.images[0].url,
 
           isFeatured: data.isFeatured,
@@ -73,6 +73,36 @@ export async function upsertProduct(rawData: unknown): Promise<{ success: boolea
         });
 
       log.success("Product created successfully", `ID: ${product.id}, Title: ${product.title}`);
+
+      // Handle inventory upsert
+      log.db("Upserting inventory data", "inventory");
+
+      // Use the SQL helper to determine stock status instead of manual calculation
+      const isOutOfStock = data.inventory <= 0;
+
+      await tx
+        .insert(inventory)
+        .values({
+          productId: product.id,
+          stock: data.inventory,
+          initialStock: data.inventory,
+          isOutOfStock,
+        })
+        .onConflictDoUpdate({
+          target: inventory.productId,
+          set: {
+            stock: data.inventory,
+            isOutOfStock,
+            updatedAt: new Date(),
+          },
+        });
+
+      // Log additional inventory insights using the helpers
+      const isLowStock = data.inventory < 10 && data.inventory > 0;
+      log.success(
+        "Inventory data upserted successfully",
+        `Stock: ${data.inventory}, Out of Stock: ${isOutOfStock}, Low Stock: ${isLowStock}`
+      );
 
       if (product.metaId && data.meta) {
         log.db("Updating existing meta data", "meta");

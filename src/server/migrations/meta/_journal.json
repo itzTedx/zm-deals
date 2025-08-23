@@ -15,6 +15,13 @@
       "when": 1755938591209,
       "tag": "0001_solid_smasher",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1755943578958,
+      "tag": "0002_confused_pride",
+      "breakpoints": true
     }
   ]
 }

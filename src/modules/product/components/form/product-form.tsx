@@ -16,35 +16,27 @@ import { IconProduct } from "@/assets/icons/product";
 
 import { upsertProduct } from "../../actions/mutation";
 import { ProductSchema, productSchema } from "../../schema";
+import { getInitialValues } from "../../utils";
 import { Classification } from "./sections/classification";
 import { ProductMeta } from "./sections/meta";
 import { PricingInventory } from "./sections/pricing-inventory";
 import { ProductDetails } from "./sections/product-details";
 import { Scheduling } from "./sections/scheduling";
 
-export const ProductForm = () => {
+interface Props {
+  initialData: ProductSchema | null;
+  isEditMode: boolean;
+}
+
+export const ProductForm = ({ initialData, isEditMode }: Props) => {
   const [isLoading, startTransition] = useTransition();
   const router = useRouter();
 
   const form = useForm<ProductSchema>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      overview: "",
-      slug: "",
-      price: 0,
-      compareAtPrice: undefined,
-      inventory: 0,
-      images: [{ url: "/images/vacuum-holder.webp", isFeatured: true, order: 1 }],
-      isFeatured: false,
-      endsIn: undefined,
-      schedule: undefined,
-      meta: {
-        title: undefined,
-        description: undefined,
-        keywords: undefined,
-      },
+      ...getInitialValues(),
+      ...initialData,
     },
   });
 

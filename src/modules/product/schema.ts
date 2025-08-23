@@ -20,13 +20,14 @@ export const productImageSchema = z.object({
 
 export const productSchema = z.object({
   title: z.string("Title is required").min(1, { message: "Title can't be blank" }),
-  overview: z.string().min(1, { message: "Overview is required" }),
+  overview: z.string().optional(),
   description: z.string().min(1, { message: "Description is required" }),
   slug: z.string().min(1, { message: "Slug can't be blank" }),
 
   price: z.number().min(3, { message: "Price must be at least 3 AED" }),
   compareAtPrice: z.number().optional(),
   inventory: z.number("Inventory is required"),
+
   images: z.array(productImageSchema).min(1, { message: "Images are required" }),
 
   meta: z.object({

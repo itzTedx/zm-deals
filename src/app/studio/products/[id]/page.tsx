@@ -1,5 +1,15 @@
+import { getProduct } from "@/modules/product/actions/query";
 import { ProductForm } from "@/modules/product/components/form/product-form";
+import { transformProduct } from "@/modules/product/utils";
 
-export default function ProductPage() {
-  return <ProductForm />;
+type Params = Promise<{ id: string }>;
+
+export default async function ProductPage({ params }: { params: Params }) {
+  const { id } = await params;
+
+  const isEditMode = id !== "new";
+
+  const product = await getProduct(id);
+
+  return <ProductForm initialData={transformProduct(product)} isEditMode={isEditMode} />;
 }
