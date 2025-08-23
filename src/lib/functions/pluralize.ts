@@ -12,11 +12,7 @@
  * pluralize('cat', 2) // 'cats'
  * pluralize('child', 2, 'children') // 'children'
  */
-export function pluralize(
-  word: string,
-  count: number,
-  pluralForm?: string
-): string {
+export function pluralize(word: string, count: number, pluralForm?: string): string {
   if (count === 1) return word;
   if (pluralForm) return pluralForm;
 

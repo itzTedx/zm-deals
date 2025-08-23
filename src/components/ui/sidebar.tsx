@@ -2,9 +2,9 @@
 
 import * as React from "react";
 
-import { Slot as SlotPrimitive } from "radix-ui";
 import { cva, VariantProps } from "class-variance-authority";
 import { PanelLeftIcon } from "lucide-react";
+import { Slot as SlotPrimitive } from "radix-ui";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

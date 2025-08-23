@@ -30,10 +30,7 @@ interface FormatDateOptions {
  * formatDate('2024-01-15T10:30:00Z', { relative: true }) // '2 hours ago'
  * formatDate('2024-01-15T10:30:00Z', { showDayOfWeek: true }) // 'Monday, Jan 15, 2024'
  */
-export function formatDate(
-  date: Date | string | number,
-  options: FormatDateOptions = {}
-): string {
+export function formatDate(date: Date | string | number, options: FormatDateOptions = {}): string {
   const {
     locale = "en-US",
     includeTime = false,
@@ -44,10 +41,7 @@ export function formatDate(
   } = options;
 
   // Convert to Date object if it's a string or number
-  const dateObj =
-    typeof date === "string" || typeof date === "number"
-      ? new Date(date)
-      : date;
+  const dateObj = typeof date === "string" || typeof date === "number" ? new Date(date) : date;
 
   // Check if the date is valid
   if (isNaN(dateObj.getTime())) {
