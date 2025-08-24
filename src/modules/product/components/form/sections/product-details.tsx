@@ -18,7 +18,7 @@ import {
 import { ProductImageSchema, ProductSchema } from "@/modules/product/schema";
 
 import { ImageManagement } from "./ui/image-management";
-import App from "./ui/image-swipe";
+import ImageSwipe from "./ui/image-swipe";
 
 export const ProductDetails = () => {
   const form = useFormContext<ProductSchema>();
@@ -115,7 +115,7 @@ export const ProductDetails = () => {
                     </div>
                   )}
                   <ImageManagement />
-                  <App />
+                  <ImageSwipe />
                 </div>
               </FormControl>
               <FormMessage />
