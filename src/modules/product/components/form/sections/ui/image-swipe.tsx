@@ -1,89 +1,126 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 
-import { createSwapy, SlotItemMapArray, Swapy, utils } from "swapy";
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  KeyboardSensor,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { arrayMove, rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
+import { useFieldArray, useFormContext } from "react-hook-form";
 
-type Item = {
-  id: string;
-  title: string;
-};
+import { ProductImageSchema, ProductSchema } from "@/modules/product/schema";
 
-const initialItems: Item[] = [
-  { id: "1", title: "1" },
-  { id: "2", title: "2" },
-  { id: "3", title: "3" },
-];
+import { ImageOverlay } from "./image-overlay";
+import { SortableImageItem } from "./sortable-image-item";
+import { useDragState } from "./use-drag-state";
 
-let id = 4;
+export function ImageSwipe({ images }: { images: ProductImageSchema[] }) {
+  const form = useFormContext<ProductSchema>();
 
-function App() {
-  const [items, setItems] = useState<Item[]>(initialItems);
-  const [slotItemMap, setSlotItemMap] = useState<SlotItemMapArray>(utils.initSlotItemMap(items, "id"));
-  const slottedItems = useMemo(() => utils.toSlottedItems(items, "id", slotItemMap), [items, slotItemMap]);
-  const swapyRef = useRef<Swapy | null>(null);
+  const { fields, move } = useFieldArray({
+    control: form.control,
+    name: "images",
+  });
 
-  const containerRef = useRef<HTMLDivElement>(null);
+  const { activeId, isDragging, handleDragStart, handleDragEnd } = useDragState();
 
-  useEffect(() => utils.dynamicSwapy(swapyRef.current, items, "id", slotItemMap, setSlotItemMap), [items]);
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: (event) => {
+        switch (event.code) {
+          case "ArrowRight":
+            return { x: 1, y: 0 };
+          case "ArrowLeft":
+            return { x: -1, y: 0 };
+          case "ArrowDown":
+            return { x: 0, y: 1 };
+          case "ArrowUp":
+            return { x: 0, y: -1 };
+          default:
+            return { x: 0, y: 0 };
+        }
+      },
+    })
+  );
 
-  useEffect(() => {
-    swapyRef.current = createSwapy(containerRef.current!, {
-      manualSwap: true,
-      animation: "dynamic",
-      // autoScrollOnDrag: true,
-      swapMode: "drop",
-      // enabled: true,
-      // dragAxis: 'x',
-      // dragOnHold: true
-    });
+  const handleDragEndWithMove = (event: DragEndEvent) => {
+    const { active, over } = event;
 
-    swapyRef.current.onSwap((event) => {
-      setSlotItemMap(event.newSlotItemMap.asArray);
-    });
+    handleDragEnd(event);
 
-    return () => {
-      swapyRef.current?.destroy();
-    };
-  }, []);
+    if (over && active.id !== over.id) {
+      const oldIndex = fields.findIndex((item) => item.id === active.id);
+      const newIndex = fields.findIndex((item) => item.id === over.id);
+
+      if (oldIndex !== -1 && newIndex !== -1) {
+        // Use move from useFieldArray to properly update form state
+        move(oldIndex, newIndex);
+
+        // Update order field for all items after the move
+        const updatedItems = arrayMove(fields, oldIndex, newIndex);
+        updatedItems.forEach((item, index) => {
+          if (item.order !== index) {
+            form.setValue(`images.${index}.order`, index);
+          }
+        });
+      }
+    }
+  };
+
+  const activeItem = useMemo(() => {
+    return activeId ? fields.find((item) => item.id === activeId) : null;
+  }, [activeId, fields]);
+
+  const sortableItems = useMemo(() => {
+    return fields.map((item) => item.id);
+  }, [fields]);
+
   return (
-    <div ref={containerRef}>
-      <div className="grid grid-cols-6 grid-rows-2 gap-1.5">
-        {slottedItems.map(({ slotId, itemId, item }) => (
-          <div
-            className="aspect-4/3 rounded-md first:col-span-2 first:row-span-2 data-[swapy-highlighted]:bg-muted"
-            data-swapy-slot={slotId}
-            key={slotId}
-          >
-            {item && (
-              <div
-                className="relative flex size-full flex-col items-center justify-center rounded-md bg-[#4338ca] px-5"
-                data-swapy-item={itemId}
-                key={itemId}
-              >
-                <span>{item.title}</span>
-                <span
-                  className="delete"
-                  data-swapy-no-drag
-                  onClick={() => {
-                    setItems(items.filter((i) => i.id !== item.id));
-                  }}
-                />
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+    <DndContext
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEndWithMove}
+      onDragStart={handleDragStart}
+      sensors={sensors}
+    >
       <div
-        className="item item--add"
-        onClick={() => {
-          const newItem: Item = { id: `${id}`, title: `${id}` };
-          setItems([...items, newItem]);
-          id++;
-        }}
+        aria-describedby={isDragging ? "drag-instructions" : undefined}
+        aria-label="Product images grid"
+        className={`grid grid-cols-6 grid-rows-2 gap-1.5 transition-opacity duration-200 ${
+          isDragging ? "opacity-75" : "opacity-100"
+        }`}
+        role="region"
       >
-        +
+        <SortableContext items={sortableItems} strategy={rectSortingStrategy}>
+          {fields.map((item, index) => (
+            <SortableImageItem index={index} isFirst={index === 0} item={item} key={item.id} />
+          ))}
+        </SortableContext>
       </div>
-    </div>
+
+      <DragOverlay dropAnimation={null}>{activeItem ? <ImageOverlay item={activeItem} /> : null}</DragOverlay>
+
+      {isDragging && (
+        <div aria-live="polite" className="sr-only" id="drag-instructions">
+          Drag to reorder images. Use arrow keys to move items when focused.
+        </div>
+      )}
+    </DndContext>
   );
 }
-
-export default App;

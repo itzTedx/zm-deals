@@ -17,16 +17,18 @@ import {
 } from "@/modules/product/constants";
 import { ProductImageSchema, ProductSchema } from "@/modules/product/schema";
 
-import { ImageManagement } from "./ui/image-management";
-import ImageSwipe from "./ui/image-swipe";
+import { ImageSwipe } from "./ui/image-swipe";
 
 export const ProductDetails = () => {
   const form = useFormContext<ProductSchema>();
   const images = useWatch({ control: form.control, name: "images" }) || [];
 
-  const { control } = useUploadFiles({
+  const { control, isPending, error, uploadedFiles } = useUploadFiles({
     route: PRODUCT_UPLOAD_ROUTE,
     onUploadComplete: async ({ files, metadata: objectMetadata }) => {
+      console.log("Upload completed:", { files: files.length, metadata: objectMetadata });
+
+      console.error("Upload error:", error);
       // Get current images array
       const currentImages = form.getValues("images") || [];
 
@@ -35,26 +37,40 @@ export const ProductDetails = () => {
       const filesToProcess = files.slice(0, availableSlots);
 
       if (filesToProcess.length === 0) {
-        return; // No space for new images
+        console.log("No space for new images");
+        return;
       }
 
       // Process each uploaded file
       for (let i = 0; i < filesToProcess.length; i++) {
         const file = filesToProcess[i];
-        const metadata = await getImageMetadata(file.raw);
 
-        // Create new image object according to ProductSchema
-        const newImage: ProductImageSchema = {
-          ...metadata,
-          url: objectMetadata.url as string,
-          isFeatured: currentImages.length === 0 && i === 0, // First image is featured if no images exist
-          order: currentImages.length + i + 1,
-          key: objectMetadata.key as string,
-        };
+        try {
+          const metadata = await getImageMetadata(file.raw);
 
-        // Add to images array
-        form.setValue(`images.${currentImages.length + i}`, newImage);
+          // Create new image object according to ProductSchema
+          const newImage: ProductImageSchema = {
+            ...metadata,
+            url: (objectMetadata.urls as string[])[i] || (objectMetadata.url as string),
+            isFeatured: currentImages.length === 0 && i === 0,
+            order: currentImages.length + i + 1,
+            key: file.objectKey,
+          };
+
+          // Add to images array
+          const newIndex = currentImages.length + i;
+          form.setValue(`images.${newIndex}`, newImage);
+
+          // Trigger form validation
+          await form.trigger("images");
+        } catch (error) {
+          console.error("Error processing file:", error);
+        }
       }
+    },
+
+    onError: (error) => {
+      console.error("Upload error:", error);
     },
   });
 
@@ -114,8 +130,8 @@ export const ProductDetails = () => {
                       </div>
                     </div>
                   )}
-                  <ImageManagement />
-                  <ImageSwipe />
+                  {/* <ImageManagement /> */}
+                  <ImageSwipe images={images} />
                 </div>
               </FormControl>
               <FormMessage />
