@@ -1,6 +1,6 @@
 import { useUploadFiles } from "better-upload/client";
 import { AlertCircle } from "lucide-react";
-import { useFormContext, useWatch } from "react-hook-form";
+import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -22,13 +22,18 @@ import { ImageSwipe } from "./ui/image-swipe";
 export const ProductDetails = () => {
   const form = useFormContext<ProductSchema>();
   const images = useWatch({ control: form.control, name: "images" }) || [];
+  console.log("Images:", images);
 
-  const { control, isPending, error, uploadedFiles } = useUploadFiles({
+  const { fields, append, move } = useFieldArray({
+    control: form.control,
+    name: "images",
+  });
+
+  const { control } = useUploadFiles({
     route: PRODUCT_UPLOAD_ROUTE,
     onUploadComplete: async ({ files, metadata: objectMetadata }) => {
       console.log("Upload completed:", { files: files.length, metadata: objectMetadata });
 
-      console.error("Upload error:", error);
       // Get current images array
       const currentImages = form.getValues("images") || [];
 
@@ -37,7 +42,6 @@ export const ProductDetails = () => {
       const filesToProcess = files.slice(0, availableSlots);
 
       if (filesToProcess.length === 0) {
-        console.log("No space for new images");
         return;
       }
 
@@ -57,9 +61,7 @@ export const ProductDetails = () => {
             key: file.objectKey,
           };
 
-          // Add to images array
-          const newIndex = currentImages.length + i;
-          form.setValue(`images.${newIndex}`, newImage);
+          append(newImage);
 
           // Trigger form validation
           await form.trigger("images");
@@ -67,10 +69,6 @@ export const ProductDetails = () => {
           console.error("Error processing file:", error);
         }
       }
-    },
-
-    onError: (error) => {
-      console.error("Upload error:", error);
     },
   });
 
@@ -131,7 +129,8 @@ export const ProductDetails = () => {
                     </div>
                   )}
                   {/* <ImageManagement /> */}
-                  <ImageSwipe images={images} />
+                  {/* <pre className="max-w-sm text-wrap text-xs">{JSON.stringify(images, null, 2)}</pre> */}
+                  <ImageSwipe fields={fields} reorder={move} />
                 </div>
               </FormControl>
               <FormMessage />

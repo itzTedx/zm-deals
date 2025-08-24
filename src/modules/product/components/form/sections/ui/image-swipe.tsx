@@ -12,21 +12,21 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { arrayMove, rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { FieldArrayWithId, useFormContext } from "react-hook-form";
 
-import { ProductImageSchema, ProductSchema } from "@/modules/product/schema";
+import { ProductSchema } from "@/modules/product/schema";
 
 import { ImageOverlay } from "./image-overlay";
 import { SortableImageItem } from "./sortable-image-item";
 import { useDragState } from "./use-drag-state";
 
-export function ImageSwipe({ images }: { images: ProductImageSchema[] }) {
-  const form = useFormContext<ProductSchema>();
+interface ImageSwipeProps {
+  fields: FieldArrayWithId<ProductSchema, "images", "id">[];
+  reorder: (from: number, to: number) => void;
+}
 
-  const { fields, move } = useFieldArray({
-    control: form.control,
-    name: "images",
-  });
+export function ImageSwipe({ fields, reorder }: ImageSwipeProps) {
+  const form = useFormContext<ProductSchema>();
 
   const { activeId, isDragging, handleDragStart, handleDragEnd } = useDragState();
 
@@ -70,8 +70,8 @@ export function ImageSwipe({ images }: { images: ProductImageSchema[] }) {
       const newIndex = fields.findIndex((item) => item.id === over.id);
 
       if (oldIndex !== -1 && newIndex !== -1) {
-        // Use move from useFieldArray to properly update form state
-        move(oldIndex, newIndex);
+        // Use reorder from props to properly update form state
+        reorder(oldIndex, newIndex);
 
         // Update order field for all items after the move
         const updatedItems = arrayMove(fields, oldIndex, newIndex);

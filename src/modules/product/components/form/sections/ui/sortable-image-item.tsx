@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical } from "lucide-react";
@@ -27,7 +29,7 @@ export function SortableImageItem({ item, index, isFirst }: SortableImageItemPro
 
   return (
     <div
-      className={`aspect-4/3 rounded-md transition-all duration-200 ${
+      className={`aspect-square rounded-md transition-all duration-200 ${
         isFirst ? "col-span-2 row-span-2" : ""
       } ${isDragging ? "z-50 scale-105 opacity-50" : "hover:scale-[1.02]"}`}
       ref={setNodeRef}
@@ -52,7 +54,7 @@ export function SortableImageItem({ item, index, isFirst }: SortableImageItemPro
         </div>
 
         {/* Content */}
-        <div className="flex flex-col items-center justify-center space-y-1">
+        <div className="relative flex size-full flex-col items-center justify-center">
           <span className="font-medium text-foreground text-sm">{item.order}</span>
           <span
             className="max-w-full truncate px-2 text-center text-muted-foreground text-xs"
@@ -60,6 +62,7 @@ export function SortableImageItem({ item, index, isFirst }: SortableImageItemPro
           >
             {item.url}
           </span>
+          <Image alt={item.url} className="object-contain" fill src={item.url} />
         </div>
 
         {/* Drag State Indicator */}

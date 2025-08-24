@@ -26,6 +26,7 @@ const nextConfig: NextConfig = {
 
   // Image optimization
   images: {
+    remotePatterns: [{ hostname: "zm-deals-local.s3.us-east-1.amazonaws.com" }],
     formats: ["image/webp", "image/avif"],
     minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,
