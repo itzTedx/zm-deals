@@ -1,4 +1,7 @@
+import { relations } from "drizzle-orm";
 import { boolean, pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+
+import { reviews } from "./review-schema";
 
 export const rolesEnum = pgEnum("roles", ["user", "admin"]);
 
@@ -57,3 +60,14 @@ export const verifications = pgTable("verifications", {
     .$onUpdate(() => new Date())
     .notNull(),
 });
+
+// User relations
+export const userRelation = relations(users, ({ many }) => ({
+  reviews: many(reviews, {
+    relationName: "user-reviews-relations",
+  }),
+}));
+
+// Types for better TypeScript support
+export type NewUser = typeof users.$inferInsert;
+export type User = typeof users.$inferSelect;

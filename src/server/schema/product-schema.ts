@@ -16,6 +16,7 @@ import { createdAt, id, updatedAt } from "./helpers";
 import { inventory } from "./inventory-schema";
 import { mediaTable } from "./media-schema";
 import { metaTable } from "./meta-schema";
+import { reviews } from "./review-schema";
 
 export const productStatus = pgEnum("product_status", ["draft", "published", "expired"]);
 
@@ -92,6 +93,9 @@ export const productRelation = relations(products, ({ one, many }) => ({
   }),
   images: many(productImages, {
     relationName: "product-images-relations",
+  }),
+  reviews: many(reviews, {
+    relationName: "product-reviews-relations",
   }),
 }));
 
