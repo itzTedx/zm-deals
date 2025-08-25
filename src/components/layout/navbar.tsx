@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 
-import { IconShoppingBag } from "@/assets/icons/bag";
+import { IconShoppingBag2 } from "@/assets/icons/bag";
 import { IconDiamond } from "@/assets/icons/diamonds";
+import { IconHeart } from "@/assets/icons/heart";
 import { IconMenu } from "@/assets/icons/menu";
 import { IconUser } from "@/assets/icons/user";
 import { LogoIcon, LogoWordMark } from "@/assets/logo";
@@ -41,9 +42,12 @@ export const Navbar = () => {
             </ul>
           </div>
 
-          <div className="flex items-center gap-2 md:gap-4">
-            <Button className="hidden sm:inline-flex" variant="outline">
-              <IconShoppingBag className="text-brand-500" />
+          <div className="flex items-center gap-2 md:gap-3">
+            <Button className="hidden sm:inline-flex" size="icon" variant="outline">
+              <IconHeart className="size-5 text-muted-foreground hover:text-brand-500" />
+            </Button>
+            <Button className="hidden sm:inline-flex" size="icon" variant="outline">
+              <IconShoppingBag2 className="size-5 text-muted-foreground hover:text-brand-500" />
             </Button>
             {session ? (
               <Avatar>
