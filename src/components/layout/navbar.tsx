@@ -72,13 +72,13 @@ export const Navbar = async () => {
 
           <div className="flex items-center gap-2 md:gap-3">
             {session && !session.user.isAnonymous ? (
-              <UserMenu />
+              <UserMenu session={session} />
             ) : (
               <Button asChild className="text-muted-foreground" variant="outline">
                 <Link href="/auth/login">Login</Link>
               </Button>
             )}
-            <div className="hidden h-5 w-px flex-1 shrink-0 bg-gray-200 md:block" />
+            <div className="hidden h-5 w-px flex-1 shrink-0 bg-brand-400 md:block" />
             <Button className="hidden sm:inline-flex" size="icon" variant="outline">
               <IconHeart className="size-5 text-muted-foreground hover:text-brand-500" />
             </Button>

@@ -123,3 +123,4 @@ export const auth = betterAuth({
 });
 
 export const getSession = cache(async () => auth.api.getSession({ headers: await headers() }));
+export type AuthSession = Awaited<ReturnType<typeof getSession>>;

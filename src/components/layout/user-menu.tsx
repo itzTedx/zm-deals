@@ -5,7 +5,7 @@ import Link from "next/link";
 import { IconLogout } from "@/assets/icons/auth";
 import { IconUser } from "@/assets/icons/user";
 
-import { useSession } from "@/lib/auth/client";
+import { AuthSession } from "@/lib/auth/server";
 import { LogoutButton } from "@/modules/auth/components/logout-button";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -20,32 +20,31 @@ import {
 } from "../ui/dropdown-menu";
 import GlareHover from "../ui/glare-hover";
 
-export default function UserMenu() {
-  const { data } = useSession();
+export default function UserMenu({ session }: { session: NonNullable<AuthSession> }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex cursor-pointer gap-2">
         <Avatar>
           <GlareHover className="size-full rounded-md">
-            <AvatarImage alt="Profile image" src={data?.user.image ?? undefined} />
-            <AvatarFallback className="text-muted-foreground">{data?.user.name.slice(0, 1)}</AvatarFallback>
+            <AvatarImage alt="Profile image" src={session.user.image ?? undefined} />
+            <AvatarFallback className="text-muted-foreground">{session.user.name.slice(0, 1)}</AvatarFallback>
           </GlareHover>
         </Avatar>
         <div className="hidden flex-col items-start md:flex">
-          <p className="font-medium text-sm">Hi! {data?.user.name}</p>
-          <p className="text-muted/80 text-xs">{data?.user.email}</p>
+          <p className="font-medium text-sm">Hi! {session.user.name}</p>
+          <p className="text-muted/80 text-xs">{session.user.email}</p>
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="z-99999 max-w-72">
         <DropdownMenuLabel className="flex min-w-0 items-center gap-1.5">
           <Avatar className="size-11 rounded-sm">
-            <AvatarImage alt="Profile image" src={data?.user.image ?? undefined} />
-            <AvatarFallback className="rounded-sm">{data?.user.name.slice(0, 1)}</AvatarFallback>
+            <AvatarImage alt="Profile image" src={session.user.image ?? undefined} />
+            <AvatarFallback className="rounded-sm">{session.user.name.slice(0, 1)}</AvatarFallback>
           </Avatar>
           <div>
-            <span className="truncate font-medium text-foreground text-sm">{data?.user.name}</span>
+            <span className="truncate font-medium text-foreground text-sm">{session.user.name}</span>
             <span className="flex items-center truncate font-normal text-muted-foreground text-xs">
-              {data?.user.email}
+              {session.user.email}
             </span>
           </div>
         </DropdownMenuLabel>
