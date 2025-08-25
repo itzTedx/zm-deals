@@ -15,6 +15,13 @@
       "when": 1756123198138,
       "tag": "0001_chief_shocker",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1756123905068,
+      "tag": "0002_same_blacklash",
+      "breakpoints": true
     }
   ]
 }

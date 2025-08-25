@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
 
+import { AnonymousCartProvider } from "@/modules/cart/components/anonymous-cart-provider";
 import { CartSheet } from "@/modules/cart/components/cart-sheet";
 
 export const metadata: Metadata = {
@@ -16,11 +17,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <AnonymousCartProvider>
       <Navbar />
       {children}
       <Footer />
       <CartSheet />
-    </>
+    </AnonymousCartProvider>
   );
 }

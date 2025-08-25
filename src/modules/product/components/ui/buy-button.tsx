@@ -10,6 +10,8 @@ import { LoadingSwap } from "@/components/ui/loading-swap";
 
 import { ChevronRightIcon, ChevronRightIconHandle } from "@/assets/icons/chevron";
 
+import { signIn } from "@/lib/auth/client";
+
 import { addToCart } from "../../../cart/actions/mutation";
 import { addToCartAtom, isCartOpenAtom } from "../../../cart/atom";
 import { Deal } from "../../types";
@@ -35,7 +37,44 @@ export const BuyButton = ({ data }: Props) => {
           return;
         }
 
-        // Update client-side state for immediate UI feedback
+        // If this is an anonymous user, create anonymous session and use client-side cart
+        if (result.anonymous) {
+          try {
+            // Create anonymous session
+            await signIn.anonymous();
+
+            // Convert Deal to ProductType format for cart
+            const productForCart = {
+              id: data.id.toString(),
+              title: data.title,
+              overview: data.overview,
+              description: data.description,
+              slug: data.slug,
+              price: data.price,
+              compareAtPrice: null,
+              image: data.featuredImage,
+              isFeatured: false,
+              endsIn: data.endsIn,
+              schedule: null,
+              status: "published" as const,
+              metaId: null,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            };
+
+            // Add to client-side cart
+            addToCartClient({ product: productForCart, quantity: 1 });
+            setIsCartOpen(true);
+
+            toast.success("Added to cart successfully!");
+          } catch (anonymousError) {
+            console.error("Error creating anonymous session:", anonymousError);
+            toast.error("Failed to create anonymous session");
+          }
+          return;
+        }
+
+        // For authenticated users, update client-side state for immediate UI feedback
         // Convert Deal to ProductType format for cart
         const productForCart = {
           id: data.id.toString(),

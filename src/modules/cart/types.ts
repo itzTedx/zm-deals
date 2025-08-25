@@ -10,6 +10,7 @@ export interface CartItem {
 export interface CartActionResponse {
   success: boolean;
   error?: string;
+  anonymous?: boolean;
 }
 
 // Cart query result type

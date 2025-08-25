@@ -9,6 +9,7 @@ import { admin as adminPlugin, anonymous, openAPI } from "better-auth/plugins";
 import { createAccessControl } from "better-auth/plugins/access";
 import { adminAc } from "better-auth/plugins/admin/access";
 
+import { migrateAnonymousCart } from "@/modules/cart/services";
 import { db } from "@/server/db";
 
 import { env } from "../env/server";
@@ -77,7 +78,20 @@ export const auth = betterAuth({
         console.log(`Event ${type} triggered for user ${request}`);
       },
     }),
-    anonymous(),
+    anonymous({
+      onLinkAccount: async ({ anonymousUser, newUser }) => {
+        const result = await migrateAnonymousCart({
+          anonymousUserId: anonymousUser.user.id,
+          newUserId: newUser.user.id,
+        });
+
+        if (result.success) {
+          console.log(`Cart migration completed: ${result.migratedItems} items migrated`);
+        } else {
+          console.error("Cart migration failed:", result.error);
+        }
+      },
+    }),
     openAPI(),
     nextCookies(),
   ],

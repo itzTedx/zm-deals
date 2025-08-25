@@ -11,8 +11,10 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
+import { useSession } from "@/lib/auth/client";
+
 import { clearCart, removeFromCart } from "../actions/mutation";
-import { cartItemCountAtom, cartTotalAtom, isCartOpenAtom } from "../atom";
+import { cartItemCountAtom, cartTotalAtom, isCartOpenAtom, removeFromCartAtom } from "../atom";
 import { useCartSync } from "../hooks/use-cart-sync";
 
 export function CartSheet() {
@@ -20,9 +22,19 @@ export function CartSheet() {
   const [itemCount] = useAtom(cartItemCountAtom);
   const [cartTotal] = useAtom(cartTotalAtom);
   const [isOpen, setIsOpen] = useAtom(isCartOpenAtom);
+  const [, removeFromCartClient] = useAtom(removeFromCartAtom);
   const [isPending, startTransition] = useTransition();
+  const { data: session } = useSession();
 
   const handleRemoveFromCart = (productId: string) => {
+    if (!session) {
+      // Anonymous user - use client-side operation
+      removeFromCartClient(productId);
+      toast.success("Item removed from cart");
+      return;
+    }
+
+    // Authenticated user - use server action
     startTransition(async () => {
       try {
         const result = await removeFromCart(productId);
@@ -41,6 +53,14 @@ export function CartSheet() {
   };
 
   const handleClearCart = () => {
+    if (!session) {
+      // Anonymous user - use client-side operation
+      setCart([]);
+      toast.success("Cart cleared");
+      return;
+    }
+
+    // Authenticated user - use server action
     startTransition(async () => {
       try {
         const result = await clearCart();
