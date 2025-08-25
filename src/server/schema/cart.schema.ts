@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import { boolean, integer, pgTable, timestamp, uuid } from "drizzle-orm/pg-core";
 
 import { users } from "./auth-schema";
@@ -35,3 +36,23 @@ export const cartItems = pgTable("cart_items", {
     .$onUpdate(() => new Date())
     .notNull(),
 });
+
+// Relations
+export const cartRelations = relations(carts, ({ one, many }) => ({
+  user: one(users, {
+    fields: [carts.userId],
+    references: [users.id],
+  }),
+  items: many(cartItems),
+}));
+
+export const cartItemRelations = relations(cartItems, ({ one }) => ({
+  cart: one(carts, {
+    fields: [cartItems.cartId],
+    references: [carts.id],
+  }),
+  product: one(products, {
+    fields: [cartItems.productId],
+    references: [products.id],
+  }),
+}));

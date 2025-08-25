@@ -2,20 +2,23 @@
 
 import Link from "next/link";
 
-import { IconShoppingBag2 } from "@/assets/icons/bag";
+import { IconChevronRight } from "@/assets/icons/chevron";
 import { IconDiamond } from "@/assets/icons/diamonds";
 import { IconHeart } from "@/assets/icons/heart";
 import { IconMenu } from "@/assets/icons/menu";
+import { IconSearch } from "@/assets/icons/search";
 import { IconUser } from "@/assets/icons/user";
 import { LogoIcon, LogoWordMark } from "@/assets/logo";
 
 import { NAV_LINKS } from "@/data/constants";
 import { useSession } from "@/lib/auth/client";
+import { CartIcon } from "@/modules/product/components/ui/cart-icon";
 
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
+import UserMenu from "./user-menu";
 
 export const Navbar = () => {
   const { data: session } = useSession();
@@ -42,18 +45,35 @@ export const Navbar = () => {
             </ul>
           </div>
 
+          <div className="relative mx-auto max-w-sm flex-1 sm:max-w-md">
+            <Input
+              className="peer h-10 ps-9 pe-14 text-sm sm:h-11 sm:ps-10 sm:pe-16 sm:text-base"
+              id="email"
+              placeholder="What are you looking for?"
+              type="email"
+            />
+            <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-muted-foreground/80 peer-disabled:opacity-50">
+              <IconSearch className="size-4 sm:size-5" />
+            </div>
+            <Button
+              aria-label="Submit search"
+              className="absolute inset-y-0 end-2 my-auto h-6 bg-card shadow-lg sm:end-3 sm:h-7"
+              type="submit"
+              variant="outline"
+            >
+              <IconChevronRight aria-hidden="true" className="size-2.5 sm:size-3" />
+            </Button>
+          </div>
+
           <div className="flex items-center gap-2 md:gap-3">
-            <Button className="hidden sm:inline-flex" size="icon" variant="outline">
-              <IconHeart className="size-5 text-muted-foreground hover:text-brand-500" />
-            </Button>
-            <Button className="hidden sm:inline-flex" size="icon" variant="outline">
-              <IconShoppingBag2 className="size-5 text-muted-foreground hover:text-brand-500" />
-            </Button>
             {session ? (
-              <Avatar>
-                <AvatarFallback>{session.user?.name?.charAt(0)}</AvatarFallback>
-                <AvatarImage alt={session.user.name ?? ""} src={session.user.image ?? undefined} />
-              </Avatar>
+              <div className="flex items-center gap-2">
+                <UserMenu />
+                <div className="flex flex-col">
+                  <p className="font-medium text-sm">Hi! {session.user?.name}</p>
+                  <p className="text-muted-foreground text-xs">{session.user?.email}</p>
+                </div>
+              </div>
             ) : (
               <Button asChild size="icon" variant="outline">
                 <Link href="/auth/login">
@@ -61,6 +81,11 @@ export const Navbar = () => {
                 </Link>
               </Button>
             )}
+            <div className="h-5 w-px flex-1 shrink-0 bg-gray-200" />
+            <Button className="hidden sm:inline-flex" size="icon" variant="outline">
+              <IconHeart className="size-5 text-muted-foreground hover:text-brand-500" />
+            </Button>
+            <CartIcon />
 
             {/* Mobile Sheet Menu */}
             <Sheet>

@@ -1,0 +1,111 @@
+"use server";
+
+import { headers } from "next/headers";
+
+import { and, eq } from "drizzle-orm";
+
+import { auth } from "@/lib/auth/server";
+import { db } from "@/server/db";
+import { carts } from "@/server/schema";
+
+export async function getCart() {
+  try {
+    const session = await auth.api.getSession({ headers: await headers() });
+
+    if (!session) {
+      return [];
+    }
+
+    const userCart = await db.query.carts.findFirst({
+      where: and(eq(carts.userId, session.user.id), eq(carts.isActive, true)),
+      with: {
+        items: {
+          with: {
+            product: {
+              with: {
+                meta: true,
+                inventory: true,
+                images: {
+                  with: {
+                    media: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!userCart || !userCart.items) {
+      return [];
+    }
+
+    return userCart.items.map((item) => ({
+      product: item.product,
+      quantity: item.quantity,
+    }));
+  } catch (error) {
+    console.error("Error getting cart:", error);
+    return [];
+  }
+}
+
+export async function getCartItemCount() {
+  try {
+    const session = await auth.api.getSession({ headers: await headers() });
+
+    if (!session) {
+      return 0;
+    }
+
+    const userCart = await db.query.carts.findFirst({
+      where: and(eq(carts.userId, session.user.id), eq(carts.isActive, true)),
+      with: {
+        items: true,
+      },
+    });
+
+    if (!userCart || !userCart.items) {
+      return 0;
+    }
+
+    return userCart.items.reduce((total, item) => total + item.quantity, 0);
+  } catch (error) {
+    console.error("Error getting cart item count:", error);
+    return 0;
+  }
+}
+
+export async function getCartTotal() {
+  try {
+    const session = await auth.api.getSession({ headers: await headers() });
+
+    if (!session) {
+      return 0;
+    }
+
+    const userCart = await db.query.carts.findFirst({
+      where: and(eq(carts.userId, session.user.id), eq(carts.isActive, true)),
+      with: {
+        items: {
+          with: {
+            product: true,
+          },
+        },
+      },
+    });
+
+    if (!userCart || !userCart.items) {
+      return 0;
+    }
+
+    return userCart.items.reduce((total, item) => {
+      const price = Number(item.product.price);
+      return total + price * item.quantity;
+    }, 0);
+  } catch (error) {
+    console.error("Error getting cart total:", error);
+    return 0;
+  }
+}

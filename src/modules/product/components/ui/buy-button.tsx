@@ -2,6 +2,7 @@
 
 import { useRef, useTransition } from "react";
 
+import { useAtom } from "jotai";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -9,8 +10,8 @@ import { LoadingSwap } from "@/components/ui/loading-swap";
 
 import { ChevronRightIcon, ChevronRightIconHandle } from "@/assets/icons/chevron";
 
-import { createCheckoutSession } from "@/modules/checkout/mutation";
-
+import { addToCart } from "../../../cart/actions/mutation";
+import { addToCartAtom, isCartOpenAtom } from "../../../cart/atom";
 import { Deal } from "../../types";
 
 interface Props {
@@ -19,27 +20,48 @@ interface Props {
 
 export const BuyButton = ({ data }: Props) => {
   const ref = useRef<ChevronRightIconHandle>(null);
+  const [, addToCartClient] = useAtom(addToCartAtom);
+  const [, setIsCartOpen] = useAtom(isCartOpenAtom);
   const [isLoading, startTransition] = useTransition();
 
-  function handleCheckout() {
+  async function handleCheckout() {
     startTransition(async () => {
-      const url = await createCheckoutSession({
-        productId: data.id.toString(),
-        quantity: 2,
-        name: data.title,
-        description: data.description,
-        price: Number(data.price),
-        image: data.images[0].url,
-      });
+      try {
+        // Add to cart on server
+        const result = await addToCart(data.id.toString(), 1);
 
-      console.log(url);
+        if (!result.success) {
+          toast.error(result.error || "Failed to add to cart");
+          return;
+        }
 
-      if (!url) {
-        toast.error("Something went wrong");
-        return;
+        // Update client-side state for immediate UI feedback
+        // Convert Deal to ProductType format for cart
+        const productForCart = {
+          id: data.id.toString(),
+          title: data.title,
+          overview: data.overview,
+          description: data.description,
+          slug: data.slug,
+          price: data.price,
+          compareAtPrice: null,
+          image: data.featuredImage,
+          isFeatured: false,
+          endsIn: data.endsIn,
+          schedule: null,
+          status: "published" as const,
+          metaId: null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+        addToCartClient({ product: productForCart, quantity: 1 });
+        setIsCartOpen(true); // Open the cart after adding item
+
+        toast.success("Added to cart successfully!");
+      } catch (error) {
+        console.error("Error adding to cart:", error);
+        toast.error("Failed to add to cart");
       }
-
-      window.location.href = url;
     });
   }
 
@@ -53,7 +75,7 @@ export const BuyButton = ({ data }: Props) => {
       size="lg"
     >
       <LoadingSwap className="flex items-center justify-between gap-2" isLoading={isLoading}>
-        Claim this deal now <ChevronRightIcon ref={ref} />
+        Add to Cart <ChevronRightIcon ref={ref} />
       </LoadingSwap>
     </Button>
   );
