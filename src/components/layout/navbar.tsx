@@ -22,26 +22,27 @@ export const Navbar = async () => {
 
   return (
     <header className="sticky top-0 z-999 h-fit">
-      <div className="relative inset-shadow-[0_1px_12px_5px_oklch(1_0_0)] z-999 rounded-b-xl bg-card/85 shadow-lg backdrop-blur-2xl">
+      {/* inset-shadow-[0_1px_12px_5px_oklch(1_0_0)]  */}
+      <div className="relative z-999 rounded-b-xl bg-brand-600 text-card shadow-brand-lg">
         <nav className="container relative z-999 mx-auto flex max-w-7xl items-center justify-between gap-4 py-2.5 font-helvetica max-md:justify-between md:gap-8">
           <div className="flex items-center gap-2 md:gap-6">
             <Link aria-label="go home" className="flex items-center gap-2" href="/">
               <LogoIcon />
               <LogoWordMark className="md:hidden" />
             </Link>
-            <div className="hidden size-0.5 rounded-full bg-muted-foreground md:block" />
+            <div className="hidden size-0.5 rounded-full bg-brand-100 md:block" />
             {/* Desktop Navigation */}
             <ul className="hidden items-center gap-6 md:flex">
               {NAV_LINKS.map((nav) => (
                 <li key={nav.href}>
-                  <Link className="font-medium text-gray-700 transition-colors hover:text-brand-600" href={nav.href}>
+                  <Link className="font-medium text-brand-50 transition-colors hover:text-brand-200" href={nav.href}>
                     {nav.label}
                   </Link>
                 </li>
               ))}
               <li>
                 <Link
-                  className="flex items-center gap-1 font-medium text-gray-700 transition-colors hover:text-brand-600"
+                  className="flex items-center gap-1 font-medium text-brand-50 transition-colors hover:text-brand-200"
                   href="/deals"
                 >
                   Categories <IconChevronRight className="rotate-90" />
@@ -50,21 +51,20 @@ export const Navbar = async () => {
             </ul>
           </div>
 
-          <div className="relative mx-auto max-w-sm flex-1 sm:max-w-md">
+          <div className="group relative mx-auto max-w-sm flex-1 sm:max-w-md">
             <Input
-              className="peer h-10 ps-9 pe-14 text-sm sm:h-11 sm:ps-10 sm:pe-16 sm:text-base"
-              id="email"
+              className="peer h-10 bg-brand-400/50 ps-9 pe-14 text-sm placeholder:text-brand-100 hover:placeholder:text-muted-foreground sm:h-11 sm:ps-10 sm:pe-16 sm:text-base"
+              id="search"
               placeholder="What are you looking for?"
-              type="email"
+              type="search"
             />
-            <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-muted-foreground/80 peer-disabled:opacity-50">
+            <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-brand-100 group-hover:text-muted-foreground/80 group-active:text-muted-foreground/80 peer-disabled:opacity-50">
               <IconSearch className="size-4 sm:size-5" />
             </div>
             <Button
               aria-label="Submit search"
-              className="absolute inset-y-0 end-2 my-auto h-6 bg-card shadow-lg sm:end-3 sm:h-7"
+              className="absolute inset-y-0 end-2 my-auto h-6 shadow-lg sm:end-3 sm:h-7"
               type="submit"
-              variant="outline"
             >
               <IconChevronRight aria-hidden="true" className="size-2.5 sm:size-3" />
             </Button>
@@ -72,13 +72,7 @@ export const Navbar = async () => {
 
           <div className="flex items-center gap-2 md:gap-3">
             {session && !session.user.isAnonymous ? (
-              <div className="flex items-center gap-2">
-                <UserMenu />
-                <div className="hidden flex-col md:flex">
-                  <p className="font-medium text-sm">Hi! {session.user?.name}</p>
-                  <p className="text-muted-foreground text-xs">{session.user?.email}</p>
-                </div>
-              </div>
+              <UserMenu />
             ) : (
               <Button asChild size="icon" variant="outline">
                 <Link href="/auth/login">

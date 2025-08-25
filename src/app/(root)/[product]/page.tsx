@@ -14,6 +14,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import ImageCarousel from "@/components/ui/carousel-with-thumbnail";
 import StarRating from "@/components/ui/rating";
 import { SeparatorBox } from "@/components/ui/separator";
@@ -21,7 +22,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 import { IconPackage } from "@/assets/icons/bag";
 import { IconDocument } from "@/assets/icons/book";
-import { IconCurrency } from "@/assets/icons/currency";
+import { IconApplePay, IconCurrency, IconMasterCard, IconVisaCard } from "@/assets/icons/currency";
 import { IconShield } from "@/assets/icons/shield";
 
 import { env } from "@/lib/env/client";
@@ -177,10 +178,25 @@ export default async function ProductPage({ params }: { params: Params }) {
                 </BannerIcon>
                 <BannerText>
                   <BannerTitle className="font-medium text-gray-500">Order Guarantee</BannerTitle>
-                  <BannerDescription className="flex flex-wrap gap-2">
-                    <CheckboxBadge>Free Returns</CheckboxBadge>
-                    <CheckboxBadge>Return if item damaged</CheckboxBadge>
-                    <CheckboxBadge>Cash on Delivery</CheckboxBadge>
+                  <BannerDescription>
+                    <Carousel
+                      className="w-full"
+                      opts={{
+                        align: "start",
+                      }}
+                    >
+                      <CarouselContent>
+                        <CarouselItem className="basis-1/1 rounded-2xl lg:basis-1/3">
+                          <CheckboxBadge>Free Returns</CheckboxBadge>
+                        </CarouselItem>
+                        <CarouselItem className="basis-1/1 rounded-2xl lg:basis-1/3">
+                          <CheckboxBadge>Return if item damaged</CheckboxBadge>
+                        </CarouselItem>
+                        <CarouselItem className="basis-1/1 rounded-2xl lg:basis-1/3">
+                          <CheckboxBadge>Cash on Delivery</CheckboxBadge>
+                        </CarouselItem>
+                      </CarouselContent>
+                    </Carousel>
                   </BannerDescription>
                 </BannerText>
               </BannerContent>
@@ -191,9 +207,17 @@ export default async function ProductPage({ params }: { params: Params }) {
                 <BannerIcon>
                   <IconShield className="size-6 text-green-600" />
                 </BannerIcon>
-                <BannerText>
-                  <BannerTitle className="font-medium text-green-700">Secure Payment</BannerTitle>
-                </BannerText>
+                <div className="flex w-full items-center justify-between">
+                  <BannerText className="gap-0.5">
+                    <BannerTitle className="font-medium text-green-700">Secure Payment</BannerTitle>
+                    <BannerDescription className="text-xs">Powered by Stripe</BannerDescription>
+                  </BannerText>
+                  <div className="flex items-center gap-2">
+                    <IconApplePay className="size-6" />
+                    <IconVisaCard className="size-6" />
+                    <IconMasterCard className="size-6" />
+                  </div>
+                </div>
               </BannerContent>
             </Banner>
           </div>

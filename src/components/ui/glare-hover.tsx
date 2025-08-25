@@ -99,7 +99,7 @@ const GlareHover: React.FC<GlareHoverProps> = ({
 
   return (
     <div
-      className={cn("relative grid cursor-pointer place-items-center overflow-hidden border", className)}
+      className={cn("relative grid cursor-pointer place-items-center overflow-hidden", className)}
       onMouseEnter={animateIn}
       onMouseLeave={animateOut}
     >

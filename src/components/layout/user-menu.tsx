@@ -24,13 +24,17 @@ export default function UserMenu() {
   const { data } = useSession();
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="rounded-full">
+      <DropdownMenuTrigger className="flex cursor-pointer gap-2">
         <Avatar>
           <GlareHover className="size-full rounded-md">
             <AvatarImage alt="Profile image" src={data?.user.image ?? undefined} />
-            <AvatarFallback>{data?.user.name.slice(0, 1)}</AvatarFallback>
+            <AvatarFallback className="text-muted-foreground">{data?.user.name.slice(0, 1)}</AvatarFallback>
           </GlareHover>
         </Avatar>
+        <div className="hidden flex-col items-start md:flex">
+          <p className="font-medium text-sm">Hi! {data?.user.name}</p>
+          <p className="text-muted/80 text-xs">{data?.user.email}</p>
+        </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="z-99999 max-w-72">
         <DropdownMenuLabel className="flex min-w-0 items-center gap-1.5">
@@ -49,9 +53,21 @@ export default function UserMenu() {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            <Link className="flex items-center gap-2" href="/settings/profile">
+            <Link className="flex items-center gap-2" href="/profile">
               <IconUser aria-hidden="true" className="opacity-60" />
-              <span>Edit Profile</span>
+              <span>My Orders</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link className="flex items-center gap-2" href="/profile">
+              <IconUser aria-hidden="true" className="opacity-60" />
+              <span>Wishlist</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link className="flex items-center gap-2" href="/profile">
+              <IconUser aria-hidden="true" className="opacity-60" />
+              <span> Profile</span>
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
