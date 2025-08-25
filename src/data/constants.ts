@@ -14,10 +14,10 @@ export const NAV_LINKS: { label: string; href: Route }[] = [
     label: "Deals",
     href: "/deals",
   },
-  {
-    label: "FAQs",
-    href: "/faqs",
-  },
+  // {
+  //   label: "FAQs",
+  //   href: "/faqs",
+  // },
 ];
 
 export const HOW_WORKS = [

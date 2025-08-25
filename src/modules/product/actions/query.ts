@@ -16,6 +16,11 @@ export async function getProducts() {
           media: true,
         },
       },
+      reviews: {
+        with: {
+          user: true,
+        },
+      },
     },
   });
 

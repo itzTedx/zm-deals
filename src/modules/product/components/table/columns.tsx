@@ -5,8 +5,8 @@ import { RiCheckLine } from "@remixicon/react";
 import { ColumnDef, FilterFn } from "@tanstack/react-table";
 
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
+import StarRating from "@/components/ui/rating";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 import { IconCurrency } from "@/assets/icons/currency";
@@ -28,26 +28,6 @@ const statusFilterFn: FilterFn<ProductQueryResult> = (row, columnId, filterValue
 };
 
 export const getColumns = ({ data }: GetColumnsProps): ColumnDef<ProductQueryResult>[] => [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        aria-label="Select all"
-        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        aria-label="Select row"
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-      />
-    ),
-    size: 28,
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     header: "Title",
     accessorKey: "title",
@@ -72,8 +52,9 @@ export const getColumns = ({ data }: GetColumnsProps): ColumnDef<ProductQueryRes
         </Link>
       );
     },
-    size: 180,
+    size: 360,
     enableHiding: false,
+    enablePinning: true,
   },
 
   {
@@ -97,18 +78,20 @@ export const getColumns = ({ data }: GetColumnsProps): ColumnDef<ProductQueryRes
         </Badge>
       </div>
     ),
-    size: 70,
+    size: 100,
     filterFn: statusFilterFn,
+    enablePinning: false,
   },
   {
     header: "Price",
     accessorKey: "price",
     cell: ({ row }) => (
       <span className="flex items-center gap-1 text-muted-foreground">
-        <IconCurrency className="size-3" /> {row.getValue("price")}
+        <IconCurrency className="size-3 shrink-0" /> {row.getValue("price")}
       </span>
     ),
-    size: 60,
+    size: 100,
+    enablePinning: false,
   },
 
   {
@@ -134,7 +117,8 @@ export const getColumns = ({ data }: GetColumnsProps): ColumnDef<ProductQueryRes
         </TooltipProvider>
       );
     },
-    size: 80,
+    size: 100,
+    enablePinning: false,
   },
   {
     header: "Schedule",
@@ -144,10 +128,13 @@ export const getColumns = ({ data }: GetColumnsProps): ColumnDef<ProductQueryRes
         {row.original.schedule &&
           formatDate(row.original.schedule, {
             includeTime: true,
+            showDayOfWeek: false,
+            showYear: false,
           })}
       </div>
     ),
-    size: 80,
+    size: 180,
+    enablePinning: false,
   },
   {
     header: "Offer Ends At",
@@ -157,10 +144,30 @@ export const getColumns = ({ data }: GetColumnsProps): ColumnDef<ProductQueryRes
         {row.original.endsIn &&
           formatDate(row.original.endsIn, {
             includeTime: true,
+            showYear: false,
           })}
       </div>
     ),
-    size: 80,
+    size: 180,
+    enablePinning: false,
+  },
+  {
+    header: "Reviews",
+    accessorKey: "reviews",
+    cell: ({ row }) => (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <StarRating readOnly value={row.original.reviews?.length ?? 0} />
+          </TooltipTrigger>
+          <TooltipContent align="center">
+            <p>{row.original.reviews?.length} reviews</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    ),
+    size: 180,
+    enablePinning: false,
   },
   {
     id: "actions",
@@ -168,5 +175,6 @@ export const getColumns = ({ data }: GetColumnsProps): ColumnDef<ProductQueryRes
     cell: ({ row }) => <RowActions data={data} item={row.original} />,
     size: 60,
     enableHiding: false,
+    enablePinning: false,
   },
 ];

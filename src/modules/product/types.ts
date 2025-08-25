@@ -18,7 +18,9 @@ export type ProductImage = InferSelectModel<typeof productImages>;
 
 export type ProductQueryResult = InferSelectModel<typeof products> & {
   reviews?: Review[];
-  images: ProductImage[];
+  images: (ProductImage & {
+    media: Media | null;
+  })[];
   meta?: Meta | null;
   inventory: Inventory;
 };

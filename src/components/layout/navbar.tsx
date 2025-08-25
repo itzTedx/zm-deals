@@ -22,8 +22,8 @@ export const Navbar = async () => {
 
   return (
     <header className="sticky top-0 z-999 h-fit">
-      <div className="relative z-999">
-        <nav className="container relative inset-shadow-[0_1px_12px_5px_oklch(1_0_0)] z-999 mx-auto flex items-center justify-between gap-4 rounded-b-xl bg-card/85 py-2.5 font-helvetica shadow-lg backdrop-blur-2xl max-md:justify-between md:gap-8">
+      <div className="relative inset-shadow-[0_1px_12px_5px_oklch(1_0_0)] z-999 rounded-b-xl bg-card/85 shadow-lg backdrop-blur-2xl">
+        <nav className="container relative z-999 mx-auto flex max-w-7xl items-center justify-between gap-4 py-2.5 font-helvetica max-md:justify-between md:gap-8">
           <div className="flex items-center gap-2 md:gap-6">
             <Link aria-label="go home" className="flex items-center gap-2" href="/">
               <LogoIcon />
@@ -39,6 +39,14 @@ export const Navbar = async () => {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link
+                  className="flex items-center gap-1 font-medium text-gray-700 transition-colors hover:text-brand-600"
+                  href="/deals"
+                >
+                  Categories <IconChevronRight className="rotate-90" />
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -128,7 +136,8 @@ export const Navbar = async () => {
               </SheetContent>
             </Sheet>
           </div>
-
+          <div className="-translate-x-1/2 pointer-events-none absolute bottom-0 left-0 size-2.5 translate-y-1/2 rounded border bg-card" />
+          <div className="pointer-events-none absolute right-0 bottom-0 size-2.5 translate-x-1/2 translate-y-1/2 rounded border bg-card" />
           {/* <div className="-right-1.5 -translate-y-1/2 pointer-events-none absolute top-1/2 size-2.5 rounded border bg-card" />
           <div className="-left-1.5 -translate-y-1/2 pointer-events-none absolute top-1/2 size-2.5 rounded border bg-card" /> */}
         </nav>
