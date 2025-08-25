@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { SectionHeader } from "@/components/layout/section-header";
@@ -72,6 +73,9 @@ export const Deals = async () => {
           </div>
         </div>
       )}
+      <div className="relative aspect-16/5 w-full">
+        <Image alt="deals" className="rounded-2xl object-cover shadow-xl" fill src="/images/combo-banner.webp" />
+      </div>
 
       {/* <div className="relative">
         <div className="flex items-center gap-6">
