@@ -1,10 +1,13 @@
-import { IconLogout } from "@/assets/icons/auth";
 import { LogoIcon } from "@/assets/logo";
 
-import { Button } from "../ui/button";
-import { SearchForm } from "./sidebar/search-bar";
+import { getSession } from "@/lib/auth/server";
 
-export const AppNavbar = () => {
+import { SearchForm } from "./sidebar/search-bar";
+import UserMenu from "./user-menu";
+
+export const AppNavbar = async () => {
+  const session = await getSession();
+  if (!session) return null;
   return (
     <nav className="container flex items-center justify-between gap-3 py-2">
       <div>
@@ -12,9 +15,7 @@ export const AppNavbar = () => {
       </div>
       <SearchForm />
       <div>
-        <Button size="btn" variant="outline">
-          <IconLogout />
-        </Button>
+        <UserMenu session={session} />
       </div>
     </nav>
   );

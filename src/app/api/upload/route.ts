@@ -6,6 +6,9 @@ import { getSession } from "@/lib/auth/server";
 import { env } from "@/lib/env/server";
 import { createLog } from "@/lib/logging";
 import {
+  CATEGORY_FILE_MAX_SIZE,
+  CATEGORY_FILE_TYPES,
+  CATEGORY_UPLOAD_ROUTE,
   PRODUCT_FILE_MAX_FILES,
   PRODUCT_FILE_MAX_SIZE,
   PRODUCT_FILE_TYPES,
@@ -95,6 +98,67 @@ const router: Router = {
           return {
             metadata: {
               urls,
+            },
+          };
+        } catch (error) {
+          log.error("Error in onAfterSignedUrl", error);
+          throw error;
+        }
+      },
+    }),
+    [CATEGORY_UPLOAD_ROUTE]: route({
+      fileTypes: CATEGORY_FILE_TYPES,
+      multipleFiles: false,
+      maxFileSize: CATEGORY_FILE_MAX_SIZE,
+
+      onBeforeUpload: async ({ file }) => {
+        log.info("Starting upload process");
+
+        try {
+          const session = await getSession();
+          if (!session) {
+            log.warn("Upload attempt without authentication");
+            throw new UploadFileError("Not logged in!");
+          }
+
+          log.auth("Upload authorized", session.user.id);
+          log.data({ userId: session.user.id, email: session.user.email }, "User Session");
+
+          const safeFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+          const objectKey = `${CATEGORY_UPLOAD_ROUTE}/${safeFileName}-${generateFileName()}`;
+
+          log.file("Generated object key", objectKey);
+          log.data(
+            {
+              originalName: file.name,
+              safeName: safeFileName,
+              objectKey,
+              size: file.size,
+              type: file.type,
+            },
+            "File Info"
+          );
+
+          return {
+            objectKey,
+          };
+        } catch (error) {
+          log.error("Error in onBeforeUpload", error);
+          throw error;
+        }
+      },
+
+      onAfterSignedUrl: async ({ file }) => {
+        log.info("Processing signed URLs", file.objectKey);
+
+        try {
+          // Set public URL for all files
+          const url = `https://${env.AWS_BUCKET_NAME}.s3.${env.AWS_BUCKET_REGION}.amazonaws.com/${file.objectKey}`;
+          log.file("Generated public URL", url);
+
+          return {
+            metadata: {
+              url,
             },
           };
         } catch (error) {

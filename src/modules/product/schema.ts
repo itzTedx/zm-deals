@@ -12,7 +12,7 @@ export const checkoutSchema = z.object({
 
 export type CheckoutSchema = z.infer<typeof checkoutSchema>;
 
-export const productImageSchema = z.object({
+export const mediaSchema = z.object({
   url: z.string().min(1, { message: "Image URL is required" }),
   key: z.string("Failed to upload image").optional(),
 
@@ -21,9 +21,11 @@ export const productImageSchema = z.object({
   height: z.number({ message: "Height must be a number." }).nullish(),
   blurData: z.string({ message: "Blur data must be a string." }).nullish(),
 
-  isFeatured: z.boolean(),
-  order: z.number(),
+  isFeatured: z.boolean().optional(),
+  order: z.number().optional(),
 });
+
+export type ProductImageSchema = z.infer<typeof mediaSchema>;
 
 export const productSchema = z.object({
   id: z.string().optional(),
@@ -39,7 +41,7 @@ export const productSchema = z.object({
 
   inventory: z.number("Inventory is required"),
 
-  images: z.array(productImageSchema).min(1, { message: "Images are required" }),
+  images: z.array(mediaSchema).min(1, { message: "Images are required" }),
 
   meta: z.object({
     title: z.string().optional(),

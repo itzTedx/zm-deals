@@ -26,7 +26,7 @@ export const Hero = async () => {
   const { title, overview, price, originalPrice, featuredImage, slug, endsIn } = PRODUCT;
   return (
     <section>
-      <div className="container relative max-w-7xl gap-4 border-x pb-12 md:pb-14">
+      <div className="container relative max-w-7xl gap-4 border-x pb-9">
         <div className="relative">
           <Carousel
             className="w-full"
