@@ -38,11 +38,15 @@ export const ProductForm = ({ initialData, isEditMode }: Props) => {
       ...getInitialValues(),
       ...initialData,
     },
+    reValidateMode: "onBlur",
   });
 
   // DEBUG
   // const validation = productSchema.safeParse(form.watch());
-  // console.log(validation);
+  // console.log("validation success:", validation.success);
+  // if (!validation.success) {
+  //   console.log("validation errors:", z.prettifyError(validation.error));
+  // }
 
   function onSubmit(values: ProductSchema) {
     startTransition(async () => {

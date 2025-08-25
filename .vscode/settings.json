@@ -24,7 +24,8 @@
     "presigner",
     "sonner",
     "Swapy",
-    "ziron"
+    "ziron",
+    "upserted"
   ],
   "[typescriptreact]": {
     "editor.defaultFormatter": "biomejs.biome"

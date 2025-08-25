@@ -30,6 +30,8 @@ export const products = pgTable(
 
     price: decimal("price", { precision: 10, scale: 2 }).notNull(),
     compareAtPrice: decimal("compare_at_price", { precision: 10, scale: 2 }),
+    deliveryFee: decimal("delivery_fee", { precision: 10, scale: 2 }),
+    isDeliveryFree: boolean("is_delivery_free").notNull().default(true),
     image: text("image").notNull(),
 
     isFeatured: boolean("is_featured").notNull().default(false),

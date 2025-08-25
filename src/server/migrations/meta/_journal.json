@@ -22,6 +22,13 @@
       "when": 1756123905068,
       "tag": "0002_same_blacklash",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1756126005190,
+      "tag": "0003_common_newton_destine",
+      "breakpoints": true
     }
   ]
 }

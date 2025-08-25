@@ -13,6 +13,9 @@ export function transformProduct(product: ProductQueryResult | null): ProductSch
 
     price: Number(product.price),
     compareAtPrice: Number(product.compareAtPrice) ?? undefined,
+    deliveryFee: Number(product.deliveryFee) ?? undefined,
+    isDeliveryFree: product.isDeliveryFree ?? true,
+
     inventory: product.inventory.initialStock,
 
     images: product.images

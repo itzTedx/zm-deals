@@ -34,6 +34,9 @@ export const productSchema = z.object({
 
   price: z.number().min(3, { message: "Price must be at least 3 AED" }),
   compareAtPrice: z.number().optional(),
+  deliveryFee: z.number().optional(),
+  isDeliveryFree: z.boolean().optional(),
+
   inventory: z.number("Inventory is required"),
 
   images: z.array(productImageSchema).min(1, { message: "Images are required" }),
