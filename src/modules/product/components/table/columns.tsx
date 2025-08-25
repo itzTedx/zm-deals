@@ -14,6 +14,7 @@ import { IconCurrency } from "@/assets/icons/currency";
 import { formatDate } from "@/lib/functions/format-date";
 import { cn } from "@/lib/utils";
 
+import { calculateAverageRating } from "../../actions/helper";
 import { ProductQueryResult } from "../../types";
 import { RowActions } from "./row-actions";
 
@@ -158,7 +159,7 @@ export const getColumns = ({ data }: GetColumnsProps): ColumnDef<ProductQueryRes
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger>
-            <StarRating readOnly value={row.original.reviews?.length ?? 0} />
+            <StarRating readOnly value={calculateAverageRating(row.original.reviews)} />
           </TooltipTrigger>
           <TooltipContent align="center">
             <p>{row.original.reviews?.length} reviews</p>

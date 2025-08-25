@@ -105,11 +105,6 @@ export const WriteReview = ({ reviews, productId }: WriteReviewProps) => {
       return;
     }
 
-    if (!comment.trim()) {
-      toast.error("Please write a comment");
-      return;
-    }
-
     startTransition(async () => {
       if (userReview) {
         // Update existing review
@@ -137,8 +132,7 @@ export const WriteReview = ({ reviews, productId }: WriteReviewProps) => {
 
         if (result.success) {
           toast.success("Review submitted successfully!");
-          setStarValue("0");
-          setComment("");
+
           router.refresh();
         } else {
           toast.error("Failed to submit review", {

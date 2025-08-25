@@ -2,7 +2,7 @@
 
 import { headers } from "next/headers";
 
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import z from "zod";
 
 import { auth } from "@/lib/auth/server";
@@ -540,7 +540,7 @@ export async function createReview(rawData: unknown): Promise<{ success: boolean
   try {
     // Check if user has already reviewed this product
     const existingReview = await db.query.reviews.findFirst({
-      where: eq(reviews.productId, data.productId) && eq(reviews.userId, session.user.id),
+      where: and(eq(reviews.productId, data.productId), eq(reviews.userId, session.user.id)),
     });
 
     if (existingReview) {
