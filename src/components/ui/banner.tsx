@@ -54,7 +54,7 @@ BannerIcon.displayName = "BannerIcon";
 
 const BannerText = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div className={cn("flex flex-1 flex-col gap-1.5", className)} ref={ref} {...props} />
+    <div className={cn("flex flex-1 flex-col gap-0.5", className)} ref={ref} {...props} />
   )
 );
 BannerText.displayName = "BannerText";

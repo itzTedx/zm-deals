@@ -74,10 +74,8 @@ export const Navbar = async () => {
             {session && !session.user.isAnonymous ? (
               <UserMenu />
             ) : (
-              <Button asChild size="icon" variant="outline">
-                <Link href="/auth/login">
-                  <IconUser />
-                </Link>
+              <Button asChild className="text-muted-foreground" variant="outline">
+                <Link href="/auth/login">Login</Link>
               </Button>
             )}
             <div className="hidden h-5 w-px flex-1 shrink-0 bg-gray-200 md:block" />

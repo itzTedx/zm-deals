@@ -27,7 +27,7 @@ import { IconShield } from "@/assets/icons/shield";
 
 import { env } from "@/lib/env/client";
 import { pluralize } from "@/lib/functions/pluralize";
-import { calculateDiscount } from "@/lib/utils";
+import { calculateDiscount, cn } from "@/lib/utils";
 import { Deals } from "@/modules/home/sections";
 import { calculateAverageRating } from "@/modules/product/actions/helper";
 import { getProductBySlug } from "@/modules/product/actions/query";
@@ -149,24 +149,26 @@ export default async function ProductPage({ params }: { params: Params }) {
 
           <SeparatorBox />
           <div className="space-y-4">
-            <Banner>
-              <BannerContent>
+            <Banner
+              className={cn(res.isDeliveryFree ? "bg-green-100" : "bg-red-100")}
+              size={res.isDeliveryFree ? "sm" : "default"}
+              variant={res.isDeliveryFree ? "success" : "destructive"}
+            >
+              <BannerContent className={cn(res.isDeliveryFree ? "items-center" : "items-start")}>
                 <BannerIcon>
-                  <IconPackage className="size-6 text-gray-500" />
+                  <IconPackage className="size-6" />
                 </BannerIcon>
                 <BannerText>
-                  <BannerTitle className="font-medium text-gray-600">
+                  <BannerTitle className="font-medium">
                     {res.isDeliveryFree ? "Free Shipping" : "Shipping Fee"}
                   </BannerTitle>
-                  <BannerDescription>
-                    {res.isDeliveryFree ? (
+                  {!res.isDeliveryFree && (
+                    <BannerDescription>
                       <p>
                         Shipping fee of <span className="font-medium">AED{res.deliveryFee}</span>
                       </p>
-                    ) : (
-                      <p className="text-muted-foreground">Free shipping on all orders over AED100</p>
-                    )}
-                  </BannerDescription>
+                    </BannerDescription>
+                  )}
                 </BannerText>
               </BannerContent>
             </Banner>
@@ -182,18 +184,22 @@ export default async function ProductPage({ params }: { params: Params }) {
                     <Carousel
                       className="w-full"
                       opts={{
-                        align: "start",
+                        dragFree: true,
+                        containScroll: "trimSnaps",
                       }}
                     >
-                      <CarouselContent>
-                        <CarouselItem className="basis-1/1 rounded-2xl lg:basis-1/3">
-                          <CheckboxBadge>Free Returns</CheckboxBadge>
+                      <CarouselContent className="-ml-2 md:-ml-4">
+                        <CarouselItem className="basis-auto pl-2 md:pl-4">
+                          <CheckboxBadge className="select-none">Free Returns</CheckboxBadge>
                         </CarouselItem>
-                        <CarouselItem className="basis-1/1 rounded-2xl lg:basis-1/3">
-                          <CheckboxBadge>Return if item damaged</CheckboxBadge>
+                        <CarouselItem className="basis-auto pl-2 md:pl-4">
+                          <CheckboxBadge className="select-none">Return if item damaged</CheckboxBadge>
                         </CarouselItem>
-                        <CarouselItem className="basis-1/1 rounded-2xl lg:basis-1/3">
-                          <CheckboxBadge>Cash on Delivery</CheckboxBadge>
+                        <CarouselItem className="basis-auto pl-2 md:pl-4">
+                          <CheckboxBadge className="select-none">Cash on Delivery</CheckboxBadge>
+                        </CarouselItem>
+                        <CarouselItem className="basis-auto pl-2 md:pl-4">
+                          <CheckboxBadge className="select-none">Return Policy</CheckboxBadge>
                         </CarouselItem>
                       </CarouselContent>
                     </Carousel>
