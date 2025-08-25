@@ -6,13 +6,17 @@ import { FeedbackCard } from "@/components/feedback-card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
-import { PRODUCT } from "@/data/product";
+import { Review } from "@/server/schema";
 
 import { ReviewCard } from "./write-review";
 
-export const ReviewsModal = () => {
+interface ReviewsModalProps {
+  reviews: Review[];
+}
+
+export const ReviewsModal = ({ reviews }: ReviewsModalProps) => {
   const [open, setOpen] = useQueryState("reviews", parseAsBoolean.withDefault(false));
-  const { reviews } = PRODUCT;
+
   return (
     <Dialog onOpenChange={setOpen} open={open}>
       <DialogContent className="gap-0 p-0 sm:max-w-3xl">

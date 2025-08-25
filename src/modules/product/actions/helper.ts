@@ -1,3 +1,5 @@
+import { Review } from "@/server/schema";
+
 export async function getImageMetadata(file: File | Blob): Promise<{
   width: number;
   height: number;
@@ -38,4 +40,21 @@ export async function getImageMetadata(file: File | Blob): Promise<{
     console.error("Error extracting image metadata:", error);
     throw error;
   }
+}
+
+export function calculateAverageRating(reviews?: Review[]): number {
+  if (!reviews || reviews.length === 0) return 0;
+
+  const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+  return Math.round((totalRating / reviews.length) * 10) / 10;
+}
+
+export function getRatingDistribution(reviews: Review[]) {
+  const distribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+
+  reviews.forEach((review) => {
+    distribution[review.rating as keyof typeof distribution]++;
+  });
+
+  return distribution;
 }

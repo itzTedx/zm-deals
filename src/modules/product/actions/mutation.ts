@@ -8,9 +8,9 @@ import z from "zod";
 import { auth } from "@/lib/auth/server";
 import { createLog } from "@/lib/logging";
 import { db } from "@/server/db";
-import { inventory, mediaTable, metaTable, productImages, products } from "@/server/schema";
+import { inventory, mediaTable, metaTable, productImages, products, reviews } from "@/server/schema";
 
-import { productSchema } from "../schema";
+import { productSchema, reviewSchema, updateReviewSchema } from "../schema";
 
 export async function upsertProduct(rawData: unknown): Promise<{ success: boolean; message: string }> {
   const log = createLog("Product");
@@ -503,6 +503,226 @@ export async function updateInventory(
     return {
       success: false,
       message: "Failed to update inventory",
+    };
+  }
+}
+
+export async function createReview(rawData: unknown): Promise<{ success: boolean; message: string }> {
+  const log = createLog("Review");
+
+  log.info("Starting review creation operation");
+
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (!session) {
+    log.warn("Unauthorized access attempt to create review");
+    return {
+      success: false,
+      message: "You must be logged in to write a review",
+    };
+  }
+
+  log.auth("Review creation authorized", session.user.id);
+
+  const { data, success, error } = reviewSchema.safeParse(rawData);
+
+  if (!success) {
+    log.error("Review data validation failed", z.prettifyError(error));
+    return {
+      success: false,
+      message: z.prettifyError(error),
+    };
+  }
+
+  log.info("Review data validated successfully");
+  log.data(data, "Review Data");
+
+  try {
+    // Check if user has already reviewed this product
+    const existingReview = await db.query.reviews.findFirst({
+      where: eq(reviews.productId, data.productId) && eq(reviews.userId, session.user.id),
+    });
+
+    if (existingReview) {
+      log.warn("User already reviewed this product", { productId: data.productId, userId: session.user.id });
+      return {
+        success: false,
+        message: "You have already reviewed this product",
+      };
+    }
+
+    // Verify product exists
+    const product = await db.query.products.findFirst({
+      where: eq(products.id, data.productId),
+    });
+
+    if (!product) {
+      log.warn("Product not found for review", { productId: data.productId });
+      return {
+        success: false,
+        message: "Product not found",
+      };
+    }
+
+    // Create the review
+    const [newReview] = await db
+      .insert(reviews)
+      .values({
+        productId: data.productId,
+        userId: session.user.id,
+        rating: data.rating,
+        comment: data.comment,
+      })
+      .returning();
+
+    log.success("Review created successfully", {
+      reviewId: newReview.id,
+      productId: data.productId,
+      userId: session.user.id,
+    });
+
+    return {
+      success: true,
+      message: "Review submitted successfully",
+    };
+  } catch (error) {
+    log.error("Review creation failed", error instanceof Error ? error.message : String(error));
+    console.error(error);
+    return {
+      success: false,
+      message: "Failed to submit review",
+    };
+  }
+}
+
+export async function updateReview(rawData: unknown): Promise<{ success: boolean; message: string }> {
+  const log = createLog("Review");
+
+  log.info("Starting review update operation");
+
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (!session) {
+    log.warn("Unauthorized access attempt to update review");
+    return {
+      success: false,
+      message: "You must be logged in to update a review",
+    };
+  }
+
+  log.auth("Review update authorized", session.user.id);
+
+  const { data, success, error } = updateReviewSchema.safeParse(rawData);
+
+  if (!success) {
+    log.error("Review data validation failed", z.prettifyError(error));
+    return {
+      success: false,
+      message: z.prettifyError(error),
+    };
+  }
+
+  log.info("Review data validated successfully");
+  log.data(data, "Review Data");
+
+  try {
+    // Check if review exists and belongs to user
+    const existingReview = await db.query.reviews.findFirst({
+      where: eq(reviews.id, data.id) && eq(reviews.userId, session.user.id),
+    });
+
+    if (!existingReview) {
+      log.warn("Review not found or unauthorized", { reviewId: data.id, userId: session.user.id });
+      return {
+        success: false,
+        message: "Review not found or you don't have permission to edit it",
+      };
+    }
+
+    // Update the review
+    await db
+      .update(reviews)
+      .set({
+        rating: data.rating,
+        comment: data.comment,
+        updatedAt: new Date(),
+      })
+      .where(eq(reviews.id, data.id));
+
+    log.success("Review updated successfully", {
+      reviewId: data.id,
+      userId: session.user.id,
+    });
+
+    return {
+      success: true,
+      message: "Review updated successfully",
+    };
+  } catch (error) {
+    log.error("Review update failed", error instanceof Error ? error.message : String(error));
+    console.error(error);
+    return {
+      success: false,
+      message: "Failed to update review",
+    };
+  }
+}
+
+export async function deleteReview(reviewId: string): Promise<{ success: boolean; message: string }> {
+  const log = createLog("Review");
+
+  log.info("Starting review deletion operation", { reviewId });
+
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (!session) {
+    log.warn("Unauthorized access attempt to delete review");
+    return {
+      success: false,
+      message: "You must be logged in to delete a review",
+    };
+  }
+
+  log.auth("Review deletion authorized", session.user.id);
+
+  try {
+    // Check if review exists and belongs to user
+    const existingReview = await db.query.reviews.findFirst({
+      where: eq(reviews.id, reviewId) && eq(reviews.userId, session.user.id),
+    });
+
+    if (!existingReview) {
+      log.warn("Review not found or unauthorized", { reviewId, userId: session.user.id });
+      return {
+        success: false,
+        message: "Review not found or you don't have permission to delete it",
+      };
+    }
+
+    // Soft delete the review
+    await db
+      .update(reviews)
+      .set({
+        deletedAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .where(eq(reviews.id, reviewId));
+
+    log.success("Review deleted successfully", {
+      reviewId,
+      userId: session.user.id,
+    });
+
+    return {
+      success: true,
+      message: "Review deleted successfully",
+    };
+  } catch (error) {
+    log.error("Review deletion failed", error instanceof Error ? error.message : String(error));
+    console.error(error);
+    return {
+      success: false,
+      message: "Failed to delete review",
     };
   }
 }

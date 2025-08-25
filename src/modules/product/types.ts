@@ -1,53 +1,52 @@
 import { InferSelectModel } from "drizzle-orm";
 
-import { inventory, mediaTable, metaTable, productImages, products } from "@/server/schema";
+import { inventory, mediaTable, metaTable, productImages, products, Review, reviews } from "@/server/schema";
 
-// Review and Feedback Types
-export interface Review {
-  id: number;
-  name: string;
-  rating: number;
-  date: Date;
-  comment: string;
-}
+// Database Review Type
+export type DatabaseReview = InferSelectModel<typeof reviews>;
+
+// Component Review Type (for backward compatibility with existing components)
 
 // Image Types
-export interface ProductImage {
-  url: string;
-}
 
 // Product Types
-export interface Product {
-  title: string;
-  overview: string;
-  slug: string;
-  price: string;
-  originalPrice: string;
-  featuredImage: string;
-  stock: number;
-  endsIn: Date;
-  description: string;
+export type Product = InferSelectModel<typeof products>;
+export type Inventory = InferSelectModel<typeof inventory>;
+export type Media = InferSelectModel<typeof mediaTable>;
+export type Meta = InferSelectModel<typeof metaTable>;
+export type ProductImage = InferSelectModel<typeof productImages>;
+
+export type ProductQueryResult = InferSelectModel<typeof products> & {
+  reviews?: Review[];
   images: ProductImage[];
-  reviews: Review[];
-  delivery?: string | null;
-}
-
-// Deal Types (extends Product with id)
-export interface Deal extends Product {
-  id: number;
-  combo?: boolean;
-}
-
-export type ProductType = InferSelectModel<typeof products>;
-export type MetaType = InferSelectModel<typeof metaTable>;
-export type InventoryType = InferSelectModel<typeof inventory>;
-export type MediaType = InferSelectModel<typeof mediaTable>;
-export type ProductImageType = InferSelectModel<typeof productImages>;
-
-export type ProductQueryResult = ProductType & {
-  meta: MetaType | null;
-  inventory: InventoryType;
-  images: (ProductImageType & {
-    media: MediaType | null;
-  })[];
+  meta?: Meta | null;
+  inventory: Inventory;
 };
+
+// Deal Type (for backward compatibility)
+export interface Deal {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  compareAtPrice?: number;
+  image: string;
+  rating: number;
+  reviewCount: number;
+  isFeatured: boolean;
+  endsIn?: Date;
+  schedule?: Date;
+}
+
+// Review Stats Type
+export interface ReviewStats {
+  averageRating: number;
+  totalReviews: number;
+  ratingDistribution: {
+    1: number;
+    2: number;
+    3: number;
+    4: number;
+    5: number;
+  };
+}

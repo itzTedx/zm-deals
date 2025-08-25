@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 
 import { parseAsBoolean, useQueryState } from "nuqs";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { LoadingSwap } from "@/components/ui/loading-swap";
 import StarRating from "@/components/ui/rating";
 import { StarRatingCells } from "@/components/ui/rating-cell";
 import { SeparatorBox } from "@/components/ui/separator";
@@ -13,8 +16,13 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { IconEdit } from "@/assets/icons/edit";
 
+import { useSession } from "@/lib/auth/client";
 import { pluralize } from "@/lib/functions/pluralize";
-import { calculateAverageRating } from "@/lib/utils";
+import { Review } from "@/server/schema";
+
+import { calculateAverageRating } from "../actions/helper";
+import { createReview, updateReview } from "../actions/mutation";
+import { getCurrentUserReview } from "../actions/query";
 
 export const ReviewCard = ({ reviews }: { reviews: Review[] }) => {
   const [_, setReviewsDialog] = useQueryState("reviews", parseAsBoolean.withDefault(false));
@@ -55,8 +63,121 @@ export const ReviewCard = ({ reviews }: { reviews: Review[] }) => {
   );
 };
 
-export const WriteReview = ({ reviews }: { reviews: Review[] }) => {
+interface WriteReviewProps {
+  reviews: Review[];
+  productId: string;
+}
+
+export const WriteReview = ({ reviews, productId }: WriteReviewProps) => {
+  const router = useRouter();
+  const { data: session } = useSession();
   const [starValue, setStarValue] = useState("0");
+  const [comment, setComment] = useState("");
+  const [isPending, startTransition] = useTransition();
+  const [userReview, setUserReview] = useState<Review | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Check if user has already reviewed this product
+  useEffect(() => {
+    async function checkUserReview() {
+      try {
+        if (session?.user?.id) {
+          const existingReview = await getCurrentUserReview(productId);
+          if (existingReview) {
+            setUserReview(existingReview);
+            setStarValue(existingReview.rating.toString());
+            setComment(existingReview.comment || "");
+          }
+        }
+      } catch (error) {
+        console.error("Error checking user review:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    checkUserReview();
+  }, [productId, session?.user?.id]);
+
+  const handleSubmitReview = () => {
+    if (!starValue || starValue === "0") {
+      toast.error("Please select a rating");
+      return;
+    }
+
+    if (!comment.trim()) {
+      toast.error("Please write a comment");
+      return;
+    }
+
+    startTransition(async () => {
+      if (userReview) {
+        // Update existing review
+        const result = await updateReview({
+          id: userReview.id,
+          rating: Number.parseInt(starValue),
+          comment: comment.trim(),
+        });
+
+        if (result.success) {
+          toast.success("Review updated successfully!");
+          router.refresh();
+        } else {
+          toast.error("Failed to update review", {
+            description: result.message,
+          });
+        }
+      } else {
+        // Create new review
+        const result = await createReview({
+          productId,
+          rating: Number.parseInt(starValue),
+          comment: comment.trim(),
+        });
+
+        if (result.success) {
+          toast.success("Review submitted successfully!");
+          setStarValue("0");
+          setComment("");
+          router.refresh();
+        } else {
+          toast.error("Failed to submit review", {
+            description: result.message,
+          });
+        }
+      }
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <Card className="mt-4">
+        <CardContent className="space-y-4">
+          <ReviewCard reviews={reviews} />
+          <SeparatorBox />
+          <div className="space-y-3">
+            <div className="flex w-full max-w-[360px] flex-col items-center gap-6">
+              <StarRatingCells onValueChange={setStarValue} value={starValue} />
+            </div>
+            <Textarea
+              className="min-h-[20ch]"
+              disabled
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="Loading..."
+              value={comment}
+            />
+            <Button className="w-full" disabled variant="outline">
+              <LoadingSwap className="flex items-center gap-2" isLoading={true}>
+                <IconEdit className="size-4 text-muted-foreground" />
+                Loading...
+              </LoadingSwap>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="mt-4">
       <CardContent className="space-y-4">
@@ -66,10 +187,17 @@ export const WriteReview = ({ reviews }: { reviews: Review[] }) => {
           <div className="flex w-full max-w-[360px] flex-col items-center gap-6">
             <StarRatingCells onValueChange={setStarValue} value={starValue} />
           </div>
-          <Textarea className="min-h-[20ch]" />
-          <Button className="w-full" variant="outline">
-            <IconEdit className="size-4 text-muted-foreground" />
-            Write a Review
+          <Textarea
+            className="min-h-[20ch]"
+            onChange={(e) => setComment(e.target.value)}
+            placeholder={userReview ? "Update your review..." : "Share your experience with this product..."}
+            value={comment}
+          />
+          <Button className="w-full" disabled={isPending} onClick={handleSubmitReview} variant="outline">
+            <LoadingSwap className="flex items-center gap-2" isLoading={isPending}>
+              <IconEdit className="size-4 text-muted-foreground" />
+              {userReview ? "Update Review" : "Write a Review"}
+            </LoadingSwap>
           </Button>
         </div>
       </CardContent>

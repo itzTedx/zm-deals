@@ -15,6 +15,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import ImageCarousel from "@/components/ui/carousel-with-thumbnail";
+import StarRating from "@/components/ui/rating";
 import { SeparatorBox } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -23,25 +24,22 @@ import { IconDocument } from "@/assets/icons/book";
 import { IconCurrency } from "@/assets/icons/currency";
 import { IconShield } from "@/assets/icons/shield";
 
-import { DEALS } from "@/data/product";
 import { env } from "@/lib/env/client";
+import { pluralize } from "@/lib/functions/pluralize";
 import { calculateDiscount } from "@/lib/utils";
 import { Deals } from "@/modules/home/sections";
+import { calculateAverageRating } from "@/modules/product/actions/helper";
 import { getProductBySlug } from "@/modules/product/actions/query";
 import { EndsInCounter } from "@/modules/product/components/ends-in-counter";
 import { QuantityInput } from "@/modules/product/components/quantity-input";
 import { BuyButton } from "@/modules/product/components/ui/buy-button";
 import { CheckboxBadge } from "@/modules/product/components/ui/checkbox-badge";
+import { Reviews } from "@/modules/product/sections/reviews";
 
 type Params = Promise<{ product: string }>;
 
 export default async function ProductPage({ params }: { params: Params }) {
   const { product } = await params;
-
-  // const { title, price, originalPrice, featuredImage, images, stock, overview, description, endsIn, reviews, slug } =
-  //   PRODUCT;
-
-  const data = DEALS.find((deal) => deal.slug === product);
 
   const res = await getProductBySlug(product);
 
@@ -137,13 +135,13 @@ export default async function ProductPage({ params }: { params: Params }) {
               <p className="font-medium text-gray-500 text-sm">Qty</p>
               <QuantityInput />
             </div>
-            {/* <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1">
               <p className="font-medium text-sm text-yellow-500">{calculateAverageRating(res.reviews)}</p>
               <StarRating readOnly value={calculateAverageRating(res.reviews)} />
               <p className="font-medium text-gray-500 text-sm">
                 {res.reviews.length} {pluralize("review", res.reviews.length)}
               </p>
-            </div> */}
+            </div>
           </div>
 
           <BuyButton data={res} />
@@ -208,7 +206,7 @@ export default async function ProductPage({ params }: { params: Params }) {
           <p>{res.description}</p>
         </div>
       </section>
-      {/* <Reviews reviews={res.reviews} /> */}
+      <Reviews productId={res.id} reviews={res.reviews} />
       <Deals />
     </main>
   );

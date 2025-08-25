@@ -3,11 +3,13 @@ import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import StarRating from "@/components/ui/rating";
 
 import { IconCurrency } from "@/assets/icons/currency";
 
 import { calculateDiscount } from "@/lib/utils";
 
+import { calculateAverageRating } from "../actions/helper";
 import { ProductQueryResult } from "../types";
 import { AnimatedCountdown } from "./ends-in-counter";
 
@@ -70,13 +72,13 @@ export const ProductCard = ({ data }: Props) => {
           </Badge>
         )}
 
-        {/* <div className="flex items-center gap-1 md:gap-2">
+        <div className="flex items-center gap-1 md:gap-2">
           <StarRating readOnly value={calculateAverageRating(data.reviews)} />
 
           <p className="hidden text-gray-600 text-xs sm:block">
-            {data.reviews.reduce((sum, review) => sum + review.rating, 0)}
+            {data.reviews?.reduce((sum, review) => sum + review.rating, 0)}
           </p>
-        </div> */}
+        </div>
       </CardFooter>
     </Card>
   );

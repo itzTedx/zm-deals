@@ -11,9 +11,9 @@ import { LoadingSwap } from "@/components/ui/loading-swap";
 import { ChevronRightIcon, ChevronRightIconHandle } from "@/assets/icons/chevron";
 
 import { signIn } from "@/lib/auth/client";
+import { addToCart } from "@/modules/cart/actions/mutation";
+import { addToCartAtom, isCartOpenAtom } from "@/modules/cart/atom";
 
-import { addToCart } from "../../../cart/actions/mutation";
-import { addToCartAtom, isCartOpenAtom } from "../../../cart/atom";
 import { ProductQueryResult } from "../../types";
 
 interface Props {

@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm";
 import { index, integer, pgTable, text, uuid } from "drizzle-orm/pg-core";
 
-import { users } from "./auth-schema";
+import { User, users } from "./auth-schema";
 import { createdAt, deletedAt, id, updatedAt } from "./helpers";
 import { products } from "./product-schema";
 
@@ -46,4 +46,6 @@ export const reviewRelation = relations(reviews, ({ one }) => ({
 
 // Types for better TypeScript support
 export type NewReview = typeof reviews.$inferInsert;
-export type Review = typeof reviews.$inferSelect;
+export type Review = typeof reviews.$inferSelect & {
+  user: User;
+};

@@ -169,23 +169,6 @@ export async function shareViaNativeAPI(url: string, title?: string, text?: stri
 }
 
 /**
- * Calculates the average rating from an array of reviews
- * @param reviews - Array of review objects with rating property
- * @returns The average rating as a number rounded to 1 decimal place
- */
-export function calculateAverageRating(reviews: Review[]): number {
-  if (!reviews || reviews.length === 0) {
-    return 0;
-  }
-
-  const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
-  const averageRating = totalRating / reviews.length;
-
-  // Round to 1 decimal place for better precision
-  return Math.round(averageRating * 10) / 10;
-}
-
-/**
  * Parses a date into individual time components for animation
  * @param date - The date to parse
  * @returns Object with individual time components
