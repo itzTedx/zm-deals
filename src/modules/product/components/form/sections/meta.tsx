@@ -42,16 +42,6 @@ export const ProductMeta = () => {
     return slugify(currentTitle ?? "");
   }, [currentTitle]);
 
-  // Update slug when main title changes in auto mode
-  // const handleMainTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const value = e.target.value;
-  //   // If in auto mode, update the slug
-  //   if (!isSlugManual) {
-  //     const newSlug = slugify(value);
-  //     form.setValue("slug", newSlug);
-  //   }
-  // };
-
   const handleSlugToggle = () => {
     if (isSlugManual) {
       // Switching to auto mode - use auto-generated slug
@@ -73,6 +63,7 @@ export const ProductMeta = () => {
   };
 
   // Watch for changes in main title and update slug in auto mode
+  // biome-ignore lint/correctness/useExhaustiveDependencies: no need to re-run this effect when the slug is manually changed
   useEffect(() => {
     if (!isSlugManual && currentTitle) {
       const newSlug = slugify(currentTitle);

@@ -132,40 +132,38 @@ function MotionHighlight<T extends string>({ ref, ...props }: MotionHighlightPro
     [activeValue, onValueChange]
   );
 
-  const safeSetBounds = React.useCallback(
-    (bounds: DOMRect) => {
-      if (!localRef.current) return;
+  // biome-ignore lint/correctness/useExhaustiveDependencies: no need to re-run this callback when the props change
+  const safeSetBounds = React.useCallback((bounds: DOMRect) => {
+    if (!localRef.current) return;
 
-      const boundsOffset = (props as ParentModeMotionHighlightProps)?.boundsOffset ?? {
-        top: 0,
-        left: 0,
-        width: 0,
-        height: 0,
-      };
+    const boundsOffset = (props as ParentModeMotionHighlightProps)?.boundsOffset ?? {
+      top: 0,
+      left: 0,
+      width: 0,
+      height: 0,
+    };
 
-      const containerRect = localRef.current.getBoundingClientRect();
-      const newBounds: Bounds = {
-        top: bounds.top - containerRect.top + (boundsOffset.top ?? 0),
-        left: bounds.left - containerRect.left + (boundsOffset.left ?? 0),
-        width: bounds.width + (boundsOffset.width ?? 0),
-        height: bounds.height + (boundsOffset.height ?? 0),
-      };
+    const containerRect = localRef.current.getBoundingClientRect();
+    const newBounds: Bounds = {
+      top: bounds.top - containerRect.top + (boundsOffset.top ?? 0),
+      left: bounds.left - containerRect.left + (boundsOffset.left ?? 0),
+      width: bounds.width + (boundsOffset.width ?? 0),
+      height: bounds.height + (boundsOffset.height ?? 0),
+    };
 
-      setBoundsState((prev) => {
-        if (
-          prev &&
-          prev.top === newBounds.top &&
-          prev.left === newBounds.left &&
-          prev.width === newBounds.width &&
-          prev.height === newBounds.height
-        ) {
-          return prev;
-        }
-        return newBounds;
-      });
-    },
-    [props]
-  );
+    setBoundsState((prev) => {
+      if (
+        prev &&
+        prev.top === newBounds.top &&
+        prev.left === newBounds.left &&
+        prev.width === newBounds.width &&
+        prev.height === newBounds.height
+      ) {
+        return prev;
+      }
+      return newBounds;
+    });
+  }, []);
 
   const clearBounds = React.useCallback(() => {
     setBoundsState((prev) => (prev === null ? prev : null));
@@ -193,6 +191,7 @@ function MotionHighlight<T extends string>({ ref, ...props }: MotionHighlightPro
     return () => container.removeEventListener("scroll", onScroll);
   }, [mode, activeValue, safeSetBounds]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: no need to re-run this callback when the children change
   const render = React.useCallback(
     (children: React.ReactNode) => {
       if (mode === "parent") {
@@ -239,7 +238,7 @@ function MotionHighlight<T extends string>({ ref, ...props }: MotionHighlightPro
 
       return children;
     },
-    [mode, props, boundsState, transition, exitDelay, className, activeClassNameState]
+    [mode, boundsState, transition, exitDelay, className, activeClassNameState]
   );
 
   return (

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 
@@ -12,7 +13,7 @@ export function TeamSwitcher({
     logo: string;
   }[];
 }) {
-  const [activeTeam, setActiveTeam] = React.useState(teams[0] ?? null);
+  const [activeTeam, _setActiveTeam] = React.useState(teams[0] ?? null);
 
   if (!teams.length) return null;
 
@@ -24,7 +25,7 @@ export function TeamSwitcher({
           size="lg"
         >
           <div className="flex aspect-square size-8 items-center justify-center overflow-hidden rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-            {activeTeam && <img alt={activeTeam.name} height={36} src={activeTeam.logo} width={36} />}
+            {activeTeam && <Image alt={activeTeam.name} height={36} src={activeTeam.logo} width={36} />}
           </div>
           <div className="grid flex-1 text-left text-base leading-tight">
             <span className="truncate font-medium">{activeTeam?.name ?? "Select a Team"}</span>

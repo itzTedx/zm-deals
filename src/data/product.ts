@@ -247,80 +247,110 @@ export const LAST_MINUTE_DEALS = [
 
 export const FEEDBACKS = [
   {
-    id: 1,
-    name: "Lisa Chen",
+    id: "1",
+    user: {
+      id: "1",
+      name: "Lisa Chen",
+    },
     rating: 5,
     date: new Date("2025-08-20"),
     comment:
       "Absolutely love this phone holder! The suction is incredibly strong and it's so easy to install. I use it every day for my commute and it never fails. The phone stays perfectly in place even on rough roads. Best purchase I've made for my car!",
   },
   {
-    id: 2,
-    name: "Tom Wilson",
+    id: "2",
+    user: {
+      id: "2",
+      name: "Tom Wilson",
+    },
     rating: 4,
     date: new Date("2025-08-18"),
     comment:
       "Great product overall. The suction is very reliable and the phone holder is well-built. It took me a few tries to get the perfect position on my windshield, but once I found the right spot, it's been rock solid. Would definitely recommend to others.",
   },
   {
-    id: 3,
-    name: "Maria Rodriguez",
+    id: "3",
+    user: {
+      id: "3",
+      name: "Maria Rodriguez",
+    },
     rating: 5,
     date: new Date("2025-08-16"),
     comment:
       "This phone holder exceeded my expectations! I was skeptical about the suction at first, but it's incredibly strong. I've been using it for navigation on long trips and it's been perfect. The phone never moves or falls, even on bumpy roads.",
   },
   {
-    id: 4,
-    name: "James Thompson",
+    id: "4",
+    user: {
+      id: "4",
+      name: "James Thompson",
+    },
     rating: 5,
     date: new Date("2025-08-14"),
     comment:
       "Excellent quality and very easy to use. The suction mechanism is impressive - it holds my phone securely without any wobbling. Installation was straightforward and it looks professional in my car. Highly satisfied with this purchase!",
   },
   {
-    id: 5,
-    name: "Emily Davis",
+    id: "5",
+    user: {
+      id: "5",
+      name: "Emily Davis",
+    },
     rating: 4,
     date: new Date("2025-08-12"),
     comment:
       "Really good phone holder with strong suction power. It holds my phone securely and the positioning is flexible. The only reason I'm giving 4 stars is that it can be a bit tricky to remove from the windshield, but that's actually a testament to how strong it is.",
   },
   {
-    id: 6,
-    name: "Carlos Mendez",
+    id: "6",
+    user: {
+      id: "6",
+      name: "Carlos Mendez",
+    },
     rating: 5,
     date: new Date("2025-08-10"),
     comment:
       "Perfect for my daily use! The suction is incredibly strong and reliable. I've been using it for GPS navigation and hands-free calls, and it works flawlessly. The build quality is excellent and it's very easy to adjust the phone position.",
   },
   {
-    id: 7,
-    name: "Rachel Green",
+    id: "7",
+    user: {
+      id: "7",
+      name: "Rachel Green",
+    },
     rating: 5,
     date: new Date("2025-08-08"),
     comment:
       "This is exactly what I needed for my car! The vacuum suction is so strong that I don't worry about my phone falling off at all. It's perfect for using maps and taking calls while driving. The installation was quick and easy.",
   },
   {
-    id: 8,
-    name: "Kevin Park",
+    id: "8",
+    user: {
+      id: "8",
+      name: "Kevin Park",
+    },
     rating: 4,
     date: new Date("2025-08-06"),
     comment:
       "Very solid phone holder with excellent suction power. It holds my phone securely and the positioning is great for visibility. The only minor issue is that it can leave a small mark on the windshield when removed, but that's normal for suction mounts.",
   },
   {
-    id: 9,
-    name: "Sophie Anderson",
+    id: "9",
+    user: {
+      id: "9",
+      name: "Sophie Anderson",
+    },
     rating: 5,
     date: new Date("2025-08-04"),
     comment:
       "I'm amazed by how well this phone holder works! The suction is incredibly strong and it's so easy to position my phone exactly where I want it. I use it every day and it's been completely reliable. Great value for the price!",
   },
   {
-    id: 10,
-    name: "Alex Johnson",
+    id: "10",
+    user: {
+      id: "10",
+      name: "Alex Johnson",
+    },
     rating: 5,
     date: new Date("2025-08-02"),
     comment:

@@ -25,10 +25,11 @@ export type ProductQueryResult = InferSelectModel<typeof products> & {
 
 // Deal Type (for backward compatibility)
 export interface Deal {
-  id: string;
+  id: number;
   title: string;
   description: string;
-  price: number;
+  overview: string;
+  price: string;
   compareAtPrice?: number;
   image: string;
   rating: number;

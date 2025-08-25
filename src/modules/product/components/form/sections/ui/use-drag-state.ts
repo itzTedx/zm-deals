@@ -11,7 +11,7 @@ export function useDragState() {
     setIsDragging(true);
   }, []);
 
-  const handleDragEnd = useCallback((event: DragEndEvent) => {
+  const handleDragEnd = useCallback((_event: DragEndEvent) => {
     setActiveId(null);
     setIsDragging(false);
   }, []);

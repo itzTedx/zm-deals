@@ -10,33 +10,6 @@ import { cartItems, carts } from "@/server/schema";
 
 import { CartActionResponse } from "../types";
 
-async function getOrCreateCart() {
-  const session = await auth.api.getSession({ headers: await headers() });
-
-  if (session) {
-    // Authenticated user - get or create cart with userId
-    let userCart = await db.query.carts.findFirst({
-      where: and(eq(carts.userId, session.user.id), eq(carts.isActive, true)),
-    });
-
-    if (!userCart) {
-      const [newCart] = await db
-        .insert(carts)
-        .values({
-          userId: session.user.id,
-          isActive: true,
-        })
-        .returning();
-      userCart = newCart;
-    }
-
-    return userCart;
-  }
-  // For anonymous users, we'll use localStorage on the client side
-  // and only persist to database when they sign in
-  throw new Error("Anonymous users should use client-side cart");
-}
-
 export async function addToCart(productId: string, quantity = 1): Promise<CartActionResponse> {
   try {
     const session = await auth.api.getSession({ headers: await headers() });

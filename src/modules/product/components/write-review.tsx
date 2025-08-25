@@ -115,7 +115,7 @@ export const WriteReview = ({ reviews, productId }: WriteReviewProps) => {
         // Update existing review
         const result = await updateReview({
           id: userReview.id,
-          rating: Number.parseInt(starValue),
+          rating: Number.parseInt(starValue, 10),
           comment: comment.trim(),
         });
 
@@ -131,7 +131,7 @@ export const WriteReview = ({ reviews, productId }: WriteReviewProps) => {
         // Create new review
         const result = await createReview({
           productId,
-          rating: Number.parseInt(starValue),
+          rating: Number.parseInt(starValue, 10),
           comment: comment.trim(),
         });
 

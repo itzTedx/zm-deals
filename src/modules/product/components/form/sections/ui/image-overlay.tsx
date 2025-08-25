@@ -8,10 +8,9 @@ import { ProductSchema } from "@/modules/product/schema";
 
 interface ImageOverlayProps {
   item: FieldArrayWithId<ProductSchema, "images", "id">;
-  isFirst?: boolean;
 }
 
-export function ImageOverlay({ item, isFirst = false }: ImageOverlayProps) {
+export function ImageOverlay({ item }: ImageOverlayProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const [isOverFirstPosition, setIsOverFirstPosition] = useState(false);
   const [gridCellSize, setGridCellSize] = useState({ width: 64, height: 64 });

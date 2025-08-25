@@ -58,7 +58,7 @@ export function ProductsTable({ data }: { data: ProductQueryResult[] }) {
   ]);
 
   //   const [data, setData] = useState<Item[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, _setIsLoading] = useState(false);
 
   const columns = useMemo(() => getColumns({ data }), [data]);
 
