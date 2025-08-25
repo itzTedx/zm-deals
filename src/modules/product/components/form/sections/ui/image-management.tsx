@@ -92,6 +92,10 @@ export function ImageManagement({ fields, reorder }: ImageManagementProps) {
     return fields.map((item) => item.id);
   }, [fields]);
 
+  if (fields.length === 0) {
+    return null;
+  }
+
   return (
     <DndContext
       collisionDetection={closestCenter}
