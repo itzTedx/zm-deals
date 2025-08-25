@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 
 import { IconChevronRight } from "@/assets/icons/chevron";
@@ -11,22 +9,21 @@ import { IconUser } from "@/assets/icons/user";
 import { LogoIcon, LogoWordMark } from "@/assets/logo";
 
 import { NAV_LINKS } from "@/data/constants";
-import { useSession } from "@/lib/auth/client";
+import { getSession } from "@/lib/auth/server";
 import { CartIcon } from "@/modules/product/components/ui/cart-icon";
 
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Separator } from "../ui/separator";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
 import UserMenu from "./user-menu";
 
-export const Navbar = () => {
-  const { data: session } = useSession();
+export const Navbar = async () => {
+  const session = await getSession();
 
   return (
     <header className="sticky top-0 z-999 h-fit">
-      <div className="container relative z-999 mx-auto max-w-7xl pt-3 md:border-x">
-        <nav className="relative inset-shadow-[0_1px_12px_5px_oklch(1_0_0)] z-999 mx-auto flex items-center justify-between gap-4 rounded-xl bg-card/85 p-2.5 font-helvetica shadow-lg backdrop-blur-2xl max-md:justify-between md:max-w-7xl md:gap-8">
+      <div className="relative z-999">
+        <nav className="container relative inset-shadow-[0_1px_12px_5px_oklch(1_0_0)] z-999 mx-auto flex items-center justify-between gap-4 rounded-b-xl bg-card/85 py-2.5 font-helvetica shadow-lg backdrop-blur-2xl max-md:justify-between md:gap-8">
           <div className="flex items-center gap-2 md:gap-6">
             <Link aria-label="go home" className="flex items-center gap-2" href="/">
               <LogoIcon />
@@ -66,10 +63,10 @@ export const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">
-            {session ? (
+            {session && !session.user.isAnonymous ? (
               <div className="flex items-center gap-2">
                 <UserMenu />
-                <div className="flex flex-col">
+                <div className="hidden flex-col md:flex">
                   <p className="font-medium text-sm">Hi! {session.user?.name}</p>
                   <p className="text-muted-foreground text-xs">{session.user?.email}</p>
                 </div>
@@ -81,7 +78,7 @@ export const Navbar = () => {
                 </Link>
               </Button>
             )}
-            <div className="h-5 w-px flex-1 shrink-0 bg-gray-200" />
+            <div className="hidden h-5 w-px flex-1 shrink-0 bg-gray-200 md:block" />
             <Button className="hidden sm:inline-flex" size="icon" variant="outline">
               <IconHeart className="size-5 text-muted-foreground hover:text-brand-500" />
             </Button>
@@ -132,14 +129,15 @@ export const Navbar = () => {
             </Sheet>
           </div>
 
-          <div className="-right-1.5 -translate-y-1/2 pointer-events-none absolute top-1/2 size-2.5 rounded border bg-card" />
-          <div className="-left-1.5 -translate-y-1/2 pointer-events-none absolute top-1/2 size-2.5 rounded border bg-card" />
+          {/* <div className="-right-1.5 -translate-y-1/2 pointer-events-none absolute top-1/2 size-2.5 rounded border bg-card" />
+          <div className="-left-1.5 -translate-y-1/2 pointer-events-none absolute top-1/2 size-2.5 rounded border bg-card" /> */}
         </nav>
 
-        <div className="-left-1.5 pointer-events-none absolute top-1/2 hidden size-2.5 translate-y-0.5 rounded border bg-card md:block" />
-        <div className="-right-1.5 pointer-events-none absolute top-1/2 hidden size-2.5 translate-y-0.5 rounded border bg-card md:block" />
+        {/* <div className="-left-1.5 pointer-events-none absolute top-1/2 hidden size-2.5 translate-y-0.5 rounded border bg-card md:block" />
+        <div className="-right-1.5 pointer-events-none absolute top-1/2 hidden size-2.5 translate-y-0.5 rounded border bg-card md:block" /> */}
       </div>
-      <Separator className="absolute top-1/2 left-0 translate-y-1.5" />
+
+      {/* <Separator className="absolute top-1/2 left-0 translate-y-1.5" /> */}
     </header>
   );
 };
