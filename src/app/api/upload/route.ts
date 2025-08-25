@@ -17,7 +17,7 @@ const log = createLog("Upload");
 const s3 = new S3Client({
   region: env.AWS_BUCKET_REGION,
   credentials: {
-    accessKeyId: env.AWS_ACCESS_KEY,
+    accessKeyId: env.AWS_ACCESS_KEY_ZMDEALS,
     secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
   },
 });
