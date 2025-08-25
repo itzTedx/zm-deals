@@ -8,11 +8,12 @@ import { IconChevronRight } from "@/assets/icons/chevron";
 import { IconFire } from "@/assets/icons/fire";
 import { IconHourglass } from "@/assets/icons/hourglass";
 
-import { DEALS } from "@/data/product";
 import { getLastMinuteDeals } from "@/lib/utils";
+import { getProducts } from "@/modules/product/actions/query";
 import { ProductCard } from "@/modules/product/components/product-card";
 
-export const Deals = () => {
+export const Deals = async () => {
+  const products = await getProducts();
   return (
     <section className="container relative max-w-7xl space-y-12 border-x pb-8 sm:pb-12 md:space-y-16 md:pb-16 lg:pb-20">
       <div>
@@ -32,7 +33,7 @@ export const Deals = () => {
           title="This Week's Hot Picks"
         />
         <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-3">
-          {DEALS.map((product) => (
+          {products.map((product) => (
             <ProductCard data={product} key={product.id} />
           ))}
           <Link
@@ -47,7 +48,7 @@ export const Deals = () => {
       </div>
 
       <SeparatorBox />
-      {getLastMinuteDeals(DEALS, 24).length > 0 && (
+      {getLastMinuteDeals(products, 24).length > 0 && (
         <div>
           <Badge variant="outline">
             <IconHourglass className="text-gray-400" />
@@ -65,14 +66,14 @@ export const Deals = () => {
             title="Last Minute Deals"
           />
           <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-3">
-            {getLastMinuteDeals(DEALS, 24).map((product) => (
+            {getLastMinuteDeals(products, 24).map((product) => (
               <ProductCard data={product} key={product.id} />
             ))}
           </div>
         </div>
       )}
 
-      <div className="relative">
+      {/* <div className="relative">
         <div className="flex items-center gap-6">
           <SeparatorBox />
           <Badge variant="outline">
@@ -94,11 +95,13 @@ export const Deals = () => {
         />
 
         <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-3">
-          {DEALS.filter((product) => product.combo).map((product) => (
-            <ProductCard data={product} key={product.id} />
-          ))}
+          {products
+            .filter((product) => product.combo)
+            .map((product) => (
+              <ProductCard data={product} key={product.id} />
+            ))}
         </div>
-      </div>
+      </div> */}
     </section>
   );
 };

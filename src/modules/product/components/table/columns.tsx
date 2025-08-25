@@ -51,14 +51,27 @@ export const getColumns = ({ data }: GetColumnsProps): ColumnDef<ProductQueryRes
   {
     header: "Title",
     accessorKey: "title",
-    cell: ({ row }) => (
-      <Link href={`/studio/products/${row.original.id}`}>
-        <div className="flex items-center gap-3">
-          <Image alt={row.getValue("title")} className="rounded-full" height={32} src={row.original.image} width={32} />
-          <div className="font-medium">{row.getValue("title")}</div>
-        </div>
-      </Link>
-    ),
+    cell: ({ row }) => {
+      const image = row.original.images.find((image) => image.isFeatured);
+      return (
+        <Link href={`/studio/products/${row.original.id}`}>
+          <div className="flex items-center gap-3">
+            {image?.media?.url && (
+              <Image
+                alt={row.getValue("title")}
+                blurDataURL={image.media.blurData ?? undefined}
+                className="rounded border"
+                height={48}
+                placeholder={image.media.blurData ? "blur" : "empty"}
+                src={image.media.url}
+                width={48}
+              />
+            )}
+            <div className="font-medium">{row.getValue("title")}</div>
+          </div>
+        </Link>
+      );
+    },
     size: 180,
     enableHiding: false,
   },

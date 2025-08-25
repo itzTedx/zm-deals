@@ -10,6 +10,11 @@ export async function getProducts() {
     with: {
       meta: true,
       inventory: true,
+      images: {
+        with: {
+          media: true,
+        },
+      },
     },
   });
 
@@ -52,4 +57,22 @@ export async function getProductBySlug(slug: string) {
   });
 
   return product;
+}
+
+export async function getFeaturedProducts() {
+  const [res] = await db.query.products.findMany({
+    where: eq(products.isFeatured, true),
+    limit: 1,
+    with: {
+      meta: true,
+      inventory: true,
+      images: {
+        with: {
+          media: true,
+        },
+      },
+    },
+  });
+
+  return res;
 }

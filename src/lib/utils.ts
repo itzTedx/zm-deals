@@ -1,7 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-import { type Deal } from "@/modules/product/types";
+import { ProductQueryResult } from "@/modules/product/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -219,27 +219,27 @@ export function parseTimeComponents(date: Date | string | number): {
  * @param hoursLimit - Number of hours to consider as "last minute" (default: 24 hours)
  * @returns Array of deals that end within the specified time limit
  */
-export function getLastMinuteDeals(deals: Deal[], hoursLimit = 24): Deal[] {
+export function getLastMinuteDeals(deals: ProductQueryResult[], hoursLimit = 24) {
   const now = new Date();
   const timeLimit = new Date(now.getTime() + hoursLimit * 60 * 60 * 1000);
 
   return deals
     .filter((deal) => {
-      const dealEndTime = new Date(deal.endsIn);
+      const dealEndTime = deal.endsIn;
 
       // Deal must end in the future (not already expired)
-      if (dealEndTime <= now) {
+      if (dealEndTime && dealEndTime <= now) {
         return false;
       }
 
       // Deal must end within the specified time limit
-      return dealEndTime <= timeLimit;
+      return dealEndTime && dealEndTime <= timeLimit;
     })
     .sort((a, b) => {
       // Sort by urgency (deals ending sooner come first)
-      const aEndTime = new Date(a.endsIn);
-      const bEndTime = new Date(b.endsIn);
-      return aEndTime.getTime() - bEndTime.getTime();
+      const aEndTime = a.endsIn;
+      const bEndTime = b.endsIn;
+      return aEndTime && bEndTime ? aEndTime.getTime() - bEndTime.getTime() : 0;
     });
 }
 
@@ -248,7 +248,7 @@ export function getLastMinuteDeals(deals: Deal[], hoursLimit = 24): Deal[] {
  * @param deals - Array of deals to filter
  * @returns Array of deals ending within 24 hours
  */
-export function getOneDayDeals(deals: Deal[]): Deal[] {
+export function getOneDayDeals(deals: ProductQueryResult[]): ProductQueryResult[] {
   return getLastMinuteDeals(deals, 24);
 }
 
@@ -257,7 +257,7 @@ export function getOneDayDeals(deals: Deal[]): Deal[] {
  * @param deals - Array of deals to filter
  * @returns Array of deals ending within 12 hours
  */
-export function getUrgentDeals(deals: Deal[]): Deal[] {
+export function getUrgentDeals(deals: ProductQueryResult[]): ProductQueryResult[] {
   return getLastMinuteDeals(deals, 12);
 }
 
@@ -266,6 +266,6 @@ export function getUrgentDeals(deals: Deal[]): Deal[] {
  * @param deals - Array of deals to filter
  * @returns Array of deals ending within 1 hour
  */
-export function getCriticalDeals(deals: Deal[]): Deal[] {
+export function getCriticalDeals(deals: ProductQueryResult[]): ProductQueryResult[] {
   return getLastMinuteDeals(deals, 1);
 }
