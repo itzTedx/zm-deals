@@ -55,14 +55,14 @@ export function SortableImageItem({ item, index, isFirst }: SortableImageItemPro
 
         {/* Content */}
         <div className="relative flex size-full flex-col items-center justify-center">
-          <span className="font-medium text-foreground text-sm">{item.order}</span>
-          <span
-            className="max-w-full truncate px-2 text-center text-muted-foreground text-xs"
-            id={`image-${item.id}-description`}
-          >
-            {item.url}
-          </span>
-          <Image alt={item.url} className="object-contain" fill src={item.url} />
+          <Image
+            alt={item.url}
+            blurDataURL={item.blurData ?? undefined}
+            className="object-contain"
+            fill
+            placeholder={item.blurData ? "blur" : "empty"}
+            src={item.url}
+          />
         </div>
 
         {/* Drag State Indicator */}

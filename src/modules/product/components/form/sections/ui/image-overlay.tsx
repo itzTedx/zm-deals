@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { GripVertical } from "lucide-react";
 import { FieldArrayWithId } from "react-hook-form";
 
@@ -17,9 +19,16 @@ export function ImageOverlay({ item }: ImageOverlayProps) {
         </div>
 
         {/* Content */}
-        <div className="flex flex-col items-center justify-center space-y-1">
-          <span className="font-medium text-foreground text-sm">{item.order}</span>
-          <span className="max-w-full truncate px-2 text-center text-muted-foreground text-xs">{item.url}</span>
+
+        <div className="relative flex size-full flex-col items-center justify-center">
+          <Image
+            alt={item.url}
+            blurDataURL={item.blurData ?? undefined}
+            className="object-contain"
+            fill
+            placeholder={item.blurData ? "blur" : "empty"}
+            src={item.url}
+          />
         </div>
 
         {/* Drag Overlay Effect */}

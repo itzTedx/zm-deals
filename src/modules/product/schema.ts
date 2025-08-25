@@ -26,6 +26,7 @@ export const productImageSchema = z.object({
 });
 
 export const productSchema = z.object({
+  id: z.string().optional(),
   title: z.string("Title is required").min(1, { message: "Title can't be blank" }),
   overview: z.string().optional(),
   description: z.string().min(1, { message: "Description is required" }),

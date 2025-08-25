@@ -75,6 +75,8 @@ export const productImages = pgTable(
 );
 
 // Relations
+
+// Product relations
 export const productRelation = relations(products, ({ one, many }) => ({
   meta: one(metaTable, {
     fields: [products.metaId],
@@ -88,6 +90,20 @@ export const productRelation = relations(products, ({ one, many }) => ({
   }),
   images: many(productImages, {
     relationName: "product-images-relations",
+  }),
+}));
+
+// ProductImages relations
+export const productImagesRelation = relations(productImages, ({ one }) => ({
+  product: one(products, {
+    fields: [productImages.productId],
+    references: [products.id],
+    relationName: "product-images-relations",
+  }),
+  media: one(mediaTable, {
+    fields: [productImages.mediaId],
+    references: [mediaTable.id],
+    relationName: "product-image-media-relations",
   }),
 }));
 
