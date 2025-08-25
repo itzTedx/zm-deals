@@ -1,4 +1,4 @@
-import { use } from "react";
+import { Suspense } from "react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
@@ -15,8 +15,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import ImageCarousel from "@/components/ui/carousel-with-thumbnail";
-import StarRating from "@/components/ui/rating";
 import { SeparatorBox } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { IconPackage } from "@/assets/icons/bag";
 import { IconDocument } from "@/assets/icons/book";
@@ -25,26 +25,27 @@ import { IconShield } from "@/assets/icons/shield";
 
 import { DEALS } from "@/data/product";
 import { env } from "@/lib/env/client";
-import { pluralize } from "@/lib/functions/pluralize";
-import { calculateAverageRating, calculateDiscount } from "@/lib/utils";
+import { calculateDiscount } from "@/lib/utils";
 import { Deals } from "@/modules/home/sections";
+import { getProductBySlug } from "@/modules/product/actions/query";
 import { EndsInCounter } from "@/modules/product/components/ends-in-counter";
 import { QuantityInput } from "@/modules/product/components/quantity-input";
 import { BuyButton } from "@/modules/product/components/ui/buy-button";
 import { CheckboxBadge } from "@/modules/product/components/ui/checkbox-badge";
-import { Reviews } from "@/modules/product/sections/reviews";
 
 type Params = Promise<{ product: string }>;
 
-export default function ProductPage({ params }: { params: Params }) {
-  const { product } = use(params);
+export default async function ProductPage({ params }: { params: Params }) {
+  const { product } = await params;
 
   // const { title, price, originalPrice, featuredImage, images, stock, overview, description, endsIn, reviews, slug } =
   //   PRODUCT;
 
   const data = DEALS.find((deal) => deal.slug === product);
 
-  if (!data) {
+  const res = await getProductBySlug(product);
+
+  if (!res) {
     return notFound();
   }
 
@@ -64,39 +65,44 @@ export default function ProductPage({ params }: { params: Params }) {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage> {data.title}</BreadcrumbPage>
+                <Suspense fallback={<Skeleton className="h-4 w-24" />}>
+                  <BreadcrumbPage>{res.title}</BreadcrumbPage>
+                </Suspense>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <ImageCarousel images={[{ url: data.featuredImage }, ...data.images]} thumbPosition="bottom" />
+          <ImageCarousel
+            images={[{ url: res.image }, ...res.images.map((image) => ({ url: image.media?.url ?? "" }))]}
+            thumbPosition="bottom"
+          />
           <div className="mt-4 hidden space-y-2 md:block">
             <h2 className="font-medium text-gray-500 text-sm">Product Overview</h2>
-            <p className="leading-relaxed">{data.description}</p>
+            <p className="leading-relaxed">{res.description}</p>
             <div className="mt-4 space-y-4">
-              {data.images.map((image) => (
-                <div className="relative aspect-4/3 overflow-hidden rounded-lg bg-card" key={image.url}>
-                  <Image alt={data.title} className="object-cover" fill src={image.url} />
+              {res.images.map((image) => (
+                <div className="relative aspect-4/3 overflow-hidden rounded-lg bg-card" key={image.media?.url}>
+                  <Image alt={res.title} className="object-cover" fill src={image.media?.url ?? ""} />
                 </div>
               ))}
             </div>
-            <p className="leading-relaxed">{data.overview}</p>
+            <p className="leading-relaxed">{res.overview}</p>
           </div>
         </div>
 
         {/* Product Details Section */}
         <div className="sticky top-24 h-fit space-y-4 py-2 md:col-span-2 md:space-y-6 md:py-6">
           {/* Countdown Banner */}
-          <EndsInCounter endsIn={data.endsIn} />
+          {res.endsIn && <EndsInCounter endsIn={res.endsIn} />}
 
           {/* Product Title */}
           <div className="grid grid-cols-[1fr_auto] items-center gap-2">
-            <h1 className="font-medium text-2xl sm:text-3xl">{data.title}</h1>
+            <h1 className="font-medium text-2xl sm:text-3xl">{res.title}</h1>
             <ShareCard
-              description={`Check out this amazing deal: ${data.title} - Save ${calculateDiscount(Number(data.originalPrice), Number(data.price))}% off!`}
-              link={`${env.NEXT_PUBLIC_BASE_URL}/${data.slug}`}
-              title={data.title}
+              description={`Check out this amazing deal: ${res.title} - Save ${calculateDiscount(Number(res.compareAtPrice), Number(res.price))}% off!`}
+              link={`${env.NEXT_PUBLIC_BASE_URL}/${res.slug}`}
+              title={res.title}
             />
-            <p className="text-base text-gray-500 leading-relaxed">{data.overview}</p>
+            <p className="text-base text-gray-500 leading-relaxed">{res.overview}</p>
           </div>
           {/* Pricing Section */}
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
@@ -104,23 +110,23 @@ export default function ProductPage({ params }: { params: Params }) {
               <span>
                 <IconCurrency className="size-5 text-brand-400" />
               </span>
-              <span>{data.price}</span>
+              <span>{res.price}</span>
             </p>
 
             <p className="text-muted-foreground text-xs line-through decoration-brand-500 sm:text-sm md:text-base">
-              {data.originalPrice}
+              {res.compareAtPrice}
             </p>
 
             <div className="size-0.5 rounded-full bg-gray-300 sm:size-1" />
 
             <Badge className="text-xs sm:text-sm" size="sm" variant="destructive">
-              Save {calculateDiscount(Number(data.originalPrice), Number(data.price))}% Today!
+              Save {calculateDiscount(Number(res.compareAtPrice), Number(res.price))}% Today!
             </Badge>
 
             <div className="size-0.5 rounded-full bg-gray-300 sm:size-1" />
 
             <Badge size="sm">
-              Only <span className="font-medium">{data.stock}</span> left
+              Only <span className="font-medium">{res.inventory.stock}</span> left
               <InfoTooltip info="The Stock tag shows the available units for the selected item. Sellers control whether to display it and manage their own inventory." />
             </Badge>
           </div>
@@ -131,16 +137,16 @@ export default function ProductPage({ params }: { params: Params }) {
               <p className="font-medium text-gray-500 text-sm">Qty</p>
               <QuantityInput />
             </div>
-            <div className="flex items-center gap-1">
-              <p className="font-medium text-sm text-yellow-500">{calculateAverageRating(data.reviews)}</p>
-              <StarRating readOnly value={calculateAverageRating(data.reviews)} />
+            {/* <div className="flex items-center gap-1">
+              <p className="font-medium text-sm text-yellow-500">{calculateAverageRating(res.reviews)}</p>
+              <StarRating readOnly value={calculateAverageRating(res.reviews)} />
               <p className="font-medium text-gray-500 text-sm">
-                {data.reviews.length} {pluralize("review", data.reviews.length)}
+                {res.reviews.length} {pluralize("review", res.reviews.length)}
               </p>
-            </div>
+            </div> */}
           </div>
 
-          <BuyButton data={data} />
+          <BuyButton data={res} />
 
           <SeparatorBox />
           <div className="space-y-4">
@@ -151,12 +157,12 @@ export default function ProductPage({ params }: { params: Params }) {
                 </BannerIcon>
                 <BannerText>
                   <BannerTitle className="font-medium text-gray-600">
-                    {data.delivery ? "Shipping Fee" : " Free Shipping"}
+                    {res.isDeliveryFree ? "Free Shipping" : "Shipping Fee"}
                   </BannerTitle>
                   <BannerDescription>
-                    {data.delivery ? (
+                    {res.isDeliveryFree ? (
                       <p>
-                        Shipping fee of <span className="font-medium">AED{data.delivery}</span>
+                        Shipping fee of <span className="font-medium">AED{res.deliveryFee}</span>
                       </p>
                     ) : (
                       <p className="text-muted-foreground">Free shipping on all orders over AED100</p>
@@ -199,10 +205,10 @@ export default function ProductPage({ params }: { params: Params }) {
       <section className="container relative max-w-7xl border-x py-12 md:hidden md:py-16 lg:py-20">
         <div className="mt-4 space-y-1">
           <h2 className="font-medium text-gray-500 text-sm">Product Overview</h2>
-          <p>{data.description}</p>
+          <p>{res.description}</p>
         </div>
       </section>
-      <Reviews reviews={data.reviews} />
+      {/* <Reviews reviews={res.reviews} /> */}
       <Deals />
     </main>
   );

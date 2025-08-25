@@ -57,7 +57,7 @@ export const ProductDetails = () => {
             ...metadata,
             url: (objectMetadata.urls as string[])[i] || (objectMetadata.url as string),
             isFeatured: currentImages.length === 0 && i === 0,
-            order: currentImages.length + i + 1,
+            order: currentImages.length === 0 && i === 0 ? 0 : currentImages.length + i + 1,
             key: file.objectKey,
           };
 

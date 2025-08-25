@@ -3,17 +3,16 @@ import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import StarRating from "@/components/ui/rating";
 
 import { IconCurrency } from "@/assets/icons/currency";
 
-import { calculateAverageRating, calculateDiscount } from "@/lib/utils";
+import { calculateDiscount } from "@/lib/utils";
 
-import { Deal } from "../types";
+import { ProductQueryResult } from "../types";
 import { AnimatedCountdown } from "./ends-in-counter";
 
 interface Props {
-  data: Deal;
+  data: ProductQueryResult;
 }
 
 export const ProductCard = ({ data }: Props) => {
@@ -36,7 +35,7 @@ export const ProductCard = ({ data }: Props) => {
           <AnimatedCountdown endsIn={data.endsIn} />
         </Badge> */}
         <div className="relative aspect-square overflow-hidden rounded-lg">
-          <Image alt={data.title} className="object-cover" fill src={data.featuredImage} />
+          <Image alt={data.title} className="object-cover" fill src={data.image} />
         </div>
         <CardHeader className="pt-2">
           <CardTitle className="max-md:text-sm">
@@ -50,14 +49,14 @@ export const ProductCard = ({ data }: Props) => {
               </span>
               <span>{data.price}</span>
             </p>
-            {data.originalPrice && (
+            {data.compareAtPrice && (
               <>
-                <p className="text-muted-foreground text-xs line-through decoration-brand-500">{data.originalPrice}</p>
+                <p className="text-muted-foreground text-xs line-through decoration-brand-500">{data.compareAtPrice}</p>
 
                 <div className="size-0.5 rounded-full bg-gray-300 sm:size-1" />
 
                 <Badge className="text-xs" size="sm" variant="success">
-                  - {calculateDiscount(Number(data.originalPrice), Number(data.price))}%
+                  - {calculateDiscount(Number(data.compareAtPrice), Number(data.price))}%
                 </Badge>
               </>
             )}
@@ -65,17 +64,19 @@ export const ProductCard = ({ data }: Props) => {
         </CardHeader>
       </CardContent>
       <CardFooter className="flex items-center justify-between">
-        <Badge className="text-[10px] sm:text-xs" size="sm">
-          <AnimatedCountdown endsIn={data.endsIn} />
-        </Badge>
+        {data.endsIn && (
+          <Badge className="text-[10px] sm:text-xs" size="sm">
+            <AnimatedCountdown endsIn={data.endsIn} />
+          </Badge>
+        )}
 
-        <div className="flex items-center gap-1 md:gap-2">
+        {/* <div className="flex items-center gap-1 md:gap-2">
           <StarRating readOnly value={calculateAverageRating(data.reviews)} />
 
           <p className="hidden text-gray-600 text-xs sm:block">
             {data.reviews.reduce((sum, review) => sum + review.rating, 0)}
           </p>
-        </div>
+        </div> */}
       </CardFooter>
     </Card>
   );

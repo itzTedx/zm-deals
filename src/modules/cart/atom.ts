@@ -1,7 +1,7 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
-import { ProductType } from "@/modules/product/types";
+import { ProductQueryResult } from "@/modules/product/types";
 
 import { CartItem } from "./types";
 
@@ -24,7 +24,7 @@ export const cartTotalAtom = atom((get) => {
 // Helper functions
 export const addToCartAtom = atom(
   null,
-  (get, set, { product, quantity }: { product: ProductType; quantity: number }) => {
+  (get, set, { product, quantity }: { product: ProductQueryResult; quantity: number }) => {
     const cart = get(cartAtom);
     const existingItemIndex = cart.findIndex((item) => item.product.id === product.id);
 

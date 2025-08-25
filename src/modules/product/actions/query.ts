@@ -10,6 +10,11 @@ export async function getProducts() {
     with: {
       meta: true,
       inventory: true,
+      images: {
+        with: {
+          media: true,
+        },
+      },
     },
   });
 

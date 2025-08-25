@@ -14,10 +14,10 @@ import { signIn } from "@/lib/auth/client";
 
 import { addToCart } from "../../../cart/actions/mutation";
 import { addToCartAtom, isCartOpenAtom } from "../../../cart/atom";
-import { Deal } from "../../types";
+import { ProductQueryResult } from "../../types";
 
 interface Props {
-  data: Deal;
+  data: ProductQueryResult;
 }
 
 export const BuyButton = ({ data }: Props) => {
@@ -43,27 +43,8 @@ export const BuyButton = ({ data }: Props) => {
             // Create anonymous session
             await signIn.anonymous();
 
-            // Convert Deal to ProductType format for cart
-            const productForCart = {
-              id: data.id.toString(),
-              title: data.title,
-              overview: data.overview,
-              description: data.description,
-              slug: data.slug,
-              price: data.price,
-              compareAtPrice: null,
-              image: data.featuredImage,
-              isFeatured: false,
-              endsIn: data.endsIn,
-              schedule: null,
-              status: "published" as const,
-              metaId: null,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-            };
-
             // Add to client-side cart
-            addToCartClient({ product: productForCart, quantity: 1 });
+            addToCartClient({ product: data, quantity: 1 });
             setIsCartOpen(true);
 
             toast.success("Added to cart successfully!");
@@ -74,26 +55,7 @@ export const BuyButton = ({ data }: Props) => {
           return;
         }
 
-        // For authenticated users, update client-side state for immediate UI feedback
-        // Convert Deal to ProductType format for cart
-        const productForCart = {
-          id: data.id.toString(),
-          title: data.title,
-          overview: data.overview,
-          description: data.description,
-          slug: data.slug,
-          price: data.price,
-          compareAtPrice: null,
-          image: data.featuredImage,
-          isFeatured: false,
-          endsIn: data.endsIn,
-          schedule: null,
-          status: "published" as const,
-          metaId: null,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-        addToCartClient({ product: productForCart, quantity: 1 });
+        addToCartClient({ product: data, quantity: 1 });
         setIsCartOpen(true); // Open the cart after adding item
 
         toast.success("Added to cart successfully!");

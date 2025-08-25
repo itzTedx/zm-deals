@@ -44,7 +44,7 @@ export function ImageOverlay({ item, isFirst = false }: ImageOverlayProps) {
       // The first position spans gridX 0-1 and gridY 0-1
       const isOverFirst = gridX <= 1 && gridY <= 1;
 
-      console.log("Grid position:", { gridX, gridY, isOverFirst, cellWidth, cellHeight }); // Debug log
+      // console.log("Grid position:", { gridX, gridY, isOverFirst, cellWidth, cellHeight }); // Debug log
       setIsOverFirstPosition(isOverFirst);
     };
 
