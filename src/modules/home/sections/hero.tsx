@@ -26,7 +26,7 @@ export const Hero = async () => {
   const { title, overview, price, originalPrice, featuredImage, slug, endsIn } = PRODUCT;
   return (
     <section>
-      <div className="container relative max-w-7xl gap-4 border-x pb-12 md:pb-14 lg:pb-16 xl:pb-20">
+      <div className="container relative max-w-7xl gap-4 border-x pb-12 md:pb-14">
         <div className="relative">
           <Carousel
             className="w-full"
@@ -147,6 +147,11 @@ export const Hero = async () => {
 
             <CarouselIndicator />
           </Carousel>
+        </div>
+      </div>
+      <div className="container max-w-7xl border-x pb-16">
+        <div className="relative aspect-16/2 w-full overflow-clip rounded-2xl">
+          <Image alt="hero" className="object-cover" fill src="/images/trust-banner.webp" />
         </div>
       </div>
     </section>

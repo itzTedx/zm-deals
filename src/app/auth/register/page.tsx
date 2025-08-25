@@ -15,7 +15,7 @@ export default function RegisterPage() {
             <Link aria-label="go home" className="mx-auto block w-fit" href="/">
               <LogoIcon />
             </Link>
-            <h1 className="mt-4 mb-1 font-semibold text-xl">Create a RM Deals Account</h1>
+            <h1 className="mt-4 mb-1 font-semibold text-xl">Create a ZM Deals Account</h1>
             <p className="text-sm">Welcome! Create an account to get started</p>
           </div>
 

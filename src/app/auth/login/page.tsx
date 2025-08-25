@@ -15,7 +15,7 @@ export default function LoginPage() {
             <Link aria-label="go home" className="mx-auto block w-fit" href="/">
               <LogoIcon />
             </Link>
-            <h1 className="mt-4 mb-1 font-semibold text-xl">Login to RM Deals</h1>
+            <h1 className="mt-4 mb-1 font-semibold text-xl">Login to ZM Deals</h1>
             <p className="text-sm">Welcome! Login to your account to get started</p>
           </div>
 
