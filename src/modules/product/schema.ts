@@ -14,11 +14,19 @@ export type CheckoutSchema = z.infer<typeof checkoutSchema>;
 
 export const productImageSchema = z.object({
   url: z.string().min(1, { message: "Image URL is required" }),
+  key: z.string("Failed to upload image").optional(),
+
+  // Metadata
+  width: z.number({ message: "Width must be a number." }).nullish(),
+  height: z.number({ message: "Height must be a number." }).nullish(),
+  blurData: z.string({ message: "Blur data must be a string." }).nullish(),
+
   isFeatured: z.boolean(),
   order: z.number(),
 });
 
 export const productSchema = z.object({
+  id: z.string().optional(),
   title: z.string("Title is required").min(1, { message: "Title can't be blank" }),
   overview: z.string().optional(),
   description: z.string().min(1, { message: "Description is required" }),
@@ -42,3 +50,4 @@ export const productSchema = z.object({
 });
 
 export type ProductSchema = z.infer<typeof productSchema>;
+export type ProductImageSchema = z.infer<typeof productImageSchema>;

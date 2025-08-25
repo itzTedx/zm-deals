@@ -2,10 +2,12 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 
+import { isAdmin } from "@/lib/auth/permissions";
 import { getProducts } from "@/modules/product/actions/query";
 import { ProductsTable } from "@/modules/product/components/table/data-table";
 
 export default async function ProductsUpsertPage() {
+  await isAdmin();
   const products = await getProducts();
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 py-4">

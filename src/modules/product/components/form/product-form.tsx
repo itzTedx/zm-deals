@@ -49,12 +49,18 @@ export const ProductForm = ({ initialData, isEditMode }: Props) => {
       const { success, message } = await upsertProduct(values);
 
       if (!success) {
-        toast.error(message);
+        toast.error("Something went wrong", {
+          description: message,
+          duration: 1000,
+        });
         return;
       }
 
       if (success) {
-        toast.success(message);
+        toast.success("Success", {
+          description: message,
+          duration: 1000,
+        });
         router.push("/studio/products");
       }
     });
@@ -67,7 +73,7 @@ export const ProductForm = ({ initialData, isEditMode }: Props) => {
             <div className="flex items-center gap-2">
               <h1 className="flex items-center gap-2 font-medium text-gray-600 text-xl leading-none">
                 <IconProduct className="size-4 text-gray-500" /> <IconChevronRight className="text-gray-400" />{" "}
-                {isEditMode ? "Edit" : "Add"} Product
+                {isEditMode ? (initialData?.title ?? "Edit Product") : "Create Product"}
               </h1>
             </div>
             <Button disabled={isLoading} size="sm">

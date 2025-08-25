@@ -5,6 +5,7 @@ export function transformProduct(product: ProductQueryResult | null): ProductSch
   if (!product) return null;
 
   return {
+    id: product.id,
     title: product.title,
     overview: product.overview ?? undefined,
     description: product.description,
@@ -14,7 +15,17 @@ export function transformProduct(product: ProductQueryResult | null): ProductSch
     compareAtPrice: Number(product.compareAtPrice) ?? undefined,
     inventory: product.inventory.initialStock,
 
-    images: [{ url: product.image, isFeatured: true, order: 1 }],
+    images: product.images
+      .filter((image) => image.media !== null)
+      .map((image) => ({
+        url: image.media!.url ?? "",
+        isFeatured: image.isFeatured ?? false,
+        order: image.sortOrder ?? 0,
+        key: image.media!.key ?? undefined,
+        width: image.media!.width ?? undefined,
+        height: image.media!.height ?? undefined,
+        blurData: image.media!.blurData ?? undefined,
+      })),
 
     meta: {
       title: product.meta?.metaTitle ?? undefined,
@@ -37,7 +48,7 @@ export function getInitialValues(): ProductSchema {
     price: 0,
     compareAtPrice: undefined,
     inventory: 0,
-    images: [{ url: "/images/vacuum-holder.webp", isFeatured: true, order: 1 }],
+    images: [],
     isFeatured: false,
     endsIn: undefined,
     schedule: undefined,

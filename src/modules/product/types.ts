@@ -1,6 +1,6 @@
 import { InferSelectModel } from "drizzle-orm";
 
-import { inventory, metaTable, products } from "@/server/schema";
+import { inventory, mediaTable, metaTable, productImages, products } from "@/server/schema";
 
 // Review and Feedback Types
 export interface Review {
@@ -41,8 +41,13 @@ export interface Deal extends Product {
 export type ProductType = InferSelectModel<typeof products>;
 export type MetaType = InferSelectModel<typeof metaTable>;
 export type InventoryType = InferSelectModel<typeof inventory>;
+export type MediaType = InferSelectModel<typeof mediaTable>;
+export type ProductImageType = InferSelectModel<typeof productImages>;
 
 export type ProductQueryResult = ProductType & {
   meta: MetaType | null;
   inventory: InventoryType;
+  images: (ProductImageType & {
+    media: MediaType | null;
+  })[];
 };

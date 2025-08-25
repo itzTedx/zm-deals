@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1755936010164,
-      "tag": "0000_abnormal_silver_centurion",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1755938591209,
-      "tag": "0001_solid_smasher",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1755943578958,
-      "tag": "0002_confused_pride",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1755945271275,
-      "tag": "0003_giant_mikhail_rasputin",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1755947422612,
-      "tag": "0004_bumpy_dracula",
+      "when": 1756106094138,
+      "tag": "0000_blue_exiles",
       "breakpoints": true
     }
   ]
