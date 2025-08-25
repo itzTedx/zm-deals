@@ -17,7 +17,7 @@ import {
 } from "@/modules/product/constants";
 import { ProductImageSchema, ProductSchema } from "@/modules/product/schema";
 
-import { ImageSwipe } from "./ui/image-swipe";
+import { ImageManagement } from "./ui/image-management";
 
 export const ProductDetails = () => {
   const form = useFormContext<ProductSchema>();
@@ -128,9 +128,7 @@ export const ProductDetails = () => {
                       </div>
                     </div>
                   )}
-                  {/* <ImageManagement /> */}
-                  {/* <pre className="max-w-sm text-wrap text-xs">{JSON.stringify(images, null, 2)}</pre> */}
-                  <ImageSwipe fields={fields} reorder={move} />
+                  <ImageManagement fields={fields} reorder={move} />
                 </div>
               </FormControl>
               <FormMessage />

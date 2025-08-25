@@ -20,12 +20,12 @@ import { ImageOverlay } from "./image-overlay";
 import { SortableImageItem } from "./sortable-image-item";
 import { useDragState } from "./use-drag-state";
 
-interface ImageSwipeProps {
+interface ImageManagementProps {
   fields: FieldArrayWithId<ProductSchema, "images", "id">[];
   reorder: (from: number, to: number) => void;
 }
 
-export function ImageSwipe({ fields, reorder }: ImageSwipeProps) {
+export function ImageManagement({ fields, reorder }: ImageManagementProps) {
   const form = useFormContext<ProductSchema>();
 
   const { activeId, isDragging, handleDragStart, handleDragEnd } = useDragState();
@@ -106,6 +106,12 @@ export function ImageSwipe({ fields, reorder }: ImageSwipeProps) {
           isDragging ? "opacity-75" : "opacity-100"
         }`}
         role="region"
+        style={{
+          minHeight: "200px",
+          gridTemplateColumns: "repeat(6, 1fr)",
+          gridTemplateRows: "repeat(2, 1fr)",
+          position: "relative", // Ensure stable positioning
+        }}
       >
         <SortableContext items={sortableItems} strategy={rectSortingStrategy}>
           {fields.map((item, index) => (
@@ -114,7 +120,14 @@ export function ImageSwipe({ fields, reorder }: ImageSwipeProps) {
         </SortableContext>
       </div>
 
-      <DragOverlay dropAnimation={null}>{activeItem ? <ImageOverlay item={activeItem} /> : null}</DragOverlay>
+      <DragOverlay
+        dropAnimation={null}
+        style={{
+          zIndex: 1000, // Ensure overlay is above everything
+        }}
+      >
+        {activeItem ? <ImageOverlay isFirst={false} item={activeItem} /> : null}
+      </DragOverlay>
 
       {isDragging && (
         <div aria-live="polite" className="sr-only" id="drag-instructions">

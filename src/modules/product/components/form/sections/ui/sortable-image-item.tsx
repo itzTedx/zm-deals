@@ -5,6 +5,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { GripVertical } from "lucide-react";
 import { FieldArrayWithId } from "react-hook-form";
 
+import { cn } from "@/lib/utils";
 import { ProductSchema } from "@/modules/product/schema";
 
 interface SortableImageItemProps {
@@ -29,9 +30,11 @@ export function SortableImageItem({ item, index, isFirst }: SortableImageItemPro
 
   return (
     <div
-      className={`aspect-square rounded-md transition-all duration-200 ${
-        isFirst ? "col-span-2 row-span-2" : ""
-      } ${isDragging ? "z-50 scale-105 opacity-50" : "hover:scale-[1.02]"}`}
+      className={cn(
+        "aspect-square rounded-md transition-all duration-200",
+        isFirst ? "col-span-2 row-span-2" : "",
+        isDragging ? "z-50 scale-105 opacity-50" : "hover:scale-102"
+      )}
       ref={setNodeRef}
       style={style}
       {...attributes}
@@ -46,10 +49,10 @@ export function SortableImageItem({ item, index, isFirst }: SortableImageItemPro
         tabIndex={0}
       >
         {/* Drag Handle */}
-        <div className="absolute top-2 right-2 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
+        <div className="absolute top-2 right-2 z-10 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
           <GripVertical
             aria-hidden="true"
-            className="h-4 w-4 cursor-grab text-muted-foreground active:cursor-grabbing"
+            className="size-4 cursor-grab text-muted-foreground active:cursor-grabbing"
           />
         </div>
 
