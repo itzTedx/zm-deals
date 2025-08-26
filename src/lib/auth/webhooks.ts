@@ -1,8 +1,10 @@
 import type Stripe from "stripe";
 
 import { createLog } from "@/lib/logging";
+import { stripeClient } from "@/lib/stripe/client";
 import { clearCart } from "@/modules/cart/actions/mutation";
 import { createOrder, updateOrderStatus } from "@/modules/orders/actions/mutation";
+import { CreateOrderData } from "@/modules/orders/schema";
 
 const log = createLog("Auth Webhooks");
 
@@ -13,36 +15,81 @@ export async function handleCheckoutSessionCompleted(session: Stripe.CheckoutSes
   log.info("Processing checkout session completed", { sessionId: session.id });
 
   try {
+    let sessionWithItems = session;
+
+    // Check if line items are available in the webhook event
     if (!session.line_items?.data || session.line_items.data.length === 0) {
-      log.error("No line items found in session", { sessionId: session.id });
-      return;
+      log.info("No line items in webhook event, retrieving full session", { sessionId: session.id });
+
+      // Retrieve the full session with expanded line items
+      const fullSession = await stripeClient.checkout.sessions.retrieve(session.id, {
+        expand: ["line_items"],
+      });
+
+      if (!fullSession.line_items?.data || fullSession.line_items.data.length === 0) {
+        log.error("No line items found in retrieved session", { sessionId: session.id });
+        return;
+      }
+
+      // Use the full session data
+      sessionWithItems = fullSession;
     }
 
     // Extract order data from session
-    const items = session.line_items.data.map((item) => ({
-      productId: item.price?.product || "",
+    const stripeItems = sessionWithItems.line_items!.data;
+
+    // Get database product IDs from metadata
+    let databaseProductIds: string[] = [];
+    try {
+      if (sessionWithItems.metadata?.productIds) {
+        databaseProductIds = JSON.parse(sessionWithItems.metadata.productIds);
+      }
+    } catch (error) {
+      log.error("Failed to parse product IDs from metadata", error);
+    }
+
+    // Map Stripe line items to order items using database product IDs
+    const items = stripeItems.map((item, index) => ({
+      productId:
+        databaseProductIds[index] ||
+        (typeof item.price?.product === "string" ? item.price.product : item.price?.product?.id || ""),
       quantity: item.quantity || 1,
       price: (item.amount_total || 0) / 100, // Convert from cents
     }));
 
-    const total = (session.amount_total || 0) / 100;
-    const subtotal = (session.amount_subtotal || 0) / 100;
-    const taxAmount = (session.total_details?.amount_tax || 0) / 100;
+    const total = (sessionWithItems.amount_total || 0) / 100;
+    const subtotal = (sessionWithItems.amount_subtotal || 0) / 100;
+    const taxAmount = (sessionWithItems.total_details?.amount_tax || 0) / 100;
 
     // Create order data
-    const orderData = {
+    const orderData: CreateOrderData = {
       items,
       total,
       subtotal,
       taxAmount,
       shippingAmount: 0, // Stripe handles shipping separately if needed
-      customerEmail: session.customer_email,
-      // customerEmail: session.customer_details?.email || "",
-      customerPhone: session.customer_details?.phone,
-      shippingAddress: session.shipping_address_collection?.allowed_countries,
-      billingAddress: session.customer_details?.address,
-      paymentIntentId: session.payment_intent,
-      sessionId: session.id,
+      customerEmail: sessionWithItems.customer_email || "",
+      customerPhone: sessionWithItems.customer_details?.phone || undefined,
+      shippingAddress: undefined, // Stripe doesn't provide shipping details in webhook by default
+      billingAddress: sessionWithItems.customer_details?.address
+        ? {
+            name: sessionWithItems.customer_details.name || undefined,
+            address: {
+              line1: sessionWithItems.customer_details.address.line1 || undefined,
+              line2: sessionWithItems.customer_details.address.line2 || undefined,
+              city: sessionWithItems.customer_details.address.city || undefined,
+              state: sessionWithItems.customer_details.address.state || undefined,
+              postal_code: sessionWithItems.customer_details.address.postal_code || undefined,
+              country: sessionWithItems.customer_details.address.country || undefined,
+            },
+            phone: sessionWithItems.customer_details.phone || undefined,
+          }
+        : undefined,
+      paymentIntentId:
+        typeof sessionWithItems.payment_intent === "string"
+          ? sessionWithItems.payment_intent
+          : sessionWithItems.payment_intent?.id || undefined,
+      sessionId: sessionWithItems.id,
     };
 
     // Create order in database
@@ -52,7 +99,7 @@ export async function handleCheckoutSessionCompleted(session: Stripe.CheckoutSes
       log.success("Order created successfully", {
         orderId: orderResult.orderId,
         orderNumber: orderResult.orderNumber,
-        sessionId: session.id,
+        sessionId: sessionWithItems.id,
       });
 
       // Update order status to confirmed
@@ -65,16 +112,16 @@ export async function handleCheckoutSessionCompleted(session: Stripe.CheckoutSes
       );
 
       // Clear user's cart if they have one
-      if (session.metadata?.userId) {
+      if (sessionWithItems.metadata?.userId) {
         try {
           await clearCart();
-          log.success("Cart cleared for user", { userId: session.metadata.userId });
+          log.success("Cart cleared for user", { userId: sessionWithItems.metadata.userId });
         } catch (error) {
-          log.warn("Failed to clear cart", { userId: session.metadata.userId, error });
+          log.warn("Failed to clear cart", { userId: sessionWithItems.metadata.userId, error });
         }
       }
     } else {
-      log.error("Failed to create order", { error: orderResult.error, sessionId: session.id });
+      log.error("Failed to create order", { error: orderResult.error, sessionId: sessionWithItems.id });
     }
   } catch (error) {
     log.error("Error processing checkout session completed", error);

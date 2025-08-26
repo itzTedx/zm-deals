@@ -75,8 +75,8 @@ export const auth = betterAuth({
       onCustomerCreate: async ({ stripeCustomer, user }) => {
         console.log(`Customer ${stripeCustomer.id} created for user ${user.id}`);
       },
-      onEvent: async ({ request, type, data }) => {
-        console.log(`Event ${type} triggered for user ${request}`);
+      onEvent: async ({ type, data }) => {
+        // console.log(`Event ${type} triggered for user ${request}, Data: `, data);
 
         // Handle specific events for order management
         switch (type) {
