@@ -20,7 +20,7 @@ export const IconCategories = (props: SvgProps) => {
       <rect height="8" rx="1" stroke="currentColor" strokeWidth="2" width="8" x="2.5" y="2.5" />
       <rect
         fill="currentColor"
-        fill-opacity="0.2"
+        fillOpacity="0.2"
         height="8"
         rx="1"
         stroke="currentColor"

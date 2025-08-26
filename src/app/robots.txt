@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://zmdeals.com/sitemap.xml
+
+# Disallow admin and private areas
+Disallow: /studio/
+Disallow: /api/
+Disallow: /auth/
+Disallow: /admin/
+
+# Allow important pages
+Allow: /deals/
+Allow: /categories/
+Allow: /about/
+Allow: /faqs/
+Allow: /testimonials/
+Allow: /legal/
+
+# Crawl delay (optional)
+Crawl-delay: 1 

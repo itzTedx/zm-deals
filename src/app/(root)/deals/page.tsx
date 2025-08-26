@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 import { SectionHeader } from "@/components/layout/section-header";
 import { Badge } from "@/components/ui/badge";
 import { SeparatorBox } from "@/components/ui/separator";
@@ -5,9 +7,41 @@ import { SeparatorBox } from "@/components/ui/separator";
 import { IconFire } from "@/assets/icons/fire";
 import { IconHourglass } from "@/assets/icons/hourglass";
 
+import { env } from "@/lib/env/server";
 import { getLastMinuteDeals } from "@/lib/utils";
 import { getProducts } from "@/modules/product/actions/query";
 import { ProductCard } from "@/modules/product/components/product-card";
+
+export const metadata: Metadata = {
+  title: "Hot Deals & Last Minute Offers",
+  description:
+    "Discover amazing deals on premium products. Browse our collection of hot-selling deals and last-minute offers with exclusive discounts on electronics, home goods, and more.",
+  keywords: [
+    "hot deals",
+    "last minute deals",
+    "discounts",
+    "savings",
+    "limited time offers",
+    "flash sales",
+    "premium products",
+  ],
+  openGraph: {
+    title: "Hot Deals & Last Minute Offers",
+    description:
+      "Discover amazing deals on premium products. Browse our collection of hot-selling deals and last-minute offers with exclusive discounts on electronics, home goods, and more.",
+    url: `${env.BASE_URL}/deals`,
+    siteName: "ZM Deals",
+    type: "website",
+  },
+  twitter: {
+    title: "Hot Deals & Last Minute Offers",
+    description:
+      "Discover amazing deals on premium products. Browse our collection of hot-selling deals and last-minute offers with exclusive discounts on electronics, home goods, and more.",
+  },
+  alternates: {
+    canonical: `${env.BASE_URL}/deals`,
+  },
+};
 
 export default async function DealsPage() {
   const products = await getProducts();
@@ -25,7 +59,7 @@ export default async function DealsPage() {
 
           <SectionHeader
             className="mt-4 sm:mt-6"
-            description="Hurry up! These deals are ending soon. Don’t miss your chance to save big before time runs out."
+            description="Hurry up! These deals are ending soon. Don't miss your chance to save big before time runs out."
             hasButton={false}
             title="Last Minute Deals"
           />
@@ -48,7 +82,7 @@ export default async function DealsPage() {
 
         <SectionHeader
           className="mt-4 sm:mt-6"
-          description="Grab the best discounts on trending products. These deals are live for a limited time – shop them before they’re gone!"
+          description="Grab the best discounts on trending products. These deals are live for a limited time – shop them before they're gone!"
           hasButton={false}
           title="Previous Hot-Selling Deals"
         />

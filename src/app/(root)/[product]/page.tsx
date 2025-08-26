@@ -1,9 +1,11 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { ShareCard } from "@/components/global/share-card";
 import { InfoTooltip } from "@/components/global/tooltip";
+import { BreadcrumbSchema, ProductSchema } from "@/components/seo/structured-data";
 import { Badge } from "@/components/ui/badge";
 import { Banner, BannerContent, BannerDescription, BannerIcon, BannerText, BannerTitle } from "@/components/ui/banner";
 import {
@@ -25,7 +27,7 @@ import { IconDocument } from "@/assets/icons/book";
 import { IconApplePay, IconCurrency, IconMasterCard, IconVisaCard } from "@/assets/icons/currency";
 import { IconShield } from "@/assets/icons/shield";
 
-import { env } from "@/lib/env/client";
+import { env } from "@/lib/env/server";
 import { pluralize } from "@/lib/functions/pluralize";
 import { calculateDiscount, cn } from "@/lib/utils";
 import { Deals } from "@/modules/home/sections";
@@ -39,7 +41,63 @@ import { Reviews } from "@/modules/product/sections/reviews";
 
 type Params = Promise<{ product: string }>;
 
-export default async function ProductPage({ params }: { params: Params }) {
+interface Props {
+  params: Params;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { product } = await params;
+  const res = await getProductBySlug(product);
+
+  if (!res) {
+    return {
+      title: "Product Not Found",
+      description: "The requested product could not be found.",
+    };
+  }
+
+  const discount = calculateDiscount(Number(res.compareAtPrice), Number(res.price));
+  const productUrl = `${env.BASE_URL}/${res.slug}`;
+  const mainImage = res.images[0]?.media?.url || "/default-product-image.jpg";
+
+  return {
+    title: res.title,
+    description: res.description || res.overview || "",
+    keywords: [res.title, "deal", "discount", "savings", "limited time offer", "product"],
+    openGraph: {
+      title: res.title,
+      description: res.description || res.overview || "",
+      url: productUrl,
+      siteName: "ZM Deals",
+      images: [
+        {
+          url: mainImage,
+          width: 1200,
+          height: 630,
+          alt: res.title,
+        },
+      ],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: res.title,
+      description: res.description || res.overview || "",
+      images: [mainImage],
+    },
+    alternates: {
+      canonical: productUrl,
+    },
+    other: {
+      "product:price:amount": res.price.toString(),
+      "product:price:currency": "AED",
+      "product:availability": res.inventory.stock > 0 ? "in stock" : "out of stock",
+      "product:condition": "new",
+    },
+  };
+}
+
+export default async function ProductPage({ params }: Props) {
   const { product } = await params;
 
   const res = await getProductBySlug(product);
@@ -48,8 +106,30 @@ export default async function ProductPage({ params }: { params: Params }) {
     return notFound();
   }
 
+  const productUrl = `${env.BASE_URL}/${res.slug}`;
+  const mainImage = res.images[0]?.media?.url || "/default-product-image.jpg";
+  const breadcrumbItems = [
+    { name: "Home", url: env.BASE_URL },
+    { name: "Deals", url: `${env.BASE_URL}/deals` },
+    { name: res.title, url: productUrl },
+  ];
+
   return (
     <main className="">
+      {/* Structured Data */}
+      <ProductSchema
+        availability={res.inventory.stock > 0 ? "InStock" : "OutOfStock"}
+        brand="ZM Deals"
+        category="Deals"
+        currency="AED"
+        description={res.description || res.overview || ""}
+        image={mainImage}
+        name={res.title}
+        price={Number(res.price)}
+        url={productUrl}
+      />
+      <BreadcrumbSchema items={breadcrumbItems} />
+
       <header className="container relative grid max-w-7xl grid-cols-1 gap-6 border-x pt-6 pb-6 md:grid-cols-5 md:gap-8 md:pb-8 lg:gap-12 lg:pb-12">
         {/* Image Carousel Section */}
         <div className="md:col-span-3">
@@ -95,9 +175,13 @@ export default async function ProductPage({ params }: { params: Params }) {
             <h1 className="font-medium text-2xl sm:text-3xl">{res.title}</h1>
             <ShareCard
               description={`Check out this amazing deal: ${res.title} - Save ${calculateDiscount(Number(res.compareAtPrice), Number(res.price))}% off!`}
-              link={`${env.NEXT_PUBLIC_BASE_URL}/${res.slug}`}
+              link={`${env.BASE_URL}/${res.slug}`}
               title={res.title}
             />
+          </div>
+
+          {/* Product Description */}
+          <div className="space-y-2">
             <p className="text-base text-gray-500 leading-relaxed">{res.overview}</p>
           </div>
           {/* Pricing Section */}
@@ -205,35 +289,31 @@ export default async function ProductPage({ params }: { params: Params }) {
               </BannerContent>
             </Banner>
 
-            <Banner className="bg-green-100" size="sm" variant="success">
-              <BannerContent className="items-center">
+            <Banner>
+              <BannerContent>
                 <BannerIcon>
-                  <IconShield className="size-6 text-green-600" />
+                  <IconShield className="size-5 text-gray-500" />
                 </BannerIcon>
-                <div className="flex w-full items-center justify-between">
-                  <BannerText className="gap-0.5">
-                    <BannerTitle className="font-medium text-green-700">Secure Payment</BannerTitle>
-                    <BannerDescription className="text-xs">Powered by Stripe</BannerDescription>
-                  </BannerText>
-                  <div className="flex items-center gap-2">
-                    <IconApplePay className="size-6" />
-                    <IconVisaCard className="size-6" />
-                    <IconMasterCard className="size-6" />
-                  </div>
-                </div>
+                <BannerText>
+                  <BannerTitle className="font-medium text-gray-500">Secure Payment</BannerTitle>
+                  <BannerDescription>
+                    <div className="flex items-center gap-2">
+                      <IconVisaCard className="size-8" />
+                      <IconMasterCard className="size-8" />
+                      <IconApplePay className="size-8" />
+                    </div>
+                  </BannerDescription>
+                </BannerText>
               </BannerContent>
             </Banner>
           </div>
         </div>
       </header>
-      <SeparatorBox className="container mx-auto max-w-7xl border-x" />
-      <section className="container relative max-w-7xl border-x py-12 md:hidden md:py-16 lg:py-20">
-        <div className="mt-4 space-y-1">
-          <h2 className="font-medium text-gray-500 text-sm">Product Overview</h2>
-          <p>{res.description}</p>
-        </div>
-      </section>
+
+      {/* Reviews Section */}
       <Reviews productId={res.id} reviews={res.reviews} />
+
+      {/* Related Deals Section */}
       <Deals />
     </main>
   );
