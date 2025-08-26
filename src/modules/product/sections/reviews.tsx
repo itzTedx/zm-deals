@@ -13,6 +13,7 @@ interface ReviewsProps {
 }
 
 export const Reviews = ({ reviews, productId }: ReviewsProps) => {
+  console.log(reviews);
   return (
     <section className="container relative max-w-7xl border-x py-12 md:py-16 lg:py-20">
       <div className="mt-9 grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -22,9 +23,12 @@ export const Reviews = ({ reviews, productId }: ReviewsProps) => {
         </div>
 
         <div className="grid gap-5">
-          {reviews.slice(0, 6).map((review) => (
-            <FeedbackCard key={review.id} review={review} />
-          ))}
+          {reviews
+            .filter((review) => review.comment && review.comment.trim() !== "")
+            .slice(0, 6)
+            .map((review) => (
+              <FeedbackCard key={review.id} review={review} />
+            ))}
           {reviews.length > 6 && <SeeMoreReviews />}
         </div>
       </div>
