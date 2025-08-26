@@ -36,6 +36,13 @@
       "when": 1756131613264,
       "tag": "0004_skinny_darkhawk",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1756189529830,
+      "tag": "0005_nappy_shadow_king",
+      "breakpoints": true
     }
   ]
 }

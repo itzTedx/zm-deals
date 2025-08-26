@@ -15,6 +15,7 @@ export type CheckoutSchema = z.infer<typeof checkoutSchema>;
 export const mediaSchema = z.object({
   url: z.string().min(1, { message: "Image URL is required" }),
   key: z.string("Failed to upload image").optional(),
+  type: z.enum(["thumbnail", "image"]).optional(),
 
   // Metadata
   width: z.number({ message: "Width must be a number." }).nullish(),
@@ -25,7 +26,7 @@ export const mediaSchema = z.object({
   order: z.number().optional(),
 });
 
-export type ProductImageSchema = z.infer<typeof mediaSchema>;
+export type MediaSchema = z.infer<typeof mediaSchema>;
 
 export const productSchema = z.object({
   id: z.string().optional(),

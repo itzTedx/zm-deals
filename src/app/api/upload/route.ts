@@ -57,8 +57,10 @@ const router: Router = {
 
           return {
             generateObjectKey: ({ file }) => {
-              const safeFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-              const objectKey = `${PRODUCT_UPLOAD_ROUTE}/${safeFileName}-${generateFileName()}`;
+              const filename = file.name.replace(/\.[^/.]+$/, "");
+              const safeFileName = filename.replace(/[^a-zA-Z0-9._-]/g, "_");
+              const fileExtension = file.name.split(".").pop() || "";
+              const objectKey = `${PRODUCT_UPLOAD_ROUTE}/${safeFileName}-${generateFileName()}.${fileExtension}`;
 
               log.file("Generated object key", objectKey);
               log.data(
@@ -68,6 +70,7 @@ const router: Router = {
                   objectKey,
                   size: file.size,
                   type: file.type,
+                  extension: fileExtension,
                 },
                 "File Info"
               );
@@ -124,8 +127,10 @@ const router: Router = {
           log.auth("Upload authorized", session.user.id);
           log.data({ userId: session.user.id, email: session.user.email }, "User Session");
 
-          const safeFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-          const objectKey = `${CATEGORY_UPLOAD_ROUTE}/${safeFileName}-${generateFileName()}`;
+          const filename = file.name.replace(/\.[^/.]+$/, "");
+          const safeFileName = filename.replace(/[^a-zA-Z0-9._-]/g, "_");
+          const fileExtension = file.name.split(".").pop() || "";
+          const objectKey = `${CATEGORY_UPLOAD_ROUTE}/${safeFileName}-${generateFileName()}.${fileExtension}`;
 
           log.file("Generated object key", objectKey);
           log.data(
@@ -135,6 +140,7 @@ const router: Router = {
               objectKey,
               size: file.size,
               type: file.type,
+              extension: fileExtension,
             },
             "File Info"
           );
@@ -169,13 +175,6 @@ const router: Router = {
     }),
   },
 };
-
-log.info("Upload router configured", {
-  route: PRODUCT_UPLOAD_ROUTE,
-  maxFiles: PRODUCT_FILE_MAX_FILES,
-  maxFileSize: PRODUCT_FILE_MAX_SIZE,
-  fileTypes: PRODUCT_FILE_TYPES,
-});
 
 const { POST: originalPOST } = createUploadRouteHandler(router);
 

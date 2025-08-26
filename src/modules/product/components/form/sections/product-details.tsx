@@ -15,7 +15,7 @@ import {
   PRODUCT_FILE_TYPES,
   PRODUCT_UPLOAD_ROUTE,
 } from "@/modules/product/constants";
-import { ProductImageSchema, ProductSchema } from "@/modules/product/schema";
+import { MediaSchema, ProductSchema } from "@/modules/product/schema";
 
 import { ImageManagement } from "./ui/image-management";
 
@@ -53,7 +53,7 @@ export const ProductDetails = () => {
           const metadata = await getImageMetadata(file.raw);
 
           // Create new image object according to ProductSchema
-          const newImage: ProductImageSchema = {
+          const newImage: MediaSchema = {
             ...metadata,
             url: (objectMetadata.urls as string[])[i] || (objectMetadata.url as string),
             isFeatured: currentImages.length === 0 && i === 0,
