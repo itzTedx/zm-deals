@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { CheckCircle, Clock, Eye, Package, Truck, XCircle } from "lucide-react";
@@ -193,10 +194,12 @@ export default async function OrdersPage() {
                     {order.items?.slice(0, 2).map((item) => (
                       <div className="flex items-center gap-3" key={item.id}>
                         {item.productImage && (
-                          <img
+                          <Image
                             alt={item.productTitle}
                             className="h-10 w-10 rounded object-cover"
+                            height={64}
                             src={item.productImage}
+                            width={64}
                           />
                         )}
                         <div className="min-w-0 flex-1">

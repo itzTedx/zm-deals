@@ -1,52 +1,15 @@
+import type Stripe from "stripe";
+
 import { createLog } from "@/lib/logging";
 import { clearCart } from "@/modules/cart/actions/mutation";
 import { createOrder, updateOrderStatus } from "@/modules/orders/actions/mutation";
 
 const log = createLog("Auth Webhooks");
 
-interface StripeCheckoutSession {
-  id: string;
-  line_items?: {
-    data: Array<{
-      price?: {
-        product: string;
-      };
-      quantity: number;
-      amount_total: number;
-    }>;
-  };
-  amount_total: number;
-  amount_subtotal: number;
-  total_details?: {
-    amount_tax: number;
-  };
-  customer_details?: {
-    email: string;
-    phone?: string;
-    address?: any;
-  };
-  shipping_details?: {
-    address?: any;
-  };
-  payment_intent: string;
-  metadata?: {
-    userId?: string;
-  };
-}
-
-interface StripePaymentIntent {
-  id: string;
-  amount: number;
-  currency: string;
-  last_payment_error?: {
-    message: string;
-  };
-}
-
 /**
  * Handle checkout session completed event
  */
-export async function handleCheckoutSessionCompleted(session: StripeCheckoutSession) {
+export async function handleCheckoutSessionCompleted(session: Stripe.CheckoutSessionCompletedEvent.Data["object"]) {
   log.info("Processing checkout session completed", { sessionId: session.id });
 
   try {
@@ -73,9 +36,10 @@ export async function handleCheckoutSessionCompleted(session: StripeCheckoutSess
       subtotal,
       taxAmount,
       shippingAmount: 0, // Stripe handles shipping separately if needed
-      customerEmail: session.customer_details?.email || "",
+      customerEmail: session.customer_email,
+      // customerEmail: session.customer_details?.email || "",
       customerPhone: session.customer_details?.phone,
-      shippingAddress: session.shipping_details?.address,
+      shippingAddress: session.shipping_address_collection?.allowed_countries,
       billingAddress: session.customer_details?.address,
       paymentIntentId: session.payment_intent,
       sessionId: session.id,
@@ -120,7 +84,7 @@ export async function handleCheckoutSessionCompleted(session: StripeCheckoutSess
 /**
  * Handle payment intent succeeded event
  */
-export async function handlePaymentIntentSucceeded(paymentIntent: StripePaymentIntent) {
+export async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntentSucceededEvent.Data["object"]) {
   log.info("Processing payment intent succeeded", { paymentIntentId: paymentIntent.id });
 
   try {
@@ -138,7 +102,7 @@ export async function handlePaymentIntentSucceeded(paymentIntent: StripePaymentI
 /**
  * Handle payment intent failed event
  */
-export async function handlePaymentIntentFailed(paymentIntent: StripePaymentIntent) {
+export async function handlePaymentIntentFailed(paymentIntent: Stripe.PaymentIntentPaymentFailedEvent.Data["object"]) {
   log.info("Processing payment intent failed", { paymentIntentId: paymentIntent.id });
 
   try {
@@ -151,59 +115,5 @@ export async function handlePaymentIntentFailed(paymentIntent: StripePaymentInte
     });
   } catch (error) {
     log.error("Error processing payment intent failed", error);
-  }
-}
-
-/**
- * Handle customer subscription created event
- */
-export async function handleCustomerSubscriptionCreated(subscription: any) {
-  log.info("Processing customer subscription created", { subscriptionId: subscription.id });
-
-  try {
-    // Handle subscription creation
-    log.success("Subscription created", {
-      subscriptionId: subscription.id,
-      customerId: subscription.customer,
-      status: subscription.status,
-    });
-  } catch (error) {
-    log.error("Error processing subscription created", error);
-  }
-}
-
-/**
- * Handle customer subscription updated event
- */
-export async function handleCustomerSubscriptionUpdated(subscription: any) {
-  log.info("Processing customer subscription updated", { subscriptionId: subscription.id });
-
-  try {
-    // Handle subscription updates
-    log.success("Subscription updated", {
-      subscriptionId: subscription.id,
-      customerId: subscription.customer,
-      status: subscription.status,
-    });
-  } catch (error) {
-    log.error("Error processing subscription updated", error);
-  }
-}
-
-/**
- * Handle customer subscription deleted event
- */
-export async function handleCustomerSubscriptionDeleted(subscription: any) {
-  log.info("Processing customer subscription deleted", { subscriptionId: subscription.id });
-
-  try {
-    // Handle subscription deletion
-    log.success("Subscription deleted", {
-      subscriptionId: subscription.id,
-      customerId: subscription.customer,
-      status: subscription.status,
-    });
-  } catch (error) {
-    log.error("Error processing subscription deleted", error);
   }
 }

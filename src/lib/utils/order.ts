@@ -12,46 +12,6 @@ export function generateOrderNumber(): string {
 }
 
 /**
- * Validates order data before creation
- */
-export function validateOrderData(data: {
-  items: Array<{
-    productId: string;
-    quantity: number;
-    price: number;
-  }>;
-  total: number;
-  customerEmail: string;
-}): { isValid: boolean; error?: string } {
-  if (!data.items || data.items.length === 0) {
-    return { isValid: false, error: "Order must contain at least one item" };
-  }
-
-  if (!data.customerEmail || !data.customerEmail.includes("@")) {
-    return { isValid: false, error: "Valid customer email is required" };
-  }
-
-  if (data.total <= 0) {
-    return { isValid: false, error: "Order total must be greater than zero" };
-  }
-
-  // Validate individual items
-  for (const item of data.items) {
-    if (!item.productId) {
-      return { isValid: false, error: "All items must have a product ID" };
-    }
-    if (item.quantity <= 0) {
-      return { isValid: false, error: "All items must have a quantity greater than zero" };
-    }
-    if (item.price < 0) {
-      return { isValid: false, error: "All items must have a non-negative price" };
-    }
-  }
-
-  return { isValid: true };
-}
-
-/**
  * Formats address data for database storage
  */
 export function formatAddress(address: {

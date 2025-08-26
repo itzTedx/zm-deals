@@ -3,54 +3,32 @@
 import { headers } from "next/headers";
 
 import { eq, inArray } from "drizzle-orm";
+import z from "zod";
 
 import { auth } from "@/lib/auth/server";
 import { createLog } from "@/lib/logging";
-import { formatAddress, generateOrderNumber, validateOrderData } from "@/lib/utils/order";
+import { formatAddress, generateOrderNumber } from "@/lib/utils/order";
 import { db } from "@/server/db";
-import { orderHistory, orderItems, orders } from "@/server/schema/orders-schema";
+import { type NewOrder, type NewOrderItem, orderHistory, orderItems, orders } from "@/server/schema/orders-schema";
 import { products } from "@/server/schema/product-schema";
 
-interface CreateOrderData {
-  items: Array<{
-    productId: string;
-    quantity: number;
-    price: number;
-  }>;
-  total: number;
-  subtotal: number;
-  taxAmount: number;
-  shippingAmount: number;
-  customerEmail: string;
-  customerPhone?: string;
-  customerNote?: string;
-  shippingAddress?: any;
-  billingAddress?: any;
-  paymentIntentId?: string;
-  sessionId?: string;
-}
-
-interface CreateOrderResponse {
-  success: boolean;
-  orderId?: string;
-  orderNumber?: string;
-  error?: string;
-}
+import { createOrderDataSchema } from "../schema";
+import type { CreateOrderResponse } from "../types";
 
 /**
  * Creates a new order in the database
  */
-export async function createOrder(data: CreateOrderData): Promise<CreateOrderResponse> {
+export async function createOrder(rawData: unknown): Promise<CreateOrderResponse> {
   const log = createLog("Order");
 
   log.info("Starting order creation process");
 
   try {
     // Validate order data
-    const validation = validateOrderData(data);
-    if (!validation.isValid) {
-      log.error("Order validation failed", validation.error);
-      return { success: false, error: validation.error };
+    const { data, success, error } = createOrderDataSchema.safeParse(rawData);
+    if (!success) {
+      log.error("Order validation failed", error);
+      return { success: false, error: z.prettifyError(error) };
     }
 
     // Get user session if available
@@ -59,6 +37,7 @@ export async function createOrder(data: CreateOrderData): Promise<CreateOrderRes
       const session = await auth.api.getSession({ headers: await headers() });
       userId = session?.user?.id;
     } catch (error) {
+      console.error("Error getting session", error);
       log.warn("No authenticated session found, creating anonymous order");
     }
 
@@ -95,22 +74,22 @@ export async function createOrder(data: CreateOrderData): Promise<CreateOrderRes
           paymentStatus: "pending",
           paymentMethod: "stripe",
           paymentIntentId: data.paymentIntentId,
-          subtotal: data.subtotal,
-          taxAmount: data.taxAmount,
-          shippingAmount: data.shippingAmount,
-          totalAmount: data.total,
+          subtotal: data.subtotal.toString(),
+          taxAmount: data.taxAmount.toString(),
+          shippingAmount: data.shippingAmount.toString(),
+          totalAmount: data.total.toString(),
           customerEmail: data.customerEmail,
           customerPhone: data.customerPhone,
           customerNote: data.customerNote,
           shippingAddress: data.shippingAddress ? formatAddress(data.shippingAddress) : null,
           billingAddress: data.billingAddress ? formatAddress(data.billingAddress) : null,
-        })
+        } satisfies NewOrder)
         .returning({ id: orders.id, orderNumber: orders.orderNumber });
 
       log.success("Order created", { orderId: newOrder.id, orderNumber: newOrder.orderNumber });
 
       // Create order items
-      const orderItemsData = data.items.map((item, index) => {
+      const orderItemsData: NewOrderItem[] = data.items.map((item, index) => {
         const product = productDetails[index];
         return {
           orderId: newOrder.id,
@@ -118,9 +97,9 @@ export async function createOrder(data: CreateOrderData): Promise<CreateOrderRes
           productTitle: product.title,
           productSlug: product.slug,
           productImage: product.image,
-          unitPrice: item.price,
+          unitPrice: item.price.toString(),
           quantity: item.quantity,
-          totalPrice: item.price * item.quantity,
+          totalPrice: (item.price * item.quantity).toString(),
         };
       });
 
@@ -136,8 +115,8 @@ export async function createOrder(data: CreateOrderData): Promise<CreateOrderRes
         changeReason: "Order created",
         changeNote: "Order created from checkout session",
         metadata: {
-          sessionId: data.sessionId,
-          paymentIntentId: data.paymentIntentId,
+          sessionId: data.sessionId || "",
+          paymentIntentId: data.paymentIntentId || "",
         },
       });
 
@@ -218,7 +197,7 @@ export async function updateOrderStatus(
         previousPaymentStatus: currentOrder.paymentStatus,
         newPaymentStatus: paymentStatus || currentOrder.paymentStatus,
         changeReason: reason || "Status updated",
-        changeNote: note,
+        changeNote: note || "",
       });
 
       return { success: true };
@@ -282,7 +261,7 @@ export async function updatePaymentStatus(
         changeReason: reason || "Payment status updated",
         changeNote: `Payment status changed to ${paymentStatus}`,
         metadata: {
-          paymentIntentId,
+          paymentIntentId: paymentIntentId || "",
         },
       });
 

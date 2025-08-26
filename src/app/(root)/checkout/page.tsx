@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { CheckCircle, Clock, CreditCard, Package, Truck, XCircle } from "lucide-react";
@@ -30,7 +31,7 @@ export default async function CheckoutStatusPage({ searchParams }: { searchParam
   if (success === "1" && sessionId) {
     checkoutStatus = {
       status: "success",
-      message: "Payment completed successfully!",
+      message: "Thank you for your order!",
       sessionId: sessionId as string,
     };
 
@@ -46,17 +47,17 @@ export default async function CheckoutStatusPage({ searchParams }: { searchParam
   } else if (cancelled === "1") {
     checkoutStatus = {
       status: "cancelled",
-      message: "Payment was cancelled.",
+      message: "Payment was cancelled. Please try again.",
     };
   } else if (error) {
     checkoutStatus = {
       status: "error",
-      message: "An error occurred during payment.",
+      message: "An error occurred during payment. Please try again.",
     };
   } else {
     checkoutStatus = {
       status: "pending",
-      message: "Processing your payment...",
+      message: "Processing your payment. Please wait...",
     };
   }
 
@@ -176,10 +177,12 @@ export default async function CheckoutStatusPage({ searchParams }: { searchParam
                   {orderDetails.items.map((item) => (
                     <div className="flex items-center gap-4 rounded-lg border p-3" key={item.id}>
                       {item.productImage && (
-                        <img
+                        <Image
                           alt={item.productTitle}
                           className="h-16 w-16 rounded-md object-cover"
+                          height={64}
                           src={item.productImage}
+                          width={64}
                         />
                       )}
                       <div className="flex-1">
