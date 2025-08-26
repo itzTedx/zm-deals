@@ -1,6 +1,8 @@
 import Link from "next/link";
 
-import { IconHome } from "@/assets/icons/layout";
+import { IconDiamond } from "@/assets/icons/diamonds";
+import { IconCategories, IconHome } from "@/assets/icons/layout";
+import { IconUser } from "@/assets/icons/user";
 
 export const MobileNavbar = () => {
   return (
@@ -14,19 +16,19 @@ export const MobileNavbar = () => {
         </li>
         <li>
           <Link className="flex flex-col items-center px-6 py-2.5 text-muted-foreground text-sm" href="/categories">
-            <IconHome className="size-5 text-gray-800" />
+            <IconCategories className="size-5 text-gray-800" />
             Categories
           </Link>
         </li>
         <li>
           <Link className="flex flex-col items-center px-6 py-2.5 text-muted-foreground text-sm" href="/deals">
-            <IconHome className="size-5 text-gray-800" />
+            <IconDiamond className="size-5 text-gray-800" />
             Deals
           </Link>
         </li>
         <li>
           <Link className="flex flex-col items-center px-6 py-2.5 text-muted-foreground text-sm" href="/profile">
-            <IconHome className="size-5 text-gray-800" />
+            <IconUser className="size-5 text-gray-800" />
             Account
           </Link>
         </li>

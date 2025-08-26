@@ -13,3 +13,24 @@ export const IconHome = (props: SvgProps) => {
     </svg>
   );
 };
+
+export const IconCategories = (props: SvgProps) => {
+  return (
+    <svg {...props} fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+      <rect height="8" rx="1" stroke="currentColor" strokeWidth="2" width="8" x="2.5" y="2.5" />
+      <rect
+        fill="currentColor"
+        fill-opacity="0.2"
+        height="8"
+        rx="1"
+        stroke="currentColor"
+        strokeWidth="2"
+        width="8"
+        x="13.5"
+        y="2.5"
+      />
+      <rect height="8" rx="1" stroke="currentColor" strokeWidth="2" width="8" x="2.5" y="13.5" />
+      <rect height="8" rx="1" stroke="currentColor" strokeWidth="2" width="8" x="13.5" y="13.5" />
+    </svg>
+  );
+};

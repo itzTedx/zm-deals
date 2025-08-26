@@ -84,7 +84,7 @@ export const Community = () => {
         <p className="mx-auto mt-2 max-w-lg text-gray-500 text-sm sm:mt-3 sm:text-base lg:text-lg">
           We respect your privacy — no spam, just savings.
         </p>
-        <div className="mx-auto mt-8 flex max-w-fit flex-col items-center gap-3 sm:mt-12 sm:flex-row sm:gap-5">
+        <div className="mx-auto mt-8 flex max-w-fit flex-wrap items-center gap-3 sm:mt-12 sm:gap-5">
           {NEWSLETTER_LIST.map((item) => (
             <p className="flex items-center gap-2 text-gray-600 text-xs sm:text-sm" key={item}>
               <IconCheckboxCircle className="size-4 text-success sm:size-5" />
