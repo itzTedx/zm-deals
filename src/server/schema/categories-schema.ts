@@ -1,17 +1,21 @@
 import { relations } from "drizzle-orm";
-import { index, pgEnum, pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { index, pgEnum, pgTable, text, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
 import { createdAt, id, updatedAt } from "./helpers";
 import { mediaTable } from "./media-schema";
 
-export const categories = pgTable("categories", {
-  id,
-  name: text("name").notNull(),
-  slug: text("slug").notNull(),
-  description: text("description"),
-  createdAt,
-  updatedAt,
-});
+export const categories = pgTable(
+  "categories",
+  {
+    id,
+    name: text("name").notNull(),
+    slug: text("slug").notNull(),
+    description: text("description"),
+    createdAt,
+    updatedAt,
+  },
+  (table) => [uniqueIndex("categories_slug_idx").on(table.slug)]
+);
 
 export const categoryImageTypes = pgEnum("category_image_types", ["thumbnail", "banner"]);
 

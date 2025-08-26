@@ -150,7 +150,7 @@ export const getColumns = ({ data }: GetColumnsProps): ColumnDef<ProductQueryRes
           })}
       </div>
     ),
-    size: 180,
+    size: 130,
     enablePinning: false,
   },
   {
@@ -170,15 +170,15 @@ export const getColumns = ({ data }: GetColumnsProps): ColumnDef<ProductQueryRes
         </Tooltip>
       </TooltipProvider>
     ),
-    size: 180,
+    size: 130,
     enablePinning: false,
   },
   {
     id: "actions",
     header: () => <span className="sr-only">Actions</span>,
     cell: ({ row }) => <RowActions data={data} item={row.original} />,
-    size: 60,
+    size: 20,
     enableHiding: false,
-    enablePinning: false,
+    enablePinning: true,
   },
 ];

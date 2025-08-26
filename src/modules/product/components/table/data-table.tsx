@@ -95,6 +95,11 @@ export function ProductsTable({ data }: { data: ProductQueryResult[] }) {
     onColumnVisibilityChange: setColumnVisibility,
     getFilteredRowModel: getFilteredRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+    initialState: {
+      columnPinning: {
+        right: ["actions"],
+      },
+    },
     state: {
       sorting,
       pagination,

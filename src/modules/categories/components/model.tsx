@@ -29,7 +29,7 @@ export const CategoryModal = () => {
         <DialogHeader>
           <DialogTitle>{isEdit ? "Edit Category" : "Add Category"}</DialogTitle>
         </DialogHeader>
-        <CategoryForm isEdit={isEdit} />
+        <CategoryForm isEdit={isEdit} setModalOpen={setIsOpen} />
       </DialogContent>
     </Dialog>
   );

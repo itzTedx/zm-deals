@@ -43,6 +43,13 @@
       "when": 1756189529830,
       "tag": "0005_nappy_shadow_king",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1756192796428,
+      "tag": "0006_busy_eddie_brock",
+      "breakpoints": true
     }
   ]
 }

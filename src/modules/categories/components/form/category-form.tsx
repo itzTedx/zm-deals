@@ -25,9 +25,10 @@ import { upsertCategory } from "../../actions/mutation";
 interface CategoryFormProps {
   initialData?: CategorySchema;
   isEdit?: boolean;
+  setModalOpen: (open: boolean) => void;
 }
 
-export const CategoryForm = ({ initialData, isEdit = false }: CategoryFormProps) => {
+export const CategoryForm = ({ initialData, isEdit = false, setModalOpen }: CategoryFormProps) => {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
@@ -42,8 +43,6 @@ export const CategoryForm = ({ initialData, isEdit = false }: CategoryFormProps)
     reValidateMode: "onBlur",
   });
 
-  // const image = form.watch("image");
-
   const { control } = useUploadFile({
     route: CATEGORY_UPLOAD_ROUTE,
     onUploadComplete: async ({ file, metadata: objectMetadata }) => {
@@ -56,16 +55,13 @@ export const CategoryForm = ({ initialData, isEdit = false }: CategoryFormProps)
         key: file.objectKey,
         type: "thumbnail",
       };
-      console.log("image", image);
-      // form.setValue("image", image);
+
       form.setValue("image", {
         url: image.url,
         key: image.key,
         type: image.type,
         ...metadata,
       });
-
-      console.log("form.watch()", form.watch("image"));
 
       toast.success("Image uploaded successfully");
     },
@@ -79,6 +75,7 @@ export const CategoryForm = ({ initialData, isEdit = false }: CategoryFormProps)
         if (result.success) {
           toast.success(result.message);
           router.refresh();
+          setModalOpen(false);
         } else {
           toast.error(result.message ?? "Something went wrong");
         }

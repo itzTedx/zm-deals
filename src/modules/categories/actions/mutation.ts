@@ -7,7 +7,7 @@ import { getSession } from "@/lib/auth/server";
 import { createLog } from "@/lib/logging";
 import { categorySchema } from "@/modules/categories/schema";
 import { db } from "@/server/db";
-import { categories, categoryImages } from "@/server/schema";
+import { categories, categoryImages, mediaTable } from "@/server/schema";
 
 export async function upsertCategory(rawData: unknown) {
   const log = createLog("Category");
@@ -72,11 +72,21 @@ export async function upsertCategory(rawData: unknown) {
       // Handle image upload if provided
       if (data.image && upsertedCategory) {
         // Delete existing images for this category
+        await tx.delete(categoryImages).where(eq(categoryImages.categoryId, upsertedCategory.id));
+
+        // Create media record first
         const [insertedMedia] = await tx
-          .delete(categoryImages)
-          .where(eq(categoryImages.categoryId, upsertedCategory.id))
+          .insert(mediaTable)
+          .values({
+            url: data.image.url,
+            alt: `${data.name} - Category Image`,
+            width: data.image.width || null,
+            height: data.image.height || null,
+            blurData: data.image.blurData || null,
+            key: data.image.key || null,
+          })
           .returning({
-            id: categoryImages.id,
+            id: mediaTable.id,
           });
 
         // Insert new image

@@ -26,33 +26,45 @@ export function createLog(label = "App") {
   };
   const labelText = chalk.cyan(`[${label}]`);
 
+  // Helper function to format arguments properly
+  const formatArgs = (args: unknown[]): string => {
+    return args
+      .map((arg) => {
+        if (typeof arg === "object" && arg !== null) {
+          return JSON.stringify(arg, null, 2);
+        }
+        return String(arg);
+      })
+      .join(" ");
+  };
+
   return {
     /**
      * Logs informational messages in blue
      */
     info: (...args: unknown[]) => {
-      console.log(`${timestamp()} ${chalk.blue("ℹ")} ${labelText} ${chalk.blue(args.join(" "))}`);
+      console.log(`${timestamp()} ${chalk.blue("ℹ")} ${labelText} ${chalk.blue(formatArgs(args))}`);
     },
 
     /**
      * Logs success messages in green
      */
     success: (...args: unknown[]) => {
-      console.log(`${timestamp()} ${chalk.green("✓")} ${labelText} ${chalk.green(args.join(" "))}`);
+      console.log(`${timestamp()} ${chalk.green("✓")} ${labelText} ${chalk.green(formatArgs(args))}`);
     },
 
     /**
      * Logs warning messages in yellow
      */
     warn: (...args: unknown[]) => {
-      console.log(`${timestamp()} ${chalk.yellow("⚠")} ${labelText} ${chalk.yellow(args.join(" "))}`);
+      console.log(`${timestamp()} ${chalk.yellow("⚠")} ${labelText} ${chalk.yellow(formatArgs(args))}`);
     },
 
     /**
      * Logs error messages in red
      */
     error: (...args: unknown[]) => {
-      console.error(`${timestamp()} ${chalk.red("✗")} ${labelText} ${chalk.red(args.join(" "))}`);
+      console.error(`${timestamp()} ${chalk.red("✗")} ${labelText} ${chalk.red(formatArgs(args))}`);
     },
 
     /**
@@ -61,7 +73,7 @@ export function createLog(label = "App") {
     debug: (...args: unknown[]) => {
       // biome-ignore lint/style/noProcessEnv: NODE_ENV is a standard Node.js environment variable
       if (process.env.NODE_ENV === "development") {
-        console.log(`${timestamp()} ${chalk.magenta("🔍")} ${labelText} ${chalk.magenta(args.join(" "))}`);
+        console.log(`${timestamp()} ${chalk.magenta("🔍")} ${labelText} ${chalk.magenta(formatArgs(args))}`);
       }
     },
 
@@ -71,7 +83,7 @@ export function createLog(label = "App") {
     verbose: (...args: unknown[]) => {
       // biome-ignore lint/style/noProcessEnv: NODE_ENV is a standard Node.js environment variable
       if (process.env.NODE_ENV === "development") {
-        console.log(`${timestamp()} ${chalk.gray("📝")} ${labelText} ${chalk.gray(args.join(" "))}`);
+        console.log(`${timestamp()} ${chalk.gray("📝")} ${labelText} ${chalk.gray(formatArgs(args))}`);
       }
     },
 
