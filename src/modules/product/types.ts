@@ -14,13 +14,11 @@ export type Product = InferSelectModel<typeof products>;
 export type Inventory = InferSelectModel<typeof inventory>;
 export type Media = InferSelectModel<typeof mediaTable>;
 export type Meta = InferSelectModel<typeof metaTable>;
-export type ProductImage = InferSelectModel<typeof productImages>;
+export type ProductImage = InferSelectModel<typeof productImages> & { media: Media | null };
 
 export type ProductQueryResult = InferSelectModel<typeof products> & {
   reviews?: Review[];
-  images: (ProductImage & {
-    media: Media | null;
-  })[];
+  images: ProductImage[];
   meta?: Meta | null;
   inventory: Inventory;
 };

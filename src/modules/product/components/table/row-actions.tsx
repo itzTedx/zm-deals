@@ -54,6 +54,11 @@ export function RowActions({ data, item }: { data: ProductQueryResult[]; item: P
                 Edit
               </Link>
             </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link className="w-full" href={`/${item.slug}`} target="_blank">
+                View live product
+              </Link>
+            </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem

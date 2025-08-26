@@ -70,10 +70,7 @@ export default async function ProductPage({ params }: { params: Params }) {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <ImageCarousel
-            images={[{ url: res.image }, ...res.images.map((image) => ({ url: image.media?.url ?? "" }))]}
-            thumbPosition="bottom"
-          />
+          <ImageCarousel images={res.images} thumbPosition="bottom" />
           <div className="mt-4 hidden space-y-2 md:block">
             <h2 className="font-medium text-gray-500 text-sm">Product Overview</h2>
             <p className="leading-relaxed">{res.description}</p>

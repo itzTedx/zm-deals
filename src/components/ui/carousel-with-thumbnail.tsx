@@ -11,6 +11,7 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { Button } from "@/components/ui/button";
 
 import { cn } from "@/lib/utils";
+import { Media, ProductImage } from "@/modules/product/types";
 
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "./dialog";
 
@@ -19,6 +20,7 @@ type ThumbPropType = {
   index: number;
   onClick: () => void;
   imgUrl: string;
+  blurDataURL?: string;
   title?: string;
 };
 
@@ -40,7 +42,7 @@ const getAspectRatioClass = (ratio?: string) => {
 };
 
 const ImageContainer: React.FC<{
-  image: { url: string; title?: string };
+  image: Media | null;
   alt: string;
   fit?: "cover" | "contain" | "fill";
   aspectRatio?: string;
@@ -54,7 +56,7 @@ const ImageContainer: React.FC<{
         <DialogTrigger asChild>
           <div className={"cursor-pointer"}>
             <Image
-              alt={image.title || alt}
+              alt={image?.alt ?? alt}
               className={cn(
                 "absolute inset-0 h-full w-full",
                 fit === "contain" && "object-contain",
@@ -64,14 +66,14 @@ const ImageContainer: React.FC<{
               )}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              src={image.url}
+              src={image?.url ?? ""}
             />
           </div>
         </DialogTrigger>
 
         <DialogContent className="lg:max-w-fit" showCloseButton={false}>
-          <DialogTitle className="sr-only">{image.title || "Image"}</DialogTitle>
-          <DialogDescription className="sr-only">{image.title || "Image"}</DialogDescription>
+          <DialogTitle className="sr-only">{image?.alt ?? "Image"}</DialogTitle>
+          <DialogDescription className="sr-only">{image?.alt ?? "Image"}</DialogDescription>
 
           <div>
             <TransformWrapper initialPositionX={0} initialPositionY={0} initialScale={1}>
@@ -79,11 +81,13 @@ const ImageContainer: React.FC<{
                 <>
                   <TransformComponent>
                     <Image
-                      alt={image.title || "Full size"}
+                      alt={image?.alt ?? "Full size"}
+                      blurDataURL={image?.blurData ?? undefined}
                       className={cn("max-h-[90vh] max-w-[90vw] object-contain", classNameImage)}
                       height={800}
+                      placeholder={image?.blurData ? "blur" : "empty"}
                       sizes="(max-width: 768px) 90vw, (max-width: 1200px) 80vw, 70vw"
-                      src={image.url}
+                      src={image?.url ?? ""}
                       width={1200}
                     />
                   </TransformComponent>
@@ -124,7 +128,7 @@ const ImageContainer: React.FC<{
 };
 
 const Thumb: React.FC<ThumbPropType> = (props) => {
-  const { imgUrl, index, onClick, selected, title } = props;
+  const { imgUrl, index, onClick, selected, title, blurDataURL } = props;
 
   return (
     <div
@@ -151,8 +155,10 @@ const Thumb: React.FC<ThumbPropType> = (props) => {
         >
           <Image
             alt={title || `Thumbnail ${index + 1}`}
+            blurDataURL={blurDataURL ?? undefined}
             className={cn("h-full w-full bg-card object-contain")}
             fill
+            placeholder={blurDataURL ? "blur" : "empty"}
             sizes="(max-width: 768px) 20vw, 15vw"
             src={imgUrl}
           />
@@ -169,7 +175,7 @@ type CarouselImage = {
 
 type CarouselImages = CarouselImage[];
 interface ImageCarousel_BasicProps extends React.HTMLAttributes<HTMLDivElement> {
-  images: CarouselImages;
+  images: ProductImage[];
   opts?: EmblaOptionsType;
   showCarouselControls?: boolean;
   showImageControls?: boolean;
@@ -332,12 +338,13 @@ const ImageCarousel: React.FC<ImageCarousel_BasicProps> = ({
             <div className="thumbs-horizontal group -ml-3 flex">
               {images?.map((image, index) => (
                 <Thumb
-                  imgUrl={image.url}
+                  blurDataURL={image.media?.blurData ?? undefined}
+                  imgUrl={image.media?.url ?? ""}
                   index={index}
                   key={index}
                   onClick={() => onThumbClick(index)}
                   selected={index === currentIndex}
-                  title={image.title}
+                  title={image.media?.alt ?? ""}
                 />
               ))}
             </div>
@@ -367,7 +374,7 @@ const ImageCarousel: React.FC<ImageCarousel_BasicProps> = ({
                   classNameImage={classNameImage}
                   classNameThumbnail={classNameThumbnail}
                   fit={imageFit}
-                  image={image}
+                  image={image.media}
                   showImageControls={showImageControls}
                 />
               </div>
@@ -398,12 +405,12 @@ const ImageCarousel: React.FC<ImageCarousel_BasicProps> = ({
             >
               {images?.map((image, index) => (
                 <Thumb
-                  imgUrl={image.url}
+                  imgUrl={image.media?.url ?? ""}
                   index={index}
                   key={index}
                   onClick={() => onThumbClick(index)}
                   selected={index === currentIndex}
-                  title={image.title}
+                  title={image.media?.alt ?? ""}
                 />
               ))}
             </div>
