@@ -80,7 +80,7 @@ export function CartSheet() {
 
   return (
     <Sheet onOpenChange={setIsOpen} open={isOpen}>
-      <SheetContent className="w-full max-w-[22rem] gap-0 sm:max-w-md">
+      <SheetContent className="w-full max-w-[21rem] gap-0 sm:max-w-md">
         <SheetHeader className="border-b">
           <SheetTitle className="flex items-center gap-3">
             <span className="font-moret text-xl">Shopping Cart</span>

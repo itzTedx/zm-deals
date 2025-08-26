@@ -11,11 +11,12 @@ import { cn } from "@/lib/utils";
 const StarRatingCells = React.forwardRef<
   React.ComponentRef<typeof ToggleGroupPrimitive.Root>,
   React.ComponentProps<typeof ToggleGroupPrimitive.Root>
->(({ className, ...rest }, forwardedRef) => {
+>(({ className, type, value, defaultValue, onValueChange, ...rest }, forwardedRef) => {
   return (
     <ToggleGroupPrimitive.Root
       className={cn("flex w-full max-w-[360px] gap-2", className)}
       ref={forwardedRef}
+      type="single"
       {...rest}
     >
       {Array.from({ length: 5 }, (_, i) => (

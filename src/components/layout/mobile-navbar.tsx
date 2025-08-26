@@ -4,7 +4,11 @@ import { IconDiamond } from "@/assets/icons/diamonds";
 import { IconCategories, IconHome } from "@/assets/icons/layout";
 import { IconUser } from "@/assets/icons/user";
 
-export const MobileNavbar = () => {
+import { getSession } from "@/lib/auth/server";
+
+export const MobileNavbar = async () => {
+  const session = await getSession();
+  const isLoggedIn = !!session?.user.isAnonymous;
   return (
     <nav className="fixed right-0 bottom-0 left-0 z-50 border-t bg-card md:hidden">
       <ul className="flex items-center justify-between gap-2">
@@ -27,10 +31,17 @@ export const MobileNavbar = () => {
           </Link>
         </li>
         <li>
-          <Link className="flex flex-col items-center px-6 py-2.5 text-muted-foreground text-sm" href="/profile">
-            <IconUser className="size-5 text-gray-800" />
-            Account
-          </Link>
+          {isLoggedIn ? (
+            <Link className="flex flex-col items-center px-6 py-2.5 text-muted-foreground text-sm" href="/profile">
+              <IconUser className="size-5 text-gray-800" />
+              Account
+            </Link>
+          ) : (
+            <Link className="flex flex-col items-center px-6 py-2.5 text-muted-foreground text-sm" href="/auth/login">
+              <IconUser className="size-5 text-gray-800" />
+              Login
+            </Link>
+          )}
         </li>
       </ul>
     </nav>

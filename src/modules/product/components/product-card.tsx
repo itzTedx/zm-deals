@@ -57,7 +57,7 @@ export const ProductCard = ({ data }: Props) => {
 
                 <div className="size-0.5 rounded-full bg-gray-300 sm:size-1" />
 
-                <Badge className="text-xs" size="sm" variant="success">
+                <Badge className="text-xs max-sm:hidden" size="sm" variant="success">
                   - {calculateDiscount(Number(data.compareAtPrice), Number(data.price))}%
                 </Badge>
               </>
