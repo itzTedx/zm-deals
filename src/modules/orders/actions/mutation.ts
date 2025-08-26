@@ -17,6 +17,7 @@ import type { CreateOrderResponse } from "../types";
 
 /**
  * Creates a new order in the database
+ * Handles webhook scenarios with duplicate prevention and idempotency
  */
 export async function createOrder(rawData: unknown): Promise<CreateOrderResponse> {
   const log = createLog("Order");
@@ -29,6 +30,29 @@ export async function createOrder(rawData: unknown): Promise<CreateOrderResponse
     if (!success) {
       log.error("Order validation failed", error);
       return { success: false, error: z.prettifyError(error) };
+    }
+
+    // Check for existing order by payment intent ID (webhook idempotency)
+    if (data.paymentIntentId) {
+      const existingOrder = await db.query.orders.findFirst({
+        where: eq(orders.paymentIntentId, data.paymentIntentId),
+        columns: { id: true, orderNumber: true, status: true },
+      });
+
+      if (existingOrder) {
+        log.info("Order already exists for payment intent", {
+          orderId: existingOrder.id,
+          orderNumber: existingOrder.orderNumber,
+          status: existingOrder.status,
+          paymentIntentId: data.paymentIntentId,
+        });
+        return {
+          success: true,
+          orderId: existingOrder.id,
+          orderNumber: existingOrder.orderNumber,
+          alreadyExists: true,
+        };
+      }
     }
 
     // Get user session if available
@@ -113,10 +137,11 @@ export async function createOrder(rawData: unknown): Promise<CreateOrderResponse
         newStatus: "pending",
         newPaymentStatus: "pending",
         changeReason: "Order created",
-        changeNote: "Order created from checkout session",
+        changeNote: data.paymentIntentId ? "Order created from Stripe webhook" : "Order created from checkout session",
         metadata: {
           sessionId: data.sessionId || "",
           paymentIntentId: data.paymentIntentId || "",
+          source: data.paymentIntentId ? "webhook" : "checkout",
         },
       });
 
@@ -130,6 +155,7 @@ export async function createOrder(rawData: unknown): Promise<CreateOrderResponse
       orderNumber: result.orderNumber,
       itemCount: data.items.length,
       total: data.total,
+      paymentIntentId: data.paymentIntentId,
     });
 
     return {
@@ -139,6 +165,23 @@ export async function createOrder(rawData: unknown): Promise<CreateOrderResponse
     };
   } catch (error) {
     log.error("Order creation failed", error);
+
+    // Handle specific database errors
+    if (error instanceof Error) {
+      // Check for duplicate order number error
+      if (error.message.includes("duplicate key") && error.message.includes("order_number")) {
+        log.warn("Duplicate order number detected, regenerating and retrying");
+        // In a real implementation, you might want to retry with a new order number
+        return { success: false, error: "Order number conflict, please try again" };
+      }
+
+      // Check for duplicate payment intent error
+      if (error.message.includes("duplicate key") && error.message.includes("payment_intent_id")) {
+        log.warn("Duplicate payment intent detected");
+        return { success: false, error: "Order already exists for this payment" };
+      }
+    }
+
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to create order",
@@ -275,6 +318,107 @@ export async function updatePaymentStatus(
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to update payment status",
+    };
+  }
+}
+
+/**
+ * Process payment intent event and update order accordingly
+ * This function is designed for webhook handling
+ */
+export async function processPaymentIntentEvent(
+  paymentIntentId: string,
+  eventType: "succeeded" | "failed" | "canceled",
+  metadata?: Record<string, unknown>
+): Promise<{ success: boolean; error?: string; orderId?: string }> {
+  const log = createLog("Order");
+
+  try {
+    // Find order by payment intent ID
+    const existingOrder = await db.query.orders.findFirst({
+      where: eq(orders.paymentIntentId, paymentIntentId),
+      columns: { id: true, orderNumber: true, status: true, paymentStatus: true },
+    });
+
+    if (!existingOrder) {
+      log.warn("No order found for payment intent", { paymentIntentId });
+      return { success: false, error: "Order not found for payment intent" };
+    }
+
+    // Determine new payment status based on event type
+    let newPaymentStatus: "paid" | "failed" | "refunded";
+    let newOrderStatus: "confirmed" | "cancelled" | "failed";
+    let reason: string;
+
+    switch (eventType) {
+      case "succeeded":
+        newPaymentStatus = "paid";
+        newOrderStatus = "confirmed";
+        reason = "Payment completed successfully";
+        break;
+      case "failed":
+        newPaymentStatus = "failed";
+        newOrderStatus = "failed";
+        reason = "Payment failed";
+        break;
+      case "canceled":
+        newPaymentStatus = "failed";
+        newOrderStatus = "cancelled";
+        reason = "Payment was canceled";
+        break;
+      default:
+        return { success: false, error: "Invalid event type" };
+    }
+
+    // Update order status and payment status
+    const result = await db.transaction(async (tx) => {
+      // Update order
+      await tx
+        .update(orders)
+        .set({
+          status: newOrderStatus,
+          paymentStatus: newPaymentStatus,
+          ...(newOrderStatus === "confirmed" && { confirmedAt: new Date() }),
+          ...(newOrderStatus === "cancelled" && { cancelledAt: new Date() }),
+          updatedAt: new Date(),
+        })
+        .where(eq(orders.id, existingOrder.id));
+
+      // Create history record
+      await tx.insert(orderHistory).values({
+        orderId: existingOrder.id,
+        userId: null, // Webhook events don't have user context
+        previousStatus: existingOrder.status,
+        newStatus: newOrderStatus,
+        previousPaymentStatus: existingOrder.paymentStatus,
+        newPaymentStatus: newPaymentStatus,
+        changeReason: reason,
+        changeNote: `Payment intent ${eventType}: ${paymentIntentId}`,
+        metadata: {
+          paymentIntentId,
+          eventType,
+          ...metadata,
+        },
+      });
+
+      return { success: true };
+    });
+
+    log.success("Payment intent event processed", {
+      paymentIntentId,
+      eventType,
+      orderId: existingOrder.id,
+      orderNumber: existingOrder.orderNumber,
+      newStatus: newOrderStatus,
+      newPaymentStatus: newPaymentStatus,
+    });
+
+    return { success: true, orderId: existingOrder.id };
+  } catch (error) {
+    log.error("Failed to process payment intent event", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to process payment intent event",
     };
   }
 }

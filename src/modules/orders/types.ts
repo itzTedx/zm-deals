@@ -27,6 +27,7 @@ export interface CreateOrderResponse {
   orderId?: string;
   orderNumber?: string;
   error?: string;
+  alreadyExists?: boolean;
 }
 
 // Type for orders with items relation

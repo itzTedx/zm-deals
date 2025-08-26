@@ -14,6 +14,40 @@ import { UserOrdersResult } from "../types";
 const log = createLog("Order Query");
 
 /**
+ * Get order by payment intent ID (for webhook handling)
+ */
+export async function getOrderByPaymentIntentId(paymentIntentId: string) {
+  try {
+    const order = await db.query.orders.findFirst({
+      where: eq(orders.paymentIntentId, paymentIntentId),
+      with: {
+        items: {
+          with: {
+            product: {
+              columns: {
+                id: true,
+                title: true,
+                slug: true,
+                image: true,
+              },
+            },
+          },
+        },
+        history: {
+          orderBy: [desc(orderHistory.createdAt)],
+          limit: 10,
+        },
+      },
+    });
+
+    return { success: true, order };
+  } catch (error) {
+    log.error("Failed to get order by payment intent ID", error);
+    return { success: false, error: "Failed to fetch order" };
+  }
+}
+
+/**
  * Get order by session ID (from Stripe checkout session)
  */
 export async function getOrderBySessionId(sessionId: string) {
