@@ -1,12 +1,9 @@
 import Link from "next/link";
 
 import { IconChevronRight } from "@/assets/icons/chevron";
-import { IconDiamond } from "@/assets/icons/diamonds";
 import { IconHeart } from "@/assets/icons/heart";
-import { IconMenu } from "@/assets/icons/menu";
 import { IconSearch } from "@/assets/icons/search";
-import { IconUser } from "@/assets/icons/user";
-import { LogoIcon, LogoWordMark } from "@/assets/logo";
+import { LogoIcon } from "@/assets/logo";
 
 import { NAV_LINKS } from "@/data/constants";
 import { getSession } from "@/lib/auth/server";
@@ -14,7 +11,6 @@ import { CartIcon } from "@/modules/product/components/ui/cart-icon";
 
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
 import UserMenu from "./user-menu";
 
 export const Navbar = async () => {
@@ -28,7 +24,6 @@ export const Navbar = async () => {
           <div className="flex items-center gap-2 md:gap-6">
             <Link aria-label="go home" className="flex items-center gap-2" href="/">
               <LogoIcon />
-              <LogoWordMark className="md:hidden" />
             </Link>
             <div className="hidden size-0.5 rounded-full bg-brand-100 md:block" />
             {/* Desktop Navigation */}
@@ -85,7 +80,7 @@ export const Navbar = async () => {
             <CartIcon />
 
             {/* Mobile Sheet Menu */}
-            <Sheet>
+            {/* <Sheet>
               <SheetTrigger asChild>
                 <Button className="md:hidden" size="icon">
                   <IconMenu className="size-5" />
@@ -98,7 +93,6 @@ export const Navbar = async () => {
                   <SheetTitle className="sr-only text-left">Menu</SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-6 p-6 pt-0">
-                  {/* Mobile Navigation */}
                   <ul className="flex flex-col gap-3">
                     {NAV_LINKS.map((nav) => (
                       <li key={nav.href}>
@@ -126,7 +120,7 @@ export const Navbar = async () => {
                   </div>
                 </div>
               </SheetContent>
-            </Sheet>
+            </Sheet> */}
           </div>
           <div className="-translate-x-1/2 pointer-events-none absolute bottom-0 left-0 size-2.5 translate-y-1/2 rounded border bg-card" />
           <div className="pointer-events-none absolute right-0 bottom-0 size-2.5 translate-x-1/2 translate-y-1/2 rounded border bg-card" />

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { Footer } from "@/components/layout/footer";
 import { LoginPromptPopup } from "@/components/layout/login-prompt-popup";
+import { MobileNavbar } from "@/components/layout/mobile-navbar";
 import { Navbar } from "@/components/layout/navbar";
 
 import { AnonymousCartProvider } from "@/modules/cart/components/anonymous-cart-provider";
@@ -24,6 +25,7 @@ export default function RootLayout({
       <Footer />
       <CartSheet />
       <LoginPromptPopup />
+      <MobileNavbar />
     </AnonymousCartProvider>
   );
 }

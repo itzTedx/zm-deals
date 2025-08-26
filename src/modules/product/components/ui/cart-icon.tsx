@@ -12,12 +12,7 @@ export const CartIcon = () => {
   const [itemCount] = useAtom(cartItemCountAtom);
   const [, setIsCartOpen] = useAtom(isCartOpenAtom);
   return (
-    <Button
-      className="relative hidden sm:inline-flex"
-      onClick={() => setIsCartOpen(true)}
-      size="icon"
-      variant="outline"
-    >
+    <Button className="relative" onClick={() => setIsCartOpen(true)} size="icon" variant="outline">
       <IconShoppingBag2 className="size-5 text-muted-foreground hover:text-brand-500" />
 
       {itemCount > 0 && (
