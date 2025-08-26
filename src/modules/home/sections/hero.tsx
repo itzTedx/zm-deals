@@ -16,14 +16,13 @@ import { Background } from "@/assets/background";
 import { IconCurrency } from "@/assets/icons/currency";
 import { IconHourglass } from "@/assets/icons/hourglass";
 
-import { PRODUCT } from "@/data/product";
 import { calculateDiscount } from "@/lib/utils";
 import { getFeaturedProducts } from "@/modules/product/actions/query";
 import { AnimatedCountdown } from "@/modules/product/components/ends-in-counter";
 
 export const Hero = async () => {
   const product = await getFeaturedProducts();
-  const { title, overview, price, originalPrice, featuredImage, slug, endsIn } = PRODUCT;
+
   return (
     <section>
       <div className="container relative max-w-7xl gap-4 border-x pb-9">
@@ -49,7 +48,9 @@ export const Hero = async () => {
                     )}
                     <div className="space-y-2 sm:space-y-3">
                       <h1 className="font-bold leading-tight sm:text-2xl md:text-3xl">{product.title}</h1>
-                      <p className="text-muted-foreground text-xs sm:text-sm md:text-base">{product.overview}</p>
+                      <p className="hidden text-muted-foreground text-xs sm:text-sm md:block md:text-base">
+                        {product.overview}
+                      </p>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2 sm:gap-3">
@@ -76,7 +77,7 @@ export const Hero = async () => {
                   </div>
                   <div className="relative flex justify-center md:justify-end">
                     <Image
-                      alt={title}
+                      alt={product.title}
                       className="z-10 w-full max-w-xs sm:max-w-sm md:max-w-none"
                       height={500}
                       src={product.image}
@@ -94,7 +95,7 @@ export const Hero = async () => {
                   <Image alt="hero" className="object-cover" fill src="/images/hero-banner.webp" />
                 </div>
               </CarouselItem>
-              <CarouselItem className="basis-1/1 rounded-2xl py-5 pl-4 lg:basis-2/3">
+              {/* <CarouselItem className="basis-1/1 rounded-2xl py-5 pl-4 lg:basis-2/3">
                 <div className="grid grid-cols-2 items-center gap-4 overflow-hidden rounded-2xl bg-card p-6 shadow-lg sm:gap-8 md:p-12">
                   <div className="relative z-10 space-y-2 sm:space-y-4">
                     <Badge className="pl-2 font-normal" variant="default">
@@ -139,7 +140,7 @@ export const Hero = async () => {
                     <Background className="-translate-1/4 absolute top-0 left-0" />
                   </div>
                 </div>
-              </CarouselItem>
+              </CarouselItem> */}
             </CarouselContent>
 
             <CarouselPrevious className="-translate-x-1/2 left-0 size-8" variant="outline" />
@@ -150,8 +151,8 @@ export const Hero = async () => {
         </div>
       </div>
       <div className="container max-w-7xl border-x pb-16">
-        <div className="relative aspect-16/2 w-full overflow-clip rounded-2xl">
-          <Image alt="hero" className="object-cover" fill src="/images/trust-banner.webp" />
+        <div className="relative aspect-16/3 w-full md:aspect-16/2">
+          <Image alt="hero" className="rounded-lg object-cover md:rounded-2xl" fill src="/images/trust-banner.webp" />
         </div>
       </div>
     </section>

@@ -33,7 +33,7 @@ export const Deals = async () => {
           link="/deals"
           title="This Week's Hot Picks"
         />
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-3">
+        <div className="mt-6 grid grid-cols-2 gap-2 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-3">
           {products.map((product) => (
             <ProductCard data={product} key={product.id} />
           ))}
@@ -66,7 +66,7 @@ export const Deals = async () => {
             link="/deals"
             title="Last Minute Deals"
           />
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-3">
+          <div className="mt-6 grid grid-cols-2 gap-2 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-3">
             {getLastMinuteDeals(products, 24).map((product) => (
               <ProductCard data={product} key={product.id} />
             ))}
@@ -98,7 +98,7 @@ export const Deals = async () => {
           title="Save More with Combos"
         />
 
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-3">
+        <div className="mt-6 grid grid-cols-2 gap-2 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-3">
           {products
             .filter((product) => product.combo)
             .map((product) => (
