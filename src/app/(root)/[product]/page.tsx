@@ -165,24 +165,24 @@ export default async function ProductPage({ params }: Props) {
         </div>
 
         {/* Product Details Section */}
-        <div className="sticky top-24 h-fit space-y-4 py-2 md:col-span-2 md:space-y-6 md:py-6">
+        <div className="sticky top-24 h-fit space-y-4 py-2 md:col-span-2 md:space-y-5 md:py-6">
           {/* Countdown Banner */}
           {res.endsIn && <EndsInCounter endsIn={res.endsIn} />}
 
           {/* Product Title */}
-          <div className="grid grid-cols-[1fr_auto] items-center gap-2">
-            <h1 className="font-medium text-2xl sm:text-3xl">{res.title}</h1>
-            <ShareCard
-              description={`Check out this amazing deal: ${res.title} - Save ${calculateDiscount(Number(res.compareAtPrice), Number(res.price))}% off!`}
-              link={`${env.BASE_URL}/${res.slug}`}
-              title={res.title}
-            />
+          <div className="space-y-1">
+            <div className="grid grid-cols-[1fr_auto] items-center gap-2">
+              <h1 className="font-medium text-2xl sm:text-3xl">{res.title}</h1>
+              <ShareCard
+                description={`Check out this amazing deal: ${res.title} - Save ${calculateDiscount(Number(res.compareAtPrice), Number(res.price))}% off!`}
+                link={`${env.BASE_URL}/${res.slug}`}
+                title={res.title}
+              />
+            </div>
+
+            <p className="text-gray-600 text-sm leading-relaxed">{res.overview}</p>
           </div>
 
-          {/* Product Description */}
-          <div className="space-y-2">
-            <p className="text-base text-gray-500 leading-relaxed">{res.overview}</p>
-          </div>
           {/* Pricing Section */}
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <p className="relative flex items-center gap-1 font-bold text-2xl text-brand-600 normal-nums">
@@ -268,18 +268,15 @@ export default async function ProductPage({ params }: Props) {
                         containScroll: "trimSnaps",
                       }}
                     >
-                      <CarouselContent className="-ml-2 md:-ml-4">
-                        <CarouselItem className="basis-auto pl-2 md:pl-4">
+                      <CarouselContent className="-ml-2">
+                        <CarouselItem className="basis-auto pl-2">
                           <CheckboxBadge className="select-none">Free Returns</CheckboxBadge>
                         </CarouselItem>
-                        <CarouselItem className="basis-auto pl-2 md:pl-4">
+                        <CarouselItem className="basis-auto pl-2">
                           <CheckboxBadge className="select-none">Return if item damaged</CheckboxBadge>
                         </CarouselItem>
-                        <CarouselItem className="basis-auto pl-2 md:pl-4">
+                        <CarouselItem className="basis-auto pl-2">
                           <CheckboxBadge className="select-none">Cash on Delivery</CheckboxBadge>
-                        </CarouselItem>
-                        <CarouselItem className="basis-auto pl-2 md:pl-4">
-                          <CheckboxBadge className="select-none">Return Policy</CheckboxBadge>
                         </CarouselItem>
                       </CarouselContent>
                     </Carousel>
@@ -288,21 +285,22 @@ export default async function ProductPage({ params }: Props) {
               </BannerContent>
             </Banner>
 
-            <Banner>
+            <Banner variant="success">
               <BannerContent>
                 <BannerIcon>
-                  <IconShield className="size-5 text-gray-500" />
+                  <IconShield className="size-5" />
                 </BannerIcon>
                 <BannerText>
-                  <BannerTitle className="font-medium text-gray-500">Secure Payment</BannerTitle>
+                  <BannerTitle className="font-medium">Secure Payment</BannerTitle>
                   <BannerDescription>
-                    <div className="flex items-center gap-2">
-                      <IconVisaCard className="size-8" />
-                      <IconMasterCard className="size-8" />
-                      <IconApplePay className="size-8" />
-                    </div>
+                    <p className="text-xs">Secured by Stripe</p>
                   </BannerDescription>
                 </BannerText>
+                <div className="flex items-center gap-2">
+                  <IconVisaCard className="size-8" />
+                  <IconMasterCard className="size-8" />
+                  <IconApplePay className="size-8" />
+                </div>
               </BannerContent>
             </Banner>
           </div>

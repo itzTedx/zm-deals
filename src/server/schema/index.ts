@@ -4,5 +4,6 @@ export * from "./categories-schema";
 export * from "./inventory-schema";
 export * from "./media-schema";
 export * from "./meta-schema";
+export * from "./orders-schema";
 export * from "./product-schema";
 export * from "./review-schema";

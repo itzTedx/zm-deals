@@ -16,6 +16,7 @@ import { env } from "../env/server";
 import redis from "../redis";
 import { stripeClient } from "../stripe/client";
 import { PERMISSIONS } from "./constants";
+import { handleCheckoutSessionCompleted, handlePaymentIntentFailed, handlePaymentIntentSucceeded } from "./webhooks";
 
 // Create access control instance
 const ac = createAccessControl(PERMISSIONS);
@@ -74,8 +75,23 @@ export const auth = betterAuth({
       onCustomerCreate: async ({ stripeCustomer, user }) => {
         console.log(`Customer ${stripeCustomer.id} created for user ${user.id}`);
       },
-      onEvent: async ({ request, type }) => {
+      onEvent: async ({ request, type, data }) => {
         console.log(`Event ${type} triggered for user ${request}`);
+
+        // Handle specific events for order management
+        switch (type) {
+          case "checkout.session.completed":
+            await handleCheckoutSessionCompleted(data.object);
+            break;
+          case "payment_intent.succeeded":
+            await handlePaymentIntentSucceeded(data.object);
+            break;
+          case "payment_intent.payment_failed":
+            await handlePaymentIntentFailed(data.object);
+            break;
+          default:
+            console.log(`Unhandled event type: ${type}`);
+        }
       },
     }),
     anonymous({

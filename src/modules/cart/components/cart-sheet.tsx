@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { useAtom } from "jotai";
 import { ShoppingBag, Trash2, X } from "lucide-react";
@@ -13,11 +14,14 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 
 import { useSession } from "@/lib/auth/client";
 
+import { createCartCheckoutSession } from "../../checkout/mutation";
 import { clearCart, removeFromCart } from "../actions/mutation";
 import { cartItemCountAtom, cartTotalAtom, isCartOpenAtom, removeFromCartAtom } from "../atom";
 import { useCartSync } from "../hooks/use-cart-sync";
+import { prepareCartForCheckout, validateCartForCheckout } from "../utils/checkout";
 
 export function CartSheet() {
+  const router = useRouter();
   const { cart, setCart } = useCartSync();
   const [itemCount] = useAtom(cartItemCountAtom);
   const [cartTotal] = useAtom(cartTotalAtom);
@@ -74,6 +78,46 @@ export function CartSheet() {
       } catch (error) {
         console.error("Error clearing cart:", error);
         toast.error("Failed to clear cart");
+      }
+    });
+  };
+
+  const handleCheckout = () => {
+    // Validate cart before checkout
+    const validation = validateCartForCheckout(cart);
+    if (!validation.isValid) {
+      toast.error(validation.error || "Invalid cart data");
+      return;
+    }
+
+    startTransition(async () => {
+      try {
+        // Prepare checkout data using utility function
+        const checkoutData = prepareCartForCheckout(cart);
+
+        if (session) {
+          // Authenticated user
+          const result = await createCartCheckoutSession(checkoutData);
+          if (result.success && result.url) {
+            // Redirect to Stripe checkout
+            // @ts-expect-error - TODO: fix this
+            router.push(result.url);
+          } else {
+            toast.error(result.error || "Failed to create checkout session");
+          }
+        } else {
+          // Anonymous user
+          toast.info("Unauthenticated", {
+            description: "Please login to proceed to checkout",
+            action: {
+              label: "Login",
+              onClick: () => router.push("/login"),
+            },
+          });
+        }
+      } catch (error) {
+        console.error("Error creating checkout session:", error);
+        toast.error("Failed to proceed to checkout");
       }
     });
   };
@@ -153,7 +197,9 @@ export function CartSheet() {
                 </div>
 
                 <div className="space-y-2">
-                  <Button className="w-full">Proceed to Checkout</Button>
+                  <Button className="w-full" disabled={isPending || itemCount === 0} onClick={handleCheckout}>
+                    {isPending ? "Processing..." : "Proceed to Checkout"}
+                  </Button>
                   <Button asChild className="w-full" variant="outline">
                     <Link href="/cart">View Full Cart</Link>
                   </Button>

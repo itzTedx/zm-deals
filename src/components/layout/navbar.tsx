@@ -122,17 +122,10 @@ export const Navbar = async () => {
               </SheetContent>
             </Sheet> */}
           </div>
-          <div className="-translate-x-1/2 pointer-events-none absolute bottom-0 left-0 size-2.5 translate-y-1/2 rounded border bg-card max-sm:hidden" />
-          <div className="pointer-events-none absolute right-0 bottom-0 size-2.5 translate-x-1/2 translate-y-1/2 rounded border bg-card max-sm:hidden" />
-          {/* <div className="-right-1.5 -translate-y-1/2 pointer-events-none absolute top-1/2 size-2.5 rounded border bg-card" />
-          <div className="-left-1.5 -translate-y-1/2 pointer-events-none absolute top-1/2 size-2.5 rounded border bg-card" /> */}
+          {/* <div className="-translate-x-1/2 pointer-events-none absolute bottom-0 left-0 size-2.5 translate-y-1/2 rounded border bg-card max-sm:hidden" />
+          <div className="pointer-events-none absolute right-0 bottom-0 size-2.5 translate-x-1/2 translate-y-1/2 rounded border bg-card max-sm:hidden" /> */}
         </nav>
-
-        {/* <div className="-left-1.5 pointer-events-none absolute top-1/2 hidden size-2.5 translate-y-0.5 rounded border bg-card md:block" />
-        <div className="-right-1.5 pointer-events-none absolute top-1/2 hidden size-2.5 translate-y-0.5 rounded border bg-card md:block" /> */}
       </div>
-
-      {/* <Separator className="absolute top-1/2 left-0 translate-y-1.5" /> */}
     </header>
   );
 };

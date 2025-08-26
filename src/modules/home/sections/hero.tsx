@@ -25,7 +25,7 @@ export const Hero = async () => {
 
   return (
     <section>
-      <div className="container relative max-w-7xl gap-4 border-x pb-9">
+      <div className="container relative max-w-7xl gap-4 pb-9">
         <div className="relative">
           <Carousel
             className="w-full"

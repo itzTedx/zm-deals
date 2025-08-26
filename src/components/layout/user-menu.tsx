@@ -3,6 +3,7 @@
 import Link from "next/link";
 
 import { IconLogout } from "@/assets/icons/auth";
+import { IconPackage } from "@/assets/icons/bag";
 import { IconUser } from "@/assets/icons/user";
 
 import { AuthSession } from "@/lib/auth/server";
@@ -52,8 +53,8 @@ export default function UserMenu({ session }: { session: NonNullable<AuthSession
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            <Link className="flex items-center gap-2" href="/profile">
-              <IconUser aria-hidden="true" className="opacity-60" />
+            <Link className="flex items-center gap-2" href="/account/orders">
+              <IconPackage aria-hidden="true" className="opacity-60" />
               <span>My Orders</span>
             </Link>
           </DropdownMenuItem>
