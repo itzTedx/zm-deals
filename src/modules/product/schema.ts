@@ -34,6 +34,7 @@ export const productSchema = z.object({
   overview: z.string().optional(),
   description: z.string().min(1, { message: "Description is required" }),
   slug: z.string().min(1, { message: "Slug can't be blank" }),
+  categoryId: z.string().optional(),
 
   price: z.number().min(3, { message: "Price must be at least 3 AED" }),
   compareAtPrice: z.number().optional(),

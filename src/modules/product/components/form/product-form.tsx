@@ -14,6 +14,8 @@ import { LoadingSwap } from "@/components/ui/loading-swap";
 import { IconChevronRight } from "@/assets/icons/chevron";
 import { IconProduct } from "@/assets/icons/product";
 
+import { Category } from "@/server/schema";
+
 import { upsertProduct } from "../../actions/mutation";
 import { ProductSchema, productSchema } from "../../schema";
 import { getInitialValues } from "../../utils";
@@ -26,9 +28,10 @@ import { Scheduling } from "./sections/scheduling";
 interface Props {
   initialData: ProductSchema | null;
   isEditMode: boolean;
+  categories: Category[];
 }
 
-export const ProductForm = ({ initialData, isEditMode }: Props) => {
+export const ProductForm = ({ initialData, isEditMode, categories }: Props) => {
   const [isLoading, startTransition] = useTransition();
   const router = useRouter();
 
@@ -91,7 +94,7 @@ export const ProductForm = ({ initialData, isEditMode }: Props) => {
           </div>
           <div className="sticky top-28 h-fit space-y-4">
             <Scheduling />
-            <Classification />
+            <Classification categories={categories} />
           </div>
         </form>
       </Form>

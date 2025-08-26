@@ -3,6 +3,7 @@ import { index, pgEnum, pgTable, text, uniqueIndex, uuid } from "drizzle-orm/pg-
 
 import { createdAt, id, updatedAt } from "./helpers";
 import { mediaTable } from "./media-schema";
+import { products } from "./product-schema";
 
 export const categories = pgTable(
   "categories",
@@ -39,23 +40,21 @@ export const categoryImages = pgTable(
   ]
 );
 
-export const categoryRelation = relations(categories, ({ one }) => ({
-  images: one(categoryImages, {
-    fields: [categories.id],
-    references: [categoryImages.categoryId],
-    relationName: "category-images-relations",
-  }),
+export const categoryRelation = relations(categories, ({ many }) => ({
+  images: many(categoryImages),
+  products: many(products),
 }));
 
 export const categoryImagesRelation = relations(categoryImages, ({ one }) => ({
   category: one(categories, {
     fields: [categoryImages.categoryId],
     references: [categories.id],
-    relationName: "category-images-relations",
   }),
   media: one(mediaTable, {
     fields: [categoryImages.mediaId],
     references: [mediaTable.id],
-    relationName: "category-image-media-relations",
   }),
 }));
+
+export type Category = typeof categories.$inferSelect;
+export type CategoryImage = typeof categoryImages.$inferSelect;

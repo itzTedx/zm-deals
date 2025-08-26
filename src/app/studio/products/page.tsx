@@ -6,7 +6,7 @@ import { SeparatorBox } from "@/components/ui/separator";
 
 import { isAdmin } from "@/lib/auth/permissions";
 import { getCategories } from "@/modules/categories/actions/query";
-import { CategoryModal } from "@/modules/categories/components/model";
+import { CreateButton } from "@/modules/categories/components/create-button";
 import { getProducts } from "@/modules/product/actions/query";
 import { ProductsTable } from "@/modules/product/components/table/data-table";
 
@@ -20,7 +20,7 @@ export default async function ProductsUpsertPage() {
         <div className="flex w-full flex-col gap-4">
           <div className="flex items-center justify-between">
             <h2 className="font-bold text-lg">Categories</h2>
-            <CategoryModal />
+            <CreateButton />
           </div>
           {categories.map((category) => {
             const image = category.images.media;

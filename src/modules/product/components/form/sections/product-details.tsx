@@ -1,12 +1,11 @@
 import { useUploadFiles } from "better-upload/client";
-import { AlertCircle } from "lucide-react";
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { UploadDropzone } from "@/components/ui/upload-dropzone";
+import { UploadDropzoneProgress } from "@/components/ui/upload-dropzone-progress";
 
 import { getImageMetadata } from "@/modules/product/actions/helper";
 import {
@@ -22,7 +21,6 @@ import { ImageManagement } from "./ui/image-management";
 export const ProductDetails = () => {
   const form = useFormContext<ProductSchema>();
   const images = useWatch({ control: form.control, name: "images" }) || [];
-  console.log("Images:", images);
 
   const { fields, append, move } = useFieldArray({
     control: form.control,
@@ -109,26 +107,26 @@ export const ProductDetails = () => {
               <FormLabel>Images</FormLabel>
               <FormControl>
                 <div className="space-y-4">
-                  {images.length < PRODUCT_FILE_MAX_FILES ? (
-                    <UploadDropzone
-                      accept="image/*"
-                      control={control}
-                      description={{
-                        maxFiles: PRODUCT_FILE_MAX_FILES - images.length,
-                        maxFileSize: PRODUCT_FILE_MAX_SIZE.toString(),
-                        fileTypes: PRODUCT_FILE_TYPES.join(", "),
-                      }}
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center rounded-lg border border-dashed p-6">
-                      <div className="text-center">
-                        <AlertCircle className="mx-auto h-8 w-8 text-muted-foreground" />
-                        <p className="mt-2 font-medium text-sm">Maximum images reached</p>
-                        <p className="text-muted-foreground text-xs">Remove an image to upload more</p>
-                      </div>
-                    </div>
-                  )}
-                  <ImageManagement fields={fields} reorder={move} />
+                  <UploadDropzoneProgress
+                    accept="image/*"
+                    control={control}
+                    description={{
+                      maxFiles: PRODUCT_FILE_MAX_FILES - images.length,
+                      maxFileSize: PRODUCT_FILE_MAX_SIZE.toString(),
+                      fileTypes: PRODUCT_FILE_TYPES.join(", "),
+                    }}
+                  />
+                  {/* <UploadDropzone
+                    accept="image/*"
+                    control={control}
+                    description={{
+                      maxFiles: PRODUCT_FILE_MAX_FILES - images.length,
+                      maxFileSize: PRODUCT_FILE_MAX_SIZE.toString(),
+                      fileTypes: PRODUCT_FILE_TYPES.join(", "),
+                    }}
+                  /> */}
+
+                  <ImageManagement control={control} fields={fields} reorder={move} />
                 </div>
               </FormControl>
               <FormMessage />

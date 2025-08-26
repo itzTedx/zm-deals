@@ -12,6 +12,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
+import { categories } from "./categories-schema";
 import { createdAt, id, updatedAt } from "./helpers";
 import { inventory } from "./inventory-schema";
 import { mediaTable } from "./media-schema";
@@ -28,6 +29,7 @@ export const products = pgTable(
     overview: text("overview"),
     description: text("description").notNull(),
     slug: text("slug").notNull().unique(),
+    categoryId: uuid("category_id").references(() => categories.id, { onDelete: "set null" }),
 
     price: decimal("price", { precision: 10, scale: 2 }).notNull(),
     compareAtPrice: decimal("compare_at_price", { precision: 10, scale: 2 }),
@@ -81,6 +83,11 @@ export const productImages = pgTable(
 
 // Product relations
 export const productRelation = relations(products, ({ one, many }) => ({
+  category: one(categories, {
+    fields: [products.categoryId],
+    references: [categories.id],
+    relationName: "product-category-relations",
+  }),
   meta: one(metaTable, {
     fields: [products.metaId],
     references: [metaTable.id],

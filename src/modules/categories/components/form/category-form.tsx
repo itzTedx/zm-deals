@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -143,7 +144,7 @@ export const CategoryForm = ({ initialData, isEdit = false, setModalOpen }: Cate
                 <FormControl>
                   <Textarea
                     className="min-h-32"
-                    placeholder="Category Description (minimum 256 characters)"
+                    placeholder="Category Description (maximum 256 characters)"
                     {...field}
                   />
                 </FormControl>
@@ -162,7 +163,15 @@ export const CategoryForm = ({ initialData, isEdit = false, setModalOpen }: Cate
                 <FormControl>
                   <div>
                     <div className="flex items-center gap-2">
-                      {/* <img alt="Category Thumbnail" className="h-20 w-20 rounded-md object-cover" src={image.url} /> */}
+                      {form.watch("image")?.url && (
+                        <Image
+                          alt="Category Thumbnail"
+                          className="h-20 w-20 rounded-md object-cover"
+                          height={120}
+                          src={form.watch("image")?.url ?? ""}
+                          width={120}
+                        />
+                      )}
                     </div>
 
                     <UploadButton accept={CATEGORY_FILE_TYPES.join(", ")} control={control} />

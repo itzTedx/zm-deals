@@ -53,6 +53,9 @@ export function getInitialValues(): ProductSchema {
     inventory: 0,
     images: [],
     isFeatured: false,
+    categoryId: undefined,
+    isDeliveryFree: true,
+
     endsIn: undefined,
     schedule: undefined,
     meta: {

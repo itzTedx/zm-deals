@@ -12,6 +12,8 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { arrayMove, rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
+import { UploadHookControl } from "better-upload/client";
+import { Plus } from "lucide-react";
 import { FieldArrayWithId, useFormContext } from "react-hook-form";
 
 import { ProductSchema } from "@/modules/product/schema";
@@ -23,9 +25,10 @@ import { useDragState } from "./use-drag-state";
 interface ImageManagementProps {
   fields: FieldArrayWithId<ProductSchema, "images", "id">[];
   reorder: (from: number, to: number) => void;
+  control: UploadHookControl<true>;
 }
 
-export function ImageManagement({ fields, reorder }: ImageManagementProps) {
+export function ImageManagement({ fields, reorder, control }: ImageManagementProps) {
   const form = useFormContext<ProductSchema>();
 
   const { activeId, isDragging, handleDragStart, handleDragEnd } = useDragState();
@@ -110,17 +113,18 @@ export function ImageManagement({ fields, reorder }: ImageManagementProps) {
           isDragging ? "opacity-75" : "opacity-100"
         }`}
         role="region"
-        style={{
-          minHeight: "200px",
-          gridTemplateColumns: "repeat(6, 1fr)",
-          gridTemplateRows: "repeat(2, 1fr)",
-          position: "relative", // Ensure stable positioning
-        }}
       >
         <SortableContext items={sortableItems} strategy={rectSortingStrategy}>
           {fields.map((item, index) => (
             <SortableImageItem index={index} isFirst={index === 0} item={item} key={item.id} />
           ))}
+
+          <button
+            className="flex cursor-pointer items-center justify-center rounded-md border transition-colors hover:bg-muted"
+            type="button"
+          >
+            <Plus className="size-5 text-gray-600" />
+          </button>
         </SortableContext>
       </div>
 
@@ -130,7 +134,7 @@ export function ImageManagement({ fields, reorder }: ImageManagementProps) {
           zIndex: 1000, // Ensure overlay is above everything
         }}
       >
-        {activeItem ? <ImageOverlay isFirst={false} item={activeItem} /> : null}
+        {activeItem ? <ImageOverlay item={activeItem} /> : null}
       </DragOverlay>
 
       {isDragging && (

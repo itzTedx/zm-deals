@@ -1,13 +1,13 @@
 import { SeparatorBox } from "@/components/ui/separator";
 
 import { isAdmin } from "@/lib/auth/permissions";
-import { getCategories } from "@/modules/categories/actions/query";
+import { getCategoriesWithProductCount } from "@/modules/categories/actions/query";
 import { CategoriesTable } from "@/modules/categories/components/categories-table";
 import { CategoryModal } from "@/modules/categories/components/model";
 
 export default async function CategoriesPage() {
   await isAdmin();
-  const categories = await getCategories();
+  const categories = await getCategoriesWithProductCount();
 
   return (
     <div className="flex w-full flex-col gap-5 py-5">

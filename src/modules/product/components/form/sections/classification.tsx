@@ -4,13 +4,28 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 
 import { IconCurrency } from "@/assets/icons/currency";
 
+import { CreateButton } from "@/modules/categories/components/create-button";
 import { ProductSchema } from "@/modules/product/schema";
+import { Category } from "@/server/schema";
 
-export const Classification = () => {
+interface Props {
+  categories: Category[];
+}
+
+export const Classification = ({ categories }: Props) => {
   const form = useFormContext<ProductSchema>();
   const isExpress = form.watch("isDeliveryFree");
 
@@ -20,6 +35,37 @@ export const Classification = () => {
         <CardTitle className="text-sm">Classification</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6 p-4">
+        <FormField
+          control={form.control}
+          name="categoryId"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel>Categories</FormLabel>
+              <Select defaultValue={field.value} onValueChange={field.onChange}>
+                <FormControl>
+                  <div className="flex items-center gap-2">
+                    <SelectTrigger className="w-full ps-2 [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_img]:shrink-0">
+                      <SelectValue placeholder="Choose Category" />
+                    </SelectTrigger>
+
+                    <CreateButton variant="icon" />
+                  </div>
+                </FormControl>
+                <SelectContent className="[&_*[role=option]>span]:start-auto [&_*[role=option]>span]:end-2 [&_*[role=option]>span]:flex [&_*[role=option]>span]:items-center [&_*[role=option]>span]:gap-2 [&_*[role=option]]:ps-2 [&_*[role=option]]:pe-8">
+                  <SelectGroup>
+                    <SelectLabel className="ps-2">Categories</SelectLabel>
+                    {categories?.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id}>
+                        <span className="truncate">{cat.name}</span>
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="isFeatured"
