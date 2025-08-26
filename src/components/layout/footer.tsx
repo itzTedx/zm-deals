@@ -37,7 +37,7 @@ export const Footer = () => {
                 <h3 className="font-medium text-sm sm:text-base">{footer.heading}</h3>
                 <ul className="mt-3 space-y-3 sm:mt-4 sm:space-y-4">
                   {footer.links.map((link) => (
-                    <li className="text-muted-foreground text-xs sm:text-sm" key={link.label}>
+                    <li className="text-muted-foreground text-sm" key={link.label}>
                       <Link href={link.href}>{link.label}</Link>
                     </li>
                   ))}
@@ -47,7 +47,7 @@ export const Footer = () => {
           ))}
         </div>
         <SeparatorBox />
-        <div className="py-8 sm:py-12">
+        <div className="max-sm:-mb-7 py-4 sm:py-12">
           <p className="text-center text-muted-foreground text-xs sm:text-sm">
             © {new Date().getFullYear()} ZM Deals. All rights reserved.
           </p>
