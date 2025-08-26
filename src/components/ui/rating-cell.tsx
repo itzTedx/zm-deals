@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import { ToggleGroup as ToggleGroupPrimitive, type ToggleGroupSingleProps } from "radix-ui";
+import { ToggleGroup as ToggleGroupPrimitive } from "radix-ui";
 
 import { IconStar } from "@/assets/icons/star";
 
@@ -10,13 +10,12 @@ import { cn } from "@/lib/utils";
 
 const StarRatingCells = React.forwardRef<
   React.ComponentRef<typeof ToggleGroupPrimitive.Root>,
-  Omit<ToggleGroupSingleProps, "type">
+  React.ComponentProps<typeof ToggleGroupPrimitive.Root>
 >(({ className, ...rest }, forwardedRef) => {
   return (
     <ToggleGroupPrimitive.Root
       className={cn("flex w-full max-w-[360px] gap-2", className)}
       ref={forwardedRef}
-      type="single"
       {...rest}
     >
       {Array.from({ length: 5 }, (_, i) => (

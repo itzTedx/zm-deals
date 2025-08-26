@@ -79,7 +79,7 @@ export const IconVisaCard = (props: SvgProps) => {
 
 export const IconMasterCard = (props: SvgProps) => {
   return (
-    <svg height="32" viewBox="0 0 32 32" width="32" xmlns="http://www.w3.org/2000/svg">
+    <svg {...props} height="32" viewBox="0 0 32 32" width="32" xmlns="http://www.w3.org/2000/svg">
       <g>
         <rect fill="#141413" height="18" rx="3" ry="3" strokeWidth="0" width="28" x="2" y="7" />
         <path

@@ -36,10 +36,10 @@ export const CategoryForm = ({ initialData, isEdit = false, setModalOpen }: Cate
   const form = useForm<CategorySchema>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
-      name: "",
-      slug: "",
-      description: "",
-      image: undefined,
+      name: initialData?.name ?? "",
+      slug: initialData?.slug ?? "",
+      description: initialData?.description ?? "",
+      image: initialData?.image ?? undefined,
     },
     reValidateMode: "onBlur",
   });

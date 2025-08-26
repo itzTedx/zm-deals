@@ -56,7 +56,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const discount = calculateDiscount(Number(res.compareAtPrice), Number(res.price));
   const productUrl = `${env.BASE_URL}/${res.slug}`;
   const mainImage = res.images[0]?.media?.url || "/default-product-image.jpg";
 

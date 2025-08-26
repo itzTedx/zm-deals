@@ -12,7 +12,6 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { arrayMove, rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
-import { UploadHookControl } from "better-upload/client";
 import { Plus } from "lucide-react";
 import { FieldArrayWithId, useFormContext } from "react-hook-form";
 
@@ -25,10 +24,9 @@ import { useDragState } from "./use-drag-state";
 interface ImageManagementProps {
   fields: FieldArrayWithId<ProductSchema, "images", "id">[];
   reorder: (from: number, to: number) => void;
-  control: UploadHookControl<true>;
 }
 
-export function ImageManagement({ fields, reorder, control }: ImageManagementProps) {
+export function ImageManagement({ fields, reorder }: ImageManagementProps) {
   const form = useFormContext<ProductSchema>();
 
   const { activeId, isDragging, handleDragStart, handleDragEnd } = useDragState();
