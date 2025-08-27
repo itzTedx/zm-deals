@@ -1,7 +1,12 @@
 import { CartCheckoutSchema } from "../../checkout/mutation";
 import { CartItem } from "../types";
 
-export function prepareCartForCheckout(cart: CartItem[]): CartCheckoutSchema {
+export function prepareCartForCheckout(
+  cart: CartItem[],
+  discountAmount = 0,
+  finalTotal?: number,
+  couponCode?: string
+): CartCheckoutSchema {
   const items = cart.map((item) => ({
     productId: item.product.id.toString(),
     quantity: item.quantity,
@@ -18,6 +23,9 @@ export function prepareCartForCheckout(cart: CartItem[]): CartCheckoutSchema {
   return {
     items,
     total,
+    discountAmount,
+    finalTotal: finalTotal || total,
+    couponCode,
   };
 }
 

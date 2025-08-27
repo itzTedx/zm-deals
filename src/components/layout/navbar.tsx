@@ -18,7 +18,6 @@ export const Navbar = async () => {
 
   return (
     <header className="sticky top-0 z-999 h-fit">
-      {/* inset-shadow-[0_1px_12px_5px_oklch(1_0_0)]  */}
       <div className="relative z-999 rounded-b-xl bg-brand-600 text-card shadow-brand-lg">
         <nav className="container relative z-999 mx-auto flex max-w-7xl items-center justify-between gap-4 py-2.5 font-helvetica max-md:justify-between md:gap-8">
           <div className="flex items-center gap-2 md:gap-6">
@@ -78,52 +77,7 @@ export const Navbar = async () => {
               <IconHeart className="size-5 text-muted-foreground hover:text-brand-500" />
             </Button>
             <CartIcon />
-
-            {/* Mobile Sheet Menu */}
-            {/* <Sheet>
-              <SheetTrigger asChild>
-                <Button className="md:hidden" size="icon">
-                  <IconMenu className="size-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent className="w-[300px] sm:w-[400px]" side="right">
-                <SheetHeader className="flex flex-row items-center gap-2 border-b">
-                  <LogoIcon />
-                  <LogoWordMark />
-                  <SheetTitle className="sr-only text-left">Menu</SheetTitle>
-                </SheetHeader>
-                <div className="flex flex-col gap-6 p-6 pt-0">
-                  <ul className="flex flex-col gap-3">
-                    {NAV_LINKS.map((nav) => (
-                      <li key={nav.href}>
-                        <Link
-                          className="block py-2 font-medium text-lg transition-colors hover:text-brand-500"
-                          href={nav.href}
-                        >
-                          {nav.label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="border-t pt-4">
-                    <div className="flex flex-col gap-3">
-                      <Button className="w-full" variant="outline">
-                        <IconUser className="mr-2" />
-                        <span>Sign In</span>
-                      </Button>
-                      <Button className="w-full" size="lg">
-                        <IconDiamond className="mr-2 text-brand-500" />
-                        <span>Claim the Combo Deal</span>
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet> */}
           </div>
-          {/* <div className="-translate-x-1/2 pointer-events-none absolute bottom-0 left-0 size-2.5 translate-y-1/2 rounded border bg-card max-sm:hidden" />
-          <div className="pointer-events-none absolute right-0 bottom-0 size-2.5 translate-x-1/2 translate-y-1/2 rounded border bg-card max-sm:hidden" /> */}
         </nav>
       </div>
     </header>

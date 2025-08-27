@@ -22,6 +22,9 @@ const cartCheckoutSchema = z.object({
     })
   ),
   total: z.number().min(0),
+  discountAmount: z.number().min(0).optional(),
+  finalTotal: z.number().min(0).optional(),
+  couponCode: z.string().optional(),
 });
 
 export type CartCheckoutSchema = z.infer<typeof cartCheckoutSchema>;
@@ -99,11 +102,14 @@ export async function createCartCheckoutSession(checkoutData: CartCheckoutSchema
       throw new Error(error.message);
     }
 
-    const { items, total } = data;
+    const { items, total, discountAmount, finalTotal, couponCode } = data;
 
     if (items.length === 0) {
       throw new Error("Cart is empty");
     }
+
+    // Calculate the amount to charge (use finalTotal if available, otherwise use total)
+    const amountToCharge = finalTotal || total;
 
     const stripeParams: Stripe.Checkout.SessionCreateParams = {
       mode: "payment" as const,
@@ -123,6 +129,9 @@ export async function createCartCheckoutSession(checkoutData: CartCheckoutSchema
         userId: session.user.id,
         itemCount: items.length.toString(),
         total: total.toString(),
+        finalTotal: amountToCharge.toString(),
+        discountAmount: (discountAmount || 0).toString(),
+        couponCode: couponCode || "",
         productIds: JSON.stringify(items.map((item) => item.productId)),
       },
       customer_email: session.user.email,
@@ -161,11 +170,14 @@ export async function createAnonymousCheckoutSession(checkoutData: CartCheckoutS
       throw new Error(error.message);
     }
 
-    const { items, total } = data;
+    const { items, total, discountAmount, finalTotal, couponCode } = data;
 
     if (items.length === 0) {
       throw new Error("Cart is empty");
     }
+
+    // Calculate the amount to charge (use finalTotal if available, otherwise use total)
+    const amountToCharge = finalTotal || total;
 
     const stripeParams: Stripe.Checkout.SessionCreateParams = {
       mode: "payment" as const,
@@ -185,6 +197,9 @@ export async function createAnonymousCheckoutSession(checkoutData: CartCheckoutS
         anonymous: "true",
         itemCount: items.length.toString(),
         total: total.toString(),
+        finalTotal: amountToCharge.toString(),
+        discountAmount: (discountAmount || 0).toString(),
+        couponCode: couponCode || "",
         productIds: JSON.stringify(items.map((item) => item.productId)),
       },
       success_url: `${env.BASE_URL}/checkout?success=1&session_id={CHECKOUT_SESSION_ID}`,

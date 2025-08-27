@@ -72,13 +72,10 @@ export const auth = betterAuth({
       stripeClient,
       stripeWebhookSecret: env.STRIPE_WEBHOOK_SECRET,
       createCustomerOnSignUp: true,
-      onCustomerCreate: async ({ stripeCustomer, user }) => {
-        console.log(`Customer ${stripeCustomer.id} created for user ${user.id}`);
-      },
+
       onEvent: async ({ request, type, data }) => {
         // console.log(`Event ${type} triggered for user ${request}, Data: `, data);
 
-        // Handle specific events for order management
         switch (type) {
           case "checkout.session.completed":
             await handleCheckoutSessionCompleted(data.object, request?.id);

@@ -13,7 +13,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 
 import { useSession } from "@/lib/auth/client";
 
-import { createCartCheckoutSession } from "../../checkout/mutation";
+import { createAnonymousCheckoutSession, createCartCheckoutSession } from "../../checkout/mutation";
 import { clearCart } from "../actions/mutation";
 import { cartItemCountAtom, cartTotalAtom, isCartOpenAtom } from "../atom";
 import { useCartSync } from "../hooks/use-cart-sync";
@@ -75,20 +75,19 @@ export function CartSheet() {
           const result = await createCartCheckoutSession(checkoutData);
           if (result.success && result.url) {
             // Redirect to Stripe checkout
-            // @ts-expect-error - TODO: fix this
-            router.push(result.url);
+            window.location.href = result.url;
           } else {
             toast.error(result.error || "Failed to create checkout session");
           }
         } else {
           // Anonymous user
-          toast.info("Unauthenticated", {
-            description: "Please login to proceed to checkout",
-            action: {
-              label: "Login",
-              onClick: () => router.push("/login"),
-            },
-          });
+          const result = await createAnonymousCheckoutSession(checkoutData);
+          if (result.success && result.url) {
+            // Redirect to Stripe checkout
+            window.location.href = result.url;
+          } else {
+            toast.error(result.error || "Failed to create checkout session");
+          }
         }
       } catch (error) {
         console.error("Error creating checkout session:", error);
