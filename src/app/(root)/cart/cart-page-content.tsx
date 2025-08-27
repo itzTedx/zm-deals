@@ -1,11 +1,11 @@
 import { pluralize } from "@/lib/functions/pluralize";
-import { CartItemCard } from "@/modules/cart/components/cart-item-card";
-import { CartSummary } from "@/modules/cart/components/cart-summary-new";
-import { CartItem } from "@/modules/cart/types";
+import { CartItem } from "@/modules/cart/components/cart-item";
+import { CartSummary } from "@/modules/cart/components/cart-summary";
+import { CartItem as CartItemType } from "@/modules/cart/types";
 
 interface CartPageContentProps {
   initialCartData: {
-    items: CartItem[];
+    items: CartItemType[];
     itemCount: number;
     total: number;
   };
@@ -26,7 +26,7 @@ export function CartPageContent({ initialCartData }: CartPageContentProps) {
 
         <div className="mt-3 w-full space-y-2">
           {cartItems.map((item) => (
-            <CartItemCard item={item} key={item.product.id} />
+            <CartItem item={item} key={item.product.id} />
           ))}
         </div>
       </div>

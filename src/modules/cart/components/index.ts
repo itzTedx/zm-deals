@@ -1,3 +1,5 @@
-export { CartIconServer } from "./cart-icon-server";
-export { CartItemCard } from "./cart-item-card";
-export { CartSummary } from "./cart-summary-new";
+export { CartIcon } from "./cart-icon";
+export { CartItem } from "./cart-item";
+export { CartSummary } from "./cart-summary";
+export { Coupon } from "./coupon";
+export { Deadline } from "./deadline";

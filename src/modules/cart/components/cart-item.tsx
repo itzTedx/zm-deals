@@ -16,14 +16,14 @@ import { IconTrash } from "@/assets/icons/trash";
 import { useSession } from "@/lib/auth/client";
 
 import { removeFromCart } from "../actions/mutation";
-import { CartItem } from "../types";
-import { DeliveryDeadline } from "./delivery-deadline";
+import { CartItem as CartItemType } from "../types";
+import { Deadline } from "./deadline";
 
 interface Props {
-  item: CartItem;
+  item: CartItemType;
 }
 
-export const CartItemCard = ({ item }: Props) => {
+export const CartItem = ({ item }: Props) => {
   const { data: session } = useSession();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -60,7 +60,7 @@ export const CartItemCard = ({ item }: Props) => {
         <div className="flex flex-1 justify-between">
           <div className="space-y-2">
             <h4 className="line-clamp-2 font-medium text-sm">{item.product.title}</h4>
-            <DeliveryDeadline />
+            <Deadline />
             <div className="flex items-center gap-2">
               <Button
                 className="text-muted-foreground"

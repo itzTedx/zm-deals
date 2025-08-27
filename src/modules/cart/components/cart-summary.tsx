@@ -18,7 +18,7 @@ import { createAnonymousCheckoutSession, createCartCheckoutSession } from "../..
 import { clearCart } from "../actions/mutation";
 import { CartItem } from "../types";
 import { prepareCartForCheckout, validateCartForCheckout } from "../utils/checkout";
-import { CouponSection } from "./coupon-section";
+import { Coupon } from "./coupon";
 
 interface CartSummaryProps {
   cartItems: CartItem[];
@@ -114,7 +114,7 @@ export function CartSummary({ cartItems, cartLength, cartTotal }: CartSummaryPro
     <div className="mt-6 h-fit space-y-3 rounded-md border p-4">
       <h3 className="font-semibold text-lg">Order Summary</h3>
 
-      <CouponSection
+      <Coupon
         appliedCoupon={appliedCoupon}
         cartTotal={cartTotal}
         onCouponApplied={handleCouponApplied}

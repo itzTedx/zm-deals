@@ -6,7 +6,7 @@ import { IconShoppingBag2 } from "@/assets/icons/bag";
 
 import { getCartItemCount } from "../actions/query";
 
-export async function CartIconServer() {
+export async function CartIcon() {
   const itemCount = await getCartItemCount();
 
   return (
