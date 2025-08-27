@@ -3,7 +3,11 @@ import type Stripe from "stripe";
 import { createLog } from "@/lib/logging";
 import { stripeClient } from "@/lib/stripe/client";
 import { clearCart } from "@/modules/cart/actions/mutation";
-import { createOrder, processPaymentIntentEvent, updateOrderStatus } from "@/modules/orders/actions/mutation";
+import {
+  confirmOrderAndReserveInventory,
+  createOrder,
+  processPaymentIntentEvent,
+} from "@/modules/orders/actions/mutation";
 import { CreateOrderData } from "@/modules/orders/schema";
 
 const log = createLog("Auth Webhooks");
@@ -106,16 +110,28 @@ export async function handleCheckoutSessionCompleted(
         alreadyExists: orderResult.alreadyExists,
       });
 
-      // Only update status if this is a new order (not already existing)
+      // Only process confirmation if this is a new order (not already existing)
       if (!orderResult.alreadyExists) {
-        // Update order status to confirmed
-        await updateOrderStatus(
+        // Confirm order and reserve inventory
+        const confirmationResult = await confirmOrderAndReserveInventory(
           orderResult.orderId,
-          "confirmed",
-          "paid",
-          "Payment completed",
-          "Order confirmed after successful payment"
+          "Payment completed via Stripe checkout"
         );
+
+        if (confirmationResult.success) {
+          log.success("Order confirmed and inventory reserved", {
+            orderId: orderResult.orderId,
+            orderNumber: orderResult.orderNumber,
+            reservedItems: confirmationResult.reservedItems,
+          });
+        } else {
+          log.error("Failed to confirm order and reserve inventory", {
+            orderId: orderResult.orderId,
+            error: confirmationResult.error,
+          });
+          // Note: In a production system, you might want to handle this failure differently
+          // For example, you could retry the inventory reservation or mark the order for manual review
+        }
 
         // Clear user's cart if they have one
         if (sessionWithItems.metadata?.userId) {
@@ -127,7 +143,7 @@ export async function handleCheckoutSessionCompleted(
           }
         }
       } else {
-        log.info("Order already existed, skipping status update and cart clearing", {
+        log.info("Order already existed, skipping confirmation and cart clearing", {
           orderId: orderResult.orderId,
           orderNumber: orderResult.orderNumber,
         });
@@ -177,28 +193,89 @@ export async function handlePaymentIntentFailed(paymentIntent: Stripe.PaymentInt
   log.info("Processing payment intent failed", { paymentIntentId: paymentIntent.id });
 
   try {
+    // Find the order associated with this payment intent
+    const { cancelOrderAndReleaseInventory } = await import("@/modules/orders/actions/mutation");
+
     const result = await processPaymentIntentEvent(paymentIntent.id, "failed", {
       amount: paymentIntent.amount,
       currency: paymentIntent.currency,
-      lastPaymentError: paymentIntent.last_payment_error?.message,
+      failureReason: paymentIntent.last_payment_error?.message || "Payment failed",
     });
 
-    if (result.success) {
-      log.warn("Payment intent failed and order updated", {
-        paymentIntentId: paymentIntent.id,
-        orderId: result.orderId,
-        amount: paymentIntent.amount / 100,
-        currency: paymentIntent.currency,
-        lastPaymentError: paymentIntent.last_payment_error?.message,
-      });
+    if (result.success && result.orderId) {
+      // Cancel the order and release inventory
+      const cancellationResult = await cancelOrderAndReleaseInventory(
+        result.orderId,
+        `Payment failed: ${paymentIntent.last_payment_error?.message || "Unknown error"}`
+      );
+
+      if (cancellationResult.success) {
+        log.success("Order cancelled and inventory released due to payment failure", {
+          paymentIntentId: paymentIntent.id,
+          orderId: result.orderId,
+          releasedItems: cancellationResult.releasedItems,
+        });
+      } else {
+        log.error("Failed to cancel order after payment failure", {
+          paymentIntentId: paymentIntent.id,
+          orderId: result.orderId,
+          error: cancellationResult.error,
+        });
+      }
     } else {
       log.warn("Failed to process payment intent failed", {
         paymentIntentId: paymentIntent.id,
         error: result.error,
-        lastPaymentError: paymentIntent.last_payment_error?.message,
       });
     }
   } catch (error) {
     log.error("Error processing payment intent failed", error);
+  }
+}
+
+/**
+ * Handle payment intent canceled event
+ */
+export async function handlePaymentIntentCanceled(paymentIntent: Stripe.PaymentIntentCanceledEvent.Data["object"]) {
+  log.info("Processing payment intent canceled", { paymentIntentId: paymentIntent.id });
+
+  try {
+    // Find the order associated with this payment intent
+    const { cancelOrderAndReleaseInventory } = await import("@/modules/orders/actions/mutation");
+
+    const result = await processPaymentIntentEvent(paymentIntent.id, "canceled", {
+      amount: paymentIntent.amount,
+      currency: paymentIntent.currency,
+      cancellationReason: paymentIntent.cancellation_reason || "Payment canceled",
+    });
+
+    if (result.success && result.orderId) {
+      // Cancel the order and release inventory
+      const cancellationResult = await cancelOrderAndReleaseInventory(
+        result.orderId,
+        `Payment canceled: ${paymentIntent.cancellation_reason || "User canceled"}`
+      );
+
+      if (cancellationResult.success) {
+        log.success("Order cancelled and inventory released due to payment cancellation", {
+          paymentIntentId: paymentIntent.id,
+          orderId: result.orderId,
+          releasedItems: cancellationResult.releasedItems,
+        });
+      } else {
+        log.error("Failed to cancel order after payment cancellation", {
+          paymentIntentId: paymentIntent.id,
+          orderId: result.orderId,
+          error: cancellationResult.error,
+        });
+      }
+    } else {
+      log.warn("Failed to process payment intent canceled", {
+        paymentIntentId: paymentIntent.id,
+        error: result.error,
+      });
+    }
+  } catch (error) {
+    log.error("Error processing payment intent canceled", error);
   }
 }

@@ -23,13 +23,14 @@ import { Coupon } from "./coupon";
 interface CartSummaryProps {
   cartItems: CartItem[];
   cartLength: number;
-  cartTotal: number; // Keep for backward compatibility but calculate dynamically
 }
 
-export function CartSummary({ cartItems, cartLength, cartTotal }: CartSummaryProps) {
+export function CartSummary({ cartItems, cartLength }: CartSummaryProps) {
   const { data: session } = useSession();
   const [isPending, startTransition] = useTransition();
-  // const router = useRouter();
+  const [validationErrors, setValidationErrors] = useState<
+    Array<{ productId: string; productTitle: string; requested: number; available: number; error: string }>
+  >([]);
 
   // Calculate total dynamically from cart items
   const calculatedTotal = cartItems.reduce((total, item) => {
@@ -69,33 +70,21 @@ export function CartSummary({ cartItems, cartLength, cartTotal }: CartSummaryPro
     setFinalTotal(currentCartTotal);
   };
 
-  // const handleClearCart = () => {
-  //   if (!session) {
-  //     toast.error("Please sign in to manage your cart");
-  //     return;
-  //   }
+  async function handleCheckout() {
+    // Clear previous validation errors
+    setValidationErrors([]);
 
-  //   startTransition(async () => {
-  //     try {
-  //       const result = await clearCart();
-  //       if (result.success) {
-  //         toast.success("Cart cleared");
-  //         router.refresh();
-  //       } else {
-  //         toast.error(result.error || "Failed to clear cart");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error clearing cart:", error);
-  //       toast.error("Failed to clear cart");
-  //     }
-  //   });
-  // };
-
-  function handleCheckout() {
     // Validate cart before checkout
-    const validation = validateCartForCheckout(cartItems);
+    const validation = await validateCartForCheckout(cartItems);
     if (!validation.isValid) {
-      toast.error(validation.error || "Invalid cart data");
+      if (validation.stockErrors && validation.stockErrors.length > 0) {
+        setValidationErrors(validation.stockErrors);
+        // Show first error as toast
+        const firstError = validation.stockErrors[0];
+        toast.error(`${firstError.productTitle}: ${firstError.error}`);
+      } else {
+        toast.error(validation.error || "Invalid cart data");
+      }
       return;
     }
 
@@ -141,6 +130,20 @@ export function CartSummary({ cartItems, cartLength, cartTotal }: CartSummaryPro
         onCouponRemoved={handleCouponRemoved}
       />
 
+      {/* Display stock validation errors */}
+      {validationErrors.length > 0 && (
+        <div className="rounded-md border border-red-200 bg-red-50 p-3">
+          <h4 className="mb-2 font-medium text-red-800">Stock Issues</h4>
+          <ul className="space-y-1">
+            {validationErrors.map((error, index) => (
+              <li className="text-red-700 text-sm" key={index}>
+                <span className="font-medium">{error.productTitle}:</span> {error.error}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="flex flex-col gap-2">
         <div className="flex justify-between font-medium text-sm">
           <h4 className="text-muted-foreground">
@@ -176,7 +179,11 @@ export function CartSummary({ cartItems, cartLength, cartTotal }: CartSummaryPro
       </div>
 
       <div className="space-y-2">
-        <Button className="w-full" disabled={isPending || cartLength === 0} onClick={handleCheckout}>
+        <Button
+          className="w-full"
+          disabled={isPending || cartLength === 0 || validationErrors.length > 0}
+          onClick={handleCheckout}
+        >
           <LoadingSwap isLoading={isPending}>Checkout</LoadingSwap>
         </Button>
         {/* <Button

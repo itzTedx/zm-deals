@@ -1,5 +1,7 @@
-import { CartCheckoutSchema } from "../../checkout/mutation";
-import { CartItem } from "../types";
+import { validateStockAvailability } from "@/modules/inventory/actions/mutation";
+
+import type { CartCheckoutSchema } from "../../checkout/mutation";
+import type { CartItem } from "../types";
 
 export function prepareCartForCheckout(
   cart: CartItem[],
@@ -8,16 +10,17 @@ export function prepareCartForCheckout(
   couponCode?: string
 ): CartCheckoutSchema {
   const items = cart.map((item) => ({
-    productId: item.product.id.toString(),
+    productId: item.product.id,
     quantity: item.quantity,
     name: item.product.title,
-    description: item.product.description || "",
+    description: item.product.description || undefined,
     price: Number(item.product.price),
-    image: item.product.image,
+    image: item.product.image || undefined,
   }));
 
   const total = cart.reduce((sum, item) => {
-    return sum + Number(item.product.price) * item.quantity;
+    const price = Number(item.product.price);
+    return sum + price * item.quantity;
   }, 0);
 
   return {
@@ -29,11 +32,16 @@ export function prepareCartForCheckout(
   };
 }
 
-export function validateCartForCheckout(cart: CartItem[]): { isValid: boolean; error?: string } {
+export async function validateCartForCheckout(cart: CartItem[]): Promise<{
+  isValid: boolean;
+  error?: string;
+  stockErrors?: Array<{ productId: string; productTitle: string; requested: number; available: number; error: string }>;
+}> {
   if (cart.length === 0) {
     return { isValid: false, error: "Cart is empty" };
   }
 
+  // Basic validation
   for (const item of cart) {
     if (item.quantity <= 0) {
       return { isValid: false, error: "Invalid quantity for item" };
@@ -42,6 +50,22 @@ export function validateCartForCheckout(cart: CartItem[]): { isValid: boolean; e
     if (!item.product.price || Number(item.product.price) <= 0) {
       return { isValid: false, error: "Invalid price for item" };
     }
+  }
+
+  // Inventory validation
+  const stockValidation = await validateStockAvailability(
+    cart.map((item) => ({
+      productId: item.product.id,
+      quantity: item.quantity,
+    }))
+  );
+
+  if (!stockValidation.isValid) {
+    return {
+      isValid: false,
+      error: "Some items are out of stock or have insufficient quantity",
+      stockErrors: stockValidation.errors,
+    };
   }
 
   return { isValid: true };

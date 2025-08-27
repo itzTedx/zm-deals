@@ -1,11 +1,10 @@
 "use server";
 
-import { headers } from "next/headers";
-
 import { and, eq } from "drizzle-orm";
 
-import { auth } from "@/lib/auth/server";
+import { getSession } from "@/lib/auth/server";
 import { getOrCreateSessionId } from "@/lib/utils/session";
+import { validateStockAvailability } from "@/modules/inventory/actions/mutation";
 import { db } from "@/server/db";
 import { cartItems, carts } from "@/server/schema";
 
@@ -13,7 +12,23 @@ import { CartActionResponse } from "../types";
 
 export async function addToCart(productId: string, quantity = 1): Promise<CartActionResponse> {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    // Validate stock availability first
+    const stockValidation = await validateStockAvailability([
+      {
+        productId,
+        quantity,
+      },
+    ]);
+
+    if (!stockValidation.isValid) {
+      const error = stockValidation.errors[0];
+      return {
+        success: false,
+        error: `${error.productTitle}: ${error.error}`,
+      };
+    }
+
+    const session = await getSession();
 
     if (!session) {
       // Handle guest cart
@@ -41,11 +56,27 @@ export async function addToCart(productId: string, quantity = 1): Promise<CartAc
       });
 
       if (existingCartItem) {
-        // Update existing item quantity
+        // Update existing item quantity - validate total quantity
+        const newQuantity = existingCartItem.quantity + quantity;
+        const totalStockValidation = await validateStockAvailability([
+          {
+            productId,
+            quantity: newQuantity,
+          },
+        ]);
+
+        if (!totalStockValidation.isValid) {
+          const error = totalStockValidation.errors[0];
+          return {
+            success: false,
+            error: `${error.productTitle}: ${error.error}`,
+          };
+        }
+
         await db
           .update(cartItems)
           .set({
-            quantity: existingCartItem.quantity + quantity,
+            quantity: newQuantity,
             updatedAt: new Date(),
           })
           .where(eq(cartItems.id, existingCartItem.id));
@@ -83,11 +114,27 @@ export async function addToCart(productId: string, quantity = 1): Promise<CartAc
     });
 
     if (existingCartItem) {
-      // Update existing item quantity
+      // Update existing item quantity - validate total quantity
+      const newQuantity = existingCartItem.quantity + quantity;
+      const totalStockValidation = await validateStockAvailability([
+        {
+          productId,
+          quantity: newQuantity,
+        },
+      ]);
+
+      if (!totalStockValidation.isValid) {
+        const error = totalStockValidation.errors[0];
+        return {
+          success: false,
+          error: `${error.productTitle}: ${error.error}`,
+        };
+      }
+
       await db
         .update(cartItems)
         .set({
-          quantity: existingCartItem.quantity + quantity,
+          quantity: newQuantity,
           updatedAt: new Date(),
         })
         .where(eq(cartItems.id, existingCartItem.id));
@@ -109,7 +156,7 @@ export async function addToCart(productId: string, quantity = 1): Promise<CartAc
 
 export async function updateCartItemQuantity(cartItemId: string, quantity: number): Promise<CartActionResponse> {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getSession();
 
     if (!session) {
       // For guest users, we need to verify the cart item belongs to their session
@@ -145,6 +192,29 @@ export async function updateCartItemQuantity(cartItemId: string, quantity: numbe
       return { success: true };
     }
 
+    // Validate stock availability for the new quantity
+    const cartItem = await db.query.cartItems.findFirst({
+      where: eq(cartItems.id, cartItemId),
+      columns: { productId: true },
+    });
+
+    if (cartItem) {
+      const stockValidation = await validateStockAvailability([
+        {
+          productId: cartItem.productId,
+          quantity,
+        },
+      ]);
+
+      if (!stockValidation.isValid) {
+        const error = stockValidation.errors[0];
+        return {
+          success: false,
+          error: `${error.productTitle}: ${error.error}`,
+        };
+      }
+    }
+
     await db
       .update(cartItems)
       .set({
@@ -162,7 +232,7 @@ export async function updateCartItemQuantity(cartItemId: string, quantity: numbe
 
 export async function removeFromCart(cartItemId: string): Promise<CartActionResponse> {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getSession();
 
     if (!session) {
       // For guest users, we need to verify the cart item belongs to their session
@@ -203,7 +273,7 @@ export async function removeFromCart(cartItemId: string): Promise<CartActionResp
 
 export async function clearCart(): Promise<CartActionResponse> {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getSession();
 
     if (!session) {
       // Handle guest cart
@@ -240,7 +310,7 @@ export async function migrateAnonymousCart(
   anonymousCartItems: Array<{ productId: string; quantity: number }>
 ): Promise<CartActionResponse> {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getSession();
 
     if (!session) {
       throw new Error("User must be authenticated to migrate cart");

@@ -65,7 +65,6 @@ export function Coupon({ appliedCoupon, cartTotal, onCouponApplied, onCouponRemo
 
   const handleRemoveCoupon = () => {
     onCouponRemoved();
-    toast.success("Coupon removed");
   };
 
   return (

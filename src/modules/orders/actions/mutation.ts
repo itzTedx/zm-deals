@@ -8,6 +8,7 @@ import z from "zod";
 import { auth } from "@/lib/auth/server";
 import { createLog } from "@/lib/logging";
 import { formatAddress, generateOrderNumber } from "@/lib/utils/order";
+import { reserveStock } from "@/modules/inventory/actions/mutation";
 import { db } from "@/server/db";
 import { type NewOrder, type NewOrderItem, orderHistory, orderItems, orders } from "@/server/schema/orders-schema";
 import { products } from "@/server/schema/product-schema";
@@ -185,6 +186,185 @@ export async function createOrder(rawData: unknown): Promise<CreateOrderResponse
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to create order",
+    };
+  }
+}
+
+/**
+ * Confirms an order and reserves inventory
+ * This should be called when payment is successful
+ */
+export async function confirmOrderAndReserveInventory(
+  orderId: string,
+  reason?: string
+): Promise<{
+  success: boolean;
+  error?: string;
+  reservedItems?: Array<{ productId: string; quantity: number; newStock: number }>;
+}> {
+  const log = createLog("Order Confirmation");
+
+  try {
+    // Get order details with items
+    const order = await db.query.orders.findFirst({
+      where: eq(orders.id, orderId),
+      with: {
+        items: {
+          columns: {
+            productId: true,
+            quantity: true,
+          },
+        },
+      },
+    });
+
+    if (!order) {
+      return { success: false, error: "Order not found" };
+    }
+
+    if (order.status === "confirmed") {
+      log.info("Order already confirmed", { orderId });
+      return { success: true };
+    }
+
+    // Reserve inventory
+    const reservationResult = await reserveStock(
+      order.items.map((item) => ({
+        productId: item.productId,
+        quantity: item.quantity,
+      })),
+      orderId
+    );
+
+    if (!reservationResult.success) {
+      log.error("Failed to reserve inventory", { error: reservationResult.error });
+      return { success: false, error: reservationResult.error };
+    }
+
+    // Update order status to confirmed
+    const statusResult = await updateOrderStatus(
+      orderId,
+      "confirmed",
+      "paid",
+      reason || "Payment completed",
+      "Order confirmed and inventory reserved"
+    );
+
+    if (!statusResult.success) {
+      log.error("Failed to update order status", { error: statusResult.error });
+      // Note: In a production system, you might want to release the reserved inventory here
+      return { success: false, error: statusResult.error };
+    }
+
+    log.success("Order confirmed and inventory reserved", {
+      orderId,
+      orderNumber: order.orderNumber,
+      reservedItems: reservationResult.reservedItems,
+    });
+
+    return {
+      success: true,
+      reservedItems: reservationResult.reservedItems,
+    };
+  } catch (error) {
+    log.error("Failed to confirm order and reserve inventory", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to confirm order",
+    };
+  }
+}
+
+/**
+ * Cancels an order and releases reserved inventory
+ * This should be called when an order is cancelled or payment fails
+ */
+export async function cancelOrderAndReleaseInventory(
+  orderId: string,
+  reason?: string
+): Promise<{
+  success: boolean;
+  error?: string;
+  releasedItems?: Array<{ productId: string; quantity: number; newStock: number }>;
+}> {
+  const log = createLog("Order Cancellation");
+
+  try {
+    // Get order details with items
+    const order = await db.query.orders.findFirst({
+      where: eq(orders.id, orderId),
+      with: {
+        items: {
+          columns: {
+            productId: true,
+            quantity: true,
+          },
+        },
+      },
+    });
+
+    if (!order) {
+      return { success: false, error: "Order not found" };
+    }
+
+    if (order.status === "cancelled") {
+      log.info("Order already cancelled", { orderId });
+      return { success: true };
+    }
+
+    // Only release inventory if the order was confirmed (inventory was reserved)
+    let releasedItems: Array<{ productId: string; quantity: number; newStock: number }> | undefined;
+
+    if (order.status === "confirmed") {
+      const { releaseStock } = await import("@/modules/inventory/actions/mutation");
+
+      const releaseResult = await releaseStock(
+        order.items.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+        })),
+        orderId
+      );
+
+      if (!releaseResult.success) {
+        log.error("Failed to release inventory", { error: releaseResult.error });
+        // Continue with order cancellation even if inventory release fails
+        // The inventory can be manually adjusted later
+      } else {
+        releasedItems = releaseResult.releasedItems;
+        log.success("Inventory released", { releasedItems });
+      }
+    }
+
+    // Update order status to cancelled
+    const statusResult = await updateOrderStatus(
+      orderId,
+      "cancelled",
+      "failed",
+      reason || "Order cancelled",
+      "Order cancelled and inventory released"
+    );
+
+    if (!statusResult.success) {
+      log.error("Failed to update order status", { error: statusResult.error });
+      return { success: false, error: statusResult.error };
+    }
+
+    log.success("Order cancelled and inventory released", {
+      orderId,
+      orderNumber: order.orderNumber,
+      releasedItems,
+    });
+
+    return {
+      success: true,
+      releasedItems,
+    };
+  } catch (error) {
+    log.error("Failed to cancel order and release inventory", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to cancel order",
     };
   }
 }

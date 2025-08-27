@@ -8,10 +8,10 @@ export default async function CartPage() {
   const { items: cartItems, itemCount } = cartData;
 
   // Calculate total dynamically to ensure it's always up to date
-  const cartTotal = cartItems.reduce((total, item) => {
-    const price = Number(item.product.price);
-    return total + price * item.quantity;
-  }, 0);
+  // const cartTotal = cartItems.reduce((total, item) => {
+  //   const price = Number(item.product.price);
+  //   return total + price * item.quantity;
+  // }, 0);
 
   return (
     <main className="container grid max-w-7xl grid-cols-3 gap-6 py-8">
@@ -30,7 +30,7 @@ export default async function CartPage() {
         </div>
       </div>
 
-      <CartSummary cartItems={cartItems} cartLength={cartItems.length} cartTotal={cartTotal} />
+      <CartSummary cartItems={cartItems} cartLength={cartItems.length} />
     </main>
   );
 }
