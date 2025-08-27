@@ -25,6 +25,7 @@ const cartCheckoutSchema = z.object({
   discountAmount: z.number().min(0).optional(),
   finalTotal: z.number().min(0).optional(),
   couponCode: z.string().optional(),
+  sessionId: z.string().optional(), // Added sessionId to schema
 });
 
 export type CartCheckoutSchema = z.infer<typeof cartCheckoutSchema>;
@@ -170,7 +171,7 @@ export async function createAnonymousCheckoutSession(checkoutData: CartCheckoutS
       throw new Error(error.message);
     }
 
-    const { items, total, discountAmount, finalTotal, couponCode } = data;
+    const { items, total, discountAmount, finalTotal, couponCode, sessionId } = data;
 
     if (items.length === 0) {
       throw new Error("Cart is empty");
@@ -195,6 +196,7 @@ export async function createAnonymousCheckoutSession(checkoutData: CartCheckoutS
       })),
       metadata: {
         anonymous: "true",
+        sessionId: sessionId || "", // Include session ID for guest cart clearing
         itemCount: items.length.toString(),
         total: total.toString(),
         finalTotal: amountToCharge.toString(),

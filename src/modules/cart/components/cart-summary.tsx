@@ -13,6 +13,7 @@ import { IconCurrency } from "@/assets/icons/currency";
 
 import { useSession } from "@/lib/auth/client";
 import { pluralize } from "@/lib/functions/pluralize";
+import { getOrCreateClientSessionId } from "@/lib/utils/client-session";
 import type { CouponValidationResult } from "@/modules/coupons/types";
 
 import { createAnonymousCheckoutSession, createCartCheckoutSession } from "../../checkout/mutation";
@@ -90,8 +91,17 @@ export function CartSummary({ cartItems, cartLength }: CartSummaryProps) {
 
     startTransition(async () => {
       try {
+        // Get session ID for anonymous users
+        const sessionId = !session ? getOrCreateClientSessionId() : undefined;
+
         // Prepare checkout data using utility function with coupon information
-        const checkoutData = prepareCartForCheckout(cartItems, discountAmount, finalTotal, appliedCoupon?.code);
+        const checkoutData = prepareCartForCheckout(
+          cartItems,
+          discountAmount,
+          finalTotal,
+          appliedCoupon?.code,
+          sessionId
+        );
 
         if (session) {
           // Authenticated user

@@ -3,6 +3,7 @@
 import { and, eq } from "drizzle-orm";
 
 import { getSession } from "@/lib/auth/server";
+import { createLog } from "@/lib/logging";
 import { getOrCreateSessionId } from "@/lib/utils/session";
 import { validateStockAvailability } from "@/modules/inventory/actions/mutation";
 import { db } from "@/server/db";
@@ -272,6 +273,8 @@ export async function removeFromCart(cartItemId: string): Promise<CartActionResp
 }
 
 export async function clearCart(): Promise<CartActionResponse> {
+  const log = createLog("Cart");
+
   try {
     const session = await getSession();
 
@@ -285,6 +288,7 @@ export async function clearCart(): Promise<CartActionResponse> {
 
       if (guestCart) {
         await db.delete(cartItems).where(eq(cartItems.cartId, guestCart.id));
+        log.success("Guest cart cleared", { sessionId });
       }
 
       return { success: true };
@@ -297,12 +301,87 @@ export async function clearCart(): Promise<CartActionResponse> {
 
     if (userCart) {
       await db.delete(cartItems).where(eq(cartItems.cartId, userCart.id));
+      log.success("User cart cleared", { userId: session.user.id });
     }
 
     return { success: true };
   } catch (error) {
     console.error("Error clearing cart:", error);
     return { success: false, error: error instanceof Error ? error.message : "Failed to clear cart" };
+  }
+}
+
+/**
+ * Clear cart by user ID - used in webhook context
+ */
+export async function clearCartByUserId(userId: string): Promise<CartActionResponse> {
+  const log = createLog("Cart Webhook");
+
+  try {
+    log.info("Clearing cart for user", { userId });
+
+    // Find user's active cart
+    const userCart = await db.query.carts.findFirst({
+      where: and(eq(carts.userId, userId), eq(carts.isActive, true)),
+    });
+
+    if (userCart) {
+      // Delete all cart items
+      const result = await db.delete(cartItems).where(eq(cartItems.cartId, userCart.id));
+
+      log.success("Cart cleared successfully", {
+        userId,
+        cartId: userCart.id,
+        deletedItems: result.rowCount,
+      });
+
+      return { success: true };
+    }
+    log.info("No active cart found for user", { userId });
+    return { success: true }; // No cart to clear is not an error
+  } catch (error) {
+    log.error("Failed to clear cart by user ID", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to clear cart",
+    };
+  }
+}
+
+/**
+ * Clear cart by session ID - used for guest carts in webhook context
+ */
+export async function clearCartBySessionId(sessionId: string): Promise<CartActionResponse> {
+  const log = createLog("Cart Webhook");
+
+  try {
+    log.info("Clearing guest cart", { sessionId });
+
+    // Find guest's active cart
+    const guestCart = await db.query.carts.findFirst({
+      where: and(eq(carts.sessionId, sessionId), eq(carts.isActive, true)),
+    });
+
+    if (guestCart) {
+      // Delete all cart items
+      const result = await db.delete(cartItems).where(eq(cartItems.cartId, guestCart.id));
+
+      log.success("Guest cart cleared successfully", {
+        sessionId,
+        cartId: guestCart.id,
+        deletedItems: result.rowCount,
+      });
+
+      return { success: true };
+    }
+    log.info("No active guest cart found", { sessionId });
+    return { success: true }; // No cart to clear is not an error
+  } catch (error) {
+    log.error("Failed to clear guest cart by session ID", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to clear cart",
+    };
   }
 }
 

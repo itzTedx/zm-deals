@@ -25,7 +25,9 @@
     "sonner",
     "Swapy",
     "ziron",
-    "upserted"
+    "upserted",
+    "setex",
+    "zmdeals"
   ],
   "[typescriptreact]": {
     "editor.defaultFormatter": "biomejs.biome"

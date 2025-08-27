@@ -7,7 +7,8 @@ export function prepareCartForCheckout(
   cart: CartItem[],
   discountAmount = 0,
   finalTotal?: number,
-  couponCode?: string
+  couponCode?: string,
+  sessionId?: string
 ): CartCheckoutSchema {
   const items = cart.map((item) => ({
     productId: item.product.id,
@@ -29,6 +30,7 @@ export function prepareCartForCheckout(
     discountAmount,
     finalTotal: finalTotal || total,
     couponCode,
+    sessionId,
   };
 }
 

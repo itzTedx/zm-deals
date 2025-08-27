@@ -15,7 +15,7 @@ import { env } from "../env/server";
 import redis from "../redis";
 import { stripeClient } from "../stripe/client";
 import { PERMISSIONS } from "./constants";
-import { handleCheckoutSessionCompleted, handlePaymentIntentFailed, handlePaymentIntentSucceeded } from "./webhooks";
+import { handleCheckoutSessionCompleted, handlePaymentIntentCanceled, handlePaymentIntentFailed } from "./webhooks";
 
 // Create access control instance
 const ac = createAccessControl(PERMISSIONS);
@@ -73,20 +73,32 @@ export const auth = betterAuth({
       createCustomerOnSignUp: true,
 
       onEvent: async ({ request, type, data }) => {
-        // console.log(`Event ${type} triggered for user ${request}, Data: `, data);
+        console.log(`[Webhook] Processing event: ${type}`, {
+          timestamp: new Date().toISOString(),
+        });
 
         switch (type) {
           case "checkout.session.completed":
             await handleCheckoutSessionCompleted(data.object, request?.id);
             break;
-          case "payment_intent.succeeded":
-            await handlePaymentIntentSucceeded(data.object);
-            break;
           case "payment_intent.payment_failed":
             await handlePaymentIntentFailed(data.object);
             break;
+          case "payment_intent.canceled":
+            await handlePaymentIntentCanceled(data.object);
+            break;
+          case "payment_intent.succeeded":
+            // Skip this event as it's handled by checkout.session.completed
+            console.log(`[Webhook] Skipping ${type} - handled by checkout.session.completed`);
+            break;
+          case "charge.succeeded":
+          case "charge.updated":
+          case "mandate.updated":
+            // These are informational events, no action needed
+            console.log(`[Webhook] Informational event: ${type}`);
+            break;
           default:
-            console.log(`Unhandled event type: ${type}`);
+            console.log(`[Webhook] Unhandled event type: ${type}`);
         }
       },
     }),

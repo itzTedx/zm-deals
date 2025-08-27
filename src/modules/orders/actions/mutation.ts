@@ -551,7 +551,7 @@ export async function processPaymentIntentEvent(
     }
 
     // Update order status and payment status
-    const result = await db.transaction(async (tx) => {
+    await db.transaction(async (tx) => {
       // Update order
       await tx
         .update(orders)

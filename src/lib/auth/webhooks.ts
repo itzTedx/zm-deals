@@ -2,7 +2,7 @@ import type Stripe from "stripe";
 
 import { createLog } from "@/lib/logging";
 import { stripeClient } from "@/lib/stripe/client";
-import { clearCart } from "@/modules/cart/actions/mutation";
+import { clearCartBySessionId, clearCartByUserId } from "@/modules/cart/actions/mutation";
 import {
   confirmOrderAndReserveInventory,
   createOrder,
@@ -19,7 +19,10 @@ export async function handleCheckoutSessionCompleted(
   session: Stripe.CheckoutSessionCompletedEvent.Data["object"],
   sessionId?: string | null
 ) {
-  log.info("Processing checkout session completed", { sessionId: session.id });
+  log.info("Processing checkout session completed", {
+    sessionId: session.id,
+    paymentIntentId: typeof session.payment_intent === "string" ? session.payment_intent : session.payment_intent?.id,
+  });
 
   try {
     let sessionWithItems = session;
@@ -133,14 +136,42 @@ export async function handleCheckoutSessionCompleted(
           // For example, you could retry the inventory reservation or mark the order for manual review
         }
 
-        // Clear user's cart if they have one
-        if (sessionWithItems.metadata?.userId) {
-          try {
-            await clearCart();
-            log.success("Cart cleared for user", { userId: sessionWithItems.metadata.userId });
-          } catch (error) {
-            log.warn("Failed to clear cart", { userId: sessionWithItems.metadata.userId, error });
+        // Clear user's cart after successful order
+        try {
+          if (sessionWithItems.metadata?.userId) {
+            // Clear authenticated user's cart
+            const cartResult = await clearCartByUserId(sessionWithItems.metadata.userId);
+            if (cartResult.success) {
+              log.success("Cart cleared for authenticated user", {
+                userId: sessionWithItems.metadata.userId,
+              });
+            } else {
+              log.warn("Failed to clear cart for authenticated user", {
+                userId: sessionWithItems.metadata.userId,
+                error: cartResult.error,
+              });
+            }
+          } else if (sessionWithItems.metadata?.anonymous === "true" && sessionWithItems.metadata?.sessionId) {
+            // Clear guest cart using session ID from metadata
+            const cartResult = await clearCartBySessionId(sessionWithItems.metadata.sessionId);
+            if (cartResult.success) {
+              log.success("Cart cleared for guest user", {
+                sessionId: sessionWithItems.metadata.sessionId,
+              });
+            } else {
+              log.warn("Failed to clear cart for guest user", {
+                sessionId: sessionWithItems.metadata.sessionId,
+                error: cartResult.error,
+              });
+            }
+          } else {
+            log.info("No user ID or session ID found in metadata, skipping cart clearing", {
+              metadata: sessionWithItems.metadata,
+              sessionId,
+            });
           }
+        } catch (error) {
+          log.error("Error clearing cart after successful order", error);
         }
       } else {
         log.info("Order already existed, skipping confirmation and cart clearing", {
