@@ -68,7 +68,7 @@ export function CheckoutIntegration({ cartTotal, orderId, onOrderComplete }: Che
     <div className="space-y-6">
       {/* Coupon Section */}
       <CouponValidator
-        appliedCoupon={appliedCoupon}
+        appliedCoupon={appliedCoupon ?? undefined}
         cartTotal={cartTotal}
         onCouponApplied={handleCouponApplied}
         onCouponRemoved={handleCouponRemoved}

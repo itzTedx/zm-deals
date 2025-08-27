@@ -26,11 +26,6 @@ export function CouponManagement({ coupons }: Props) {
     setIsFormOpen(true);
   };
 
-  const handleFormSuccess = () => {
-    setIsFormOpen(false);
-    setEditingCoupon(null);
-  };
-
   const handleFormCancel = () => {
     setIsFormOpen(false);
     setEditingCoupon(null);
@@ -70,7 +65,7 @@ export function CouponManagement({ coupons }: Props) {
               </Button>
             </div>
           </DialogHeader>
-          <CouponForm coupon={editingCoupon || undefined} onCancel={handleFormCancel} onSuccess={handleFormSuccess} />
+          <CouponForm coupon={editingCoupon || undefined} />
         </DialogContent>
       </Dialog>
     </div>

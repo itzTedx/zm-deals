@@ -85,17 +85,17 @@ export function CouponForm({ coupon, hasCancel = true }: CouponFormProps) {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 pt-4 pb-12">
+    <div className="@container mx-auto flex w-full max-w-5xl flex-col gap-4 pt-4 pb-12">
       <Form {...form}>
-        <form className="grid grid-cols-3 gap-4" onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="col-span-full flex items-center justify-between">
+        <form className="grid @lg:grid-cols-3 grid-cols-1 gap-4" onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="col-span-full flex @md:flex-row flex-col items-start @md:items-center justify-between @md:gap-0 gap-4">
             <div className="flex items-center gap-2">
-              <h1 className="flex items-center gap-2 font-medium text-gray-600 text-xl leading-none">
+              <h1 className="flex items-center gap-2 font-medium @md:text-xl text-gray-600 text-lg leading-none">
                 <IconProduct className="size-4 text-gray-500" /> <IconChevronRight className="text-gray-400" />{" "}
                 {isEditing ? (coupon?.code ?? "Edit Coupon") : "Create Coupon"}
               </h1>
             </div>
-            <div className="flex justify-end space-x-2">
+            <div className="flex @md:w-auto w-full justify-end space-x-2">
               {hasCancel && (
                 <Button onClick={() => router.push("/studio/coupons")} size="sm" type="button" variant="outline">
                   Cancel
@@ -106,9 +106,9 @@ export function CouponForm({ coupon, hasCancel = true }: CouponFormProps) {
               </Button>
             </div>
           </div>
-          <Card className="col-span-2">
+          <Card className="@lg:col-span-2 col-span-1">
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="grid @md:grid-cols-2 grid-cols-1 gap-4">
                 <FormField
                   control={form.control}
                   name="code"
@@ -118,7 +118,7 @@ export function CouponForm({ coupon, hasCancel = true }: CouponFormProps) {
                         Coupon Code
                         <InfoTooltip
                           info="Unique code that customers will enter to apply the discount."
-                          triggerClassName="text-muted-foreground"
+                          triggerClassName="text-gray-300"
                         />
                       </FormLabel>
                       <FormControl>
@@ -139,7 +139,7 @@ export function CouponForm({ coupon, hasCancel = true }: CouponFormProps) {
                         Discount Type{" "}
                         <InfoTooltip
                           info="Choose between percentage or fixed amount discount."
-                          triggerClassName="text-muted-foreground"
+                          triggerClassName="text-gray-300"
                         />
                       </FormLabel>
                       <Select defaultValue={field.value} onValueChange={field.onChange}>
@@ -159,7 +159,7 @@ export function CouponForm({ coupon, hasCancel = true }: CouponFormProps) {
                   )}
                 />
               </div>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="grid @md:grid-cols-2 grid-cols-1 gap-4">
                 <FormField
                   control={form.control}
                   name="discountValue"
@@ -176,7 +176,7 @@ export function CouponForm({ coupon, hasCancel = true }: CouponFormProps) {
                               ? "Percentage discount (0-100%)"
                               : "Fixed amount discount in Dhirams"
                           }
-                          triggerClassName="text-muted-foreground"
+                          triggerClassName="text-gray-300"
                         />
                       </FormLabel>
                       <FormControl>
@@ -202,7 +202,13 @@ export function CouponForm({ coupon, hasCancel = true }: CouponFormProps) {
                     name="maxDiscount"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Maximum Discount ($)</FormLabel>
+                        <FormLabel>
+                          Maximum Discount <IconCurrency className="size-3.5 text-muted-foreground" />{" "}
+                          <InfoTooltip
+                            info="Maximum dollar amount for percentage discounts."
+                            triggerClassName="text-gray-300"
+                          />
+                        </FormLabel>
                         <FormControl>
                           <Input
                             min="0"
@@ -213,21 +219,25 @@ export function CouponForm({ coupon, hasCancel = true }: CouponFormProps) {
                             onChange={(e) => field.onChange(Number.parseFloat(e.target.value) || undefined)}
                           />
                         </FormControl>
-                        <FormDescription>Maximum dollar amount for percentage discounts.</FormDescription>
+
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 )}
               </div>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="grid @md:grid-cols-2 grid-cols-1 gap-4">
                 <FormField
                   control={form.control}
                   name="minOrderAmount"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        Minimum Order Amount <IconCurrency className="size-3.5 text-muted-foreground" />
+                        Minimum Order Amount <IconCurrency className="size-3.5" />{" "}
+                        <InfoTooltip
+                          info="Minimum order total required to use this coupon."
+                          triggerClassName="text-gray-300"
+                        />
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -239,7 +249,7 @@ export function CouponForm({ coupon, hasCancel = true }: CouponFormProps) {
                           onChange={(e) => field.onChange(Number.parseFloat(e.target.value) || undefined)}
                         />
                       </FormControl>
-                      <FormDescription>Minimum order total required to use this coupon.</FormDescription>
+
                       <FormMessage />
                     </FormItem>
                   )}
@@ -250,7 +260,13 @@ export function CouponForm({ coupon, hasCancel = true }: CouponFormProps) {
                   name="usageLimit"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Usage Limit</FormLabel>
+                      <FormLabel>
+                        Usage Limit{" "}
+                        <InfoTooltip
+                          info="Maximum number of times this coupon can be used."
+                          triggerClassName="text-gray-300"
+                        />
+                      </FormLabel>
                       <FormControl>
                         <Input
                           min="1"
@@ -260,7 +276,7 @@ export function CouponForm({ coupon, hasCancel = true }: CouponFormProps) {
                           onChange={(e) => field.onChange(Number.parseInt(e.target.value) || undefined)}
                         />
                       </FormControl>
-                      <FormDescription>Maximum number of times this coupon can be used.</FormDescription>
+
                       <FormMessage />
                     </FormItem>
                   )}
@@ -271,7 +287,13 @@ export function CouponForm({ coupon, hasCancel = true }: CouponFormProps) {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>
+                      Description{" "}
+                      <InfoTooltip
+                        info="Optional description for internal reference."
+                        triggerClassName="text-gray-300"
+                      />
+                    </FormLabel>
                     <FormControl>
                       <Textarea
                         className="resize-none"
@@ -279,20 +301,19 @@ export function CouponForm({ coupon, hasCancel = true }: CouponFormProps) {
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription>Optional description for internal reference.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </CardContent>
           </Card>
-          <Card className="h-fit">
+          <Card className="@lg:h-fit h-auto">
             <CardContent className="space-y-4">
               <FormField
                 control={form.control}
                 name="isActive"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                  <FormItem className="flex @sm:flex-row flex-col items-start @sm:items-center justify-between @sm:gap-0 gap-4 rounded-lg border p-4">
                     <div className="space-y-0.5">
                       <FormLabel className="text-base">Active Status</FormLabel>
                       <FormDescription>Enable or disable this coupon.</FormDescription>
