@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
+import { formatDate } from "@/lib/functions/format-date";
 import type { Coupon } from "@/server/schema";
 
 import { RowActions } from "./row-actions";
@@ -80,7 +81,6 @@ export const getColumns = ({ data, onEdit, onDelete, isDeleting }: GetColumnsPro
     },
     size: 200,
     enableHiding: false,
-    enablePinning: true,
   },
   {
     header: "Discount",
@@ -103,7 +103,6 @@ export const getColumns = ({ data, onEdit, onDelete, isDeleting }: GetColumnsPro
       );
     },
     size: 120,
-    enablePinning: false,
   },
   {
     header: "Status",
@@ -135,7 +134,6 @@ export const getColumns = ({ data, onEdit, onDelete, isDeleting }: GetColumnsPro
     },
     size: 120,
     filterFn: statusFilterFn,
-    enablePinning: false,
   },
   {
     header: "Usage",
@@ -151,7 +149,6 @@ export const getColumns = ({ data, onEdit, onDelete, isDeleting }: GetColumnsPro
       return <div className="text-sm">{getUsageText(row.original)}</div>;
     },
     size: 100,
-    enablePinning: false,
   },
   {
     header: "Valid Period",
@@ -163,8 +160,7 @@ export const getColumns = ({ data, onEdit, onDelete, isDeleting }: GetColumnsPro
         <div>{format(row.original.endDate, "MMM dd, yyyy")}</div>
       </div>
     ),
-    size: 150,
-    enablePinning: false,
+    size: 200,
   },
   {
     header: "Min Order",
@@ -179,7 +175,20 @@ export const getColumns = ({ data, onEdit, onDelete, isDeleting }: GetColumnsPro
       </div>
     ),
     size: 120,
-    enablePinning: false,
+  },
+  {
+    header: "Created At",
+    accessorKey: "createdAt",
+    cell: ({ row }) => (
+      <div>
+        <span className="text-sm">
+          {formatDate(row.original.createdAt, {
+            includeTime: true,
+          })}
+        </span>
+      </div>
+    ),
+    size: 120,
   },
   {
     id: "actions",
@@ -189,6 +198,5 @@ export const getColumns = ({ data, onEdit, onDelete, isDeleting }: GetColumnsPro
     ),
     size: 100,
     enableHiding: false,
-    enablePinning: true,
   },
 ];

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 import type { Coupon } from "@/server/schema";
 
@@ -13,6 +13,7 @@ interface CouponsTableProps {
 }
 
 export function CouponsTable({ coupons, onEdit }: CouponsTableProps) {
+  const [isPending, startTransition] = useTransition();
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
   const handleDelete = async (couponId: string) => {

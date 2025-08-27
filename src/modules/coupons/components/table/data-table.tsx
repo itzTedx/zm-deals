@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 
 import { RiArrowDownSLine, RiArrowUpSLine } from "@remixicon/react";
 import {
-  Column,
   ColumnFiltersState,
   flexRender,
   getCoreRowModel,
@@ -16,15 +15,8 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
-import { ArrowLeftToLineIcon, ArrowRightToLineIcon, EllipsisIcon, PinOffIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Pagination, PaginationContent, PaginationItem } from "@/components/ui/pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -33,18 +25,6 @@ import type { Coupon } from "@/server/schema";
 
 import { getColumns } from "./columns";
 import { Header } from "./header";
-
-// Helper function to compute pinning styles for columns
-const getPinningStyles = (column: Column<Coupon>): React.CSSProperties => {
-  const isPinned = column.getIsPinned();
-  return {
-    left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
-    right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
-    position: isPinned ? "sticky" : "relative",
-    width: column.getSize(),
-    zIndex: isPinned ? 1 : 0,
-  };
-};
 
 interface CouponsDataTableProps {
   data: Coupon[];
@@ -85,11 +65,7 @@ export function CouponsDataTable({ data, onEdit, onDelete, isDeleting }: Coupons
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getFilteredRowModel: getFilteredRowModel(),
-    initialState: {
-      columnPinning: {
-        right: ["actions"],
-      },
-    },
+
     state: {
       sorting,
       pagination,
@@ -114,11 +90,6 @@ export function CouponsDataTable({ data, onEdit, onDelete, isDeleting }: Coupons
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow className="hover:bg-transparent" key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
-                  const { column } = header;
-                  const isPinned = column.getIsPinned();
-                  const isLastLeftPinned = isPinned === "left" && column.getIsLastColumn("left");
-                  const isFirstRightPinned = isPinned === "right" && column.getIsFirstColumn("right");
-
                   return (
                     <TableHead
                       className={cn(
@@ -127,10 +98,7 @@ export function CouponsDataTable({ data, onEdit, onDelete, isDeleting }: Coupons
                         "[&[data-pinned=left][data-last-col=left]]:border-r [&[data-pinned=left][data-last-col=left]]:bg-card",
                         "[&[data-pinned=right][data-last-col=right]]:border-l"
                       )}
-                      data-last-col={isLastLeftPinned ? "left" : isFirstRightPinned ? "right" : undefined}
-                      data-pinned={isPinned || undefined}
                       key={header.id}
-                      style={{ ...getPinningStyles(column) }}
                     >
                       {header.isPlaceholder ? null : (
                         <div className="flex items-center justify-between gap-2">
@@ -158,45 +126,6 @@ export function CouponsDataTable({ data, onEdit, onDelete, isDeleting }: Coupons
                               }[header.column.getIsSorted() as string]) ??
                               null}
                           </div>
-
-                          {/* Pin/Unpin column controls */}
-                          {header.column.getCanPin() &&
-                            (header.column.getIsPinned() ? (
-                              <Button
-                                aria-label={`Unpin ${header.column.columnDef.header as string} column`}
-                                className="-mr-1 size-7 shadow-none"
-                                onClick={() => header.column.pin(false)}
-                                size="icon"
-                                title={`Unpin ${header.column.columnDef.header as string} column`}
-                                variant="ghost"
-                              >
-                                <PinOffIcon aria-hidden="true" className="opacity-60" size={16} />
-                              </Button>
-                            ) : (
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button
-                                    aria-label={`Pin options for ${header.column.columnDef.header as string} column`}
-                                    className="-mr-1 size-7 shadow-none"
-                                    size="icon"
-                                    title={`Pin options for ${header.column.columnDef.header as string} column`}
-                                    variant="ghost"
-                                  >
-                                    <EllipsisIcon aria-hidden="true" className="opacity-60" size={16} />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                  <DropdownMenuItem onClick={() => header.column.pin("left")}>
-                                    <ArrowLeftToLineIcon aria-hidden="true" className="opacity-60" size={16} />
-                                    Stick to left
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => header.column.pin("right")}>
-                                    <ArrowRightToLineIcon aria-hidden="true" className="opacity-60" size={16} />
-                                    Stick to right
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            ))}
                         </div>
                       )}
                     </TableHead>
@@ -215,11 +144,6 @@ export function CouponsDataTable({ data, onEdit, onDelete, isDeleting }: Coupons
                   key={row.id}
                 >
                   {row.getVisibleCells().map((cell) => {
-                    const { column } = cell;
-                    const isPinned = column.getIsPinned();
-                    const isLastLeftPinned = isPinned === "left" && column.getIsLastColumn("left");
-                    const isFirstRightPinned = isPinned === "right" && column.getIsFirstColumn("right");
-
                     return (
                       <TableCell
                         className={cn(
@@ -228,10 +152,7 @@ export function CouponsDataTable({ data, onEdit, onDelete, isDeleting }: Coupons
                           "[&[data-pinned=left][data-last-col=left]]:border-r",
                           "[&[data-pinned=right][data-last-col=right]]:border-l"
                         )}
-                        data-last-col={isLastLeftPinned ? "left" : isFirstRightPinned ? "right" : undefined}
-                        data-pinned={isPinned || undefined}
                         key={cell.id}
-                        style={{ ...getPinningStyles(column) }}
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
