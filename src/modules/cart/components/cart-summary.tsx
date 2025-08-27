@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { LoadingSwap } from "@/components/ui/loading-swap";
 import { Separator } from "@/components/ui/separator";
 
 import { IconCurrency } from "@/assets/icons/currency";
@@ -15,7 +15,6 @@ import { pluralize } from "@/lib/functions/pluralize";
 import type { CouponValidationResult } from "@/modules/coupons/types";
 
 import { createAnonymousCheckoutSession, createCartCheckoutSession } from "../../checkout/mutation";
-import { clearCart } from "../actions/mutation";
 import { CartItem } from "../types";
 import { prepareCartForCheckout, validateCartForCheckout } from "../utils/checkout";
 import { Coupon } from "./coupon";
@@ -29,7 +28,7 @@ interface CartSummaryProps {
 export function CartSummary({ cartItems, cartLength, cartTotal }: CartSummaryProps) {
   const { data: session } = useSession();
   const [isPending, startTransition] = useTransition();
-  const router = useRouter();
+  // const router = useRouter();
 
   const [appliedCoupon, setAppliedCoupon] = useState<CouponValidationResult["coupon"] | undefined>();
   const [discountAmount, setDiscountAmount] = useState(0);
@@ -49,27 +48,27 @@ export function CartSummary({ cartItems, cartLength, cartTotal }: CartSummaryPro
     setFinalTotal(cartTotal);
   };
 
-  const handleClearCart = () => {
-    if (!session) {
-      toast.error("Please sign in to manage your cart");
-      return;
-    }
+  // const handleClearCart = () => {
+  //   if (!session) {
+  //     toast.error("Please sign in to manage your cart");
+  //     return;
+  //   }
 
-    startTransition(async () => {
-      try {
-        const result = await clearCart();
-        if (result.success) {
-          toast.success("Cart cleared");
-          router.refresh();
-        } else {
-          toast.error(result.error || "Failed to clear cart");
-        }
-      } catch (error) {
-        console.error("Error clearing cart:", error);
-        toast.error("Failed to clear cart");
-      }
-    });
-  };
+  //   startTransition(async () => {
+  //     try {
+  //       const result = await clearCart();
+  //       if (result.success) {
+  //         toast.success("Cart cleared");
+  //         router.refresh();
+  //       } else {
+  //         toast.error(result.error || "Failed to clear cart");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error clearing cart:", error);
+  //       toast.error("Failed to clear cart");
+  //     }
+  //   });
+  // };
 
   function handleCheckout() {
     // Validate cart before checkout
@@ -157,9 +156,9 @@ export function CartSummary({ cartItems, cartLength, cartTotal }: CartSummaryPro
 
       <div className="space-y-2">
         <Button className="w-full" disabled={isPending || cartLength === 0} onClick={handleCheckout}>
-          {isPending ? "Processing..." : "Checkout"}
+          <LoadingSwap isLoading={isPending}>Checkout</LoadingSwap>
         </Button>
-        <Button
+        {/* <Button
           className="w-full text-destructive hover:text-destructive"
           disabled={isPending || cartLength === 0}
           onClick={handleClearCart}
@@ -167,7 +166,7 @@ export function CartSummary({ cartItems, cartLength, cartTotal }: CartSummaryPro
           variant="ghost"
         >
           Clear Cart
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

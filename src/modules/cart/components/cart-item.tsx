@@ -58,26 +58,28 @@ export const CartItem = ({ item }: Props) => {
         </div>
 
         <div className="flex flex-1 justify-between">
-          <div className="space-y-2">
-            <h4 className="line-clamp-2 font-medium text-sm">{item.product.title}</h4>
+          <div className="space-y-3">
+            <h4 className="line-clamp-2 font-medium text-lg">{item.product.title}</h4>
             <Deadline />
-            <div className="flex items-center gap-2">
-              <Button
-                className="text-muted-foreground"
-                disabled={isPending}
-                onClick={() => handleRemoveFromCart(item.product.id)}
-                variant="outline"
-              >
-                <IconTrash /> Remove
-              </Button>
-              <Button
-                className="text-muted-foreground"
-                disabled={isPending}
-                onClick={() => handleRemoveFromCart(item.product.id)}
-                variant="outline"
-              >
-                <IconHeart className="size-5" /> Move to wishlist
-              </Button>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Button
+                  className="bg-transparent text-muted-foreground"
+                  disabled={isPending}
+                  onClick={() => handleRemoveFromCart(item.product.id)}
+                  variant="outline"
+                >
+                  <IconTrash /> Remove
+                </Button>
+                <Button
+                  className="bg-transparent text-muted-foreground"
+                  disabled={isPending}
+                  onClick={() => handleRemoveFromCart(item.product.id)}
+                  variant="outline"
+                >
+                  <IconHeart className="size-5" /> Move to wishlist
+                </Button>
+              </div>
             </div>
           </div>
           <div>

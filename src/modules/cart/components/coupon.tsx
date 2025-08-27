@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 
-import { IconDiscountFilled } from "@/assets/icons/discount";
+import { IconDiscount } from "@/assets/icons/discount";
 
 import { useSession } from "@/lib/auth/client";
 
@@ -71,12 +71,12 @@ export function Coupon({ appliedCoupon, cartTotal, onCouponApplied, onCouponRemo
   return (
     <div className="space-y-2">
       {appliedCoupon ? (
-        <div className="flex items-center justify-between rounded-md border p-3">
-          <div className="flex items-center gap-2 text-blue-600">
-            <IconDiscountFilled className="size-6" />
-            <div>
+        <div className="flex items-center justify-between rounded-md border bg-card p-3">
+          <div className="flex items-center gap-2 text-success">
+            <IconDiscount className="size-5" strokeWidth={2} />
+            <div className="inline-flex items-center gap-1">
               <p className="font-semibold text-sm">{appliedCoupon.code}</p>
-              <p className="text-muted-foreground text-xs">
+              <p className="font-medium text-muted-foreground text-xs">
                 {appliedCoupon.discountType === "percentage"
                   ? `${appliedCoupon.discountValue}% off`
                   : `$${appliedCoupon.discountValue} off`}
@@ -89,18 +89,30 @@ export function Coupon({ appliedCoupon, cartTotal, onCouponApplied, onCouponRemo
         </div>
       ) : (
         <div className="flex">
-          <Input
-            className="flex-1 rounded-r-none uppercase sm:rounded-r-none"
-            disabled={isPending}
-            onChange={(e) => setCouponCode(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleApplyCoupon();
-              }
-            }}
-            placeholder="Enter coupon"
-            value={couponCode}
-          />
+          <div className="relative flex-1">
+            <Input
+              className="flex-1 rounded-r-none bg-card sm:rounded-r-none"
+              disabled={isPending}
+              onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleApplyCoupon();
+                }
+              }}
+              placeholder="Enter coupon"
+              value={couponCode}
+            />
+            {couponCode && (
+              <Button
+                className="-translate-y-1/2 absolute top-1/2 right-2"
+                onClick={() => setCouponCode("")}
+                size="btn"
+                variant="ghost"
+              >
+                <X />
+              </Button>
+            )}
+          </div>
           <Button
             className="rounded-l-none sm:rounded-l-none"
             disabled={isPending}

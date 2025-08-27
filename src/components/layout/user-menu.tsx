@@ -19,17 +19,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import GlareHover from "../ui/glare-hover";
 
 export default function UserMenu({ session }: { session: NonNullable<AuthSession> }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex cursor-pointer gap-2">
         <Avatar>
-          <GlareHover className="size-full rounded-md">
-            <AvatarImage alt="Profile image" src={session.user.image ?? undefined} />
-            <AvatarFallback className="text-muted-foreground">{session.user.name.slice(0, 1)}</AvatarFallback>
-          </GlareHover>
+          <AvatarImage alt="Profile image" src={session.user.image ?? undefined} />
+          <AvatarFallback className="text-muted-foreground">{session.user.name.slice(0, 1)}</AvatarFallback>
         </Avatar>
         <div className="hidden flex-col items-start md:flex">
           <p className="font-medium text-sm">Hi! {session.user.name}</p>

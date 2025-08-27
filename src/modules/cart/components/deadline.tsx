@@ -122,7 +122,7 @@ export function Deadline({ compact = false }: DeadlineProps) {
   }, [timeParts]);
 
   // Don't render if more than 6 hours remaining
-  if (!shouldShow) {
+  if (shouldShow) {
     return null;
   }
 
