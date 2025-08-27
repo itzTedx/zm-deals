@@ -9,8 +9,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 
 import type { Coupon } from "@/server/schema";
 
+import { deleteCoupon } from "../actions/mutation";
 import { CouponForm } from "./coupon-form";
-import { CouponsTable } from "./coupons-table";
+import { CouponsDataTable } from "./table/data-table";
 
 interface Props {
   coupons?: Coupon[];
@@ -35,9 +36,29 @@ export function CouponManagement({ coupons }: Props) {
     setEditingCoupon(null);
   };
 
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+
+  const handleDelete = async (couponId: string) => {
+    setIsDeleting(couponId);
+    try {
+      const result = await deleteCoupon(couponId);
+      if (result.success) {
+        console.log("Coupon deleted successfully");
+      } else {
+        console.error("Error deleting coupon:", result.error);
+      }
+    } catch (error) {
+      console.error("Error deleting coupon:", error);
+    } finally {
+      setIsDeleting(null);
+    }
+  };
+
   return (
     <div className="space-y-6">
-      {coupons && <CouponsTable coupons={coupons} onEdit={handleEdit} />}
+      {coupons && (
+        <CouponsDataTable data={coupons} isDeleting={isDeleting} onDelete={handleDelete} onEdit={handleEdit} />
+      )}
 
       <Dialog onOpenChange={setIsFormOpen} open={isFormOpen}>
         <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
