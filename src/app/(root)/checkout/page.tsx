@@ -281,13 +281,13 @@ export default async function CheckoutStatusPage({ searchParams }: { searchParam
 
           {checkoutStatus.status === "success" && (
             <Button asChild className="flex-1" variant="outline">
-              <Link href="/orders">View All Orders</Link>
+              <Link href="/account/orders">View All Orders</Link>
             </Button>
           )}
 
           {checkoutStatus.status === "cancelled" && (
             <Button asChild className="flex-1" variant="outline">
-              <Link href="/cart">View Cart</Link>
+              <Link href="/account/orders">View Cart</Link>
             </Button>
           )}
         </div>

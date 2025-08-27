@@ -1,12 +1,11 @@
 "use client";
 
 import { useTransition } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { useAtom } from "jotai";
-import { ShoppingBag, Trash2, X } from "lucide-react";
+import { ShoppingBag, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -15,10 +14,11 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { useSession } from "@/lib/auth/client";
 
 import { createCartCheckoutSession } from "../../checkout/mutation";
-import { clearCart, removeFromCart } from "../actions/mutation";
-import { cartItemCountAtom, cartTotalAtom, isCartOpenAtom, removeFromCartAtom } from "../atom";
+import { clearCart } from "../actions/mutation";
+import { cartItemCountAtom, cartTotalAtom, isCartOpenAtom } from "../atom";
 import { useCartSync } from "../hooks/use-cart-sync";
 import { prepareCartForCheckout, validateCartForCheckout } from "../utils/checkout";
+import { CartItemCard } from "./cart-items";
 
 export function CartSheet() {
   const router = useRouter();
@@ -26,35 +26,9 @@ export function CartSheet() {
   const [itemCount] = useAtom(cartItemCountAtom);
   const [cartTotal] = useAtom(cartTotalAtom);
   const [isOpen, setIsOpen] = useAtom(isCartOpenAtom);
-  const [, removeFromCartClient] = useAtom(removeFromCartAtom);
+
   const [isPending, startTransition] = useTransition();
   const { data: session } = useSession();
-
-  const handleRemoveFromCart = (productId: string) => {
-    if (!session) {
-      // Anonymous user - use client-side operation
-      removeFromCartClient(productId);
-      toast.success("Item removed from cart");
-      return;
-    }
-
-    // Authenticated user - use server action
-    startTransition(async () => {
-      try {
-        const result = await removeFromCart(productId);
-        if (result.success) {
-          // Update client-side state
-          setCart(cart.filter((item) => item.product.id !== productId));
-          toast.success("Item removed from cart");
-        } else {
-          toast.error(result.error || "Failed to remove item");
-        }
-      } catch (error) {
-        console.error("Error removing from cart:", error);
-        toast.error("Failed to remove item from cart");
-      }
-    });
-  };
 
   const handleClearCart = () => {
     if (!session) {
@@ -127,7 +101,7 @@ export function CartSheet() {
       <SheetContent className="w-full max-w-[21rem] gap-0 sm:max-w-md">
         <SheetHeader className="border-b">
           <SheetTitle className="flex items-center gap-3">
-            <span className="font-moret text-xl">Shopping Cart</span>
+            <span className="text-xl">Shopping Cart</span>
             <span className="text-muted-foreground text-sm">
               {itemCount} item{itemCount !== 1 ? "s" : ""}
             </span>
@@ -149,33 +123,7 @@ export function CartSheet() {
               {/* Cart Items */}
               <div className="flex-1 space-y-4 overflow-y-auto">
                 {cart.map((item) => (
-                  <div className="flex gap-3 rounded-lg border bg-white p-3" key={item.product.id}>
-                    <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg">
-                      <Image alt={item.product.title} className="object-cover" fill src={item.product.image} />
-                    </div>
-
-                    <div className="flex flex-1 flex-col justify-between">
-                      <div>
-                        <h4 className="line-clamp-2 font-medium text-sm">{item.product.title}</h4>
-                        <p className="text-muted-foreground text-xs">{Number(item.product.price).toFixed(2)}</p>
-                        <p className="font-medium text-primary text-xs">
-                          Total: ₹{Number(item.product.price) * item.quantity}
-                        </p>
-                      </div>
-
-                      <div className="mt-2 flex items-center justify-between">
-                        <Button
-                          className="h-6 w-6 text-destructive hover:text-destructive"
-                          disabled={isPending}
-                          onClick={() => handleRemoveFromCart(item.product.id)}
-                          size="icon"
-                          variant="ghost"
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
+                  <CartItemCard item={item} key={item.product.id} />
                 ))}
               </div>
 
