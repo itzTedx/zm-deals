@@ -23,7 +23,7 @@ export default async function ProductsUpsertPage() {
             <CreateButton />
           </div>
           {categories.map((category) => {
-            const image = category.images.media;
+            const image = category.images.find((image) => image.type === "thumbnail")?.media;
             return (
               <div className="flex items-center gap-2" key={category.id}>
                 {image && image.url && <Image alt={category.name} height={20} src={image.url} width={20} />}

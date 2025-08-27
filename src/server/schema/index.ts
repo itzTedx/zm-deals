@@ -1,6 +1,7 @@
 export * from "./auth-schema";
 export * from "./cart-schema";
 export * from "./categories-schema";
+export * from "./coupons-schema";
 export * from "./inventory-schema";
 export * from "./media-schema";
 export * from "./meta-schema";

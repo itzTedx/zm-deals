@@ -14,6 +14,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { users } from "./auth-schema";
+import { coupons } from "./coupons-schema";
 import { createdAt, id, updatedAt } from "./helpers";
 import { products } from "./product-schema";
 
@@ -53,7 +54,12 @@ export const orders = pgTable(
     subtotal: decimal("subtotal", { precision: 10, scale: 2 }).notNull(),
     taxAmount: decimal("tax_amount", { precision: 10, scale: 2 }).notNull().default("0"),
     shippingAmount: decimal("shipping_amount", { precision: 10, scale: 2 }).notNull().default("0"),
+    discountAmount: decimal("discount_amount", { precision: 10, scale: 2 }).notNull().default("0"),
     totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).notNull(),
+
+    // Coupon information
+    couponId: uuid("coupon_id").references(() => coupons.id, { onDelete: "set null" }),
+    couponCode: text("coupon_code"),
 
     // Shipping information
     shippingAddress: jsonb("shipping_address").$type<{
@@ -215,6 +221,11 @@ export const orderRelations = relations(orders, ({ one, many }) => ({
     fields: [orders.userId],
     references: [users.id],
     relationName: "order-user-relations",
+  }),
+  coupon: one(coupons, {
+    fields: [orders.couponId],
+    references: [coupons.id],
+    relationName: "coupon-orders-relations",
   }),
   items: many(orderItems, {
     relationName: "order-items-relations",
