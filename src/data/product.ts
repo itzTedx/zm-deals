@@ -1,4 +1,5 @@
 import { Deal } from "@/modules/product/types";
+import { Review } from "@/server/schema";
 
 const REVIEWS = [
   {
@@ -245,7 +246,7 @@ export const LAST_MINUTE_DEALS = [
   },
 ];
 
-export const FEEDBACKS = [
+export const FEEDBACKS: Review[] = [
   {
     id: "1",
     productId: "product-1",

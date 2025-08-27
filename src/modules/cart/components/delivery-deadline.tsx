@@ -4,20 +4,10 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import NumberFlow from "@number-flow/react";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
-import { IconTruck } from "@/assets/icons/truck";
-
 import { cn } from "@/lib/utils";
-import {
-  getDeadlineProgress,
-  getDeliveryDate,
-  getNextDeadline,
-  getTimeUntilDeadline,
-  isDeadlinePassed,
-  isDeadlineUrgent,
-} from "@/modules/cart/utils/delivery-deadline";
+import { getDeadlineProgress, getTimeUntilDeadline, isDeadlinePassed } from "@/modules/cart/utils/delivery-deadline";
 
 interface TimeComponents {
   hours: number;
@@ -70,34 +60,11 @@ export const DeliveryDeadline = React.memo<DeliveryDeadlineProps>(({ compact = t
   // Check if deadline has passed
   const deadlinePassed = useMemo(() => isDeadlinePassed(), []);
 
-  // Get delivery date
-  const deliveryDate = useMemo(() => getDeliveryDate(), []);
-
-  // Get next deadline
-  const nextDeadline = useMemo(() => getNextDeadline(), []);
-
-  // Check if deadline is urgent
-  const isUrgent = useMemo(() => isDeadlineUrgent(60), []);
-
   // Get progress percentage
   const progressPercentage = useMemo(() => getDeadlineProgress(), []);
 
   // Don't render if deadline has passed for today
-  if (deadlinePassed) {
-    return (
-      <Card className="border-green-200 bg-green-50">
-        <CardContent className={`flex items-center gap-3 ${compact ? "p-3" : "p-4"}`}>
-          <IconTruck className="size-5 text-green-600" />
-          <div className="flex-1">
-            <p className={`font-medium text-green-800 ${compact ? "text-xs" : "text-sm"}`}>
-              Order now to get it {deliveryDate}
-            </p>
-            <p className="text-green-600 text-xs">Next deadline: {nextDeadline}</p>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
+  if (deadlinePassed) return null;
 
   return (
     <div className="flex-1">

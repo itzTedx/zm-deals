@@ -1,3 +1,5 @@
+import { DEADLINE_HOUR } from "../constants";
+
 /**
  * Calculates the time until the next 2pm deadline
  * @returns Object with hours, minutes, and seconds until deadline
@@ -5,10 +7,10 @@
 export function getTimeUntilDeadline() {
   const now = new Date();
   const deadline = new Date();
-  deadline.setHours(14, 0, 0, 0); // 2pm
+  deadline.setHours(DEADLINE_HOUR, 0, 0, 0); // 2pm
 
   // If it's already past 2pm, set deadline to 2pm tomorrow
-  if (now.getHours() >= 14) {
+  if (now.getHours() >= DEADLINE_HOUR) {
     deadline.setDate(deadline.getDate() + 1);
   }
 
@@ -30,7 +32,7 @@ export function getTimeUntilDeadline() {
  */
 export function isDeadlinePassed(): boolean {
   const now = new Date();
-  return now.getHours() >= 14;
+  return now.getHours() >= DEADLINE_HOUR;
 }
 
 /**
@@ -53,11 +55,11 @@ export function getDeliveryDate(): string {
  */
 export function getNextDeadline(): string {
   const now = new Date();
-  if (now.getHours() >= 14) {
+  if (now.getHours() >= DEADLINE_HOUR) {
     // If past 2pm, next deadline is tomorrow at 2pm
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(14, 0, 0, 0);
+    tomorrow.setHours(DEADLINE_HOUR, 0, 0, 0);
     return `${tomorrow.toLocaleDateString("en-US", {
       weekday: "long",
       month: "short",
@@ -108,8 +110,8 @@ export function getDeadlineProgress(): number {
   const secondsSinceMidnight = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
 
   // If before 2pm, calculate progress from midnight to 2pm (14 hours)
-  if (now.getHours() < 14) {
-    const totalSecondsUntilDeadline = 14 * 3600; // 14 hours in seconds
+  if (now.getHours() < DEADLINE_HOUR) {
+    const totalSecondsUntilDeadline = DEADLINE_HOUR * 3600; // 14 hours in seconds
     const elapsed = secondsSinceMidnight;
     return Math.max(0, Math.min(100, (elapsed / totalSecondsUntilDeadline) * 100));
   }
