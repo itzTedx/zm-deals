@@ -45,6 +45,11 @@ export type OrderWithItemsAndProducts = Order & {
       image: string;
     };
   })[];
+  user?: {
+    id: string;
+    name: string;
+    email: string;
+  } | null;
 };
 
 // Type for the getUserOrders query result

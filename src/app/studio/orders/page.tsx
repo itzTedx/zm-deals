@@ -1,18 +1,20 @@
-import Link from "next/link";
+import { Suspense } from "react";
 
-import { Button } from "@/components/ui/button";
+import { isAdmin } from "@/lib/auth/permissions";
+import { OrdersDataTable } from "@/modules/orders/components/table/data-table";
 
-export default function OrdersPage() {
+export default async function OrdersPage() {
+  await isAdmin();
+
   return (
     <main>
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 py-4">
         <div className="flex items-center justify-between">
           <h1 className="font-bold text-2xl">Orders</h1>
-          <Button asChild size="sm">
-            <Link href="/studio/orders">Add Order</Link>
-          </Button>
         </div>
-        <div>Hello</div>
+        <Suspense fallback={<div>Loading orders...</div>}>
+          <OrdersDataTable />
+        </Suspense>
       </div>
     </main>
   );
