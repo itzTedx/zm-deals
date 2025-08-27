@@ -8,7 +8,7 @@ export { CheckoutIntegration } from "./components/checkout-integration";
 export { CouponForm } from "./components/coupon-form";
 export { CouponManagement } from "./components/coupon-management";
 export { CouponValidator } from "./components/coupon-validator";
-export { CouponsTable } from "./components/coupons-table";
+export { CouponsDataTable } from "./components/table/data-table";
 export * from "./schema";
 export * from "./types";
 // Utilities

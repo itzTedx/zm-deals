@@ -1,13 +1,20 @@
 import { IconInfoCircleFilled } from "@/assets/icons/info";
 
+import { cn } from "@/lib/utils";
+
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 
-export const InfoTooltip = ({ info }: { info: React.ReactNode }) => {
+interface Props {
+  info: React.ReactNode;
+  triggerClassName?: string;
+}
+
+export const InfoTooltip = ({ info, triggerClassName }: Props) => {
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger>
-          <IconInfoCircleFilled className="size-3.5" />
+          <IconInfoCircleFilled className={cn("size-3.5", triggerClassName)} />
         </TooltipTrigger>
         <TooltipContent className="max-w-3xs text-center">{info}</TooltipContent>
       </Tooltip>
