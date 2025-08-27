@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import { toast } from "sonner";
 
@@ -20,12 +21,12 @@ import { DeliveryDeadline } from "./delivery-deadline";
 
 interface Props {
   item: CartItem;
-  onItemRemoved?: () => void;
 }
 
-export const CartItemCard = ({ item, onItemRemoved }: Props) => {
+export const CartItemCard = ({ item }: Props) => {
   const { data: session } = useSession();
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const handleRemoveFromCart = (productId: string) => {
     if (!session) {
@@ -38,7 +39,7 @@ export const CartItemCard = ({ item, onItemRemoved }: Props) => {
         const result = await removeFromCart(productId);
         if (result.success) {
           toast.success("Item removed from cart");
-          onItemRemoved?.();
+          router.refresh();
         } else {
           toast.error(result.error || "Failed to remove item");
         }

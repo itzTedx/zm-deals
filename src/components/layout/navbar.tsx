@@ -7,7 +7,7 @@ import { LogoIcon } from "@/assets/logo";
 
 import { NAV_LINKS } from "@/data/constants";
 import { getSession } from "@/lib/auth/server";
-import { CartIcon } from "@/modules/product/components/ui/cart-icon";
+import { CartIconServer } from "@/modules/cart/components/cart-icon-server";
 
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -83,7 +83,7 @@ export const Navbar = async () => {
             <Button className="hidden sm:inline-flex" size="icon" variant="outline">
               <IconHeart className="size-5 text-muted-foreground hover:text-brand-500" />
             </Button>
-            <CartIcon />
+            <CartIconServer />
           </div>
         </nav>
       </div>

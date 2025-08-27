@@ -5,9 +5,6 @@ import { LoginPromptPopup } from "@/components/layout/login-prompt-popup";
 import { MobileNavbar } from "@/components/layout/mobile-navbar";
 import { Navbar } from "@/components/layout/navbar";
 
-import { AnonymousCartProvider } from "@/modules/cart/components/anonymous-cart-provider";
-import { CartSheet } from "@/modules/cart/components/cart-sheet";
-
 export const metadata: Metadata = {
   title: "ZM Deals - One Deal Every Week, Big Savings",
   description:
@@ -25,19 +22,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <AnonymousCartProvider>
+    <>
       <Navbar />
       {children}
       <Footer />
-      <CartSheet />
       <LoginPromptPopup />
       <MobileNavbar />
-    </AnonymousCartProvider>
+    </>
   );
 }

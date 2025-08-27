@@ -1,8 +1,5 @@
-"use client";
-
 import { pluralize } from "@/lib/functions/pluralize";
 import { CartItemCard } from "@/modules/cart/components/cart-item-card";
-import { CartProvider, useCartContext } from "@/modules/cart/components/cart-provider";
 import { CartSummary } from "@/modules/cart/components/cart-summary-new";
 import { CartItem } from "@/modules/cart/types";
 
@@ -15,15 +12,7 @@ interface CartPageContentProps {
 }
 
 export function CartPageContent({ initialCartData }: CartPageContentProps) {
-  return (
-    <CartProvider initialCartData={initialCartData}>
-      <CartPageInner />
-    </CartProvider>
-  );
-}
-
-function CartPageInner() {
-  const { cartItems, itemCount, cartTotal, refreshCart } = useCartContext();
+  const { items: cartItems, itemCount, total: cartTotal } = initialCartData;
 
   return (
     <main className="container grid max-w-7xl grid-cols-3 gap-6 py-8">
@@ -37,17 +26,12 @@ function CartPageInner() {
 
         <div className="mt-3 w-full space-y-2">
           {cartItems.map((item) => (
-            <CartItemCard item={item} key={item.product.id} onItemRemoved={refreshCart} />
+            <CartItemCard item={item} key={item.product.id} />
           ))}
         </div>
       </div>
 
-      <CartSummary
-        cartItems={cartItems}
-        cartLength={cartItems.length}
-        cartTotal={cartTotal}
-        onCartCleared={refreshCart}
-      />
+      <CartSummary cartItems={cartItems} cartLength={cartItems.length} cartTotal={cartTotal} />
     </main>
   );
 }

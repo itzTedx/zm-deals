@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 
 import { toast } from "sonner";
 
@@ -23,12 +24,12 @@ interface CartSummaryProps {
   cartItems: CartItem[];
   cartLength: number;
   cartTotal: number;
-  onCartCleared?: () => void;
 }
 
-export function CartSummary({ cartItems, cartLength, cartTotal, onCartCleared }: CartSummaryProps) {
+export function CartSummary({ cartItems, cartLength, cartTotal }: CartSummaryProps) {
   const { data: session } = useSession();
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const [appliedCoupon, setAppliedCoupon] = useState<CouponValidationResult["coupon"] | undefined>();
   const [discountAmount, setDiscountAmount] = useState(0);
@@ -59,7 +60,7 @@ export function CartSummary({ cartItems, cartLength, cartTotal, onCartCleared }:
         const result = await clearCart();
         if (result.success) {
           toast.success("Cart cleared");
-          onCartCleared?.();
+          router.refresh();
         } else {
           toast.error(result.error || "Failed to clear cart");
         }
