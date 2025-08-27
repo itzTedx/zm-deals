@@ -109,3 +109,71 @@ export async function getCartTotal() {
     return 0;
   }
 }
+
+// New function to get cart data for components that need both cart items and totals
+export async function getCartData() {
+  try {
+    const session = await auth.api.getSession({ headers: await headers() });
+
+    if (!session) {
+      return {
+        items: [],
+        itemCount: 0,
+        total: 0,
+      };
+    }
+
+    const userCart = await db.query.carts.findFirst({
+      where: and(eq(carts.userId, session.user.id), eq(carts.isActive, true)),
+      with: {
+        items: {
+          with: {
+            product: {
+              with: {
+                meta: true,
+                inventory: true,
+                images: {
+                  with: {
+                    media: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!userCart || !userCart.items) {
+      return {
+        items: [],
+        itemCount: 0,
+        total: 0,
+      };
+    }
+
+    const items = userCart.items.map((item) => ({
+      product: item.product,
+      quantity: item.quantity,
+    }));
+
+    const itemCount = userCart.items.reduce((total, item) => total + item.quantity, 0);
+    const total = userCart.items.reduce((total, item) => {
+      const price = Number(item.product.price);
+      return total + price * item.quantity;
+    }, 0);
+
+    return {
+      items,
+      itemCount,
+      total,
+    };
+  } catch (error) {
+    console.error("Error getting cart data:", error);
+    return {
+      items: [],
+      itemCount: 0,
+      total: 0,
+    };
+  }
+}
