@@ -7,7 +7,7 @@ import { FEEDBACKS } from "@/data/product";
 
 export const Testimonials = () => {
   return (
-    <section className="container relative max-w-7xl border-x py-8 sm:py-12 md:py-16 lg:py-20">
+    <section className="container relative py-8 sm:py-12 md:py-16 lg:py-20">
       <div className="relative flex items-center justify-between gap-3 pb-6 sm:gap-4 sm:pb-8 md:gap-6 md:pb-12">
         <SeparatorBox />
         <Badge variant="outline">Happy Customers</Badge>
@@ -24,8 +24,6 @@ export const Testimonials = () => {
           <FeedbackCard key={index} review={review} />
         ))}
       </div>
-      {/* <div className="-left-1.5 -bottom-1.5 pointer-events-none absolute z-10 size-2.5 shrink-0 rounded border bg-card" />
-      <div className="-right-1.5 -bottom-1.5 pointer-events-none absolute z-10 size-2.5 shrink-0 rounded border bg-card" /> */}
     </section>
   );
 };

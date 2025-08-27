@@ -22,20 +22,7 @@ export const ProductCard = ({ data }: Props) => {
     <Card className="relative">
       <Link className="absolute inset-0 z-10" href={`/${data.slug}`} />
 
-      {/* <CardHeader className="flex items-center justify-between px-2 pb-2">
-        <Badge size="sm">
-          <AnimatedCountdown endsIn={data.endsIn} />
-        </Badge>
-        <div className="flex items-center gap-2">
-          <StarRating readOnly value={calculateAverageRating(data.reviews)} />
-
-          <p className="text-gray-600 text-xs">{data.reviews.reduce((sum, review) => sum + review.rating, 0)}</p>
-        </div>
-      </CardHeader> */}
       <CardContent className="relative h-full p-3 max-md:p-3">
-        {/* <Badge className="absolute top-2 left-2 z-10" size="sm">
-          <AnimatedCountdown endsIn={data.endsIn} />
-        </Badge> */}
         <div className="relative aspect-square overflow-hidden rounded-lg">
           <Image alt={data.title} className="object-cover" fill src={data.image} />
         </div>

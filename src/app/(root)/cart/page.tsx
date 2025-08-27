@@ -16,18 +16,19 @@ export default async function CartPage() {
             ({cart.length} {pluralize("item", cart.length)})
           </span>
         </h1>
-        <div className="w-full space-y-4">
+
+        <div className="mt-3 w-full space-y-2">
           {cart.map((item) => (
             <CartItemCard item={item} key={item.product.id} />
           ))}
         </div>
       </div>
-      <div className="rounded-md border p-4">
+      <div className="mt-6 rounded-md border p-4">
         <h3 className="font-semibold text-lg">Order Summary</h3>
 
         <div className="flex rounded-md shadow-xs">
           <Input
-            className="-me-px flex-1 rounded-e-none shadow-none focus-visible:z-10"
+            className="-me-px flex-1 rounded-e-none bg-card shadow-none focus-visible:z-10"
             id="coupon"
             placeholder="Coupon Code"
             type="text"

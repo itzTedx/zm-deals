@@ -16,7 +16,7 @@ import { ProductCard } from "@/modules/product/components/product-card";
 export const Deals = async () => {
   const products = await getProducts();
   return (
-    <section className="container relative max-w-7xl space-y-12 border-x pb-8 sm:pb-12 md:space-y-16 md:pb-16 lg:pb-20">
+    <section className="container relative space-y-12 pb-8 sm:pb-12 md:space-y-16 md:pb-16 lg:pb-20">
       <div>
         <Badge variant="outline">
           <IconFire className="text-yellow-500" />
@@ -33,7 +33,7 @@ export const Deals = async () => {
           link="/deals"
           title="This Week's Hot Picks"
         />
-        <div className="mt-6 grid grid-cols-2 gap-2 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-3">
+        <div className="mt-6 grid grid-cols-2 gap-2 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-4">
           {products.map((product) => (
             <ProductCard data={product} key={product.id} />
           ))}

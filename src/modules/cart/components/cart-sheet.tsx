@@ -19,6 +19,7 @@ import { cartItemCountAtom, cartTotalAtom, isCartOpenAtom } from "../atom";
 import { useCartSync } from "../hooks/use-cart-sync";
 import { prepareCartForCheckout, validateCartForCheckout } from "../utils/checkout";
 import { CartItemCard } from "./cart-items";
+import { DeliveryDeadline } from "./delivery-deadline";
 
 export function CartSheet() {
   const router = useRouter();
@@ -122,6 +123,9 @@ export function CartSheet() {
             <>
               {/* Cart Items */}
               <div className="flex-1 space-y-4 overflow-y-auto">
+                {/* Delivery Deadline Component */}
+                <DeliveryDeadline compact />
+
                 {cart.map((item) => (
                   <CartItemCard item={item} key={item.product.id} />
                 ))}

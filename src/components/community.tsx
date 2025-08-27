@@ -16,10 +16,7 @@ import { Pattern1 } from "@/assets/patterns";
 import { NEWSLETTER_LIST, SOCIALS } from "@/data/constants";
 export const Community = () => {
   return (
-    <section
-      className="container relative max-w-7xl border-x px-4 py-8 sm:px-6 sm:py-12 md:py-16 lg:px-8 lg:py-20"
-      id="community"
-    >
+    <section className="container relative py-8 sm:py-12 md:py-16 lg:py-20" id="community">
       <div className="container relative flex max-w-4xl items-center justify-between gap-3 pb-6 sm:gap-4 sm:pb-8 md:gap-6 md:pb-12">
         <SeparatorBox />
         <Badge className="size-5 sm:size-6 md:size-7" variant="outline">
