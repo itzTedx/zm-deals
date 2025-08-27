@@ -39,7 +39,6 @@ export function Deadline({ compact = false }: DeadlineProps) {
   const [timeLeft, setTimeLeft] = useState({
     hours: 0,
     minutes: 0,
-    seconds: 0,
   });
   const [deliveryDay, setDeliveryDay] = useState("Tomorrow");
   const [shouldShow, setShouldShow] = useState(false);
@@ -74,11 +73,10 @@ export function Deadline({ compact = false }: DeadlineProps) {
     if (difference > 0) {
       const hours = Math.floor(difference / (1000 * 60 * 60));
       const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
-      setTimeLeft({ hours, minutes, seconds });
+      setTimeLeft({ hours, minutes });
     } else {
-      setTimeLeft({ hours: 0, minutes: 0, seconds: 0 });
+      setTimeLeft({ hours: 0, minutes: 0 });
     }
 
     setDeliveryDay(newDeliveryDay);
@@ -140,7 +138,7 @@ export function Deadline({ compact = false }: DeadlineProps) {
   return (
     <div className="flex flex-col text-left">
       <div className="text-muted-foreground text-sm">Order in {renderedTime}</div>
-      <div className="text-sm">
+      <div className="font-medium text-sm">
         <TimeText>Get it </TimeText>
         <span className="font-medium text-green-600">{deliveryDay}</span>
       </div>

@@ -2,10 +2,15 @@
 
 import { useState, useTransition } from "react";
 
+import { X } from "lucide-react";
 import { toast } from "sonner";
 
+import { Banner, BannerClose, BannerContent, BannerText, BannerTitle } from "@/components/ui/banner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { LoadingSwap } from "@/components/ui/loading-swap";
+
+import { IconDiscountFilled } from "@/assets/icons/discount";
 
 import { useSession } from "@/lib/auth/client";
 
@@ -23,15 +28,16 @@ export function Coupon({ appliedCoupon, cartTotal, onCouponApplied, onCouponRemo
   const { data: session } = useSession();
   const [couponCode, setCouponCode] = useState("");
   const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
 
   const handleApplyCoupon = () => {
     if (!session) {
-      toast.error("Please sign in to apply coupons");
+      setError("Please sign in to apply coupons");
       return;
     }
 
     if (!couponCode.trim()) {
-      toast.error("Please enter a coupon code");
+      setError("Please enter a coupon code");
       return;
     }
 
@@ -46,12 +52,13 @@ export function Coupon({ appliedCoupon, cartTotal, onCouponApplied, onCouponRemo
         if (result.isValid) {
           toast.success("Coupon applied successfully!");
           setCouponCode("");
+          setError(null);
         } else {
-          toast.error(result.error || "Invalid coupon code");
+          setError(result.error || "Invalid coupon code");
         }
       } catch (error) {
         console.error("Error applying coupon:", error);
-        toast.error("Failed to apply coupon");
+        setError("Failed to apply coupon");
       }
     });
   };
@@ -62,32 +69,28 @@ export function Coupon({ appliedCoupon, cartTotal, onCouponApplied, onCouponRemo
   };
 
   return (
-    <div className="space-y-3">
-      <h4 className="font-medium text-sm">Have a coupon?</h4>
-
+    <div className="space-y-2">
       {appliedCoupon ? (
         <div className="flex items-center justify-between rounded-md border p-3">
-          <div>
-            <p className="font-medium text-sm">{appliedCoupon.code}</p>
-            <p className="text-muted-foreground text-xs">
-              {appliedCoupon.discountType === "percentage"
-                ? `${appliedCoupon.discountValue}% off`
-                : `$${appliedCoupon.discountValue} off`}
-            </p>
+          <div className="flex items-center gap-2 text-blue-600">
+            <IconDiscountFilled className="size-6" />
+            <div>
+              <p className="font-semibold text-sm">{appliedCoupon.code}</p>
+              <p className="text-muted-foreground text-xs">
+                {appliedCoupon.discountType === "percentage"
+                  ? `${appliedCoupon.discountValue}% off`
+                  : `$${appliedCoupon.discountValue} off`}
+              </p>
+            </div>
           </div>
-          <Button
-            className="text-destructive hover:text-destructive"
-            onClick={handleRemoveCoupon}
-            size="sm"
-            variant="ghost"
-          >
-            Remove
+          <Button onClick={handleRemoveCoupon} size="btn" variant="destructive">
+            <X />
           </Button>
         </div>
       ) : (
-        <div className="flex gap-2">
+        <div className="flex">
           <Input
-            className="flex-1"
+            className="flex-1 rounded-r-none uppercase sm:rounded-r-none"
             disabled={isPending}
             onChange={(e) => setCouponCode(e.target.value)}
             onKeyDown={(e) => {
@@ -95,13 +98,29 @@ export function Coupon({ appliedCoupon, cartTotal, onCouponApplied, onCouponRemo
                 handleApplyCoupon();
               }
             }}
-            placeholder="Enter coupon code"
+            placeholder="Enter coupon"
             value={couponCode}
           />
-          <Button disabled={isPending || !couponCode.trim()} onClick={handleApplyCoupon} size="sm">
-            {isPending ? "Applying..." : "Apply"}
+          <Button
+            className="rounded-l-none sm:rounded-l-none"
+            disabled={isPending}
+            onClick={handleApplyCoupon}
+            type="submit"
+          >
+            <LoadingSwap isLoading={isPending}>Apply</LoadingSwap>
           </Button>
         </div>
+      )}
+
+      {error && (
+        <Banner className="bg-card" size="sm">
+          <BannerContent className="flex items-center justify-between text-destructive">
+            <BannerText>
+              <BannerTitle className="font-medium text-sm">{error}</BannerTitle>
+            </BannerText>
+            <BannerClose className="!static" onClick={() => setError(null)} />
+          </BannerContent>
+        </Banner>
       )}
     </div>
   );

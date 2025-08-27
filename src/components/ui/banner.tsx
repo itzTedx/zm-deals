@@ -81,7 +81,7 @@ const BannerClose = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttribut
       ref={ref}
       {...props}
     >
-      <X className="h-4 w-4" />
+      <X className="size-4" />
       <span className="sr-only">Close</span>
     </button>
   )
