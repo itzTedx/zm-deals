@@ -129,7 +129,7 @@ export default async function ProductPage({ params }: Props) {
       />
       <BreadcrumbSchema items={breadcrumbItems} />
 
-      <header className="container relative grid max-w-7xl grid-cols-1 gap-6 border-x pt-6 pb-6 md:grid-cols-5 md:gap-8 md:pb-8 lg:gap-12 lg:pb-12">
+      <header className="container relative grid max-w-7xl grid-cols-1 gap-6 pt-6 pb-6 md:grid-cols-5 md:gap-8 md:pb-8 lg:gap-12 lg:pb-12">
         {/* Image Carousel Section */}
         <div className="md:col-span-3">
           <Breadcrumb className="pb-3">
