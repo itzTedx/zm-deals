@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import { and, eq } from "drizzle-orm";
 
 import { auth, getSession } from "@/lib/auth/server";
+import { getOrCreateSessionId } from "@/lib/utils/session";
 import { db } from "@/server/db";
 import { carts } from "@/server/schema";
 
@@ -13,9 +14,41 @@ export async function getCart() {
     const session = await auth.api.getSession({ headers: await headers() });
 
     if (!session) {
-      return [];
+      // Handle guest cart
+      const sessionId = await getOrCreateSessionId();
+
+      const guestCart = await db.query.carts.findFirst({
+        where: and(eq(carts.sessionId, sessionId), eq(carts.isActive, true)),
+        with: {
+          items: {
+            with: {
+              product: {
+                with: {
+                  meta: true,
+                  inventory: true,
+                  images: {
+                    with: {
+                      media: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!guestCart || !guestCart.items) {
+        return [];
+      }
+
+      return guestCart.items.map((item) => ({
+        product: item.product,
+        quantity: item.quantity,
+      }));
     }
 
+    // Handle authenticated user cart
     const userCart = await db.query.carts.findFirst({
       where: and(eq(carts.userId, session.user.id), eq(carts.isActive, true)),
       with: {
@@ -56,9 +89,24 @@ export async function getCartItemCount() {
     const session = await auth.api.getSession({ headers: await headers() });
 
     if (!session) {
-      return 0;
+      // Handle guest cart
+      const sessionId = await getOrCreateSessionId();
+
+      const guestCart = await db.query.carts.findFirst({
+        where: and(eq(carts.sessionId, sessionId), eq(carts.isActive, true)),
+        with: {
+          items: true,
+        },
+      });
+
+      if (!guestCart || !guestCart.items) {
+        return 0;
+      }
+
+      return guestCart.items.reduce((total, item) => total + item.quantity, 0);
     }
 
+    // Handle authenticated user cart
     const userCart = await db.query.carts.findFirst({
       where: and(eq(carts.userId, session.user.id), eq(carts.isActive, true)),
       with: {
@@ -82,9 +130,31 @@ export async function getCartTotal() {
     const session = await auth.api.getSession({ headers: await headers() });
 
     if (!session) {
-      return 0;
+      // Handle guest cart
+      const sessionId = await getOrCreateSessionId();
+
+      const guestCart = await db.query.carts.findFirst({
+        where: and(eq(carts.sessionId, sessionId), eq(carts.isActive, true)),
+        with: {
+          items: {
+            with: {
+              product: true,
+            },
+          },
+        },
+      });
+
+      if (!guestCart || !guestCart.items) {
+        return 0;
+      }
+
+      return guestCart.items.reduce((total, item) => {
+        const price = Number(item.product.price);
+        return total + price * item.quantity;
+      }, 0);
     }
 
+    // Handle authenticated user cart
     const userCart = await db.query.carts.findFirst({
       where: and(eq(carts.userId, session.user.id), eq(carts.isActive, true)),
       with: {
@@ -116,13 +186,57 @@ export async function getCartData() {
     const session = await getSession();
 
     if (!session) {
+      // Handle guest cart
+      const sessionId = await getOrCreateSessionId();
+
+      const guestCart = await db.query.carts.findFirst({
+        where: and(eq(carts.sessionId, sessionId), eq(carts.isActive, true)),
+        with: {
+          items: {
+            with: {
+              product: {
+                with: {
+                  meta: true,
+                  inventory: true,
+                  images: {
+                    with: {
+                      media: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!guestCart || !guestCart.items) {
+        return {
+          items: [],
+          itemCount: 0,
+          total: 0,
+        };
+      }
+
+      const items = guestCart.items.map((item) => ({
+        product: item.product,
+        quantity: item.quantity,
+      }));
+
+      const itemCount = guestCart.items.reduce((total, item) => total + item.quantity, 0);
+      const total = guestCart.items.reduce((total, item) => {
+        const price = Number(item.product.price);
+        return total + price * item.quantity;
+      }, 0);
+
       return {
-        items: [],
-        itemCount: 0,
-        total: 0,
+        items,
+        itemCount,
+        total,
       };
     }
 
+    // Handle authenticated user cart
     const userCart = await db.query.carts.findFirst({
       where: and(eq(carts.userId, session.user.id), eq(carts.isActive, true)),
       with: {

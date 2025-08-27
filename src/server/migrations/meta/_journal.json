@@ -71,6 +71,20 @@
       "when": 1756278884543,
       "tag": "0009_flowery_shinobi_shaw",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1756293610894,
+      "tag": "0010_exotic_vulture",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1756295452266,
+      "tag": "0011_soft_black_queen",
+      "breakpoints": true
     }
   ]
 }

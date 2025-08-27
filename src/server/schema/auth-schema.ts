@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm";
 import { boolean, pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
+import { createdAt, id } from "./helpers";
 import { reviews } from "./review-schema";
 
 export const rolesEnum = pgEnum("roles", ["user", "admin"]);
@@ -61,6 +62,13 @@ export const verifications = pgTable("verifications", {
     .notNull(),
 });
 
+export const guests = pgTable("guests", {
+  id,
+  sessionToken: text("session_token").unique().notNull(),
+  createdAt,
+  expiresAt: timestamp("expires_at").notNull(),
+});
+
 // User relations
 export const userRelation = relations(users, ({ many }) => ({
   reviews: many(reviews, {
@@ -71,3 +79,4 @@ export const userRelation = relations(users, ({ many }) => ({
 // Types for better TypeScript support
 export type NewUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
+export type Guest = typeof guests.$inferSelect;

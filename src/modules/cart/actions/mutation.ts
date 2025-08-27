@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import { and, eq } from "drizzle-orm";
 
 import { auth } from "@/lib/auth/server";
+import { getOrCreateSessionId } from "@/lib/utils/session";
 import { db } from "@/server/db";
 import { cartItems, carts } from "@/server/schema";
 
@@ -15,11 +16,52 @@ export async function addToCart(productId: string, quantity = 1): Promise<CartAc
     const session = await auth.api.getSession({ headers: await headers() });
 
     if (!session) {
-      // For anonymous users, return success but indicate they should use client-side cart
-      return { success: true, anonymous: true };
+      // Handle guest cart
+      const sessionId = await getOrCreateSessionId();
+
+      // Get or create guest cart
+      let guestCart = await db.query.carts.findFirst({
+        where: and(eq(carts.sessionId, sessionId), eq(carts.isActive, true)),
+      });
+
+      if (!guestCart) {
+        const [newCart] = await db
+          .insert(carts)
+          .values({
+            sessionId,
+            isActive: true,
+          })
+          .returning();
+        guestCart = newCart;
+      }
+
+      // Check if product already exists in guest cart
+      const existingCartItem = await db.query.cartItems.findFirst({
+        where: and(eq(cartItems.cartId, guestCart.id), eq(cartItems.productId, productId)),
+      });
+
+      if (existingCartItem) {
+        // Update existing item quantity
+        await db
+          .update(cartItems)
+          .set({
+            quantity: existingCartItem.quantity + quantity,
+            updatedAt: new Date(),
+          })
+          .where(eq(cartItems.id, existingCartItem.id));
+      } else {
+        // Add new item to cart
+        await db.insert(cartItems).values({
+          cartId: guestCart.id,
+          productId,
+          quantity,
+        });
+      }
+
+      return { success: true };
     }
 
-    // Get or create user's active cart
+    // Handle authenticated user cart
     let userCart = await db.query.carts.findFirst({
       where: and(eq(carts.userId, session.user.id), eq(carts.isActive, true)),
     });
@@ -70,7 +112,19 @@ export async function updateCartItemQuantity(cartItemId: string, quantity: numbe
     const session = await auth.api.getSession({ headers: await headers() });
 
     if (!session) {
-      return { success: true, anonymous: true };
+      // For guest users, we need to verify the cart item belongs to their session
+      const sessionId = await getOrCreateSessionId();
+
+      const cartItem = await db.query.cartItems.findFirst({
+        where: eq(cartItems.id, cartItemId),
+        with: {
+          cart: true,
+        },
+      });
+
+      if (!cartItem || cartItem.cart.sessionId !== sessionId) {
+        return { success: false, error: "Cart item not found" };
+      }
     }
 
     if (quantity <= 0) {
@@ -99,7 +153,19 @@ export async function removeFromCart(cartItemId: string): Promise<CartActionResp
     const session = await auth.api.getSession({ headers: await headers() });
 
     if (!session) {
-      return { success: true, anonymous: true };
+      // For guest users, we need to verify the cart item belongs to their session
+      const sessionId = await getOrCreateSessionId();
+
+      const cartItem = await db.query.cartItems.findFirst({
+        where: eq(cartItems.id, cartItemId),
+        with: {
+          cart: true,
+        },
+      });
+
+      if (!cartItem || cartItem.cart.sessionId !== sessionId) {
+        return { success: false, error: "Cart item not found" };
+      }
     }
 
     await db.delete(cartItems).where(eq(cartItems.id, cartItemId));
@@ -116,9 +182,21 @@ export async function clearCart(): Promise<CartActionResponse> {
     const session = await auth.api.getSession({ headers: await headers() });
 
     if (!session) {
-      return { success: true, anonymous: true };
+      // Handle guest cart
+      const sessionId = await getOrCreateSessionId();
+
+      const guestCart = await db.query.carts.findFirst({
+        where: and(eq(carts.sessionId, sessionId), eq(carts.isActive, true)),
+      });
+
+      if (guestCart) {
+        await db.delete(cartItems).where(eq(cartItems.cartId, guestCart.id));
+      }
+
+      return { success: true };
     }
 
+    // Handle authenticated user cart
     const userCart = await db.query.carts.findFirst({
       where: and(eq(carts.userId, session.user.id), eq(carts.isActive, true)),
     });
@@ -143,10 +221,6 @@ export async function migrateAnonymousCart(
     if (!session) {
       throw new Error("User must be authenticated to migrate cart");
     }
-
-    // For client-side cart migration, we need to handle it differently
-    // since we don't have the anonymous user ID from the session
-    // This function is used by the cart sync hook for client-side migration
 
     // Get or create user's active cart
     let userCart = await db.query.carts.findFirst({

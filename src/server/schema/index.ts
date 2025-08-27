@@ -8,3 +8,4 @@ export * from "./meta-schema";
 export * from "./orders-schema";
 export * from "./product-schema";
 export * from "./review-schema";
+export * from "./wishlist-schema";

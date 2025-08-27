@@ -1,40 +1,51 @@
 import { relations } from "drizzle-orm";
-import { boolean, integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { boolean, index, integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 import { users } from "./auth-schema";
+import { createdAt, id, updatedAt } from "./helpers";
 import { products } from "./product-schema";
 
-export const carts = pgTable("carts", {
-  id: uuid("id").primaryKey().defaultRandom().notNull(),
-  isActive: boolean("is_active").notNull().default(true),
-  userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
-  sessionId: text("session_id"), // For anonymous carts
-  createdAt: timestamp("created_at")
-    .$defaultFn(() => /* @__PURE__ */ new Date())
-    .notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .$onUpdate(() => new Date())
-    .notNull(),
-});
+export const carts = pgTable(
+  "carts",
+  {
+    id,
+    isActive: boolean("is_active").notNull().default(true),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+    sessionId: text("session_id"), // For anonymous carts
+    createdAt,
+    updatedAt,
+  },
+  (table) => [
+    // Indexes for better query performance
+    index("carts_user_id_idx").on(table.userId),
+    index("carts_session_id_idx").on(table.sessionId),
+    index("carts_is_active_idx").on(table.isActive),
+  ]
+);
 
-export const cartItems = pgTable("cart_items", {
-  id: uuid("id").primaryKey().defaultRandom().notNull(),
-  cartId: uuid("cart_id")
-    .references(() => carts.id, { onDelete: "cascade" })
-    .notNull(),
-  quantity: integer("quantity").notNull().default(1),
-  productId: uuid("product_id")
-    .references(() => products.id, { onDelete: "cascade" })
-    .notNull(),
-  addedAt: timestamp("added_at")
-    .$defaultFn(() => /* @__PURE__ */ new Date())
-    .notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .$onUpdate(() => new Date())
-    .notNull(),
-});
+export const cartItems = pgTable(
+  "cart_items",
+  {
+    id,
+    cartId: uuid("cart_id")
+      .references(() => carts.id, { onDelete: "cascade" })
+      .notNull(),
+    quantity: integer("quantity").notNull().default(1),
+    productId: uuid("product_id")
+      .references(() => products.id, { onDelete: "cascade" })
+      .notNull(),
+    addedAt: timestamp("added_at")
+      .$defaultFn(() => /* @__PURE__ */ new Date())
+      .notNull(),
+    updatedAt,
+  },
+  (table) => [
+    // Indexes for better query performance
+    index("cart_items_cart_id_idx").on(table.cartId),
+    index("cart_items_product_id_idx").on(table.productId),
+    index("cart_items_added_at_idx").on(table.addedAt),
+  ]
+);
 
 // Relations
 export const cartRelations = relations(carts, ({ one, many }) => ({

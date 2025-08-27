@@ -15,7 +15,7 @@ export const LoginPrompt = () => {
         opacity: 1,
         filter: "blur(0px)",
       }}
-      className="-translate-x-1/2 fixed bottom-16 left-1/2 z-50 w-[90%] sm:w-auto"
+      className="-translate-x-1/2 fixed bottom-16 left-1/2 z-50 w-[90%] sm:w-auto md:bottom-4"
       initial={{
         y: 100,
         opacity: 0,
@@ -27,7 +27,7 @@ export const LoginPrompt = () => {
         delay: 5,
       }}
     >
-      <Banner className="sm:max-w-fit">
+      <Banner className="bg-card shadow-xl sm:max-w-fit">
         <BannerContent className="flex items-center justify-between gap-3">
           <BannerText>
             <BannerTitle className="font-medium text-sm">Login for better experience</BannerTitle>
