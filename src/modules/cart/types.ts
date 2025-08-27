@@ -1,8 +1,8 @@
-import { ProductType } from "@/modules/product/types";
+import { Product } from "@/server/schema";
 
 // Cart Item interface for client-side state
 export interface CartItem {
-  product: ProductType;
+  product: Product;
   quantity: number;
 }
 
@@ -15,7 +15,7 @@ export interface CartActionResponse {
 
 // Cart query result type
 export interface CartQueryResult {
-  product: ProductType;
+  product: Product;
   quantity: number;
 }
 
