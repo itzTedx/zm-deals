@@ -1,8 +1,14 @@
-import { Product } from "@/server/schema";
+import { Inventory, Product } from "@/server/schema";
+
+import { ProductImage } from "../product/types";
 
 // Cart Item interface for client-side state
 export interface CartItem {
-  product: Product;
+  id: string; // Cart item ID for updates
+  product: Product & {
+    inventory: Inventory;
+    images: ProductImage[];
+  };
   quantity: number;
 }
 

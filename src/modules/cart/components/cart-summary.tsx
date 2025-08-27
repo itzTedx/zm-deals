@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 
+import NumberFlow from "@number-flow/react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -22,7 +23,7 @@ import { Coupon } from "./coupon";
 interface CartSummaryProps {
   cartItems: CartItem[];
   cartLength: number;
-  cartTotal: number;
+  cartTotal: number; // Keep for backward compatibility but calculate dynamically
 }
 
 export function CartSummary({ cartItems, cartLength, cartTotal }: CartSummaryProps) {
@@ -30,9 +31,29 @@ export function CartSummary({ cartItems, cartLength, cartTotal }: CartSummaryPro
   const [isPending, startTransition] = useTransition();
   // const router = useRouter();
 
+  // Calculate total dynamically from cart items
+  const calculatedTotal = cartItems.reduce((total, item) => {
+    const price = Number(item.product.price);
+    return total + price * item.quantity;
+  }, 0);
+
+  // Use calculated total instead of prop
+  const currentCartTotal = calculatedTotal;
+
   const [appliedCoupon, setAppliedCoupon] = useState<CouponValidationResult["coupon"] | undefined>();
   const [discountAmount, setDiscountAmount] = useState(0);
-  const [finalTotal, setFinalTotal] = useState(cartTotal);
+  const [finalTotal, setFinalTotal] = useState(currentCartTotal);
+
+  // Update final total when cart total changes
+  useEffect(() => {
+    if (appliedCoupon) {
+      // Recalculate discount and final total when cart changes
+      // This would need to be implemented based on your coupon logic
+      setFinalTotal(currentCartTotal - discountAmount);
+    } else {
+      setFinalTotal(currentCartTotal);
+    }
+  }, [currentCartTotal, appliedCoupon, discountAmount]);
 
   const handleCouponApplied = (result: CouponValidationResult) => {
     if (result.isValid && result.coupon) {
@@ -45,7 +66,7 @@ export function CartSummary({ cartItems, cartLength, cartTotal }: CartSummaryPro
   const handleCouponRemoved = () => {
     setAppliedCoupon(undefined);
     setDiscountAmount(0);
-    setFinalTotal(cartTotal);
+    setFinalTotal(currentCartTotal);
   };
 
   // const handleClearCart = () => {
@@ -115,7 +136,7 @@ export function CartSummary({ cartItems, cartLength, cartTotal }: CartSummaryPro
 
       <Coupon
         appliedCoupon={appliedCoupon}
-        cartTotal={cartTotal}
+        cartTotal={currentCartTotal}
         onCouponApplied={handleCouponApplied}
         onCouponRemoved={handleCouponRemoved}
       />
@@ -127,7 +148,7 @@ export function CartSummary({ cartItems, cartLength, cartTotal }: CartSummaryPro
           </h4>
           <p className="flex items-center gap-0.5 text-gray-700">
             <IconCurrency className="size-3" />
-            {cartTotal.toFixed(2)}
+            {currentCartTotal.toFixed(2)}
           </p>
         </div>
 
@@ -150,7 +171,7 @@ export function CartSummary({ cartItems, cartLength, cartTotal }: CartSummaryPro
         <h4 className="text-gray-600">Total</h4>
         <p className="flex items-center gap-0.5 text-gray-800">
           <IconCurrency className="size-4" />
-          {finalTotal.toFixed(2)}
+          <NumberFlow value={finalTotal} />
         </p>
       </div>
 

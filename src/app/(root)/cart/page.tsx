@@ -5,7 +5,13 @@ import { CartItem, CartSummary } from "@/modules/cart/components";
 export default async function CartPage() {
   const cartData = await getCartData();
 
-  const { items: cartItems, itemCount, total: cartTotal } = cartData;
+  const { items: cartItems, itemCount } = cartData;
+
+  // Calculate total dynamically to ensure it's always up to date
+  const cartTotal = cartItems.reduce((total, item) => {
+    const price = Number(item.product.price);
+    return total + price * item.quantity;
+  }, 0);
 
   return (
     <main className="container grid max-w-7xl grid-cols-3 gap-6 py-8">

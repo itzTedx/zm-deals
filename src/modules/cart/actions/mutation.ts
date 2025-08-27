@@ -125,6 +125,18 @@ export async function updateCartItemQuantity(cartItemId: string, quantity: numbe
       if (!cartItem || cartItem.cart.sessionId !== sessionId) {
         return { success: false, error: "Cart item not found" };
       }
+    } else {
+      // For authenticated users, verify the cart item belongs to their cart
+      const cartItem = await db.query.cartItems.findFirst({
+        where: eq(cartItems.id, cartItemId),
+        with: {
+          cart: true,
+        },
+      });
+
+      if (!cartItem || cartItem.cart.userId !== session.user.id) {
+        return { success: false, error: "Cart item not found" };
+      }
     }
 
     if (quantity <= 0) {
@@ -164,6 +176,18 @@ export async function removeFromCart(cartItemId: string): Promise<CartActionResp
       });
 
       if (!cartItem || cartItem.cart.sessionId !== sessionId) {
+        return { success: false, error: "Cart item not found" };
+      }
+    } else {
+      // For authenticated users, verify the cart item belongs to their cart
+      const cartItem = await db.query.cartItems.findFirst({
+        where: eq(cartItems.id, cartItemId),
+        with: {
+          cart: true,
+        },
+      });
+
+      if (!cartItem || cartItem.cart.userId !== session.user.id) {
         return { success: false, error: "Cart item not found" };
       }
     }

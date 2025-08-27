@@ -43,6 +43,7 @@ export async function getCart() {
       }
 
       return guestCart.items.map((item) => ({
+        id: item.id,
         product: item.product,
         quantity: item.quantity,
       }));
@@ -75,6 +76,7 @@ export async function getCart() {
     }
 
     return userCart.items.map((item) => ({
+      id: item.id,
       product: item.product,
       quantity: item.quantity,
     }));
@@ -196,7 +198,6 @@ export async function getCartData() {
             with: {
               product: {
                 with: {
-                  meta: true,
                   inventory: true,
                   images: {
                     with: {
@@ -219,6 +220,7 @@ export async function getCartData() {
       }
 
       const items = guestCart.items.map((item) => ({
+        id: item.id,
         product: item.product,
         quantity: item.quantity,
       }));
@@ -267,6 +269,7 @@ export async function getCartData() {
     }
 
     const items = userCart.items.map((item) => ({
+      id: item.id,
       product: item.product,
       quantity: item.quantity,
     }));
