@@ -5,11 +5,10 @@ import { stripe } from "@better-auth/stripe";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { admin as adminPlugin, anonymous, openAPI } from "better-auth/plugins";
+import { admin as adminPlugin, openAPI } from "better-auth/plugins";
 import { createAccessControl } from "better-auth/plugins/access";
 import { adminAc } from "better-auth/plugins/admin/access";
 
-import { migrateAnonymousCart } from "@/modules/cart/services";
 import { db } from "@/server/db";
 
 import { env } from "../env/server";
@@ -91,20 +90,20 @@ export const auth = betterAuth({
         }
       },
     }),
-    anonymous({
-      onLinkAccount: async ({ anonymousUser, newUser }) => {
-        const result = await migrateAnonymousCart({
-          anonymousUserId: anonymousUser.user.id,
-          newUserId: newUser.user.id,
-        });
+    // anonymous({
+    //   onLinkAccount: async ({ anonymousUser, newUser }) => {
+    //     const result = await migrateAnonymousCart({
+    //       anonymousUserId: anonymousUser.user.id,
+    //       newUserId: newUser.user.id,
+    //     });
 
-        if (result.success) {
-          console.log(`Cart migration completed: ${result.migratedItems} items migrated`);
-        } else {
-          console.error("Cart migration failed:", result.error);
-        }
-      },
-    }),
+    //     if (result.success) {
+    //       console.log(`Cart migration completed: ${result.migratedItems} items migrated`);
+    //     } else {
+    //       console.error("Cart migration failed:", result.error);
+    //     }
+    //   },
+    // }),
     openAPI(),
     nextCookies(),
   ],

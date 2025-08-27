@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 
 import { and, eq } from "drizzle-orm";
 
-import { auth } from "@/lib/auth/server";
+import { auth, getSession } from "@/lib/auth/server";
 import { db } from "@/server/db";
 import { carts } from "@/server/schema";
 
@@ -113,7 +113,7 @@ export async function getCartTotal() {
 // New function to get cart data for components that need both cart items and totals
 export async function getCartData() {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getSession();
 
     if (!session) {
       return {

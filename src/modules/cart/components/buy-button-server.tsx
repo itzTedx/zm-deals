@@ -9,8 +9,6 @@ import { LoadingSwap } from "@/components/ui/loading-swap";
 
 import { ChevronRightIcon, ChevronRightIconHandle } from "@/assets/icons/chevron";
 
-import { signIn } from "@/lib/auth/client";
-
 import { ProductQueryResult } from "../../product/types";
 import { addToCart } from "../actions/mutation";
 
@@ -38,7 +36,7 @@ export function BuyButtonServer({ data, onCartUpdated }: Props) {
         if (result.anonymous) {
           try {
             // Create anonymous session
-            await signIn.anonymous();
+            // await signIn.anonymous();
             toast.success("Added to cart successfully!");
             onCartUpdated?.();
           } catch (anonymousError) {

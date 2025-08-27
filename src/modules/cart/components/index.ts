@@ -9,6 +9,6 @@ export { CartIconServer } from "./cart-icon-server";
 export { CartItemCard as CartItemCardNew } from "./cart-item-card";
 export { CartItemCard } from "./cart-items";
 export { CartProvider, useCartContext } from "./cart-provider";
-export { CartSheet as CartSheetNew } from "./cart-sheet-new";
+export { CartSheet } from "./cart-sheet";
 export { CartSummary } from "./cart-summary";
 export { CartSummary as CartSummaryNew } from "./cart-summary-new";

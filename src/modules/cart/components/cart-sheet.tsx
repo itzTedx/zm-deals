@@ -2,7 +2,6 @@
 
 import { useTransition } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 import { useAtom } from "jotai";
 import { ShoppingBag, Trash2 } from "lucide-react";
@@ -22,7 +21,6 @@ import { CartItemCard } from "./cart-items";
 import { DeliveryDeadline } from "./delivery-deadline";
 
 export function CartSheet() {
-  const router = useRouter();
   const { cart, setCart } = useCartSync();
   const [itemCount] = useAtom(cartItemCountAtom);
   const [cartTotal] = useAtom(cartTotalAtom);

@@ -74,15 +74,6 @@ export function CouponSection({ cartTotal, onCouponApplied, onCouponRemoved, app
     setValidationResult(null);
   };
 
-  const formatDiscount = (coupon: CouponValidationResult["coupon"]) => {
-    if (!coupon) return "";
-
-    if (coupon.discountType === "percentage") {
-      return `${coupon.discountValue}%`;
-    }
-    return `$${coupon.discountValue}`;
-  };
-
   return (
     <div className="space-y-3">
       {appliedCoupon ? (

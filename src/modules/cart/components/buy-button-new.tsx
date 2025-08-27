@@ -9,8 +9,6 @@ import { LoadingSwap } from "@/components/ui/loading-swap";
 
 import { ChevronRightIcon, ChevronRightIconHandle } from "@/assets/icons/chevron";
 
-import { signIn } from "@/lib/auth/client";
-
 import { ProductQueryResult } from "../../product/types";
 import { addToCart } from "../actions/mutation";
 
@@ -35,18 +33,18 @@ export const BuyButton = ({ data, onCartUpdated }: Props) => {
         }
 
         // If this is an anonymous user, create anonymous session
-        if (result.anonymous) {
-          try {
-            // Create anonymous session
-            await signIn.anonymous();
-            toast.success("Added to cart successfully!");
-            onCartUpdated?.();
-          } catch (anonymousError) {
-            console.error("Error creating anonymous session:", anonymousError);
-            toast.error("Failed to create anonymous session");
-          }
-          return;
-        }
+        // if (result.anonymous) {
+        //   try {
+        //     // Create anonymous session
+        //     await signIn.anonymous();
+        //     toast.success("Added to cart successfully!");
+        //     onCartUpdated?.();
+        //   } catch (anonymousError) {
+        //     console.error("Error creating anonymous session:", anonymousError);
+        //     toast.error("Failed to create anonymous session");
+        //   }
+        //   return;
+        // }
 
         toast.success("Added to cart successfully!");
         onCartUpdated?.();
