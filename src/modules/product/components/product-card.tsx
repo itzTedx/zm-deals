@@ -29,7 +29,7 @@ export const ProductCard = ({ data }: Props) => {
           <Image alt={data.title} className="object-cover" fill src={data.image} />
         </div>
         <CardHeader className="pt-2">
-          <CardTitle className="max-md:text-sm">
+          <CardTitle className="text-sm sm:text-base">
             <h3 className="text-balance leading-snug">{data.title}</h3>
           </CardTitle>
 

@@ -113,6 +113,8 @@ export async function createOrder(rawData: unknown): Promise<CreateOrderResponse
           subtotal: data.subtotal.toString(),
           taxAmount: data.taxAmount.toString(),
           shippingAmount: data.shippingAmount.toString(),
+          discountAmount: (data.discountAmount || 0).toString(),
+          couponCode: data.couponCode,
           totalAmount: data.total.toString(),
           customerEmail: data.customerEmail,
           customerPhone: data.customerPhone,
@@ -167,6 +169,8 @@ export async function createOrder(rawData: unknown): Promise<CreateOrderResponse
       orderNumber: result.orderNumber,
       itemCount: data.items.length,
       total: data.total,
+      discountAmount: data.discountAmount || 0,
+      couponCode: data.couponCode,
       paymentIntentId: data.paymentIntentId,
     });
 

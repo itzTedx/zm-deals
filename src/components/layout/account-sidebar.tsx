@@ -27,7 +27,7 @@ export const AccountSidebar = ({ session }: Props) => {
       </div>
       <ul className="space-y-2 rounded-lg bg-card p-2">
         <li>
-          <SidebarLink href="/account/cart" icon={<IconShoppingBag2 className="size-5" />}>
+          <SidebarLink href="/cart" icon={<IconShoppingBag2 className="size-5" />}>
             Cart
           </SidebarLink>
         </li>

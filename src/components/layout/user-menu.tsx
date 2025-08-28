@@ -21,14 +21,14 @@ import {
 export default function UserMenu({ session }: { session: NonNullable<AuthSession> }) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex cursor-pointer gap-2">
+      <DropdownMenuTrigger className="flex cursor-pointer items-center gap-2">
         <Avatar>
           <AvatarImage alt="Profile image" src={session.user.image ?? undefined} />
           <AvatarFallback className="text-muted-foreground">{session.user.name.slice(0, 1)}</AvatarFallback>
         </Avatar>
         <div className="hidden flex-col items-start md:flex">
-          <p className="font-medium text-sm">Hi! {session.user.name}</p>
-          <p className="text-muted/80 text-xs">{session.user.email}</p>
+          <p className="font-medium text-gray-600 text-sm">Hi! {session.user.name}</p>
+          {/* <p className="text-muted/80 text-xs">{session.user.email}</p> */}
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="z-99999 max-w-72">

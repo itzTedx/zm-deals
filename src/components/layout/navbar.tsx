@@ -17,7 +17,7 @@ export const Navbar = async () => {
 
   return (
     <header className="sticky top-0 z-999 h-fit">
-      <div className="relative z-999 rounded-b-xl bg-brand-600 text-card shadow-brand-lg">
+      <div className="relative z-999 bg-card text-foreground">
         <nav className="container relative z-999 mx-auto flex max-w-7xl items-center justify-between gap-4 py-2.5 font-helvetica max-md:justify-between md:gap-8">
           <div className="flex items-center gap-2 md:gap-6">
             <Link aria-label="go home" className="flex items-center gap-2" href="/">
@@ -28,14 +28,14 @@ export const Navbar = async () => {
             <ul className="hidden items-center gap-6 md:flex">
               {NAV_LINKS.map((nav) => (
                 <li key={nav.href}>
-                  <Link className="font-medium text-brand-50 transition-colors hover:text-brand-200" href={nav.href}>
+                  <Link className="font-medium text-gray-600 transition-colors hover:text-brand-500" href={nav.href}>
                     {nav.label}
                   </Link>
                 </li>
               ))}
               <li>
                 <Link
-                  className="flex items-center gap-1 font-medium text-brand-50 transition-colors hover:text-brand-200"
+                  className="flex items-center gap-1 font-medium text-gray-600 transition-colors hover:text-brand-500"
                   href="/deals"
                 >
                   Categories <IconChevronRight className="rotate-90" />
@@ -46,12 +46,12 @@ export const Navbar = async () => {
 
           <div className="group relative mx-auto max-w-sm flex-1 sm:max-w-md">
             <Input
-              className="peer h-10 bg-brand-400/50 ps-9 pe-14 text-sm placeholder:text-brand-100 hover:placeholder:text-muted-foreground sm:h-11 sm:ps-10 sm:pe-16 sm:text-base"
+              className="peer h-10 ps-9 pe-14 text-sm hover:placeholder:text-muted-foreground sm:h-11 sm:ps-10 sm:pe-16 sm:text-base"
               id="search"
               placeholder="What are you looking for?"
               type="search"
             />
-            <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-brand-100 group-hover:text-muted-foreground/80 group-active:text-muted-foreground/80 peer-disabled:opacity-50">
+            <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-gray-300 group-hover:text-muted-foreground/80 group-active:text-muted-foreground/80 peer-disabled:opacity-50">
               <IconSearch className="size-4 sm:size-5" />
             </div>
             <Button
@@ -78,7 +78,7 @@ export const Navbar = async () => {
                 <Link href="/auth/login">Login</Link>
               </Button>
             )} */}
-            <div className="hidden h-5 w-px flex-1 shrink-0 bg-brand-400 md:block" />
+            <div className="hidden h-5 w-px flex-1 shrink-0 bg-gray-200 md:block" />
             <WishlistIcon />
             <CartIcon />
           </div>

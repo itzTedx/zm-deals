@@ -30,6 +30,8 @@ export const createOrderDataSchema = z.object({
   subtotal: z.number().nonnegative("Subtotal must be non-negative"),
   taxAmount: z.number().nonnegative("Tax amount must be non-negative"),
   shippingAmount: z.number().nonnegative("Shipping amount must be non-negative"),
+  discountAmount: z.number().nonnegative("Discount amount must be non-negative").optional(),
+  couponCode: z.string().optional(),
   customerEmail: z.email("Valid customer email is required"),
   customerPhone: z.string().optional(),
   customerNote: z.string().optional(),

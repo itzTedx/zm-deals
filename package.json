@@ -26,16 +26,9 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@hookform/resolvers": "^5.2.1",
     "@number-flow/react": "^0.5.10",
-    "@radix-ui/react-alert-dialog": "^1.1.15",
-    "@radix-ui/react-checkbox": "^1.3.3",
-    "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-label": "^2.1.7",
-    "@radix-ui/react-popover": "^1.1.15",
-    "@radix-ui/react-progress": "^1.1.7",
-    "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
-    "@radix-ui/react-switch": "^1.2.6",
     "@remixicon/react": "^4.6.0",
     "@t3-oss/env-nextjs": "^0.13.8",
     "@tanstack/react-table": "^8.21.3",
@@ -87,9 +80,16 @@
     "typescript": "^5.9.2"
   },
   "lint-staged": {
-    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx}": ["biome check --write .", "biome format --write ."],
-    "*.{json,jsonc}": ["biome format --write ."],
-    "*.{md,mdx}": ["biome format --write ."]
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx}": [
+      "biome check --write .",
+      "biome format --write ."
+    ],
+    "*.{json,jsonc}": [
+      "biome format --write ."
+    ],
+    "*.{md,mdx}": [
+      "biome format --write ."
+    ]
   },
   "pnpm": {
     "overrides": {

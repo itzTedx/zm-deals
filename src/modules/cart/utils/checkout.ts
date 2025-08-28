@@ -14,7 +14,7 @@ export function prepareCartForCheckout(
     productId: item.product.id,
     quantity: item.quantity,
     name: item.product.title,
-    description: item.product.description || undefined,
+    description: item.product.overview || undefined,
     price: Number(item.product.price),
     image: item.product.image || undefined,
   }));

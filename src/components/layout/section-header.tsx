@@ -14,6 +14,7 @@ interface Props {
   link?: Route;
   hasButton?: boolean;
   variant?: "default" | "compact";
+  titleClassName?: string;
 }
 
 export const SectionHeader = ({
@@ -24,6 +25,7 @@ export const SectionHeader = ({
   className,
   variant = "default",
   hasButton = true,
+  titleClassName,
   ...props
 }: Props & React.ComponentProps<"header">) => {
   return (
@@ -36,7 +38,7 @@ export const SectionHeader = ({
       {...props}
     >
       <div className="space-y-3">
-        <h2 className="font-bold text-2xl sm:text-3xl md:text-4xl">{title}</h2>
+        <h2 className={cn("font-bold text-2xl sm:text-3xl md:text-4xl", titleClassName)}>{title}</h2>
 
         {hasButton &&
           (link ? (

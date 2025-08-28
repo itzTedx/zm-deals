@@ -58,14 +58,29 @@ export async function handleCheckoutSessionCompleted(
       log.error("Failed to parse product IDs from metadata", error);
     }
 
-    // Map Stripe line items to order items using database product IDs
-    const items = stripeItems.map((item, index) => ({
-      productId:
-        databaseProductIds[index] ||
-        (typeof item.price?.product === "string" ? item.price.product : item.price?.product?.id || ""),
-      quantity: item.quantity || 1,
-      price: (item.amount_total || 0) / 100, // Convert from cents
-    }));
+    // Extract discount information from metadata
+    const discountAmount = Number.parseFloat(sessionWithItems.metadata?.discountAmount || "0");
+    const couponCode = sessionWithItems.metadata?.couponCode || undefined;
+
+    // Filter out discount line items and map Stripe line items to order items
+    const items = stripeItems
+      .filter((item) => {
+        // Filter out discount line items (negative amounts)
+        const amount = item.amount_total || 0;
+        return amount > 0;
+      })
+      .map((item, index) => {
+        // Find the corresponding database product ID
+        const productId =
+          databaseProductIds[index] ||
+          (typeof item.price?.product === "string" ? item.price.product : item.price?.product?.id || "");
+
+        return {
+          productId,
+          quantity: item.quantity || 1,
+          price: (item.amount_total || 0) / 100, // Convert from cents
+        };
+      });
 
     const total = (sessionWithItems.amount_total || 0) / 100;
     const subtotal = (sessionWithItems.amount_subtotal || 0) / 100;
@@ -78,6 +93,8 @@ export async function handleCheckoutSessionCompleted(
       subtotal,
       taxAmount,
       shippingAmount: 0, // Stripe handles shipping separately if needed
+      discountAmount, // Add discount amount to order data
+      couponCode, // Add coupon code to order data
       customerEmail: sessionWithItems.customer_email || "",
       customerPhone: sessionWithItems.customer_details?.phone || undefined,
       shippingAddress: undefined,
@@ -103,6 +120,16 @@ export async function handleCheckoutSessionCompleted(
       userId: sessionWithItems.metadata?.userId || undefined,
     };
 
+    // Log discount information
+    if (discountAmount > 0) {
+      log.info("Processing order with discount", {
+        discountAmount,
+        couponCode,
+        total,
+        subtotal,
+      });
+    }
+
     // Log userId extraction
     if (sessionWithItems.metadata?.userId) {
       log.info("Extracted userId from session metadata", { userId: sessionWithItems.metadata.userId });
@@ -119,6 +146,8 @@ export async function handleCheckoutSessionCompleted(
         orderNumber: orderResult.orderNumber,
         sessionId: sessionWithItems.id,
         alreadyExists: orderResult.alreadyExists,
+        discountAmount,
+        couponCode,
       });
 
       // Only process confirmation if this is a new order (not already existing)

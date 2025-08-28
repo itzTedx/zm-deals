@@ -82,6 +82,48 @@ export async function createCheckoutSession(checkoutData: {
   }
 }
 
+// Helper function to create line items with discount
+function createLineItemsWithDiscount(
+  items: CartCheckoutSchema["items"],
+  discountAmount = 0,
+  couponCode?: string
+): Stripe.Checkout.SessionCreateParams.LineItem[] {
+  const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
+
+  // Add product line items
+  items.forEach((item) => {
+    lineItems.push({
+      price_data: {
+        currency: "AED",
+        product_data: {
+          name: item.name,
+          description: item.description || "",
+          images: item.image ? [item.image] : undefined,
+        },
+        unit_amount: Math.round(item.price * 100),
+      },
+      quantity: item.quantity,
+    });
+  });
+
+  // Add discount line item if there's a discount
+  if (discountAmount > 0) {
+    lineItems.push({
+      price_data: {
+        currency: "AED",
+        product_data: {
+          name: couponCode ? `Discount (${couponCode})` : "Discount",
+          description: "Applied discount",
+        },
+        unit_amount: -Math.round(discountAmount * 100), // Negative amount for discount
+      },
+      quantity: 1,
+    });
+  }
+
+  return lineItems;
+}
+
 // New cart-based checkout function
 export async function createCartCheckoutSession(checkoutData: CartCheckoutSchema) {
   try {
@@ -112,20 +154,12 @@ export async function createCartCheckoutSession(checkoutData: CartCheckoutSchema
     // Calculate the amount to charge (use finalTotal if available, otherwise use total)
     const amountToCharge = finalTotal || total;
 
+    // Create line items with discount
+    const lineItems = createLineItemsWithDiscount(items, discountAmount || 0, couponCode);
+
     const stripeParams: Stripe.Checkout.SessionCreateParams = {
       mode: "payment" as const,
-      line_items: items.map((item) => ({
-        price_data: {
-          currency: "AED",
-          product_data: {
-            name: item.name,
-            description: item.description || "",
-            images: item.image ? [item.image] : undefined,
-          },
-          unit_amount: Math.round(item.price * 100),
-        },
-        quantity: item.quantity,
-      })),
+      line_items: lineItems,
       metadata: {
         userId: session.user.id,
         itemCount: items.length.toString(),
@@ -180,20 +214,12 @@ export async function createAnonymousCheckoutSession(checkoutData: CartCheckoutS
     // Calculate the amount to charge (use finalTotal if available, otherwise use total)
     const amountToCharge = finalTotal || total;
 
+    // Create line items with discount
+    const lineItems = createLineItemsWithDiscount(items, discountAmount || 0, couponCode);
+
     const stripeParams: Stripe.Checkout.SessionCreateParams = {
       mode: "payment" as const,
-      line_items: items.map((item) => ({
-        price_data: {
-          currency: "AED",
-          product_data: {
-            name: item.name,
-            description: item.description || "",
-            images: item.image ? [item.image] : undefined,
-          },
-          unit_amount: Math.round(item.price * 100),
-        },
-        quantity: item.quantity,
-      })),
+      line_items: lineItems,
       metadata: {
         anonymous: "true",
         sessionId: sessionId || "", // Include session ID for guest cart clearing
