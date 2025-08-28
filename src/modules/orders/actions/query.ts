@@ -229,6 +229,7 @@ export async function getAllOrders() {
             id: true,
             name: true,
             email: true,
+            image: true,
           },
         },
       },
