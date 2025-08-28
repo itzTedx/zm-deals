@@ -11,7 +11,7 @@ import { ProductQueryResult } from "../types";
 interface RecommendationOptions {
   limit?: number;
   excludeProductIds?: string[];
-  strategy?: "category" | "price" | "rating" | "featured" | "hybrid";
+  strategy?: "hybrid" | "category" | "price" | "rating" | "featured" | "personalized" | "trending";
 }
 
 interface RecommendationStrategy {
@@ -22,13 +22,16 @@ interface RecommendationStrategy {
 
 interface CartProduct {
   id: string;
-  categoryId: string | null;
-  price: string;
   title: string;
+  description: string;
+  overview?: string | null;
+  price: string;
+  categoryId?: string | null;
   category?: {
     id: string;
     name: string;
   } | null;
+
   reviews?: Array<{
     rating: number;
   }>;

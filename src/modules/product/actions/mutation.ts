@@ -57,6 +57,7 @@ export async function upsertProduct(rawData: unknown): Promise<{ success: boolea
               media: true,
             },
           },
+          category: true,
         },
       });
 

@@ -51,6 +51,7 @@
     "next": "15.5.2",
     "next-themes": "^0.4.6",
     "nuqs": "^2.5.1",
+    "openai": "^5.16.0",
     "pg": "^8.16.3",
     "radix-ui": "latest",
     "react": "19.1.1",
@@ -80,16 +81,9 @@
     "typescript": "^5.9.2"
   },
   "lint-staged": {
-    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx}": [
-      "biome check --write .",
-      "biome format --write ."
-    ],
-    "*.{json,jsonc}": [
-      "biome format --write ."
-    ],
-    "*.{md,mdx}": [
-      "biome format --write ."
-    ]
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx}": ["biome check --write .", "biome format --write ."],
+    "*.{json,jsonc}": ["biome format --write ."],
+    "*.{md,mdx}": ["biome format --write ."]
   },
   "pnpm": {
     "overrides": {
