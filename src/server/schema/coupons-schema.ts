@@ -23,6 +23,7 @@ export const coupons = pgTable(
     usedCount: integer("used_count").notNull().default(0),
     isActive: boolean("is_active").notNull().default(true),
     description: text("description"),
+    stripeCouponId: text("stripe_coupon_id"),
     createdAt,
     updatedAt,
   },

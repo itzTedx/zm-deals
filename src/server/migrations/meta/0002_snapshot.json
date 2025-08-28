@@ -1,6 +1,6 @@
 {
-  "id": "714327ce-c459-4040-a98a-c8a1a3d14481",
-  "prevId": "ad4d23ea-f441-42bc-96b4-25374c3c5f36",
+  "id": "8102220a-c96f-47c6-aad6-b54a0f53e4c9",
+  "prevId": "714327ce-c459-4040-a98a-c8a1a3d14481",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -820,6 +820,12 @@
         },
         "description": {
           "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "stripe_coupon_id": {
+          "name": "stripe_coupon_id",
           "type": "text",
           "primaryKey": false,
           "notNull": false

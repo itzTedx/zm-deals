@@ -16,6 +16,7 @@ import {
   updateCouponSchema,
 } from "../types";
 import { validateCoupon } from "./query";
+import { createStripeCoupon, deleteStripeCoupon, updateStripeCoupon } from "./stripe-integration";
 
 // Create a new coupon
 export async function createCoupon(data: CreateCouponData) {
@@ -41,18 +42,15 @@ export async function createCoupon(data: CreateCouponData) {
       return { success: false, error: "Percentage discount cannot exceed 100%" };
     }
 
-    const [coupon] = await db
-      .insert(coupons)
-      .values({
-        ...validatedData,
-        discountValue: validatedData.discountValue.toString(),
-        minOrderAmount: validatedData.minOrderAmount?.toString(),
-        maxDiscount: validatedData.maxDiscount?.toString(),
-      })
-      .returning();
+    // Create coupon in both database and Stripe
+    const result = await createStripeCoupon(validatedData);
+
+    if (!result.success || !result.data) {
+      return result;
+    }
 
     revalidatePath("/studio/coupons");
-    return { success: true, data: coupon };
+    return { success: true, data: result.data.dbCoupon };
   } catch (error) {
     console.error("Error creating coupon:", error);
     return { success: false, error: "Failed to create coupon" };
@@ -100,18 +98,15 @@ export async function updateCoupon(data: UpdateCouponData) {
       return { success: false, error: "Percentage discount cannot exceed 100%" };
     }
 
-    const updateData: any = { ...validatedData };
-    delete updateData.id;
+    // Update coupon in both database and Stripe
+    const result = await updateStripeCoupon(validatedData);
 
-    // Convert numeric values to strings for decimal fields
-    if (updateData.discountValue) updateData.discountValue = updateData.discountValue.toString();
-    if (updateData.minOrderAmount) updateData.minOrderAmount = updateData.minOrderAmount.toString();
-    if (updateData.maxDiscount) updateData.maxDiscount = updateData.maxDiscount.toString();
-
-    const [coupon] = await db.update(coupons).set(updateData).where(eq(coupons.id, validatedData.id)).returning();
+    if (!result.success) {
+      return result;
+    }
 
     revalidatePath("/studio/coupons");
-    return { success: true, data: coupon };
+    return { success: true, data: result.data };
   } catch (error) {
     console.error("Error updating coupon:", error);
     return { success: false, error: "Failed to update coupon" };
@@ -121,20 +116,15 @@ export async function updateCoupon(data: UpdateCouponData) {
 // Delete/deactivate a coupon
 export async function deleteCoupon(id: string) {
   try {
-    // Check if coupon exists
-    const existingCoupon = await db.query.coupons.findFirst({
-      where: eq(coupons.id, id),
-    });
+    // Delete coupon from both database and Stripe
+    const result = await deleteStripeCoupon(id);
 
-    if (!existingCoupon) {
-      return { success: false, error: "Coupon not found" };
+    if (!result.success) {
+      return result;
     }
 
-    // Soft delete by setting isActive to false
-    const [coupon] = await db.update(coupons).set({ isActive: false }).where(eq(coupons.id, id)).returning();
-
     revalidatePath("/studio/coupons");
-    return { success: true, data: coupon };
+    return { success: true, data: result.data };
   } catch (error) {
     console.error("Error deleting coupon:", error);
     return { success: false, error: "Failed to delete coupon" };

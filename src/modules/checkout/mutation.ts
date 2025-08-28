@@ -124,7 +124,95 @@ function createLineItemsWithDiscount(
   return lineItems;
 }
 
-// New cart-based checkout function
+// New cart-based checkout function with Stripe coupon support
+export async function createCartCheckoutSessionWithStripeCoupon(checkoutData: CartCheckoutSchema) {
+  try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      throw new Error("Please sign in to proceed with checkout");
+    }
+
+    const { data, error } = cartCheckoutSchema.safeParse(checkoutData);
+
+    if (error) {
+      console.error("❌ [DEBUG] Schema validation failed:", {
+        errors: z.prettifyError(error),
+        originalData: checkoutData,
+      });
+      throw new Error(error.message);
+    }
+
+    const { items, total, discountAmount, finalTotal, couponCode } = data;
+
+    if (items.length === 0) {
+      throw new Error("Cart is empty");
+    }
+
+    // Create line items without discount (Stripe will handle the discount)
+    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = items.map((item) => ({
+      price_data: {
+        currency: "AED",
+        product_data: {
+          name: item.name,
+          description: item.description || "",
+          images: item.image ? [item.image] : undefined,
+        },
+        unit_amount: Math.round(item.price * 100),
+      },
+      quantity: item.quantity,
+    }));
+
+    const stripeParams: Stripe.Checkout.SessionCreateParams = {
+      mode: "payment" as const,
+      line_items: lineItems,
+      metadata: {
+        userId: session.user.id,
+        itemCount: items.length.toString(),
+        total: total.toString(),
+        finalTotal: finalTotal?.toString() || total.toString(),
+        discountAmount: (discountAmount || 0).toString(),
+        couponCode: couponCode || "",
+        productIds: JSON.stringify(items.map((item) => item.productId)),
+      },
+      customer_email: session.user.email,
+      success_url: `${env.BASE_URL}/checkout?success=1&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${env.BASE_URL}/checkout?cancelled=1`,
+      billing_address_collection: "required",
+      shipping_address_collection: {
+        allowed_countries: ["AE"],
+      },
+      phone_number_collection: { enabled: true },
+    };
+
+    // Add coupon if provided
+    if (couponCode) {
+      stripeParams.discounts = [
+        {
+          coupon: couponCode, // Use the coupon code directly
+        },
+      ];
+    }
+
+    const checkout = await stripeClient.checkout.sessions.create(stripeParams);
+
+    console.log("✅ [DEBUG] Stripe checkout session created with coupon:", {
+      sessionId: checkout.id,
+      couponCode,
+      total,
+      finalTotal,
+    });
+
+    return { success: true, url: checkout.url };
+  } catch (error) {
+    console.error("❌ [DEBUG] Error creating checkout session:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Failed to create checkout session" };
+  }
+}
+
+// Enhanced cart-based checkout function that supports both approaches
 export async function createCartCheckoutSession(checkoutData: CartCheckoutSchema) {
   try {
     const session = await auth.api.getSession({
@@ -151,10 +239,25 @@ export async function createCartCheckoutSession(checkoutData: CartCheckoutSchema
       throw new Error("Cart is empty");
     }
 
+    // If we have a coupon code, try to use Stripe's native coupon system
+    if (couponCode) {
+      try {
+        // First, try to use Stripe's native coupon system
+        const result = await createCartCheckoutSessionWithStripeCoupon(checkoutData);
+        if (result.success) {
+          return result;
+        }
+        // If Stripe coupon fails, fall back to manual discount
+        console.warn("⚠️ [DEBUG] Stripe coupon failed, falling back to manual discount:", result.error);
+      } catch (stripeError) {
+        console.warn("⚠️ [DEBUG] Stripe coupon error, falling back to manual discount:", stripeError);
+      }
+    }
+
     // Calculate the amount to charge (use finalTotal if available, otherwise use total)
     const amountToCharge = finalTotal || total;
 
-    // Create line items with discount
+    // Create line items with manual discount
     const lineItems = createLineItemsWithDiscount(items, discountAmount || 0, couponCode);
 
     const stripeParams: Stripe.Checkout.SessionCreateParams = {
@@ -168,6 +271,7 @@ export async function createCartCheckoutSession(checkoutData: CartCheckoutSchema
         discountAmount: (discountAmount || 0).toString(),
         couponCode: couponCode || "",
         productIds: JSON.stringify(items.map((item) => item.productId)),
+        discountMethod: "manual", // Indicate this was a manual discount
       },
       customer_email: session.user.email,
       success_url: `${env.BASE_URL}/checkout?success=1&session_id={CHECKOUT_SESSION_ID}`,
@@ -181,14 +285,18 @@ export async function createCartCheckoutSession(checkoutData: CartCheckoutSchema
 
     const checkout = await stripeClient.checkout.sessions.create(stripeParams);
 
-    console.log("checkout", checkout);
+    console.log("✅ [DEBUG] Stripe checkout session created with manual discount:", {
+      sessionId: checkout.id,
+      couponCode,
+      total,
+      finalTotal,
+      discountAmount,
+    });
+
     return { success: true, url: checkout.url };
   } catch (error) {
-    console.error("Error creating checkout session:", error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Failed to create checkout session",
-    };
+    console.error("❌ [DEBUG] Error creating checkout session:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Failed to create checkout session" };
   }
 }
 
