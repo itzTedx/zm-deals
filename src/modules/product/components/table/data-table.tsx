@@ -269,7 +269,7 @@ export function ProductsTable({ data }: { data: ProductQueryResult[] }) {
 
       {/* Pagination */}
       {table.getRowModel().rows.length > 0 && (
-        <div className="flex items-center justify-between gap-3">
+        <div className="sticky bottom-0 z-10 flex items-center justify-between gap-3 bg-background py-2">
           <p aria-live="polite" className="flex-1 whitespace-nowrap text-muted-foreground text-sm">
             Page <span className="text-foreground">{table.getState().pagination.pageIndex + 1}</span> of{" "}
             <span className="text-foreground">{table.getPageCount()}</span>

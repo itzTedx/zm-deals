@@ -11,7 +11,7 @@ export async function CartIcon() {
 
   return (
     <Button asChild className="relative" size="icon" variant="outline">
-      <Link href="/account/cart">
+      <Link href="/cart">
         <IconShoppingBag2 className="size-5 text-muted-foreground hover:text-brand-500" />
 
         {itemCount > 0 && (
