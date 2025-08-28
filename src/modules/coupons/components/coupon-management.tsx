@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { X } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -37,13 +38,17 @@ export function CouponManagement({ coupons }: Props) {
     setIsDeleting(couponId);
     try {
       const result = await deleteCoupon(couponId);
+
       if (result.success) {
-        console.log("Coupon deleted successfully");
+        toast.success("Coupon deleted successfully");
       } else {
-        console.error("Error deleting coupon:", result.error);
+        // Type guard to ensure error property exists
+        const errorMessage = "error" in result ? result.error : "Failed to delete coupon";
+        toast.error(errorMessage);
       }
     } catch (error) {
       console.error("Error deleting coupon:", error);
+      toast.error("An unexpected error occurred while deleting the coupon");
     } finally {
       setIsDeleting(null);
     }

@@ -3,29 +3,27 @@
 import { revalidatePath } from "next/cache";
 
 import { eq, sql } from "drizzle-orm";
+import z from "zod";
 
 import { db } from "@/server/db";
 import { coupons, orders } from "@/server/schema";
 
-import {
-  type ApplyCouponData,
-  applyCouponSchema,
-  type CreateCouponData,
-  createCouponSchema,
-  type UpdateCouponData,
-  updateCouponSchema,
-} from "../types";
+import { type ApplyCouponData, applyCouponSchema, createCouponSchema, updateCouponSchema } from "../types";
+import { createStripeCoupon, deleteStripeCoupon, updateStripeCoupon } from "./helpers";
 import { validateCoupon } from "./query";
-import { createStripeCoupon, deleteStripeCoupon, updateStripeCoupon } from "./stripe-integration";
 
 // Create a new coupon
-export async function createCoupon(data: CreateCouponData) {
+export async function createCoupon(rawData: unknown) {
   try {
-    const validatedData = createCouponSchema.parse(data);
+    const { data, success, error } = createCouponSchema.safeParse(rawData);
+
+    if (!success) {
+      return { success: false, error: z.prettifyError(error) };
+    }
 
     // Check if coupon code already exists
     const existingCoupon = await db.query.coupons.findFirst({
-      where: eq(coupons.code, validatedData.code),
+      where: eq(coupons.code, data.code),
     });
 
     if (existingCoupon) {
@@ -33,20 +31,24 @@ export async function createCoupon(data: CreateCouponData) {
     }
 
     // Validate date range
-    if (validatedData.startDate >= validatedData.endDate) {
+    if (data.startDate >= data.endDate) {
       return { success: false, error: "End date must be after start date" };
     }
 
     // Validate discount value based on type
-    if (validatedData.discountType === "percentage" && validatedData.discountValue > 100) {
+    if (data.discountType === "percentage" && data.discountValue > 100) {
       return { success: false, error: "Percentage discount cannot exceed 100%" };
     }
 
     // Create coupon in both database and Stripe
-    const result = await createStripeCoupon(validatedData);
+    const result = await createStripeCoupon(data);
 
     if (!result.success || !result.data) {
-      return result;
+      // Ensure we always return an error property when success is false
+      return {
+        success: false,
+        error: "error" in result ? result.error : "Failed to create coupon",
+      };
     }
 
     revalidatePath("/studio/coupons");
@@ -58,13 +60,17 @@ export async function createCoupon(data: CreateCouponData) {
 }
 
 // Update an existing coupon
-export async function updateCoupon(data: UpdateCouponData) {
+export async function updateCoupon(rawData: unknown) {
   try {
-    const validatedData = updateCouponSchema.parse(data);
+    const { data, success, error } = updateCouponSchema.safeParse(rawData);
+
+    if (!success) {
+      return { success: false, error: z.prettifyError(error) };
+    }
 
     // Check if coupon exists
     const existingCoupon = await db.query.coupons.findFirst({
-      where: eq(coupons.id, validatedData.id),
+      where: eq(coupons.id, data.id),
     });
 
     if (!existingCoupon) {
@@ -72,9 +78,9 @@ export async function updateCoupon(data: UpdateCouponData) {
     }
 
     // If code is being updated, check for duplicates
-    if (validatedData.code && validatedData.code !== existingCoupon.code) {
+    if (data.code && data.code !== existingCoupon.code) {
       const duplicateCoupon = await db.query.coupons.findFirst({
-        where: eq(coupons.code, validatedData.code),
+        where: eq(coupons.code, data.code),
       });
 
       if (duplicateCoupon) {
@@ -83,26 +89,26 @@ export async function updateCoupon(data: UpdateCouponData) {
     }
 
     // Validate date range if dates are being updated
-    if (validatedData.startDate && validatedData.endDate) {
-      if (validatedData.startDate >= validatedData.endDate) {
+    if (data.startDate && data.endDate) {
+      if (data.startDate >= data.endDate) {
         return { success: false, error: "End date must be after start date" };
       }
     }
 
     // Validate discount value based on type
-    if (
-      validatedData.discountType === "percentage" &&
-      validatedData.discountValue &&
-      validatedData.discountValue > 100
-    ) {
+    if (data.discountType === "percentage" && data.discountValue && data.discountValue > 100) {
       return { success: false, error: "Percentage discount cannot exceed 100%" };
     }
 
     // Update coupon in both database and Stripe
-    const result = await updateStripeCoupon(validatedData);
+    const result = await updateStripeCoupon(data);
 
     if (!result.success) {
-      return result;
+      // Ensure we always return an error property when success is false
+      return {
+        success: false,
+        error: "error" in result ? result.error : "Failed to update coupon",
+      };
     }
 
     revalidatePath("/studio/coupons");
@@ -120,7 +126,11 @@ export async function deleteCoupon(id: string) {
     const result = await deleteStripeCoupon(id);
 
     if (!result.success) {
-      return result;
+      // Ensure we always return an error property when success is false
+      return {
+        success: false,
+        error: "error" in result ? result.error : "Failed to delete coupon",
+      };
     }
 
     revalidatePath("/studio/coupons");

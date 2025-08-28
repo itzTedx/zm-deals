@@ -9,20 +9,6 @@ import { coupons } from "@/server/schema";
 
 import type { CreateCouponData, UpdateCouponData } from "../types";
 
-// Stripe coupon mapping interface
-interface StripeCouponData {
-  id: string;
-  percent_off?: number;
-  amount_off?: number;
-  currency?: string;
-  duration: "once" | "repeating" | "forever";
-  max_redemptions?: number;
-  redeem_by?: number;
-  applies_to?: {
-    products?: string[];
-  };
-}
-
 // Create a coupon in both database and Stripe
 export async function createStripeCoupon(data: CreateCouponData) {
   try {
@@ -95,15 +81,32 @@ export async function updateStripeCoupon(data: UpdateCouponData) {
       return { success: false, error: "Coupon not found" };
     }
 
-    // Update database first
-    const updateData: any = { ...data };
-    delete updateData.id;
+    // Update database first - convert numbers to strings for database
+    const { id, ...updateData } = data;
+    const dbUpdateData: {
+      code?: string;
+      discountType?: "percentage" | "fixed";
+      discountValue?: string;
+      minOrderAmount?: string;
+      maxDiscount?: string;
+      startDate?: Date;
+      endDate?: Date;
+      usageLimit?: number;
+      description?: string;
+    } = {};
 
-    if (updateData.discountValue) updateData.discountValue = updateData.discountValue.toString();
-    if (updateData.minOrderAmount) updateData.minOrderAmount = updateData.minOrderAmount.toString();
-    if (updateData.maxDiscount) updateData.maxDiscount = updateData.maxDiscount.toString();
+    // Only include fields that are actually being updated
+    if (updateData.code !== undefined) dbUpdateData.code = updateData.code;
+    if (updateData.discountType !== undefined) dbUpdateData.discountType = updateData.discountType;
+    if (updateData.discountValue !== undefined) dbUpdateData.discountValue = updateData.discountValue.toString();
+    if (updateData.minOrderAmount !== undefined) dbUpdateData.minOrderAmount = updateData.minOrderAmount.toString();
+    if (updateData.maxDiscount !== undefined) dbUpdateData.maxDiscount = updateData.maxDiscount.toString();
+    if (updateData.startDate !== undefined) dbUpdateData.startDate = updateData.startDate;
+    if (updateData.endDate !== undefined) dbUpdateData.endDate = updateData.endDate;
+    if (updateData.usageLimit !== undefined) dbUpdateData.usageLimit = updateData.usageLimit;
+    if (updateData.description !== undefined) dbUpdateData.description = updateData.description;
 
-    const [updatedDbCoupon] = await db.update(coupons).set(updateData).where(eq(coupons.id, data.id)).returning();
+    const [updatedDbCoupon] = await db.update(coupons).set(dbUpdateData).where(eq(coupons.id, data.id)).returning();
 
     // Update Stripe coupon if it exists
     if (existingCoupon.stripeCouponId) {
@@ -114,16 +117,8 @@ export async function updateStripeCoupon(data: UpdateCouponData) {
         },
       };
 
-      // Update usage limits if changed
-      if (data.usageLimit !== undefined) {
-        stripeUpdateData.max_redemptions = data.usageLimit;
-      }
-
-      // Update expiration date if changed
-      if (data.endDate) {
-        stripeUpdateData.redeem_by = Math.floor(data.endDate.getTime() / 1000);
-      }
-
+      // Note: Stripe doesn't allow updating max_redemptions or redeem_by after creation
+      // These would need to be handled by creating a new coupon if they need to change
       await stripeClient.coupons.update(existingCoupon.stripeCouponId, stripeUpdateData);
     }
 
@@ -219,7 +214,7 @@ export async function syncCouponsToStripe() {
         successCount++;
       } catch (error) {
         console.error(`Failed to sync coupon ${dbCoupon.code}:`, error);
-        results.push({ coupon: dbCoupon, status: "failed", error: error.message });
+        results.push({ coupon: dbCoupon, status: "failed", error: String(error) });
         errorCount++;
       }
     }

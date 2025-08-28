@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/server/db";
 import { coupons } from "@/server/schema";
 
-import { getStripeCoupon, listStripeCoupons, syncCouponsToStripe } from "./stripe-integration";
+import { getStripeCoupon, listStripeCoupons, syncCouponsToStripe } from "./helpers";
 
 // Sync all existing coupons to Stripe
 export async function syncAllCouponsToStripe() {

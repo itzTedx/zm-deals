@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import { InfoTooltip } from "@/components/global/tooltip";
 import { Button } from "@/components/ui/button";
@@ -70,14 +71,20 @@ export function CouponForm({ coupon, hasCancel = true }: CouponFormProps) {
           result = await createCoupon(data);
         }
 
+        if (!result.success) {
+          // Type guard to ensure error property exists
+          const errorMessage = "error" in result ? result.error : "Failed to save coupon";
+          toast.error(errorMessage);
+          return;
+        }
+
         if (result.success) {
+          toast.success(isEditing ? "Coupon updated successfully" : "Coupon created successfully");
           router.push("/studio/coupons");
-        } else {
-          // Handle error - you might want to show a toast here
-          console.error("Error saving coupon:", result.error);
         }
       } catch (error) {
         console.error("Error submitting form:", error);
+        toast.error("An unexpected error occurred while saving the coupon");
       }
     });
   }

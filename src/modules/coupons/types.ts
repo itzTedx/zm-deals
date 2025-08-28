@@ -16,7 +16,7 @@ export const createCouponSchema = z.object({
 });
 
 export const updateCouponSchema = createCouponSchema.partial().extend({
-  id: z.string().uuid(),
+  id: z.uuid(),
 });
 
 export const validateCouponSchema = z.object({
