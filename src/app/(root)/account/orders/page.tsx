@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getSession } from "@/lib/auth/server";
 import { getUserOrders } from "@/modules/orders/actions/query";
 import { OrderWithItemsAndProducts } from "@/modules/orders/types";
+import { formatDateTime, formatPrice, getStatusColor, getStatusDescription } from "@/modules/orders/utils";
 
 export default async function OrdersPage() {
   const session = await getSession();
@@ -30,7 +31,6 @@ export default async function OrdersPage() {
 
   const result = await getUserOrders();
   const orders: OrderWithItemsAndProducts[] = result.success ? result.orders || [] : [];
-  console.log(result);
 
   if (!result.success) {
     return (
@@ -46,87 +46,11 @@ export default async function OrdersPage() {
     );
   }
 
-  function getStatusIcon(status: string) {
-    switch (status) {
-      case "confirmed":
-      case "delivered":
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case "pending":
-      case "processing":
-        return <Clock className="h-4 w-4 text-yellow-500" />;
-      case "shipped":
-        return <Truck className="h-4 w-4 text-blue-500" />;
-      case "cancelled":
-      case "failed":
-        return <XCircle className="h-4 w-4 text-red-500" />;
-      default:
-        return <Package className="h-4 w-4 text-gray-500" />;
-    }
-  }
-
-  function getStatusColor(status: string) {
-    switch (status) {
-      case "confirmed":
-      case "delivered":
-        return "bg-green-100 text-green-800";
-      case "pending":
-      case "processing":
-        return "bg-yellow-100 text-yellow-800";
-      case "shipped":
-        return "bg-blue-100 text-blue-800";
-      case "cancelled":
-      case "failed":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  }
-
-  function getStatusDescription(status: string) {
-    switch (status) {
-      case "pending":
-        return "Your order is being processed";
-      case "confirmed":
-        return "Your order has been confirmed";
-      case "processing":
-        return "Your order is being prepared";
-      case "shipped":
-        return "Your order is on its way";
-      case "delivered":
-        return "Your order has been delivered";
-      case "cancelled":
-        return "Your order has been cancelled";
-      case "failed":
-        return "Your order failed to process";
-      default:
-        return "Order status unknown";
-    }
-  }
-
-  function formatPrice(price: number | string) {
-    const numericPrice = typeof price === "string" ? Number.parseFloat(price) : price;
-    return new Intl.NumberFormat("en-AE", {
-      style: "currency",
-      currency: "AED",
-    }).format(numericPrice);
-  }
-
-  function formatDateTime(dateString: string | Date) {
-    const date = typeof dateString === "string" ? new Date(dateString) : dateString;
-    return date.toLocaleDateString("en-AE", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  }
-
   return (
-    <div className="container mx-auto py-8">
+    <div>
       <div className="mb-6">
-        <h1 className="mb-2 font-bold text-2xl">My Orders</h1>
-        <p className="text-muted-foreground">Track your orders and view order history</p>
+        <h1 className="mb-2 font-bold text-2xl">Orders</h1>
+        <p className="text-muted-foreground text-sm">Track your orders and view order history</p>
       </div>
 
       {/* Orders List */}
@@ -181,7 +105,7 @@ export default async function OrdersPage() {
                   {/* Actions */}
                   <div className="flex items-center gap-2">
                     <Button asChild size="sm" variant="outline">
-                      <Link href={`/orders/${order.id}`}>
+                      <Link href={`/account/orders/${order.id}`}>
                         <Eye className="mr-2 h-4 w-4" />
                         View Details
                       </Link>
@@ -224,34 +148,24 @@ export default async function OrdersPage() {
           ))}
         </div>
       )}
-
-      {/* Summary Stats */}
-      {orders.length > 0 && (
-        <Card className="mt-6">
-          <CardContent className="pt-6">
-            <div className="grid grid-cols-2 gap-4 text-center md:grid-cols-4">
-              <div>
-                <p className="font-bold text-2xl">{orders.length}</p>
-                <p className="text-muted-foreground text-sm">Total Orders</p>
-              </div>
-              <div>
-                <p className="font-bold text-2xl">{orders.filter((o) => o.status === "delivered").length}</p>
-                <p className="text-muted-foreground text-sm">Delivered</p>
-              </div>
-              <div>
-                <p className="font-bold text-2xl">{orders.filter((o) => o.status === "shipped").length}</p>
-                <p className="text-muted-foreground text-sm">In Transit</p>
-              </div>
-              <div>
-                <p className="font-bold text-2xl">
-                  {formatPrice(orders.reduce((sum, order) => sum + Number(order.totalAmount), 0))}
-                </p>
-                <p className="text-muted-foreground text-sm">Total Spent</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
+}
+
+export function getStatusIcon(status: string) {
+  switch (status) {
+    case "confirmed":
+    case "delivered":
+      return <CheckCircle className="h-4 w-4 text-green-500" />;
+    case "pending":
+    case "processing":
+      return <Clock className="h-4 w-4 text-yellow-500" />;
+    case "shipped":
+      return <Truck className="h-4 w-4 text-blue-500" />;
+    case "cancelled":
+    case "failed":
+      return <XCircle className="h-4 w-4 text-red-500" />;
+    default:
+      return <Package className="h-4 w-4 text-gray-500" />;
+  }
 }

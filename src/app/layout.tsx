@@ -99,12 +99,6 @@ export default function Layout({
   return (
     <html className={cn("scroll-smooth")} lang="en">
       <head>
-        <link href="/favicon.ico" rel="icon" sizes="any" />
-        <link href="/icon.svg" rel="icon" type="image/svg+xml" />
-        <link href="/apple-touch-icon.png" rel="apple-touch-icon" />
-        <link href="/manifest.json" rel="manifest" />
-        <meta content="#ffffff" name="theme-color" />
-        <meta content="#ffffff" name="msapplication-TileColor" />
         <meta content="/browserconfig.xml" name="msapplication-config" />
       </head>
       <body className={cn(helvetica.className, geist.variable, "max-sm:overflow-x-hidden")}>
