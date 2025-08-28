@@ -16,32 +16,38 @@ export default async function CartPage() {
 
   return (
     <main className="container">
-      <section className="grid grid-cols-3 gap-6 pt-6 pb-12" id="cart">
-        <div className="col-span-2">
-          <h1 className="font-semibold text-xl">
-            Cart{" "}
-            <span className="font-medium text-muted-foreground text-sm">
-              ({itemCount} {pluralize("item", itemCount)})
-            </span>
-          </h1>
+      <section className="grid grid-cols-1 gap-4 pt-4 pb-8 lg:grid-cols-3 lg:gap-6 lg:pt-6 lg:pb-12" id="cart">
+        <div className="max-lg:order-2 lg:col-span-2">
+          <div>
+            <h1 className="font-semibold text-lg lg:text-xl">
+              Cart{" "}
+              <span className="font-medium text-muted-foreground text-sm">
+                ({itemCount} {pluralize("item", itemCount)})
+              </span>
+            </h1>
 
-          <div className="mt-3 w-full space-y-2">
-            {cartItems.map((item) => (
-              <CartItem item={item} key={item.product.id} />
-            ))}
-          </div>
-
-          <div className="mt-6">
-            <h3 className="font-semibold text-lg">From your Wishlist</h3>
-            <div className="mt-3 grid grid-cols-4 gap-2">
-              {wishlist.items.map((item) => (
-                <ProductCard data={item.product} key={item.product.id} showSeconds={false} />
+            <div className="mt-3 w-full space-y-2">
+              {cartItems.map((item) => (
+                <CartItem item={item} key={item.product.id} />
               ))}
             </div>
           </div>
+
+          {wishlist.items.length > 0 && (
+            <div className="mt-6">
+              <h3 className="font-semibold text-base lg:text-lg">From your Wishlist</h3>
+              <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 lg:gap-2">
+                {wishlist.items.map((item) => (
+                  <ProductCard data={item.product} key={item.product.id} showSeconds={false} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-        <CartSummary cartItems={cartItems} cartLength={cartItems.length} />
+        <div className="max-lg:order-1 lg:col-span-1">
+          <CartSummary cartItems={cartItems} cartLength={cartItems.length} />
+        </div>
       </section>
 
       <RecommendedProducts

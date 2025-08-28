@@ -130,7 +130,7 @@ export function CartSummary({ cartItems, cartLength }: CartSummaryProps) {
   }
 
   return (
-    <div className="mt-6 h-fit space-y-3 rounded-md border p-4">
+    <div className="h-fit space-y-3 rounded-md border p-4 md:sticky md:top-20 md:mt-6">
       <h3 className="font-semibold text-lg">Order Summary</h3>
 
       <Coupon
