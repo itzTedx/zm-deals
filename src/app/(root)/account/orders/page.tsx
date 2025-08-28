@@ -72,7 +72,7 @@ export default async function OrdersPage() {
       ) : (
         <div className="space-y-4">
           {orders.map((order) => (
-            <Card className="transition-shadow hover:shadow-md" key={order.id}>
+            <Card key={order.id}>
               <CardContent className="p-6">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                   {/* Order Info */}
