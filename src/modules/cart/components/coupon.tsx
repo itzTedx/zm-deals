@@ -113,7 +113,7 @@ export function Coupon({ appliedCoupon, cartTotal, onCouponApplied, onCouponRemo
             )}
           </div>
           <Button
-            className="rounded-l-none sm:rounded-l-none"
+            className="rounded-l-none border-brand-300 border-l-0 bg-gradient-to-b from-brand-500 to-brand-700 sm:rounded-l-none"
             disabled={isPending}
             onClick={handleApplyCoupon}
             type="submit"

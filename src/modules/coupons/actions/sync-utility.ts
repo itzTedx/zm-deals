@@ -74,6 +74,10 @@ export async function validateStripeCoupon(couponId: string) {
 
     const stripeCoupon = result.data;
 
+    if (!stripeCoupon) {
+      return { success: false, error: "Coupon not found in Stripe" };
+    }
+
     return {
       success: true,
       data: {
@@ -105,12 +109,16 @@ export async function getDetailedSyncInfo() {
 
     const stripeCoupons = await listStripeCoupons(100);
 
+    if (!stripeCoupons.success) {
+      return { success: false, error: "Failed to get stripe coupons" };
+    }
+
     return {
       success: true,
       data: {
         ...syncStatus.data,
-        stripeCoupons: stripeCoupons.success ? stripeCoupons.data.data : [],
-        stripeTotal: stripeCoupons.success ? stripeCoupons.data.data.length : 0,
+        stripeCoupons: stripeCoupons.data?.data || [],
+        stripeTotal: stripeCoupons.data?.data?.length || 0,
       },
     };
   } catch (error) {

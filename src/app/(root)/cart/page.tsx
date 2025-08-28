@@ -13,7 +13,7 @@ export default async function CartPage() {
 
   return (
     <main className="container max-w-7xl">
-      <section className="grid grid-cols-3 gap-6 py-12" id="cart">
+      <section className="grid grid-cols-3 gap-6 pt-6 pb-12" id="cart">
         <div className="col-span-2">
           <h1 className="font-semibold text-xl">
             Cart{" "}
@@ -31,7 +31,20 @@ export default async function CartPage() {
 
         <CartSummary cartItems={cartItems} cartLength={cartItems.length} />
       </section>
-
+      <RecommendedProducts
+        cartProductIds={cartProductIds}
+        description="Products you might like"
+        limit={8}
+        strategy="personalized"
+        title="Products you might like"
+      />
+      <RecommendedProducts
+        cartProductIds={cartProductIds}
+        description="You might also like these products"
+        limit={8}
+        strategy="category"
+        title="Related Products"
+      />
       <RecommendedProducts
         cartProductIds={cartProductIds}
         description="You might also like these products"

@@ -82,7 +82,7 @@ export async function updateStripeCoupon(data: UpdateCouponData) {
     }
 
     // Update database first - convert numbers to strings for database
-    const { id, ...updateData } = data;
+    const { ...updateData } = data;
     const dbUpdateData: {
       code?: string;
       discountType?: "percentage" | "fixed";
