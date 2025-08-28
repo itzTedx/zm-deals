@@ -37,7 +37,7 @@ export function QuickActions() {
         <CardTitle>Quick Actions</CardTitle>
         <CardDescription>Common admin tasks and shortcuts</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="flex flex-wrap gap-4">
         <QuickAction
           description="Create a new product listing"
           href={"/studio/products/create" as Route}

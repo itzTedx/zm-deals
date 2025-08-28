@@ -54,7 +54,7 @@ export const getColumns = ({ data, onEdit, onDelete, isDeleting }: GetColumnsPro
       };
 
       return (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">
             {row.getValue("code")}
           </code>
@@ -79,7 +79,7 @@ export const getColumns = ({ data, onEdit, onDelete, isDeleting }: GetColumnsPro
         </div>
       );
     },
-    size: 200,
+    size: 300,
     enableHiding: false,
   },
   {
@@ -102,7 +102,7 @@ export const getColumns = ({ data, onEdit, onDelete, isDeleting }: GetColumnsPro
         </div>
       );
     },
-    size: 120,
+    size: 80,
   },
   {
     header: "Status",

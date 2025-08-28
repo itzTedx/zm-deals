@@ -75,13 +75,13 @@ export function CouponsDataTable({ data, onEdit, onDelete, isDeleting }: Coupons
   });
 
   return (
-    <div className="space-y-4">
+    <div className="w-full space-y-4">
       <Header table={table} />
 
       {/* Table */}
       <div className="overflow-auto">
         <Table
-          className="table-auto border-separate border-spacing-0 [&_tr:not(:last-child)_td]:border-b"
+          className="table-fixed border-separate border-spacing-0 [&_tr:not(:last-child)_td]:border-b"
           style={{
             width: table.getTotalSize(),
           }}

@@ -11,12 +11,12 @@ export async function AdminDashboardOverview() {
       {/* Main Content Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         {/* Recent Orders */}
-        <div className="col-span-4">
+        <div className="col-span-5">
           <RecentOrders />
         </div>
 
         {/* Quick Actions & Stats */}
-        <div className="col-span-3 space-y-4">
+        <div className="col-span-2 space-y-4">
           <QuickActions />
         </div>
       </div>
