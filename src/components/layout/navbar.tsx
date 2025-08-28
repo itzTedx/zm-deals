@@ -3,17 +3,19 @@ import Link from "next/link";
 import { IconChevronRight, IconSearch } from "@/assets/icons";
 import { LogoIcon } from "@/assets/logo";
 
-import { NAV_LINKS } from "@/data/constants";
 import { getSession } from "@/lib/auth/server";
 import { CartIcon } from "@/modules/cart/components/cart-icon";
+import { getCategoriesWithProductCount } from "@/modules/categories/actions/query";
 import { WishlistIcon } from "@/modules/wishlist/components/wishlist-icon";
 
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { NavigationMenuComponent } from "./navigation-menu";
 import UserMenu from "./user-menu";
 
 export const Navbar = async () => {
   const session = await getSession();
+  const categories = await getCategoriesWithProductCount();
 
   return (
     <header className="sticky top-0 z-999 h-fit">
@@ -25,23 +27,9 @@ export const Navbar = async () => {
             </Link>
             <div className="hidden size-0.5 rounded-full bg-brand-100 md:block" />
             {/* Desktop Navigation */}
-            <ul className="hidden items-center gap-6 md:flex">
-              {NAV_LINKS.map((nav) => (
-                <li key={nav.href}>
-                  <Link className="font-medium text-gray-600 transition-colors hover:text-brand-500" href={nav.href}>
-                    {nav.label}
-                  </Link>
-                </li>
-              ))}
-              <li>
-                <Link
-                  className="flex items-center gap-1 font-medium text-gray-600 transition-colors hover:text-brand-500"
-                  href="/deals"
-                >
-                  Categories <IconChevronRight className="rotate-90" />
-                </Link>
-              </li>
-            </ul>
+            <div className="hidden md:block">
+              <NavigationMenuComponent categories={categories} />
+            </div>
           </div>
 
           <div className="group relative mx-auto max-w-sm flex-1 sm:max-w-md">
