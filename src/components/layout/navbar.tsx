@@ -1,13 +1,13 @@
 import Link from "next/link";
 
 import { IconChevronRight } from "@/assets/icons/chevron";
-import { IconHeart } from "@/assets/icons/heart";
 import { IconSearch } from "@/assets/icons/search";
 import { LogoIcon } from "@/assets/logo";
 
 import { NAV_LINKS } from "@/data/constants";
 import { getSession } from "@/lib/auth/server";
 import { CartIcon } from "@/modules/cart/components/cart-icon";
+import { WishlistIcon } from "@/modules/wishlist/components/wishlist-icon";
 
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -80,9 +80,7 @@ export const Navbar = async () => {
               </Button>
             )} */}
             <div className="hidden h-5 w-px flex-1 shrink-0 bg-brand-400 md:block" />
-            <Button className="hidden sm:inline-flex" size="icon" variant="outline">
-              <IconHeart className="size-5 text-muted-foreground hover:text-brand-500" />
-            </Button>
+            <WishlistIcon />
             <CartIcon />
           </div>
         </nav>

@@ -165,13 +165,29 @@ export function getStatusIcon(status: string) {
       );
     case "pending":
     case "processing":
-      return <Clock className="size-4 text-warning" />;
+      return (
+        <div className="flex size-10 items-center justify-center rounded-lg bg-yellow-500/10">
+          <Clock className="size-5 text-amber-600" />
+        </div>
+      );
     case "shipped":
-      return <Truck className="size-4 text-success" />;
+      return (
+        <div className="flex size-10 items-center justify-center rounded-lg bg-indigo-500/10">
+          <Truck className="size-5 text-indigo-600" />
+        </div>
+      );
     case "cancelled":
     case "failed":
-      return <XCircle className="size-4 text-destructive" />;
+      return (
+        <div className="flex size-10 items-center justify-center rounded-lg bg-destructive/10">
+          <XCircle className="size-5 text-destructive" />
+        </div>
+      );
     default:
-      return <Package className="size-4 text-muted-foreground" />;
+      return (
+        <div className="flex size-10 items-center justify-center rounded-lg bg-muted/10">
+          <Package className="size-5 text-muted-foreground" />
+        </div>
+      );
   }
 }

@@ -7,6 +7,8 @@ import { randomUUID } from "crypto";
 import { and, eq, lt } from "drizzle-orm";
 
 import { auth } from "@/lib/auth/server";
+import { getOrCreateSessionId } from "@/lib/auth/session";
+import { migrateAnonymousWishlist } from "@/modules/wishlist/services/wishlist-migration";
 import { db } from "@/server/db";
 import { guests } from "@/server/schema";
 
@@ -111,6 +113,27 @@ async function migrateGuestToUser() {
   const cookieStore = await cookies();
   const token = cookieStore.get("guest_session")?.value;
   if (!token) return;
+
+  // Get the current session to get the user ID
+  try {
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (session?.user?.id) {
+      // Migrate wishlist from anonymous session to user
+      const sessionId = await getOrCreateSessionId();
+      const wishlistResult = await migrateAnonymousWishlist({
+        anonymousSessionId: sessionId,
+        newUserId: session.user.id,
+      });
+
+      if (wishlistResult.success) {
+        console.log(`Wishlist migration completed: ${wishlistResult.migratedItems} items migrated`);
+      } else {
+        console.error("Wishlist migration failed:", wishlistResult.error);
+      }
+    }
+  } catch (error) {
+    console.error("Error during wishlist migration:", error);
+  }
 
   await db.delete(guests).where(eq(guests.sessionToken, token));
   cookieStore.delete("guest_session");

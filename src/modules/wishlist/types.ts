@@ -2,6 +2,7 @@ export interface WishlistActionResponse {
   success: boolean;
   error?: string;
   anonymous?: boolean;
+  added?: boolean;
 }
 
 export interface WishlistItem {

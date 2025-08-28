@@ -214,3 +214,85 @@ export async function migrateAnonymousWishlist(
     return { success: false, error: error instanceof Error ? error.message : "Failed to migrate wishlist" };
   }
 }
+
+export async function toggleWishlist(productId: string): Promise<WishlistActionResponse> {
+  try {
+    const session = await auth.api.getSession({ headers: await headers() });
+
+    if (!session) {
+      // Handle guest wishlist
+      const sessionId = await getOrCreateSessionId();
+
+      // Get or create guest wishlist
+      let guestWishlist = await db.query.wishlists.findFirst({
+        where: eq(wishlists.sessionId, sessionId),
+      });
+
+      if (!guestWishlist) {
+        const [newWishlist] = await db
+          .insert(wishlists)
+          .values({
+            sessionId,
+          })
+          .returning();
+        guestWishlist = newWishlist;
+      }
+
+      // Check if product already exists in wishlist
+      const existingWishlistItem = await db.query.wishlistItems.findFirst({
+        where: and(eq(wishlistItems.wishlistId, guestWishlist.id), eq(wishlistItems.productId, productId)),
+      });
+
+      if (existingWishlistItem) {
+        // Remove from wishlist
+        await db
+          .delete(wishlistItems)
+          .where(and(eq(wishlistItems.wishlistId, guestWishlist.id), eq(wishlistItems.productId, productId)));
+        return { success: true, added: false };
+      }
+      // Add to wishlist
+      await db.insert(wishlistItems).values({
+        wishlistId: guestWishlist.id,
+        productId,
+      });
+      return { success: true, added: true };
+    }
+
+    // Handle authenticated user wishlist
+    let userWishlist = await db.query.wishlists.findFirst({
+      where: eq(wishlists.userId, session.user.id),
+    });
+
+    if (!userWishlist) {
+      const [newWishlist] = await db
+        .insert(wishlists)
+        .values({
+          userId: session.user.id,
+        })
+        .returning();
+      userWishlist = newWishlist;
+    }
+
+    // Check if product already exists in wishlist
+    const existingWishlistItem = await db.query.wishlistItems.findFirst({
+      where: and(eq(wishlistItems.wishlistId, userWishlist.id), eq(wishlistItems.productId, productId)),
+    });
+
+    if (existingWishlistItem) {
+      // Remove from wishlist
+      await db
+        .delete(wishlistItems)
+        .where(and(eq(wishlistItems.wishlistId, userWishlist.id), eq(wishlistItems.productId, productId)));
+      return { success: true, added: false };
+    }
+    // Add to wishlist
+    await db.insert(wishlistItems).values({
+      wishlistId: userWishlist.id,
+      productId,
+    });
+    return { success: true, added: true };
+  } catch (error) {
+    console.error("Error toggling wishlist:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Failed to toggle wishlist" };
+  }
+}
