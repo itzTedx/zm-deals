@@ -23,6 +23,12 @@ export type ProductQueryResult = InferSelectModel<typeof products> & {
   inventory: Inventory;
 };
 
+export type ProductCardDate = InferSelectModel<typeof products> & {
+  reviews?: Review[];
+  images: ProductImage[];
+  inventory: Inventory;
+};
+
 // Deal Type (for backward compatibility)
 export interface Deal {
   id: number;

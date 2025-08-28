@@ -10,12 +10,12 @@ import { IconCurrency, IconTruck } from "@/assets/icons";
 import { calculateDiscount } from "@/lib/utils";
 
 import { calculateAverageRating } from "../actions/helper";
-import { ProductQueryResult } from "../types";
+import { ProductCardDate } from "../types";
 import { AnimatedCountdown } from "./ends-in-counter";
 import { FavButton } from "./ui/fav-button";
 
 interface Props {
-  data: ProductQueryResult;
+  data: ProductCardDate;
   showSeconds?: boolean;
 }
 

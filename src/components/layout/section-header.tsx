@@ -9,7 +9,7 @@ import { Button } from "../ui/button";
 
 interface Props {
   title: string;
-  description?: string;
+  description?: string | null;
   btnText?: string;
   link?: Route;
   hasButton?: boolean;
