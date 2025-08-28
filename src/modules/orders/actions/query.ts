@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 
 import { and, desc, eq } from "drizzle-orm";
 
-import { auth } from "@/lib/auth/server";
+import { auth, getSession } from "@/lib/auth/server";
 import { createLog } from "@/lib/logging";
 import { db } from "@/server/db";
 import { orderHistory, orders } from "@/server/schema/orders-schema";
@@ -120,7 +120,7 @@ export async function getOrderByNumber(orderNumber: string) {
  */
 export async function getUserOrders(): Promise<UserOrdersResult> {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getSession();
 
     if (!session) {
       return { success: false, error: "Not authenticated" };

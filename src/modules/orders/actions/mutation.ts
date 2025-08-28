@@ -58,12 +58,23 @@ export async function createOrder(rawData: unknown): Promise<CreateOrderResponse
 
     // Get user session if available
     let userId: string | undefined;
-    try {
-      const session = await auth.api.getSession({ headers: await headers() });
-      userId = session?.user?.id;
-    } catch (error) {
-      console.error("Error getting session", error);
-      log.warn("No authenticated session found, creating anonymous order");
+
+    // Use userId from data if provided (for webhook scenarios)
+    if (data.userId) {
+      userId = data.userId;
+      log.info("Using userId from order data", { userId });
+    } else {
+      // Try to get userId from session headers (for direct API calls)
+      try {
+        const session = await auth.api.getSession({ headers: await headers() });
+        userId = session?.user?.id;
+        if (userId) {
+          log.info("Using userId from session", { userId });
+        }
+      } catch (error) {
+        console.error("Error getting session", error);
+        log.warn("No authenticated session found, creating anonymous order");
+      }
     }
 
     // Generate unique order number

@@ -100,7 +100,15 @@ export async function handleCheckoutSessionCompleted(
           ? sessionWithItems.payment_intent
           : sessionWithItems.payment_intent?.id || undefined,
       sessionId: sessionId || undefined,
+      userId: sessionWithItems.metadata?.userId || undefined,
     };
+
+    // Log userId extraction
+    if (sessionWithItems.metadata?.userId) {
+      log.info("Extracted userId from session metadata", { userId: sessionWithItems.metadata.userId });
+    } else {
+      log.info("No userId found in session metadata", { metadata: sessionWithItems.metadata });
+    }
 
     // Create order in database
     const orderResult = await createOrder(orderData);

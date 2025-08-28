@@ -37,6 +37,7 @@ export const createOrderDataSchema = z.object({
   billingAddress: rawAddressSchema.optional(),
   paymentIntentId: z.string().optional(),
   sessionId: z.string().optional(),
+  userId: z.string().optional(),
 });
 
 // Type inference

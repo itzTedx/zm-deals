@@ -30,6 +30,7 @@ export default async function OrdersPage() {
 
   const result = await getUserOrders();
   const orders: OrderWithItemsAndProducts[] = result.success ? result.orders || [] : [];
+  console.log(result);
 
   if (!result.success) {
     return (
