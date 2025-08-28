@@ -1,12 +1,13 @@
-import Link from "next/link";
-
+import { IconLogout } from "@/assets/icons/auth";
 import { IconPackage, IconShoppingBag2 } from "@/assets/icons/bag";
 import { IconHeart } from "@/assets/icons/heart";
 import { IconUser } from "@/assets/icons/user";
 
 import { AuthSession } from "@/lib/auth/server";
+import { LogoutButton } from "@/modules/auth/components/logout-button";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { SidebarLink } from "./sidebar/link";
 
 interface Props {
   session: AuthSession;
@@ -29,35 +30,36 @@ export const AccountSidebar = ({ session }: Props) => {
       </div>
       <ul className="space-y-2 rounded-lg bg-card p-2">
         <li>
-          <Link className="flex items-center gap-2 rounded-md p-2 font-medium" href="/cart">
-            <IconShoppingBag2 className="size-5" />
+          <SidebarLink href="/account/cart" icon={<IconShoppingBag2 className="size-5" />}>
             Cart
-          </Link>
+          </SidebarLink>
         </li>
         <li>
-          <Link className="flex items-center gap-2 rounded-md bg-brand-100/50 p-2 font-bold" href="/account/orders">
-            <IconPackage className="size-5" />
+          <SidebarLink href="/account/orders" icon={<IconPackage className="size-5" />}>
             Orders
-          </Link>
+          </SidebarLink>
         </li>
         <li>
-          <Link className="flex items-center gap-2 rounded-md p-2 font-medium" href="/account/orders">
-            <IconHeart className="size-5" />
+          <SidebarLink href="/account/wishlist" icon={<IconHeart className="size-5" />}>
             Wishlist
-          </Link>
+          </SidebarLink>
         </li>
       </ul>
       <div>
         <h2 className="mb-2 px-3 font-medium text-gray-600 text-xs uppercase">My Account</h2>
         <ul className="space-y-2 rounded-lg bg-card p-2">
           <li>
-            <Link className="flex items-center gap-2 rounded-md p-2 font-medium" href="/account/orders">
-              <IconUser className="size-5" />
+            <SidebarLink href="/account" icon={<IconUser className="size-5" />}>
               Profile
-            </Link>
+            </SidebarLink>
           </li>
         </ul>
       </div>
+
+      <LogoutButton className="flex w-full items-center gap-2 rounded-md bg-card p-4 font-medium">
+        <IconLogout className="size-5" />
+        Log out
+      </LogoutButton>
     </div>
   );
 };

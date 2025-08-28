@@ -1,20 +1,16 @@
-"use client";
-
 import Link from "next/link";
-
-import { useAtom } from "jotai";
 
 import { Button } from "@/components/ui/button";
 
 import { IconShoppingBag2 } from "@/assets/icons/bag";
 
-import { cartItemCountAtom } from "@/modules/cart/atom";
+import { getCartItemCount } from "@/modules/cart/actions/query";
 
-export const CartIcon = () => {
-  const [itemCount] = useAtom(cartItemCountAtom);
+export const CartIcon = async () => {
+  const itemCount = await getCartItemCount();
   return (
     <Button asChild className="relative" size="icon" variant="outline">
-      <Link href="/cart">
+      <Link href="/account/cart">
         <IconShoppingBag2 className="size-5 text-muted-foreground hover:text-brand-500" />
 
         {itemCount > 0 && (

@@ -14,7 +14,7 @@ export default async function CartPage() {
   // }, 0);
 
   return (
-    <main className="container grid max-w-7xl grid-cols-3 gap-6 py-8">
+    <main className="grid grid-cols-3 gap-6">
       <div className="col-span-2">
         <h1 className="font-semibold text-xl">
           Cart{" "}
