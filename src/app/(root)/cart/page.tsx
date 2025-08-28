@@ -1,23 +1,15 @@
-import { SectionHeader } from "@/components/layout/section-header";
-
 import { pluralize } from "@/lib/functions/pluralize";
 import { getCartData } from "@/modules/cart/actions/query";
 import { CartItem, CartSummary } from "@/modules/cart/components";
-import { getProducts } from "@/modules/product/actions/query";
-import { ProductCard } from "@/modules/product/components/product-card";
+import { RecommendedProducts } from "@/modules/product/components/recommended-products";
 
 export default async function CartPage() {
   const cartData = await getCartData();
 
-  const products = await getProducts();
-
   const { items: cartItems, itemCount } = cartData;
 
-  // Create a Set of product IDs that are already in the cart
-  const cartProductIds = new Set(cartItems.map((item) => item.product.id));
-
-  // Filter out products that are already in the cart
-  const relatedProducts = products.filter((product) => !cartProductIds.has(product.id));
+  // Get cart product IDs for recommendations
+  const cartProductIds = cartItems.map((item) => item.product.id);
 
   return (
     <main className="container max-w-7xl">
@@ -39,21 +31,14 @@ export default async function CartPage() {
 
         <CartSummary cartItems={cartItems} cartLength={cartItems.length} />
       </section>
-      <section className="grid grid-cols-4 gap-6 pb-12" id="products">
-        <SectionHeader
-          className="col-span-full"
-          description="You might also like these products"
-          hasButton={false}
-          title="Related Products"
-          titleClassName="text-lg md:text-xl leading-none"
-        />
 
-        <div className="col-span-full grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {relatedProducts.map((product) => (
-            <ProductCard data={product} key={product.id} />
-          ))}
-        </div>
-      </section>
+      <RecommendedProducts
+        cartProductIds={cartProductIds}
+        description="You might also like these products"
+        limit={8}
+        strategy="hybrid"
+        title="Related Products"
+      />
     </main>
   );
 }
