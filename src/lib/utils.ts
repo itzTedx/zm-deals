@@ -252,3 +252,17 @@ export function getUrgentDeals(deals: ProductQueryResult[]): ProductQueryResult[
 export function getCriticalDeals(deals: ProductQueryResult[]): ProductQueryResult[] {
   return getLastMinuteDeals(deals, 1);
 }
+
+/**
+ * Checks if a date is within the specified number of days from now
+ * @param date - The date to check
+ * @param daysLimit - Number of days to consider (default: 7 days)
+ * @returns True if the date is within the specified days limit
+ */
+export function isWithinDays(date: Date, daysLimit = 7): boolean {
+  const now = new Date();
+  const timeLimit = new Date(now.getTime() + daysLimit * 24 * 60 * 60 * 1000);
+
+  // Date must be in the future and within the specified days limit
+  return date > now && date <= timeLimit;
+}

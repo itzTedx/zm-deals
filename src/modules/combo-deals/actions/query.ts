@@ -2,7 +2,6 @@
 
 import { and, desc, eq, gte, isNull, lte, or } from "drizzle-orm";
 
-import { ProductCardDate } from "@/modules/product/types";
 import { db } from "@/server/db";
 import { comboDealProducts, comboDeals } from "@/server/schema/product-schema";
 
@@ -55,12 +54,18 @@ export async function getComboDeal(id: string): Promise<ComboDealWithProducts | 
       products: {
         with: {
           product: {
-            columns: {
-              id: true,
-              title: true,
-              slug: true,
-              image: true,
-              price: true,
+            with: {
+              images: {
+                with: {
+                  media: true,
+                },
+              },
+              inventory: true,
+              reviews: {
+                with: {
+                  user: true,
+                },
+              },
             },
           },
         },
@@ -72,7 +77,7 @@ export async function getComboDeal(id: string): Promise<ComboDealWithProducts | 
   return comboDeal || null;
 }
 
-export async function getActiveComboDeals(): Promise<ProductCardDate[]> {
+export async function getActiveComboDeals(): Promise<ComboDealWithProducts[]> {
   const now = new Date();
 
   const comboDealsData = await db.query.comboDeals.findMany({
@@ -92,7 +97,11 @@ export async function getActiveComboDeals(): Promise<ProductCardDate[]> {
                 },
               },
               inventory: true,
-              reviews: true,
+              reviews: {
+                with: {
+                  user: true,
+                },
+              },
             },
           },
         },
@@ -112,12 +121,18 @@ export async function getFeaturedComboDeals(): Promise<ComboDealWithProducts[]> 
       products: {
         with: {
           product: {
-            columns: {
-              id: true,
-              title: true,
-              slug: true,
-              image: true,
-              price: true,
+            with: {
+              images: {
+                with: {
+                  media: true,
+                },
+              },
+              inventory: true,
+              reviews: {
+                with: {
+                  user: true,
+                },
+              },
             },
           },
         },

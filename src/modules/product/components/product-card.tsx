@@ -7,7 +7,7 @@ import StarRating from "@/components/ui/rating";
 
 import { IconCurrency, IconTruck } from "@/assets/icons";
 
-import { calculateDiscount } from "@/lib/utils";
+import { calculateDiscount, isWithinDays } from "@/lib/utils";
 
 import { calculateAverageRating } from "../actions/helper";
 import { ProductCardDate } from "../types";
@@ -62,21 +62,25 @@ export const ProductCard = ({ data, showSeconds = true }: Props) => {
           </div>
         )}
       </CardContent>
-      <CardFooter className="flex items-center justify-between">
-        {data.endsIn && (
-          <Badge className="text-[10px] sm:text-xs" size="sm">
-            <AnimatedCountdown endsIn={data.endsIn} showSeconds={showSeconds} />
-          </Badge>
-        )}
+      {((data.endsIn && isWithinDays(data.endsIn)) || (data.reviews && data.reviews.length > 0)) && (
+        <CardFooter className="flex items-center justify-between">
+          {data.endsIn && isWithinDays(data.endsIn) && (
+            <Badge className="text-[10px] sm:text-xs" size="sm">
+              <AnimatedCountdown endsIn={data.endsIn} showSeconds={showSeconds} />
+            </Badge>
+          )}
 
-        <div className="flex items-center gap-1 md:gap-2">
-          <StarRating readOnly value={calculateAverageRating(data.reviews)} />
+          {data.reviews && data.reviews.length > 0 && (
+            <div className="ml-auto flex items-center gap-1 md:gap-2">
+              <StarRating readOnly value={calculateAverageRating(data.reviews)} />
 
-          <p className="hidden text-gray-600 text-xs sm:block">
-            {data.reviews?.reduce((sum, review) => sum + review.rating, 0)}
-          </p>
-        </div>
-      </CardFooter>
+              <p className="hidden text-gray-600 text-xs sm:block">
+                {data.reviews?.reduce((sum, review) => sum + review.rating, 0)}
+              </p>
+            </div>
+          )}
+        </CardFooter>
+      )}
     </Card>
   );
 };

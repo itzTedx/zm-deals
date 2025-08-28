@@ -7,9 +7,8 @@ import { SeparatorBox } from "@/components/ui/separator";
 import { IconFire, IconHourglass } from "@/assets/icons";
 
 import { env } from "@/lib/env/server";
-import { getLastMinuteDeals } from "@/lib/utils";
 import { getActiveComboDeals } from "@/modules/combo-deals";
-import { getProducts } from "@/modules/product/actions/query";
+import { getLastMinuteDeals, getProducts } from "@/modules/product/actions/query";
 import { ProductCard } from "@/modules/product/components/product-card";
 
 export const metadata: Metadata = {
@@ -46,10 +45,11 @@ export const metadata: Metadata = {
 export default async function DealsPage() {
   const products = await getProducts();
   const comboDeals = await getActiveComboDeals();
+  const lastMinuteDeals = await getLastMinuteDeals(24);
 
   return (
     <main className="container relative space-y-12 pt-12 pb-8 sm:pb-12 md:space-y-16 md:pb-16 lg:pb-20">
-      {getLastMinuteDeals(products, 24).length > 0 && (
+      {lastMinuteDeals.length > 0 && (
         <>
           <div>
             <Badge variant="outline">
@@ -67,7 +67,7 @@ export default async function DealsPage() {
               title="Last Minute Deals"
             />
             <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-4">
-              {getLastMinuteDeals(products, 24).map((product) => (
+              {lastMinuteDeals.map((product) => (
                 <ProductCard data={product} key={product.id} />
               ))}
             </div>

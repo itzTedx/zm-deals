@@ -1,6 +1,6 @@
 "use server";
 
-import { and, desc, eq, isNull } from "drizzle-orm";
+import { and, desc, eq, gte, isNull, lte } from "drizzle-orm";
 
 import { getSession } from "@/lib/auth/server";
 import { db } from "@/server/db";
@@ -25,6 +25,38 @@ export async function getProducts() {
   });
 
   return products;
+}
+
+export async function getLastMinuteDeals(hoursLimit = 24) {
+  const now = new Date();
+  const timeLimit = new Date(now.getTime() + hoursLimit * 60 * 60 * 1000);
+
+  const lastMinuteDeals = await db.query.products.findMany({
+    where: and(
+      eq(products.status, "published"),
+      // Deal must end in the future (not already expired)
+      gte(products.endsIn, now),
+      // Deal must end within the specified time limit
+      lte(products.endsIn, timeLimit)
+    ),
+    with: {
+      meta: true,
+      inventory: true,
+      images: {
+        with: {
+          media: true,
+        },
+      },
+      reviews: {
+        with: {
+          user: true,
+        },
+      },
+    },
+    orderBy: [products.endsIn], // Sort by urgency (deals ending sooner come first)
+  });
+
+  return lastMinuteDeals;
 }
 
 export async function getProduct(id: string) {

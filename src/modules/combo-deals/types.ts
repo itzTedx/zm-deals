@@ -1,14 +1,10 @@
 import type { ComboDeal, ComboDealProduct } from "@/server/schema/product-schema";
 
+import { ProductCardDate } from "../product/types";
+
 export interface ComboDealWithProducts extends ComboDeal {
   products: (ComboDealProduct & {
-    product: {
-      id: string;
-      title: string;
-      slug: string;
-      image: string;
-      price: string;
-    } | null;
+    product: ProductCardDate | null;
   })[];
 }
 
