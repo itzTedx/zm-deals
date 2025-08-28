@@ -77,16 +77,19 @@ export async function upsertProduct(rawData: unknown): Promise<{ success: boolea
       // Prepare product values for upsert
       const productValues = {
         title: data.title,
-        overview: data.overview,
+        overview: data.overview ?? null,
         description: data.description,
         slug: data.slug,
         price: data.price.toString(),
-        compareAtPrice: data.compareAtPrice?.toString(),
+        compareAtPrice: data.compareAtPrice?.toString() ?? null,
         image: featuredImageUrl,
         isFeatured: data.isFeatured,
-        endsIn: data.endsIn,
-        schedule: data.schedule,
+        endsIn: data.endsIn ?? null,
+        schedule: data.schedule ?? null,
         status: "published" as const,
+        categoryId: data.categoryId ?? null,
+        deliveryFee: data.deliveryFee?.toString() ?? null,
+        isDeliveryFree: data.isDeliveryFree ?? true,
       };
 
       // Perform upsert operation using Drizzle's onConflictDoUpdate

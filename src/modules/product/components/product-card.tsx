@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import StarRating from "@/components/ui/rating";
 
-import { IconCurrency } from "@/assets/icons";
+import { IconCurrency, IconTruck } from "@/assets/icons";
 
 import { calculateDiscount } from "@/lib/utils";
 
@@ -16,9 +16,10 @@ import { FavButton } from "./ui/fav-button";
 
 interface Props {
   data: ProductQueryResult;
+  showSeconds?: boolean;
 }
 
-export const ProductCard = ({ data }: Props) => {
+export const ProductCard = ({ data, showSeconds = true }: Props) => {
   return (
     <Card className="relative">
       <Link className="absolute inset-0 z-10" href={`/${data.slug}`} />
@@ -53,11 +54,18 @@ export const ProductCard = ({ data }: Props) => {
             )}
           </div>
         </CardHeader>
+        {data.isDeliveryFree && (
+          <div className="mt-1">
+            <p className="flex items-center gap-1 font-medium text-gray-500 text-xs">
+              <IconTruck className="size-4 text-blue-600" /> Free Delivery
+            </p>
+          </div>
+        )}
       </CardContent>
       <CardFooter className="flex items-center justify-between">
         {data.endsIn && (
           <Badge className="text-[10px] sm:text-xs" size="sm">
-            <AnimatedCountdown endsIn={data.endsIn} />
+            <AnimatedCountdown endsIn={data.endsIn} showSeconds={showSeconds} />
           </Badge>
         )}
 

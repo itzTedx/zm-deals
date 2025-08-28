@@ -33,6 +33,11 @@ export async function getWishlist(): Promise<WishlistItem[]> {
                       media: true,
                     },
                   },
+                  reviews: {
+                    with: {
+                      user: true,
+                    },
+                  },
                 },
               },
             },
@@ -46,35 +51,15 @@ export async function getWishlist(): Promise<WishlistItem[]> {
 
       return guestWishlist.items.map((item) => ({
         id: item.id,
-        product: {
-          id: item.product.id,
-          title: item.product.title,
-          price: item.product.price,
-          image: item.product.image,
-          slug: item.product.slug,
-          meta: item.product.meta
-            ? {
-                metaTitle: item.product.meta.metaTitle || undefined,
-                metaDescription: item.product.meta.metaDescription || undefined,
-              }
-            : undefined,
-          inventory: item.product.inventory
-            ? {
-                stock: item.product.inventory.stock,
-                isOutOfStock: item.product.inventory.isOutOfStock,
-              }
-            : undefined,
-          images:
-            item.product.images
-              ?.filter((img) => img.media?.url && img.media?.alt)
-              .map((img) => ({
-                media: {
-                  url: img.media!.url,
-                  alt: img.media!.alt,
-                },
-              })) || undefined,
-        },
+        wishlistId: item.wishlistId,
+        productId: item.productId,
         addedAt: item.addedAt,
+        updatedAt: item.updatedAt,
+        product: {
+          ...item.product,
+          images: item.product.images || [],
+          reviews: item.product.reviews || [],
+        },
       }));
     }
 
@@ -93,6 +78,11 @@ export async function getWishlist(): Promise<WishlistItem[]> {
                     media: true,
                   },
                 },
+                reviews: {
+                  with: {
+                    user: true,
+                  },
+                },
               },
             },
           },
@@ -106,35 +96,15 @@ export async function getWishlist(): Promise<WishlistItem[]> {
 
     return userWishlist.items.map((item) => ({
       id: item.id,
-      product: {
-        id: item.product.id,
-        title: item.product.title,
-        price: item.product.price,
-        image: item.product.image,
-        slug: item.product.slug,
-        meta: item.product.meta
-          ? {
-              metaTitle: item.product.meta.metaTitle || undefined,
-              metaDescription: item.product.meta.metaDescription || undefined,
-            }
-          : undefined,
-        inventory: item.product.inventory
-          ? {
-              stock: item.product.inventory.stock,
-              isOutOfStock: item.product.inventory.isOutOfStock,
-            }
-          : undefined,
-        images:
-          item.product.images
-            ?.filter((img) => img.media?.url && img.media?.alt)
-            .map((img) => ({
-              media: {
-                url: img.media!.url,
-                alt: img.media!.alt,
-              },
-            })) || undefined,
-      },
+      wishlistId: item.wishlistId,
+      productId: item.productId,
       addedAt: item.addedAt,
+      updatedAt: item.updatedAt,
+      product: {
+        ...item.product,
+        images: item.product.images || [],
+        reviews: item.product.reviews || [],
+      },
     }));
   } catch (error) {
     console.error("Error getting wishlist:", error);
@@ -246,6 +216,11 @@ export async function getWishlistData(): Promise<WishlistData> {
                       media: true,
                     },
                   },
+                  reviews: {
+                    with: {
+                      user: true,
+                    },
+                  },
                 },
               },
             },
@@ -260,37 +235,17 @@ export async function getWishlistData(): Promise<WishlistData> {
         };
       }
 
-      const items = guestWishlist.items.map((item) => ({
+      const items: WishlistItem[] = guestWishlist.items.map((item) => ({
         id: item.id,
-        product: {
-          id: item.product.id,
-          title: item.product.title,
-          price: item.product.price,
-          image: item.product.image,
-          slug: item.product.slug,
-          meta: item.product.meta
-            ? {
-                metaTitle: item.product.meta.metaTitle || undefined,
-                metaDescription: item.product.meta.metaDescription || undefined,
-              }
-            : undefined,
-          inventory: item.product.inventory
-            ? {
-                stock: item.product.inventory.stock,
-                isOutOfStock: item.product.inventory.isOutOfStock,
-              }
-            : undefined,
-          images:
-            item.product.images
-              ?.filter((img) => img.media?.url && img.media?.alt)
-              .map((img) => ({
-                media: {
-                  url: img.media!.url,
-                  alt: img.media!.alt,
-                },
-              })) || undefined,
-        },
+        wishlistId: item.wishlistId,
+        productId: item.productId,
         addedAt: item.addedAt,
+        updatedAt: item.updatedAt,
+        product: {
+          ...item.product,
+          images: item.product.images || [],
+          reviews: item.product.reviews || [],
+        },
       }));
 
       return {
@@ -314,6 +269,11 @@ export async function getWishlistData(): Promise<WishlistData> {
                     media: true,
                   },
                 },
+                reviews: {
+                  with: {
+                    user: true,
+                  },
+                },
               },
             },
           },
@@ -328,37 +288,17 @@ export async function getWishlistData(): Promise<WishlistData> {
       };
     }
 
-    const items = userWishlist.items.map((item) => ({
+    const items: WishlistItem[] = userWishlist.items.map((item) => ({
       id: item.id,
-      product: {
-        id: item.product.id,
-        title: item.product.title,
-        price: item.product.price,
-        image: item.product.image,
-        slug: item.product.slug,
-        meta: item.product.meta
-          ? {
-              metaTitle: item.product.meta.metaTitle || undefined,
-              metaDescription: item.product.meta.metaDescription || undefined,
-            }
-          : undefined,
-        inventory: item.product.inventory
-          ? {
-              stock: item.product.inventory.stock,
-              isOutOfStock: item.product.inventory.isOutOfStock,
-            }
-          : undefined,
-        images:
-          item.product.images
-            ?.filter((img) => img.media?.url && img.media?.alt)
-            .map((img) => ({
-              media: {
-                url: img.media!.url,
-                alt: img.media!.alt,
-              },
-            })) || undefined,
-      },
+      wishlistId: item.wishlistId,
+      productId: item.productId,
       addedAt: item.addedAt,
+      updatedAt: item.updatedAt,
+      product: {
+        ...item.product,
+        images: item.product.images || [],
+        reviews: item.product.reviews || [],
+      },
     }));
 
     return {

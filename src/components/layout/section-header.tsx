@@ -9,7 +9,7 @@ import { Button } from "../ui/button";
 
 interface Props {
   title: string;
-  description: string;
+  description?: string;
   btnText?: string;
   link?: Route;
   hasButton?: boolean;
@@ -55,7 +55,7 @@ export const SectionHeader = ({
             </Button>
           ))}
       </div>
-      <p className="text-muted-foreground text-sm sm:text-base">{description}</p>
+      {description && <p className="text-muted-foreground text-sm sm:text-base">{description}</p>}
     </header>
   );
 };

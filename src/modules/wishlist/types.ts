@@ -1,3 +1,9 @@
+import { InferSelectModel } from "drizzle-orm";
+
+import { wishlistItems } from "@/server/schema";
+
+import { ProductQueryResult } from "../product/types";
+
 export interface WishlistActionResponse {
   success: boolean;
   error?: string;
@@ -5,31 +11,10 @@ export interface WishlistActionResponse {
   added?: boolean;
 }
 
-export interface WishlistItem {
-  id: string;
-  product: {
-    id: string;
-    title: string;
-    price: string;
-    image: string;
-    slug: string;
-    meta?: {
-      metaTitle?: string;
-      metaDescription?: string;
-    } | null;
-    inventory?: {
-      stock: number;
-      isOutOfStock: boolean;
-    } | null;
-    images?: Array<{
-      media: {
-        url: string;
-        alt: string;
-      };
-    }> | null;
-  };
-  addedAt: Date;
-}
+// Use Drizzle's type inference for wishlist items
+export type WishlistItem = InferSelectModel<typeof wishlistItems> & {
+  product: ProductQueryResult;
+};
 
 export interface WishlistData {
   items: WishlistItem[];

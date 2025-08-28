@@ -3,7 +3,7 @@ import { useFormContext } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { NumberInput } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -131,12 +131,10 @@ export const Classification = ({ categories }: Props) => {
               >
                 <div className="-m-2 pointer-events-none overflow-hidden p-2">
                   <div className="pointer-events-auto relative">
-                    <Input
+                    <NumberInput
                       {...field}
                       aria-label="Delivery fee"
                       className="peer ps-8"
-                      inputMode="numeric"
-                      pattern="[0-9]*"
                       placeholder="Delivery Fee"
                     />
                     <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-muted-foreground text-sm peer-disabled:opacity-50">

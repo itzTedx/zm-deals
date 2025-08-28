@@ -54,7 +54,7 @@ function CardContent({ className, ...props }: React.ComponentProps<"div">) {
 
 function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <div className={cn("grid items-center px-1.5 pt-1.5 md:px-3", className)} data-slot="card-footer" {...props} />
+    <div className={cn("grid items-center px-1.5 pt-1.5 md:px-2", className)} data-slot="card-footer" {...props} />
   );
 }
 

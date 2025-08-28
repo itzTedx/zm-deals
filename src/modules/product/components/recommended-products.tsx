@@ -1,5 +1,7 @@
 import { SectionHeader } from "@/components/layout/section-header";
 
+import { cn } from "@/lib/utils";
+
 import {
   getPersonalizedRecommendations,
   getRecommendedProducts,
@@ -20,7 +22,7 @@ interface RecommendedProductsProps {
 export async function RecommendedProducts({
   cartProductIds = [],
   title = "Recommended Products",
-  description = "You might also like these products",
+  description,
   limit = 8,
   strategy = "hybrid",
   showHeader = true,
@@ -49,7 +51,7 @@ export async function RecommendedProducts({
   }
 
   return (
-    <section className={`grid grid-cols-4 gap-6 pb-12 ${className}`} id="recommended-products">
+    <section className={cn("grid grid-cols-4 gap-6 pb-12", className)} id="recommended-products">
       {showHeader && (
         <SectionHeader
           className="col-span-full"
