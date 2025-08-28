@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import ImageCarousel from "@/components/ui/carousel-with-thumbnail";
-import StarRating from "@/components/ui/rating";
 import { SeparatorBox } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -28,15 +27,12 @@ import { IconApplePay, IconCurrency, IconMasterCard, IconVisaCard } from "@/asse
 import { IconShield } from "@/assets/icons/shield";
 
 import { env } from "@/lib/env/server";
-import { pluralize } from "@/lib/functions/pluralize";
 import { calculateDiscount, cn } from "@/lib/utils";
 import { Deals } from "@/modules/home/sections";
-import { calculateAverageRating } from "@/modules/product/actions/helper";
 import { getProductBySlug } from "@/modules/product/actions/query";
 import { EndsInCounter } from "@/modules/product/components/ends-in-counter";
-import { QuantityInput } from "@/modules/product/components/quantity-input";
-import { BuyButton } from "@/modules/product/components/ui/buy-button";
 import { CheckboxBadge } from "@/modules/product/components/ui/checkbox-badge";
+import { CheckoutWithQuantity } from "@/modules/product/components/ui/checkout-with-quantity";
 import { Reviews } from "@/modules/product/sections/reviews";
 
 type Params = Promise<{ product: string }>;
@@ -210,22 +206,8 @@ export default async function ProductPage({ params }: Props) {
             </Badge>
           </div>
 
-          {/* CTA Button */}
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <p className="font-medium text-gray-500 text-sm">Qty</p>
-              <QuantityInput />
-            </div>
-            <div className="flex items-center gap-1">
-              <p className="font-medium text-sm text-yellow-500">{calculateAverageRating(res.reviews)}</p>
-              <StarRating readOnly value={calculateAverageRating(res.reviews)} />
-              <p className="font-medium text-gray-500 text-sm">
-                {res.reviews.length} {pluralize("review", res.reviews.length)}
-              </p>
-            </div>
-          </div>
-
-          <BuyButton data={res} />
+          {/* Checkout with Quantity */}
+          <CheckoutWithQuantity data={res} />
 
           <SeparatorBox />
           <div className="space-y-4">

@@ -16,7 +16,7 @@ export default async function OrdersPage() {
 
   if (!session) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto py-8">
         <div className="text-center">
           <h1 className="mb-4 font-bold text-2xl">My Orders</h1>
           <p className="mb-6 text-muted-foreground">Please sign in to view your orders.</p>
@@ -33,7 +33,7 @@ export default async function OrdersPage() {
 
   if (!result.success) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto py-8">
         <div className="text-center">
           <h1 className="mb-4 font-bold text-2xl">My Orders</h1>
           <p className="mb-6 text-muted-foreground">{result.error || "Failed to fetch orders"}</p>
@@ -122,7 +122,7 @@ export default async function OrdersPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto py-8">
       <div className="mb-6">
         <h1 className="mb-2 font-bold text-2xl">My Orders</h1>
         <p className="text-muted-foreground">Track your orders and view order history</p>

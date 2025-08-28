@@ -41,7 +41,6 @@ export function Deadline({ compact = false }: DeadlineProps) {
     minutes: 0,
   });
   const [deliveryDay, setDeliveryDay] = useState("Tomorrow");
-  const [shouldShow, setShouldShow] = useState(false);
 
   // Memoize the deadline calculation to prevent unnecessary recalculations
   const calculateDeadline = useCallback(() => {
@@ -50,14 +49,26 @@ export function Deadline({ compact = false }: DeadlineProps) {
 
     const deadline = new Date();
     if (currentHour >= 14) {
-      // Past 2PM, set to tomorrow 2PM
-      deadline.setDate(deadline.getDate() + 1);
+      // Past 2PM, set to day after tomorrow 2PM
+      deadline.setDate(deadline.getDate() + 2);
       deadline.setHours(14, 0, 0, 0);
-      return { deadline, deliveryDay: "Tomorrow" };
+      return {
+        deadline,
+        deliveryDay: deadline.toLocaleDateString("en-US", {
+          weekday: "long",
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+        }),
+      };
     }
     // Before 2PM, set to today 2PM
     deadline.setHours(14, 0, 0, 0);
-    return { deadline, deliveryDay: "Today" };
+    return {
+      deadline,
+      deliveryDay: "Tomorrow",
+    };
   }, []);
 
   // Memoize the time update function
@@ -65,10 +76,6 @@ export function Deadline({ compact = false }: DeadlineProps) {
     const { deadline, deliveryDay: newDeliveryDay } = calculateDeadline();
     const now = new Date();
     const difference = deadline.getTime() - now.getTime();
-    const hoursUntilDeadline = difference / (1000 * 60 * 60);
-
-    // Only show countdown if 6 hours or less remaining
-    const newShouldShow = hoursUntilDeadline <= 6 && hoursUntilDeadline > 0;
 
     if (difference > 0) {
       const hours = Math.floor(difference / (1000 * 60 * 60));
@@ -80,7 +87,6 @@ export function Deadline({ compact = false }: DeadlineProps) {
     }
 
     setDeliveryDay(newDeliveryDay);
-    setShouldShow(newShouldShow);
   }, [calculateDeadline]);
 
   useEffect(() => {
@@ -120,11 +126,6 @@ export function Deadline({ compact = false }: DeadlineProps) {
       </span>
     ));
   }, [timeParts]);
-
-  // Don't render if more than 6 hours remaining
-  if (shouldShow) {
-    return null;
-  }
 
   if (compact) {
     return (

@@ -17,9 +17,10 @@ import { ProductQueryResult } from "../../types";
 
 interface Props {
   data: ProductQueryResult;
+  quantity?: number;
 }
 
-export const BuyButton = ({ data }: Props) => {
+export const BuyButton = ({ data, quantity = 1 }: Props) => {
   const ref = useRef<ChevronRightIconHandle>(null);
   const { data: session } = useSession();
   const [isLoading, startTransition] = useTransition();
@@ -33,14 +34,14 @@ export const BuyButton = ({ data }: Props) => {
 
     startTransition(async () => {
       try {
-        const result = await addToCart(data.id.toString(), 1);
+        const result = await addToCart(data.id.toString(), quantity);
 
         if (!result.success) {
           toast.error(result.error || "Failed to add to cart");
           return;
         }
 
-        toast.success("Added to cart successfully!");
+        toast.success(`Added ${quantity} ${quantity === 1 ? "item" : "items"} to cart successfully!`);
         router.refresh();
       } catch (error) {
         console.error("Error adding to cart:", error);

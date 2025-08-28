@@ -112,4 +112,4 @@ const QuantityInput = ({
   );
 };
 
-export default QuantityInput;
+export { QuantityInput };
