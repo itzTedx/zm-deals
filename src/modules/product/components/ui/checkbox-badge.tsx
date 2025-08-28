@@ -4,7 +4,7 @@ import { useRef } from "react";
 
 import { Badge } from "@/components/ui/badge";
 
-import { CircleCheckBigIcon, CircleCheckBigIconHandle } from "@/assets/icons/checkbox";
+import { CircleCheckBigIcon, CircleCheckBigIconHandle } from "@/assets/icons";
 
 import { cn } from "@/lib/utils";
 

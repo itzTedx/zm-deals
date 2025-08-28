@@ -15,7 +15,7 @@ import {
 
 import { Label } from "@/components/ui/label";
 
-import { IconWarnCircle } from "@/assets/icons/info";
+import { IconWarnCircle } from "@/assets/icons";
 
 import { cn } from "@/lib/utils";
 

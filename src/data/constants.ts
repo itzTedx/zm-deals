@@ -1,9 +1,14 @@
 import { JSX } from "react";
 import type { Route } from "next";
 
-import { IconShoppingBag, IconWallet } from "@/assets/icons/bag";
-import { IconRocket } from "@/assets/icons/rocket";
-import { IconBrandInstagram, IconBrandWhatsapp, IconBrandX } from "@/assets/icons/socials";
+import {
+  IconBrandInstagram,
+  IconBrandWhatsapp,
+  IconBrandX,
+  IconRocket,
+  IconShoppingBag,
+  IconWallet,
+} from "@/assets/icons";
 
 export const NAV_LINKS: { label: string; href: Route }[] = [
   {

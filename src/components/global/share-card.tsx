@@ -4,9 +4,7 @@ import { toast } from "sonner";
 
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
-import { IconEmail } from "@/assets/icons/email";
-import { IconLink, IconShare } from "@/assets/icons/share";
-import { IconBrandFacebook, IconBrandInstagram, IconBrandX } from "@/assets/icons/socials";
+import { IconBrandFacebook, IconBrandInstagram, IconBrandX, IconEmail, IconLink, IconShare } from "@/assets/icons";
 
 import {
   copyToClipboard,

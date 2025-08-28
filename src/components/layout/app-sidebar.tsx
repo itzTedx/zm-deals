@@ -16,8 +16,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 
-import { IconLogout } from "@/assets/icons/auth";
-import { IconPackage } from "@/assets/icons/bag";
+import { IconLogout, IconPackage } from "@/assets/icons";
 import { LogoIcon } from "@/assets/logo";
 
 import { SearchForm } from "./sidebar/search-bar";

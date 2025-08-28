@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import { Separator } from "@/components/ui/separator";
 
-import { IconCurrency } from "@/assets/icons/currency";
+import { IconCurrency } from "@/assets/icons";
 
 import { useSession } from "@/lib/auth/client";
 import { pluralize } from "@/lib/functions/pluralize";

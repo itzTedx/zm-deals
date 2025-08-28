@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 
-import { IconChevronRight } from "@/assets/icons/chevron";
+import { IconChevronRight } from "@/assets/icons";
 
 import { useCharacterCount } from "@/hooks/use-character";
 import { env } from "@/lib/env/client";

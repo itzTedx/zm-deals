@@ -6,7 +6,7 @@ import NumberFlow from "@number-flow/react";
 
 import { Badge } from "@/components/ui/badge";
 
-import { IconTimer } from "@/assets/icons/timer";
+import { IconTimer } from "@/assets/icons";
 
 interface DeadlineProps {
   compact?: boolean;

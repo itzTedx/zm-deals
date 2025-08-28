@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 
-import { IconDiscount } from "@/assets/icons/discount";
+import { IconDiscount } from "@/assets/icons";
 
 import { useSession } from "@/lib/auth/client";
 

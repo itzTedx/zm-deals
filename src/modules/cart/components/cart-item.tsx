@@ -11,10 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-import { IconCurrency } from "@/assets/icons/currency";
-import { IconHeart } from "@/assets/icons/heart";
-import { IconTrash } from "@/assets/icons/trash";
-import { IconTruck } from "@/assets/icons/truck";
+import { IconCurrency, IconHeart, IconTrash, IconTruck } from "@/assets/icons";
 
 import { useSession } from "@/lib/auth/client";
 import { calculateDiscount } from "@/lib/utils";

@@ -20,9 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
-import { IconChevronRight } from "@/assets/icons/chevron";
-import { IconCurrency } from "@/assets/icons/currency";
-import { IconProduct } from "@/assets/icons/product";
+import { IconChevronRight, IconCurrency, IconProduct } from "@/assets/icons";
 
 import { cn } from "@/lib/utils";
 import type { Coupon } from "@/server/schema";

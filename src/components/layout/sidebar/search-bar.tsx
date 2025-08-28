@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import { IconChevronRight } from "@/assets/icons/chevron";
-import { IconSearch } from "@/assets/icons/search";
+import { IconChevronRight, IconSearch } from "@/assets/icons";
 
 export function SearchForm({ ...props }: React.ComponentProps<"form">) {
   return (

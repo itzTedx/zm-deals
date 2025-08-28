@@ -1,15 +1,13 @@
 import Link from "next/link";
 
-import { IconPackage } from "@/assets/icons/bag";
-import { IconDiamond } from "@/assets/icons/diamonds";
-import { IconCategories, IconHome } from "@/assets/icons/layout";
-import { IconUser } from "@/assets/icons/user";
+import { IconCategories, IconDiamond, IconHome, IconPackage, IconUser } from "@/assets/icons";
 
 import { getSession } from "@/lib/auth/server";
 
 export const MobileNavbar = async () => {
   const session = await getSession();
-  const isLoggedIn = !!session && !session.user.isAnonymous;
+  const isLoggedIn = !!session;
+  // && !session.user.isAnonymous;
   return (
     <nav className="fixed right-0 bottom-0 left-0 z-50 border-t bg-card md:hidden">
       <ul className="flex items-center justify-between gap-2">

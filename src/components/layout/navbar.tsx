@@ -1,7 +1,6 @@
 import Link from "next/link";
 
-import { IconChevronRight } from "@/assets/icons/chevron";
-import { IconSearch } from "@/assets/icons/search";
+import { IconChevronRight, IconSearch } from "@/assets/icons";
 import { LogoIcon } from "@/assets/logo";
 
 import { NAV_LINKS } from "@/data/constants";

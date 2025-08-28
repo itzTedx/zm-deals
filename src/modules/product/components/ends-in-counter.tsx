@@ -6,7 +6,7 @@ import NumberFlow from "@number-flow/react";
 
 import { Banner, BannerContent, BannerIcon, BannerText, BannerTitle } from "@/components/ui/banner";
 
-import { IconHourglass } from "@/assets/icons/hourglass";
+import { IconHourglass } from "@/assets/icons";
 
 import { parseTimeComponents } from "@/lib/utils";
 

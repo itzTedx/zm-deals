@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 
-import { ChevronRightIcon, ChevronRightIconHandle } from "@/assets/icons/chevron";
+import { ChevronRightIcon, ChevronRightIconHandle } from "@/assets/icons";
 
 import { useSession } from "@/lib/auth/client";
 import { addToCart } from "@/modules/cart/actions/mutation";

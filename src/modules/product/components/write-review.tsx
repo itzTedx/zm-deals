@@ -14,7 +14,7 @@ import { StarRatingCells } from "@/components/ui/rating-cell";
 import { SeparatorBox } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 
-import { IconEdit } from "@/assets/icons/edit";
+import { IconEdit } from "@/assets/icons";
 
 import { useSession } from "@/lib/auth/client";
 import { pluralize } from "@/lib/functions/pluralize";

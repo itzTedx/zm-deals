@@ -2,9 +2,7 @@
 
 import Link from "next/link";
 
-import { IconLogout } from "@/assets/icons/auth";
-import { IconPackage } from "@/assets/icons/bag";
-import { IconUser } from "@/assets/icons/user";
+import { IconLogout, IconPackage, IconUser } from "@/assets/icons";
 
 import { AuthSession } from "@/lib/auth/server";
 import { LogoutButton } from "@/modules/auth/components/logout-button";

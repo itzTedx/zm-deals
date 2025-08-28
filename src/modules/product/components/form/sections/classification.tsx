@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 
-import { IconCurrency } from "@/assets/icons/currency";
+import { IconCurrency } from "@/assets/icons";
 
 import { CreateButton } from "@/modules/categories/components/create-button";
 import { ProductSchema } from "@/modules/product/schema";

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 
-import { IconHeart } from "@/assets/icons/heart";
+import { IconHeart } from "@/assets/icons";
 
 import { getWishlistItemCount } from "../actions/query";
 

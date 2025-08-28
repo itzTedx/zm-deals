@@ -21,10 +21,15 @@ import ImageCarousel from "@/components/ui/carousel-with-thumbnail";
 import { SeparatorBox } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { IconPackage } from "@/assets/icons/bag";
-import { IconDocument } from "@/assets/icons/book";
-import { IconApplePay, IconCurrency, IconMasterCard, IconVisaCard } from "@/assets/icons/currency";
-import { IconShield } from "@/assets/icons/shield";
+import {
+  IconApplePay,
+  IconCurrency,
+  IconDocument,
+  IconMasterCard,
+  IconPackage,
+  IconShield,
+  IconVisaCard,
+} from "@/assets/icons";
 
 import { env } from "@/lib/env/server";
 import { calculateDiscount, cn } from "@/lib/utils";

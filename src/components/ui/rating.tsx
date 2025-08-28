@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import { IconStar } from "@/assets/icons/star";
+import { IconStar } from "@/assets/icons";
 
 import { cn } from "@/lib/utils";
 

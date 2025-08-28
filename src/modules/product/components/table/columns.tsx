@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import StarRating from "@/components/ui/rating";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-import { IconCurrency } from "@/assets/icons/currency";
+import { IconCurrency } from "@/assets/icons";
 
 import { formatDate } from "@/lib/functions/format-date";
 import { pluralize } from "@/lib/functions/pluralize";

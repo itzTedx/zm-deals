@@ -5,11 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SeparatorBox } from "@/components/ui/separator";
 
-import { IconBook } from "@/assets/icons/book";
-import { IconCheckboxCircle } from "@/assets/icons/checkbox";
-import { IconChevronRight } from "@/assets/icons/chevron";
-import { IconEmail } from "@/assets/icons/email";
-import { IconTeamCircle } from "@/assets/icons/team";
+import { IconBook, IconCheckboxCircle, IconChevronRight, IconEmail, IconTeamCircle } from "@/assets/icons";
 import { Logo } from "@/assets/logo";
 import { Pattern1 } from "@/assets/patterns";
 

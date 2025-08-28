@@ -4,7 +4,7 @@ import Faqs from "@/components/faqs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-import { IconChevronRight } from "@/assets/icons/chevron";
+import { IconChevronRight } from "@/assets/icons";
 
 export const FaqsSection = () => {
   return (

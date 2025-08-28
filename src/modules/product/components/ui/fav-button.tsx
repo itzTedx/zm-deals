@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 
-import { IconHeart, IconHeartFilled } from "@/assets/icons/heart";
+import { IconHeart, IconHeartFilled } from "@/assets/icons";
 
 import { toggleWishlist } from "@/modules/wishlist/actions/mutation";
 import { isInWishlist } from "@/modules/wishlist/actions/query";

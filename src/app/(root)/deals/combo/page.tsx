@@ -1,7 +1,7 @@
 import { SectionHeader } from "@/components/layout/section-header";
 import { Badge } from "@/components/ui/badge";
 
-import { IconHourglass } from "@/assets/icons/hourglass";
+import { IconHourglass } from "@/assets/icons";
 
 import { DEALS } from "@/data/product";
 import { ProductCard } from "@/modules/product/components/product-card";

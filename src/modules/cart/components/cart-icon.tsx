@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 
-import { IconShoppingBag2 } from "@/assets/icons/bag";
+import { IconShoppingBag2 } from "@/assets/icons";
 
 import { getCartItemCount } from "../actions/query";
 

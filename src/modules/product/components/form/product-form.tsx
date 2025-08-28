@@ -11,19 +11,14 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 
-import { IconChevronRight } from "@/assets/icons/chevron";
-import { IconProduct } from "@/assets/icons/product";
+import { IconChevronRight, IconProduct } from "@/assets/icons";
 
 import { Category } from "@/server/schema";
 
 import { upsertProduct } from "../../actions/mutation";
 import { ProductSchema, productSchema } from "../../schema";
 import { getInitialValues } from "../../utils";
-import { Classification } from "./sections/classification";
-import { ProductMeta } from "./sections/meta";
-import { PricingInventory } from "./sections/pricing-inventory";
-import { ProductDetails } from "./sections/product-details";
-import { Scheduling } from "./sections/scheduling";
+import { Classification, PricingInventory, ProductDetails, ProductMeta, Scheduling } from "./sections";
 
 interface Props {
   initialData: ProductSchema | null;

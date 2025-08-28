@@ -5,9 +5,7 @@ import { SectionHeader } from "@/components/layout/section-header";
 import { Badge } from "@/components/ui/badge";
 import { SeparatorBox } from "@/components/ui/separator";
 
-import { IconChevronRight } from "@/assets/icons/chevron";
-import { IconFire } from "@/assets/icons/fire";
-import { IconHourglass } from "@/assets/icons/hourglass";
+import { IconChevronRight, IconFire, IconHourglass } from "@/assets/icons";
 
 import { getLastMinuteDeals } from "@/lib/utils";
 import { getProducts } from "@/modules/product/actions/query";

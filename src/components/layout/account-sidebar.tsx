@@ -1,7 +1,4 @@
-import { IconLogout } from "@/assets/icons/auth";
-import { IconPackage, IconShoppingBag2 } from "@/assets/icons/bag";
-import { IconHeart } from "@/assets/icons/heart";
-import { IconUser } from "@/assets/icons/user";
+import { IconHeart, IconLogout, IconPackage, IconShoppingBag2, IconUser } from "@/assets/icons";
 
 import { AuthSession } from "@/lib/auth/server";
 import { LogoutButton } from "@/modules/auth/components/logout-button";

@@ -1,4 +1,4 @@
-import { IconInfoCircleFilled } from "@/assets/icons/info";
+import { IconInfoCircleFilled } from "@/assets/icons";
 
 import { cn } from "@/lib/utils";
 

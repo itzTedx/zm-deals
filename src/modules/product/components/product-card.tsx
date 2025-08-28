@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import StarRating from "@/components/ui/rating";
 
-import { IconCurrency } from "@/assets/icons/currency";
+import { IconCurrency } from "@/assets/icons";
 
 import { calculateDiscount } from "@/lib/utils";
 

@@ -13,8 +13,7 @@ import {
 } from "@/components/ui/carousel";
 
 import { Background } from "@/assets/background";
-import { IconCurrency } from "@/assets/icons/currency";
-import { IconHourglass } from "@/assets/icons/hourglass";
+import { IconCurrency, IconHourglass } from "@/assets/icons";
 
 import { calculateDiscount } from "@/lib/utils";
 import { getFeaturedProducts } from "@/modules/product/actions/query";

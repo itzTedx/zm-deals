@@ -10,9 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 
-import { IconCurrency } from "@/assets/icons/currency";
-import { IconHeartFilled } from "@/assets/icons/heart";
-import { IconTrash } from "@/assets/icons/trash";
+import { IconCurrency, IconHeartFilled, IconTrash } from "@/assets/icons";
 
 import { addToCart } from "@/modules/cart/actions/mutation";
 import { removeFromWishlist } from "@/modules/wishlist/actions/mutation";

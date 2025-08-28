@@ -4,8 +4,7 @@ import { SectionHeader } from "@/components/layout/section-header";
 import { Badge } from "@/components/ui/badge";
 import { SeparatorBox } from "@/components/ui/separator";
 
-import { IconFire } from "@/assets/icons/fire";
-import { IconHourglass } from "@/assets/icons/hourglass";
+import { IconFire, IconHourglass } from "@/assets/icons";
 
 import { env } from "@/lib/env/server";
 import { getLastMinuteDeals } from "@/lib/utils";

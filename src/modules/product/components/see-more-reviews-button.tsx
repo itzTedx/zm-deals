@@ -4,7 +4,7 @@ import { parseAsBoolean, useQueryState } from "nuqs";
 
 import { Button } from "@/components/ui/button";
 
-import { IconChevronRight } from "@/assets/icons/chevron";
+import { IconChevronRight } from "@/assets/icons";
 
 export const SeeMoreReviews = () => {
   const [_, setReviewsDialog] = useQueryState("reviews", parseAsBoolean.withDefault(false));

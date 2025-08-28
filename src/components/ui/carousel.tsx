@@ -7,7 +7,7 @@ import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 
 import { Button } from "@/components/ui/button";
 
-import { MoveLeftIcon, MoveLeftIconHandle, MoveRightIcon, MoveRightIconHandle } from "@/assets/icons/arrow";
+import { MoveLeftIcon, MoveLeftIconHandle, MoveRightIcon, MoveRightIconHandle } from "@/assets/icons";
 
 import { cn } from "@/lib/utils";
 
