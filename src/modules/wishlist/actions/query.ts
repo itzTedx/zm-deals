@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 import { eq } from "drizzle-orm";
 
 import { auth } from "@/lib/auth/server";
-import { getOrCreateSessionId } from "@/lib/utils/session";
+import { getOrCreateSessionId } from "@/lib/auth/session";
 import { db } from "@/server/db";
 import { wishlists } from "@/server/schema";
 

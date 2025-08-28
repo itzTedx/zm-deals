@@ -3,8 +3,8 @@
 import { and, eq } from "drizzle-orm";
 
 import { getSession } from "@/lib/auth/server";
+import { getOrCreateSessionId } from "@/lib/auth/session";
 import { createLog } from "@/lib/logging";
-import { getOrCreateSessionId } from "@/lib/utils/session";
 import { validateStockAvailability } from "@/modules/inventory/actions/mutation";
 import { db } from "@/server/db";
 import { cartItems, carts } from "@/server/schema";

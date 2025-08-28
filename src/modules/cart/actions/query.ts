@@ -1,11 +1,9 @@
-"use server";
-
 import { headers } from "next/headers";
 
 import { and, eq } from "drizzle-orm";
 
 import { auth, getSession } from "@/lib/auth/server";
-import { getOrCreateSessionId } from "@/lib/utils/session";
+import { getOrCreateSessionId } from "@/lib/auth/session";
 import { db } from "@/server/db";
 import { carts } from "@/server/schema";
 

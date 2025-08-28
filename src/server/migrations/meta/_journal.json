@@ -5,85 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1756106094138,
-      "tag": "0000_blue_exiles",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1756123198138,
-      "tag": "0001_chief_shocker",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1756123905068,
-      "tag": "0002_same_blacklash",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1756126005190,
-      "tag": "0003_common_newton_destine",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1756131613264,
-      "tag": "0004_skinny_darkhawk",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1756189529830,
-      "tag": "0005_nappy_shadow_king",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1756192796428,
-      "tag": "0006_busy_eddie_brock",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1756194422425,
-      "tag": "0007_chunky_tattoo",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "7",
-      "when": 1756208162978,
-      "tag": "0008_curved_vargas",
-      "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "7",
-      "when": 1756278884543,
-      "tag": "0009_flowery_shinobi_shaw",
-      "breakpoints": true
-    },
-    {
-      "idx": 10,
-      "version": "7",
-      "when": 1756293610894,
-      "tag": "0010_exotic_vulture",
-      "breakpoints": true
-    },
-    {
-      "idx": 11,
-      "version": "7",
-      "when": 1756295452266,
-      "tag": "0011_soft_black_queen",
+      "when": 1756361308616,
+      "tag": "0000_magical_black_cat",
       "breakpoints": true
     }
   ]
