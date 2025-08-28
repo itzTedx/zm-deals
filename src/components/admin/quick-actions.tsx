@@ -1,7 +1,7 @@
 import { Route } from "next";
 import Link from "next/link";
 
-import { Package, Plus, ShoppingCart, Users } from "lucide-react";
+import { Package, PackageIcon, Plus, ShoppingCart, Users } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,6 +47,13 @@ export function QuickActions() {
         />
 
         <QuickAction
+          description="Create a new combo deal"
+          href="/studio/products/combo/create"
+          icon={<PackageIcon className="h-5 w-5" />}
+          title="Add Combo Deal"
+        />
+
+        <QuickAction
           description="View and process customer orders"
           href="/studio/orders"
           icon={<ShoppingCart className="h-5 w-5" />}
@@ -65,6 +72,13 @@ export function QuickActions() {
           href="/studio/products"
           icon={<Package className="h-5 w-5" />}
           title="Product Catalog"
+        />
+
+        <QuickAction
+          description="Manage combo deals and bundles"
+          href="/studio/products/combo"
+          icon={<PackageIcon className="h-5 w-5" />}
+          title="Combo Deals"
         />
       </CardContent>
     </Card>
