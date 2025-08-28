@@ -157,14 +157,14 @@ export async function getUserOrders(): Promise<UserOrdersResult> {
  */
 export async function getOrderById(orderId: string) {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getSession();
 
     if (!session) {
       return { success: false, error: "Not authenticated" };
     }
 
     const order = await db.query.orders.findFirst({
-      where: and(eq(orders.id, orderId), eq(orders.userId, session.user.id)),
+      where: and(eq(orders.orderNumber, orderId), eq(orders.userId, session.user.id)),
       with: {
         items: {
           with: {

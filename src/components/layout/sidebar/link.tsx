@@ -15,7 +15,7 @@ interface Props {
 
 export const SidebarLink = ({ href, icon, children, className }: Props) => {
   const pathname = usePathname();
-  const isActive = pathname === href;
+  const isActive = pathname.includes(href);
 
   return (
     <Link

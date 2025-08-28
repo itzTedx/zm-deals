@@ -27,14 +27,12 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
 
   if (!result.success || !result.order) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="mb-4 font-bold text-2xl">Order Details</h1>
-          <p className="mb-6 text-muted-foreground">{result.error || "Order not found"}</p>
-          <Button asChild>
-            <Link href="/account/orders">Back to Orders</Link>
-          </Button>
-        </div>
+      <div className="text-center">
+        <h1 className="mb-4 font-bold text-2xl">Order Details</h1>
+        <p className="mb-6 text-muted-foreground">{result.error || "Order not found"}</p>
+        <Button asChild>
+          <Link href="/account/orders">Back to Orders</Link>
+        </Button>
       </div>
     );
   }
@@ -97,7 +95,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="py-2">
       <div className="mb-6">
         <Button asChild className="mb-4" variant="ghost">
           <Link href="/account/orders">

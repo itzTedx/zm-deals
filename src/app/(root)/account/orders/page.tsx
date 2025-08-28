@@ -3,14 +3,14 @@ import Link from "next/link";
 
 import { CheckCircle, Clock, Eye, Package, Truck, XCircle } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 import { getSession } from "@/lib/auth/server";
+import { formatDate } from "@/lib/functions/format-date";
 import { getUserOrders } from "@/modules/orders/actions/query";
 import { OrderWithItemsAndProducts } from "@/modules/orders/types";
-import { formatDateTime, formatPrice, getStatusColor, getStatusDescription } from "@/modules/orders/utils";
+import { formatPrice, getStatusDescription } from "@/modules/orders/utils";
 
 export default async function OrdersPage() {
   const session = await getSession();
@@ -70,43 +70,43 @@ export default async function OrdersPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-4">
-          {orders.map((order) => (
-            <Card key={order.id}>
-              <CardContent className="p-6">
+        <Card>
+          <CardContent>
+            {orders.map((order) => (
+              <div className="relative rounded-xl border p-4" key={order.id}>
+                <Link className="absolute inset-0" href={`/account/orders/${order.orderNumber}`} />
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                   {/* Order Info */}
                   <div className="flex flex-1 items-start gap-4">
                     <div className="flex items-center gap-3">
                       {getStatusIcon(order.status)}
                       <div>
-                        <h3 className="font-semibold text-lg">#{order.orderNumber}</h3>
-                        <p className="text-muted-foreground text-sm">{formatDateTime(order.createdAt)}</p>
-                        <p className="text-muted-foreground text-sm">
-                          {order.items?.length || 0} item{(order.items?.length || 0) !== 1 ? "s" : ""}
+                        <p className="font-medium text-gray-700">
+                          <span className="capitalize">{order.status}</span>
+                          <span> on {formatDate(order.createdAt, { relative: true, includeTime: true })}</span>
                         </p>
+                        <p className="text-muted-foreground text-xs">{getStatusDescription(order.status)}</p>
+
+                        {/* <p className="text-muted-foreground text-sm">
+                          {order.items?.length || 0} item{(order.items?.length || 0) !== 1 ? "s" : ""}
+                        </p> */}
                       </div>
                     </div>
                   </div>
 
                   {/* Status and Amount */}
                   <div className="flex flex-col items-end gap-2">
-                    <div className="text-right">
+                    {/* <div className="text-right">
                       <p className="font-semibold text-lg">{formatPrice(order.totalAmount)}</p>
-                      <Badge className={getStatusColor(order.status)}>
-                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                      </Badge>
-                    </div>
-                    <p className="max-w-xs text-right text-muted-foreground text-xs">
-                      {getStatusDescription(order.status)}
-                    </p>
+                      <Badge className={getStatusColor(order.status)}>{order.status}</Badge>
+                      </div> */}
                   </div>
 
                   {/* Actions */}
                   <div className="flex items-center gap-2">
                     <Button asChild size="sm" variant="outline">
                       <Link href={`/account/orders/${order.id}`}>
-                        <Eye className="mr-2 h-4 w-4" />
+                        <Eye className="mr-2 size-4" />
                         View Details
                       </Link>
                     </Button>
@@ -121,32 +121,34 @@ export default async function OrdersPage() {
                         {item.productImage && (
                           <Image
                             alt={item.productTitle}
-                            className="h-10 w-10 rounded object-cover"
-                            height={64}
+                            className="rounded object-cover"
+                            height={100}
                             src={item.productImage}
-                            width={64}
+                            width={100}
                           />
                         )}
                         <div className="min-w-0 flex-1">
-                          <p className="truncate font-medium text-sm">{item.productTitle}</p>
-                          <p className="text-muted-foreground text-xs">
-                            Qty: {item.quantity} × {formatPrice(item.unitPrice)}
+                          <p className="truncate font-medium text-lg">{item.productTitle}</p>
+                          <p className="text-gray-500 text-sm">
+                            Qty: {item.quantity} x {formatPrice(item.unitPrice)}
                           </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-medium text-sm">{formatPrice(item.totalPrice)}</p>
                         </div>
                       </div>
                     ))}
-                    {(order.items?.length || 0) > 2 && (
+                    {(order.items?.length || 0) > 1 && (
                       <p className="text-muted-foreground text-sm">+{(order.items?.length || 0) - 2} more items</p>
                     )}
+                    <div className="flex items-center justify-end">
+                      <p className="text-right text-gray-500 text-xs">
+                        Order ID <span className="font-medium">#{order.orderNumber}</span>
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
       )}
     </div>
   );
@@ -156,16 +158,20 @@ export function getStatusIcon(status: string) {
   switch (status) {
     case "confirmed":
     case "delivered":
-      return <CheckCircle className="h-4 w-4 text-green-500" />;
+      return (
+        <div className="flex size-10 items-center justify-center rounded-lg bg-success/10">
+          <CheckCircle className="size-5 text-success" />
+        </div>
+      );
     case "pending":
     case "processing":
-      return <Clock className="h-4 w-4 text-yellow-500" />;
+      return <Clock className="size-4 text-warning" />;
     case "shipped":
-      return <Truck className="h-4 w-4 text-blue-500" />;
+      return <Truck className="size-4 text-success" />;
     case "cancelled":
     case "failed":
-      return <XCircle className="h-4 w-4 text-red-500" />;
+      return <XCircle className="size-4 text-destructive" />;
     default:
-      return <Package className="h-4 w-4 text-gray-500" />;
+      return <Package className="size-4 text-muted-foreground" />;
   }
 }

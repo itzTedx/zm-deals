@@ -15,7 +15,7 @@ interface Props {
 
 export const AccountSidebar = ({ session }: Props) => {
   return (
-    <div className="space-y-4">
+    <div className="hidden space-y-4 lg:block">
       <div className="rounded-lg bg-card p-4">
         <div className="flex items-center gap-2">
           <Avatar className="size-12">
@@ -49,7 +49,7 @@ export const AccountSidebar = ({ session }: Props) => {
         <h2 className="mb-2 px-3 font-medium text-gray-600 text-xs uppercase">My Account</h2>
         <ul className="space-y-2 rounded-lg bg-card p-2">
           <li>
-            <SidebarLink href="/account" icon={<IconUser className="size-5" />}>
+            <SidebarLink href="/account/profile" icon={<IconUser className="size-5" />}>
               Profile
             </SidebarLink>
           </li>
