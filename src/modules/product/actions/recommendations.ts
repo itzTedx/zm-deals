@@ -7,6 +7,9 @@ import { db } from "@/server/db";
 import { products, reviews } from "@/server/schema";
 
 import { ProductQueryResult } from "../types";
+import { getPurchaseHistoryProducts, getSimilarToPurchasedProducts } from "./purchase-history";
+import { getRecentlyViewedProducts } from "./recently-viewed";
+import { getSimilarToWishlistProducts, getWishlistProducts } from "./wishlist-analysis";
 
 interface RecommendationOptions {
   limit?: number;
@@ -327,7 +330,7 @@ async function getHybridRecommendations(
   const allProducts = strategyResults.flat();
   const productMap = new Map<string, ProductQueryResult & { _strategy: string; _weight: number }>();
 
-  allProducts.forEach((product) => {
+  allProducts.forEach((product: ProductQueryResult & { _strategy: string; _weight: number }) => {
     const existing = productMap.get(product.id);
     if (!existing || product._weight > existing._weight) {
       productMap.set(product.id, product);
@@ -338,7 +341,7 @@ async function getHybridRecommendations(
   const uniqueProducts = Array.from(productMap.values())
     .sort((a, b) => b._weight - a._weight)
     .slice(0, limit)
-    .map(({ _strategy, _weight, ...product }) => product);
+    .map(({ _strategy, _weight, ...product }: ProductQueryResult & { _strategy: string; _weight: number }) => product);
 
   return uniqueProducts;
 }
@@ -358,16 +361,75 @@ export async function getPersonalizedRecommendations(
     return getFeaturedRecommendations({ limit, excludeProductIds });
   }
 
-  // TODO: Implement user behavior analysis
-  // This could include:
-  // - Recently viewed products
-  // - Purchase history
-  // - Wishlist items
-  // - Search history
-  // - Click patterns
+  // Implement user behavior analysis
+  const personalizedStrategies = [
+    {
+      name: "Recently Viewed",
+      weight: 0.3,
+      getProducts: () => getRecentlyViewedProducts(limit, excludeProductIds),
+    },
+    {
+      name: "Similar to Purchased",
+      weight: 0.3,
+      getProducts: () => getSimilarToPurchasedProducts(limit, excludeProductIds),
+    },
+    {
+      name: "Similar to Wishlist",
+      weight: 0.2,
+      getProducts: () => getSimilarToWishlistProducts(limit, excludeProductIds),
+    },
+    {
+      name: "Purchase History",
+      weight: 0.1,
+      getProducts: () => getPurchaseHistoryProducts(limit, excludeProductIds),
+    },
+    {
+      name: "Wishlist Items",
+      weight: 0.1,
+      getProducts: () => getWishlistProducts(limit, excludeProductIds),
+    },
+  ];
 
-  // For now, return featured products
-  return getFeaturedRecommendations({ limit, excludeProductIds });
+  // Get products from each strategy
+  const strategyResults = await Promise.all(
+    personalizedStrategies.map(async (strategy) => {
+      const products = await strategy.getProducts();
+      return products.map((product) => ({
+        ...product,
+        _strategy: strategy.name,
+        _weight: strategy.weight,
+      }));
+    })
+  );
+
+  // Flatten and deduplicate products
+  const allProducts = strategyResults.flat();
+  const productMap = new Map<string, ProductQueryResult & { _strategy: string; _weight: number }>();
+
+  allProducts.forEach((product) => {
+    const existing = productMap.get(product.id);
+    if (!existing || product._weight > existing._weight) {
+      productMap.set(product.id, product);
+    }
+  });
+
+  // Convert back to array and sort by weight
+  const uniqueProducts = Array.from(productMap.values())
+    .sort((a, b) => b._weight - a._weight)
+    .slice(0, limit)
+    .map(({ _strategy, _weight, ...product }) => product);
+
+  // If we don't have enough personalized recommendations, fill with featured products
+  if (uniqueProducts.length < limit) {
+    const remainingLimit = limit - uniqueProducts.length;
+    const featuredProducts = await getFeaturedRecommendations({
+      limit: remainingLimit,
+      excludeProductIds: [...excludeProductIds, ...uniqueProducts.map((p) => p.id)],
+    });
+    uniqueProducts.push(...featuredProducts);
+  }
+
+  return uniqueProducts;
 }
 
 /**
