@@ -79,8 +79,57 @@ export const productImages = pgTable(
   ]
 );
 
-// Relations
+export const comboDeals = pgTable(
+  "combo_deals",
+  {
+    id,
+    title: text("title").notNull(),
+    description: text("description"),
+    slug: text("slug").notNull().unique(),
+    originalPrice: decimal("original_price", { precision: 10, scale: 2 }).notNull(),
+    comboPrice: decimal("combo_price", { precision: 10, scale: 2 }).notNull(),
+    savings: decimal("savings", { precision: 10, scale: 2 }),
+    isFeatured: boolean("is_featured").notNull().default(false),
+    isActive: boolean("is_active").notNull().default(true),
+    startsAt: timestamp("starts_at", { mode: "date" }),
+    endsAt: timestamp("ends_at", { mode: "date" }),
+    maxQuantity: integer("max_quantity"),
+    createdAt,
+    updatedAt,
+  },
+  (table) => [
+    // Indexes for better query performance
+    uniqueIndex("combo_deals_slug_idx").on(table.slug),
+    index("combo_deals_active_idx").on(table.isActive),
+    index("combo_deals_featured_idx").on(table.isFeatured),
+    index("combo_deals_price_idx").on(table.comboPrice),
+    index("combo_deals_starts_at_idx").on(table.startsAt),
+    index("combo_deals_ends_at_idx").on(table.endsAt),
+  ]
+);
 
+export const comboDealProducts = pgTable(
+  "combo_deal_products",
+  {
+    id,
+    comboDealId: uuid("combo_deal_id").references(() => comboDeals.id, { onDelete: "cascade" }),
+    productId: uuid("product_id").references(() => products.id, { onDelete: "cascade" }),
+    quantity: integer("quantity").notNull().default(1),
+    sortOrder: integer("sort_order").default(0),
+    createdAt,
+    updatedAt,
+  },
+  (table) => [
+    // Indexes for better query performance
+    index("combo_deal_products_combo_deal_id_idx").on(table.comboDealId),
+    index("combo_deal_products_product_id_idx").on(table.productId),
+    index("combo_deal_products_sort_order_idx").on(table.sortOrder),
+    // Unique constraint to prevent duplicate products in same combo
+    uniqueIndex("combo_deal_products_unique_idx").on(table.comboDealId, table.productId),
+  ]
+);
+
+// Relations
 // Product relations
 export const productRelation = relations(products, ({ one, many }) => ({
   category: one(categories, {
@@ -104,6 +153,9 @@ export const productRelation = relations(products, ({ one, many }) => ({
   reviews: many(reviews, {
     relationName: "product-reviews-relations",
   }),
+  comboDeals: many(comboDealProducts, {
+    relationName: "product-combo-deal-relations",
+  }),
 }));
 
 // ProductImages relations
@@ -120,6 +172,36 @@ export const productImagesRelation = relations(productImages, ({ one }) => ({
   }),
 }));
 
+// ComboDeals relations
+export const comboDealsRelation = relations(comboDeals, ({ many }) => ({
+  products: many(comboDealProducts, {
+    relationName: "combo-deal-products-relations",
+  }),
+}));
+
+// ComboDealProducts relations
+export const comboDealProductsRelation = relations(comboDealProducts, ({ one }) => ({
+  comboDeal: one(comboDeals, {
+    fields: [comboDealProducts.comboDealId],
+    references: [comboDeals.id],
+    relationName: "combo-deal-products-relations",
+  }),
+  product: one(products, {
+    fields: [comboDealProducts.productId],
+    references: [products.id],
+    relationName: "product-combo-deal-relations",
+  }),
+}));
+
 // Types for better TypeScript support
 export type NewProduct = typeof products.$inferInsert;
 export type Product = typeof products.$inferSelect;
+
+export type NewProductImage = typeof productImages.$inferInsert;
+export type ProductImage = typeof productImages.$inferSelect;
+
+export type NewComboDeal = typeof comboDeals.$inferInsert;
+export type ComboDeal = typeof comboDeals.$inferSelect;
+
+export type NewComboDealProduct = typeof comboDealProducts.$inferInsert;
+export type ComboDealProduct = typeof comboDealProducts.$inferSelect;

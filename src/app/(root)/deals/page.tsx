@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 export default async function DealsPage() {
   const products = await getProducts();
   return (
-    <main className="container relative max-w-7xl space-y-12 border-x pt-12 pb-8 sm:pb-12 md:space-y-16 md:pb-16 lg:pb-20">
+    <main className="container relative space-y-12 pt-12 pb-8 sm:pb-12 md:space-y-16 md:pb-16 lg:pb-20">
       {getLastMinuteDeals(products, 24).length > 0 && (
         <div>
           <Badge variant="outline">
@@ -62,7 +62,7 @@ export default async function DealsPage() {
             hasButton={false}
             title="Last Minute Deals"
           />
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-3">
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-4">
             {getLastMinuteDeals(products, 24).map((product) => (
               <ProductCard data={product} key={product.id} />
             ))}
@@ -85,7 +85,7 @@ export default async function DealsPage() {
           hasButton={false}
           title="Previous Hot-Selling Deals"
         />
-        <div className="mt-6 grid grid-cols-2 gap-3 pb-12 sm:mt-8 sm:gap-4 md:mt-12 md:pb-16 lg:grid-cols-3 lg:pb-20">
+        <div className="mt-6 grid grid-cols-2 gap-3 pb-12 sm:mt-8 sm:gap-4 md:mt-12 md:pb-16 lg:grid-cols-4 lg:pb-20">
           {products.map((product) => (
             <ProductCard data={product} key={product.id} />
           ))}
@@ -106,7 +106,7 @@ export default async function DealsPage() {
           hasButton={false}
           title="Save More with Combos"
         />
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-3">
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-4">
           {products.filter((product) => product.combo).map((product) => (
             <ProductCard data={product} key={product.id} />
           ))}
