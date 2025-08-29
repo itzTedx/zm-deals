@@ -23,6 +23,7 @@ export async function getCategories() {
             images: { with: { media: true } },
             reviews: { with: { user: true } },
           },
+          limit: 8,
         },
       },
       orderBy: [asc(categories.name)],
