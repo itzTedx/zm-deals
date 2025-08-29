@@ -97,6 +97,24 @@ export async function copyToClipboard(text: string): Promise<boolean> {
 }
 
 /**
+ * Formats file size in bytes to a human-readable string
+ * @param bytes - The file size in bytes
+ * @param decimals - Number of decimal places (default: 2)
+ * @returns A formatted string representing the file size (e.g., "1.5 MB", "2.3 GB")
+ */
+export function formatSize(bytes: number, decimals = 2): string {
+  if (bytes === 0) return "0 Bytes";
+
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return `${Number.parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+}
+
+/**
  * Opens email client with pre-filled subject and body
  * @param subject - Email subject
  * @param body - Email body

@@ -121,32 +121,21 @@ const router: Router = {
     }),
     [CATEGORY_UPLOAD_ROUTE]: route({
       fileTypes: CATEGORY_FILE_TYPES,
-      multipleFiles: false,
       maxFileSize: CATEGORY_FILE_MAX_SIZE,
 
       onBeforeUpload: async ({ file }) => {
-        try {
-          await authenticateUser();
-          const objectKey = generateObjectKey(file, CATEGORY_UPLOAD_ROUTE);
-          return { objectKey };
-        } catch (error) {
-          log.error("Error in onBeforeUpload", error);
-          throw error;
-        }
+        await authenticateUser();
+        const objectKey = generateObjectKey(file, CATEGORY_UPLOAD_ROUTE);
+        return { objectKey };
       },
 
       onAfterSignedUrl: async ({ file }) => {
-        try {
-          log.info("Processing signed URLs", file.objectKey);
+        log.info("Processing signed URLs", file.objectKey);
 
-          const url = generatePublicUrl(file.objectKey);
-          log.file("Generated public URL", url);
+        const url = generatePublicUrl(file.objectKey);
+        log.file("Generated public URL", url);
 
-          return { metadata: { url } };
-        } catch (error) {
-          log.error("Error in onAfterSignedUrl", error);
-          throw error;
-        }
+        return { metadata: { url } };
       },
     }),
     [CATEGORY_BANNER_UPLOAD_ROUTE]: route({

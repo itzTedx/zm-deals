@@ -17,11 +17,6 @@ export function BannerOverlay({ item }: BannerOverlayProps) {
     <div
       className="aspect-[16/9] scale-105 transform rounded-md opacity-85 shadow-xl transition-all duration-150"
       ref={overlayRef}
-      style={{
-        width: "200px",
-        height: "112px",
-        pointerEvents: "none",
-      }}
     >
       <div className="group relative flex size-full flex-col items-center justify-center overflow-hidden rounded-md border border-primary/30 bg-background shadow-lg">
         {/* Drag Handle */}

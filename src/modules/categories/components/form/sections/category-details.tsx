@@ -22,26 +22,33 @@ export const CategoryDetails = () => {
 
   const { control: thumbnailControl } = useUploadFile({
     route: CATEGORY_UPLOAD_ROUTE,
+    onError: (error) => {
+      form.setError("thumbnail", {
+        message: error.message || "An error occurred",
+      });
+    },
     onUploadComplete: async ({ file, metadata: objectMetadata }) => {
       if (!file) return;
-
+      console.log("file uploaded", file);
       try {
         const metadata = await getImageMetadata(file.raw);
 
         const image: MediaSchema = {
           ...metadata,
-          url: (objectMetadata.urls as string[])[0] || (objectMetadata.url as string),
+          url: objectMetadata.url as string,
           key: file.objectKey,
           type: "thumbnail",
         };
 
-        form.setValue("thumbnail", {
+        console.log("image", image);
+
+        const formvalue = form.setValue("thumbnail", {
           url: image.url,
           key: image.key,
           type: image.type,
           ...metadata,
         });
-
+        console.log("formvalue", formvalue);
         toast.success("Thumbnail uploaded successfully");
       } catch (error) {
         console.error("Error processing thumbnail:", error);

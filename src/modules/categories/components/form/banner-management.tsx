@@ -71,7 +71,6 @@ export function BannerManagement({ fields, onRemove, onReorder }: BannerManageme
 
       if (oldIndex !== -1 && newIndex !== -1) {
         onReorder(oldIndex, newIndex);
-        toast.success("Banner order updated");
       }
     }
   };

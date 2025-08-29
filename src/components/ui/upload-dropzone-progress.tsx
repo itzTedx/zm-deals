@@ -82,7 +82,7 @@ export function UploadDropzoneProgress({
     progresses.forEach((progress) => {
       if (progress.progress < 1 && progress.status !== "failed") {
         toast.custom(
-          (t) => (
+          () => (
             <div
               className={cn("flex w-fill items-center gap-2 rounded-lg border bg-card p-3", {
                 "border-red-500/60 bg-red-500/[0.04]!": progress.status === "failed",
