@@ -13,7 +13,7 @@ interface Props {
   btnText?: string;
   link?: Route;
   hasButton?: boolean;
-  variant?: "default" | "compact";
+  variant?: "default" | "compact" | "secondary";
   titleClassName?: string;
 }
 
@@ -28,6 +28,30 @@ export const SectionHeader = ({
   titleClassName,
   ...props
 }: Props & React.ComponentProps<"header">) => {
+  if (variant === "secondary") {
+    return (
+      <header className={cn("flex items-center justify-between gap-3", className)} {...props}>
+        <div className="space-y-1">
+          <h2 className={cn("font-bold text-2xl sm:text-3xl md:text-4xl", titleClassName)}>{title}</h2>
+          {description && <p className="text-muted-foreground text-sm sm:text-base">{description}</p>}
+        </div>
+        {hasButton &&
+          (link ? (
+            <Button asChild>
+              <Link href={link}>
+                See More {btnText && <span className="text-muted-foreground">- {btnText}</span>}
+                <IconChevronRight className="size-3 text-muted-foreground" />
+              </Link>
+            </Button>
+          ) : (
+            <Button>
+              See More {btnText && <span className="text-muted-foreground">- {btnText}</span>}{" "}
+              <IconChevronRight className="size-3 text-muted-foreground" />
+            </Button>
+          ))}
+      </header>
+    );
+  }
   return (
     <header
       className={cn(

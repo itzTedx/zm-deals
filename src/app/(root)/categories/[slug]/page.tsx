@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { SectionHeader } from "@/components/layout/section-header";
 import { SeparatorBox } from "@/components/ui/separator";
 
-import { getCategoryBySlug } from "@/modules/categories/actions/query";
+import { getCategories, getCategoryBySlug } from "@/modules/categories/actions/query";
 import { getProductsByCategorySlug } from "@/modules/product/actions/query";
 import { ProductCard } from "@/modules/product/components/product-card";
 
@@ -13,6 +13,18 @@ type Params = Promise<{ slug: string }>;
 interface Props {
   params: Params;
 }
+
+// Generate static params for all categories
+export async function generateStaticParams() {
+  const categories = await getCategories();
+
+  return categories.map((category) => ({
+    slug: category.slug,
+  }));
+}
+
+// Revalidate pages every hour (3600 seconds)
+export const revalidate = 3600;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;

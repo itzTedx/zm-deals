@@ -34,7 +34,7 @@ import {
 import { env } from "@/lib/env/server";
 import { calculateDiscount, cn } from "@/lib/utils";
 import { Deals } from "@/modules/home/sections";
-import { getProductBySlug } from "@/modules/product/actions/query";
+import { getProductBySlug, getProducts } from "@/modules/product/actions/query";
 import { EndsInCounter } from "@/modules/product/components/ends-in-counter";
 import { CheckboxBadge } from "@/modules/product/components/ui/checkbox-badge";
 import { CheckoutWithQuantity } from "@/modules/product/components/ui/checkout-with-quantity";
@@ -45,6 +45,18 @@ type Params = Promise<{ product: string }>;
 interface Props {
   params: Params;
 }
+
+// Generate static params for all categories
+export async function generateStaticParams() {
+  const products = await getProducts();
+
+  return products.map((product) => ({
+    slug: product.slug,
+  }));
+}
+
+// Revalidate pages every hour (3600 seconds)
+export const revalidate = 3600;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { product } = await params;

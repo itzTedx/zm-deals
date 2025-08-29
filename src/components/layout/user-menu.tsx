@@ -8,6 +8,7 @@ import { AuthSession } from "@/lib/auth/server";
 import { LogoutButton } from "@/modules/auth/components/logout-button";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +19,15 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
-export default function UserMenu({ session }: { session: NonNullable<AuthSession> }) {
+export default function UserMenu({ session }: { session: AuthSession }) {
+  if (!session) {
+    return (
+      <Button asChild className="text-muted-foreground" variant="outline">
+        <Link href="/auth/login">Login</Link>
+      </Button>
+    );
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex cursor-pointer items-center gap-2">

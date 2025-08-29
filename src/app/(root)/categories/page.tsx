@@ -29,6 +29,7 @@ export default async function CategoriesPage() {
                   description={category.description}
                   link={`/categories/${category.slug}` as Route}
                   title={category.name}
+                  variant="secondary"
                 />
                 <article className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                   {category.products.map((product) => (

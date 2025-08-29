@@ -7,7 +7,6 @@ import { CartIcon } from "@/modules/cart/components/cart-icon";
 import { getCategoriesWithProductCount } from "@/modules/categories/actions/query";
 import { WishlistIcon } from "@/modules/wishlist/components/wishlist-icon";
 
-import { Button } from "../ui/button";
 import { NavigationMenuComponent } from "./navigation-menu";
 import { SearchForm } from "./search-form";
 import UserMenu from "./user-menu";
@@ -36,13 +35,8 @@ export const Navbar = async () => {
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">
-            {session ? (
-              <UserMenu session={session} />
-            ) : (
-              <Button asChild className="text-muted-foreground" variant="outline">
-                <Link href="/auth/login">Login</Link>
-              </Button>
-            )}
+            <UserMenu session={session} />
+
             {/* {session && !session.user.isAnonymous ? (
               <UserMenu session={session} />
             ) : (
