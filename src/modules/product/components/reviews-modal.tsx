@@ -11,7 +11,7 @@ import { Review } from "@/server/schema";
 import { ReviewCard } from "./write-review";
 
 interface ReviewsModalProps {
-  reviews: Review[];
+  reviews?: Review[];
 }
 
 export const ReviewsModal = ({ reviews }: ReviewsModalProps) => {
@@ -27,11 +27,13 @@ export const ReviewsModal = ({ reviews }: ReviewsModalProps) => {
           <div className="mx-3 mt-4 rounded-xl bg-card p-3">
             <ReviewCard reviews={reviews} />
           </div>
-          <div className="mt-3 space-y-6 px-3 pb-6">
-            {reviews.map((review) => (
-              <FeedbackCard key={review.id} review={review} />
-            ))}
-          </div>
+          {reviews && (
+            <div className="mt-3 space-y-6 px-3 pb-6">
+              {reviews.map((review) => (
+                <FeedbackCard key={review.id} review={review} />
+              ))}
+            </div>
+          )}
           <ScrollBar />
         </ScrollArea>
       </DialogContent>

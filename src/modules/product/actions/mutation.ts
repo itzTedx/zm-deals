@@ -6,6 +6,7 @@ import { and, eq, inArray } from "drizzle-orm";
 import z from "zod";
 
 import { auth } from "@/lib/auth/server";
+import { cacheInvalidation } from "@/lib/cache/invalidation-service";
 import { createLog } from "@/lib/logging";
 import { db } from "@/server/db";
 import { inventory, mediaTable, metaTable, productImages, products, reviews } from "@/server/schema";
@@ -259,6 +260,23 @@ export async function upsertProduct(rawData: unknown): Promise<{ success: boolea
 
       log.success("Product upsert operation completed successfully");
 
+      // Invalidate relevant caches after successful operation
+      try {
+        await cacheInvalidation.smartInvalidate({
+          type: isUpdate ? "update" : "create",
+          entity: "product",
+          data: {
+            id: productId,
+            slug: data.slug,
+            categoryId: data.categoryId,
+          },
+        });
+        log.success("Cache invalidation completed");
+      } catch (cacheError) {
+        log.error("Cache invalidation failed", cacheError instanceof Error ? cacheError.message : String(cacheError));
+        // Don't fail the operation if cache invalidation fails
+      }
+
       return {
         success: true,
         message: `Product ${data.title} ${isUpdate ? "updated" : "created"} successfully with ${data.images.length} images`,
@@ -355,6 +373,23 @@ export async function deleteProduct(productId: string): Promise<{ success: boole
 
       log.success("Product deletion operation completed successfully");
 
+      // Invalidate relevant caches after successful deletion
+      try {
+        await cacheInvalidation.smartInvalidate({
+          type: "delete",
+          entity: "product",
+          data: {
+            id: productId,
+            slug: product.slug || undefined,
+            categoryId: product.categoryId || undefined,
+          },
+        });
+        log.success("Cache invalidation completed");
+      } catch (cacheError) {
+        log.error("Cache invalidation failed", cacheError instanceof Error ? cacheError.message : String(cacheError));
+        // Don't fail the operation if cache invalidation fails
+      }
+
       return {
         success: true,
         message: `Product ${product.title} deleted successfully`,
@@ -400,6 +435,22 @@ export async function updateProductStatus(
       .where(eq(products.id, productId));
 
     log.success("Product status updated successfully", { productId, status });
+
+    // Invalidate relevant caches after status update
+    try {
+      await cacheInvalidation.smartInvalidate({
+        type: "status_change",
+        entity: "product",
+        data: {
+          id: productId,
+          status,
+        },
+      });
+      log.success("Cache invalidation completed");
+    } catch (cacheError) {
+      log.error("Cache invalidation failed", cacheError instanceof Error ? cacheError.message : String(cacheError));
+      // Don't fail the operation if cache invalidation fails
+    }
 
     return {
       success: true,
@@ -448,6 +499,15 @@ export async function bulkUpdateProductStatus(
 
     const updatedCount = result.length;
     log.success("Bulk product status update completed", { updatedCount, status });
+
+    // Invalidate relevant caches after bulk status update
+    try {
+      await cacheInvalidation.invalidateMultipleProducts(productIds);
+      log.success("Cache invalidation completed");
+    } catch (cacheError) {
+      log.error("Cache invalidation failed", cacheError instanceof Error ? cacheError.message : String(cacheError));
+      // Don't fail the operation if cache invalidation fails
+    }
 
     return {
       success: true,
@@ -498,6 +558,21 @@ export async function updateInventory(
       .where(eq(inventory.productId, productId));
 
     log.success("Inventory updated successfully", { productId, stock, isOutOfStock });
+
+    // Invalidate relevant caches after inventory update
+    try {
+      await cacheInvalidation.smartInvalidate({
+        type: "inventory_update",
+        entity: "product",
+        data: {
+          id: productId,
+        },
+      });
+      log.success("Cache invalidation completed");
+    } catch (cacheError) {
+      log.error("Cache invalidation failed", cacheError instanceof Error ? cacheError.message : String(cacheError));
+      // Don't fail the operation if cache invalidation fails
+    }
 
     return {
       success: true,
@@ -587,6 +662,21 @@ export async function createReview(rawData: unknown): Promise<{ success: boolean
       userId: session.user.id,
     });
 
+    // Invalidate relevant caches after review creation
+    try {
+      await cacheInvalidation.smartInvalidate({
+        type: "review",
+        entity: "review",
+        data: {
+          productId: data.productId,
+        },
+      });
+      log.success("Cache invalidation completed");
+    } catch (cacheError) {
+      log.error("Cache invalidation failed", cacheError instanceof Error ? cacheError.message : String(cacheError));
+      // Don't fail the operation if cache invalidation fails
+    }
+
     return {
       success: true,
       message: "Review submitted successfully",
@@ -660,6 +750,21 @@ export async function updateReview(rawData: unknown): Promise<{ success: boolean
       userId: session.user.id,
     });
 
+    // Invalidate relevant caches after review update
+    try {
+      await cacheInvalidation.smartInvalidate({
+        type: "review",
+        entity: "review",
+        data: {
+          productId: existingReview.productId,
+        },
+      });
+      log.success("Cache invalidation completed");
+    } catch (cacheError) {
+      log.error("Cache invalidation failed", cacheError instanceof Error ? cacheError.message : String(cacheError));
+      // Don't fail the operation if cache invalidation fails
+    }
+
     return {
       success: true,
       message: "Review updated successfully",
@@ -718,6 +823,21 @@ export async function deleteReview(reviewId: string): Promise<{ success: boolean
       reviewId,
       userId: session.user.id,
     });
+
+    // Invalidate relevant caches after review deletion
+    try {
+      await cacheInvalidation.smartInvalidate({
+        type: "review",
+        entity: "review",
+        data: {
+          productId: existingReview.productId,
+        },
+      });
+      log.success("Cache invalidation completed");
+    } catch (cacheError) {
+      log.error("Cache invalidation failed", cacheError instanceof Error ? cacheError.message : String(cacheError));
+      // Don't fail the operation if cache invalidation fails
+    }
 
     return {
       success: true,

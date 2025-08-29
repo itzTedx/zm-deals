@@ -1,35 +1,34 @@
 import { FeedbackCard } from "@/components/feedback-card";
 import { SectionHeader } from "@/components/layout/section-header";
 
-import { WriteReview } from "@/modules/product/components/write-review";
+import { ReviewCard, WriteReview } from "@/modules/product/components/write-review";
 import { Review } from "@/server/schema";
 
 import { ReviewsModal } from "../components/reviews-modal";
 import { SeeMoreReviews } from "../components/see-more-reviews-button";
 
 interface ReviewsProps {
-  reviews: Review[];
+  reviews?: Review[];
   productId: string;
 }
 
 export const Reviews = ({ reviews, productId }: ReviewsProps) => {
-  console.log(reviews);
   return (
     <section className="container relative max-w-7xl py-12 md:py-16 lg:py-20">
       <div className="mt-9 grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div className="top-24 h-fit md:sticky">
+        <div className="top-24 h-fit space-y-3 md:sticky">
           <SectionHeader description="What our customers are saying" hasButton={false} title="Ratings & Reviews" />
-          <WriteReview productId={productId} reviews={reviews} />
+          <ReviewCard reviews={reviews} />
         </div>
 
         <div className="grid gap-5">
-          {reviews
-            .filter((review) => review.comment && review.comment.trim() !== "")
-            .slice(0, 6)
-            .map((review) => (
-              <FeedbackCard key={review.id} review={review} />
-            ))}
-          {reviews.length > 6 && <SeeMoreReviews />}
+          <WriteReview productId={productId} />
+          {reviews &&
+            reviews
+              .filter((review) => review.comment && review.comment.trim() !== "")
+              .slice(0, 6)
+              .map((review) => <FeedbackCard key={review.id} review={review} />)}
+          {reviews && reviews.length > 6 && <SeeMoreReviews />}
         </div>
       </div>
       <ReviewsModal reviews={reviews} />
