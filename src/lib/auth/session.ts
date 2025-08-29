@@ -17,7 +17,7 @@ export async function getOrCreateSessionId(): Promise<string> {
   if (!sessionId) {
     sessionId = randomUUID();
     // Set the cookie using the proper Next.js 15 API
-    (await cookieStore).set(SESSION_ID_COOKIE, sessionId, {
+    cookieStore.set(SESSION_ID_COOKIE, sessionId, {
       maxAge: SESSION_ID_MAX_AGE,
       httpOnly: true,
       // biome-ignore lint/style/noProcessEnv: NODE_ENV is a standard Node.js environment variable

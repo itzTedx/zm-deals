@@ -1,10 +1,5 @@
-import Link from "next/link";
-
 import Faqs from "@/components/faqs";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-
-import { IconChevronRight } from "@/assets/icons";
 
 export const FaqsSection = () => {
   return (
@@ -22,12 +17,12 @@ export const FaqsSection = () => {
         </div>
         <div className="space-y-4 sm:space-y-6 md:space-y-8 lg:col-span-6">
           <Faqs />
-          <Button asChild className="w-full text-sm sm:w-auto sm:text-base">
+          {/* <Button asChild className="w-full text-sm sm:w-auto sm:text-base">
             <Link href="/faqs">
               See More <span className="text-muted-foreground">- FAQs</span>
               <IconChevronRight className="size-3 text-muted-foreground" />
             </Link>
-          </Button>
+          </Button> */}
         </div>
       </div>
     </section>
