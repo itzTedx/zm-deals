@@ -26,6 +26,7 @@ const cartCheckoutSchema = z.object({
   finalTotal: z.number().min(0).optional(),
   couponCode: z.string().optional(),
   sessionId: z.string().optional(), // Added sessionId to schema
+  shippingFee: z.number().min(0).optional(), // Added shipping fee to schema
 });
 
 export type CartCheckoutSchema = z.infer<typeof cartCheckoutSchema>;
@@ -82,11 +83,12 @@ export async function createCheckoutSession(checkoutData: {
   }
 }
 
-// Helper function to create line items with discount
+// Helper function to create line items with discount and shipping
 function createLineItemsWithDiscount(
   items: CartCheckoutSchema["items"],
   discountAmount = 0,
-  couponCode?: string
+  couponCode?: string,
+  shippingFee = 0
 ): Stripe.Checkout.SessionCreateParams.LineItem[] {
   const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
 
@@ -121,6 +123,21 @@ function createLineItemsWithDiscount(
     });
   }
 
+  // Add shipping fee line item if there's a shipping fee
+  if (shippingFee > 0) {
+    lineItems.push({
+      price_data: {
+        currency: "AED",
+        product_data: {
+          name: "Shipping Fee",
+          description: "Delivery and handling charges",
+        },
+        unit_amount: Math.round(shippingFee * 100),
+      },
+      quantity: 1,
+    });
+  }
+
   return lineItems;
 }
 
@@ -145,7 +162,7 @@ export async function createCartCheckoutSessionWithStripeCoupon(checkoutData: Ca
       throw new Error(error.message);
     }
 
-    const { items, total, discountAmount, finalTotal, couponCode } = data;
+    const { items, total, discountAmount, finalTotal, couponCode, shippingFee } = data;
 
     if (items.length === 0) {
       throw new Error("Cart is empty");
@@ -165,6 +182,21 @@ export async function createCartCheckoutSessionWithStripeCoupon(checkoutData: Ca
       quantity: item.quantity,
     }));
 
+    // Add shipping fee line item if there's a shipping fee
+    if (shippingFee && shippingFee > 0) {
+      lineItems.push({
+        price_data: {
+          currency: "AED",
+          product_data: {
+            name: "Shipping Fee",
+            description: "Delivery and handling charges",
+          },
+          unit_amount: Math.round(shippingFee * 100),
+        },
+        quantity: 1,
+      });
+    }
+
     const stripeParams: Stripe.Checkout.SessionCreateParams = {
       mode: "payment" as const,
       line_items: lineItems,
@@ -176,6 +208,7 @@ export async function createCartCheckoutSessionWithStripeCoupon(checkoutData: Ca
         discountAmount: (discountAmount || 0).toString(),
         couponCode: couponCode || "",
         productIds: JSON.stringify(items.map((item) => item.productId)),
+        shippingFee: (shippingFee || 0).toString(),
       },
       customer_email: session.user.email,
       success_url: `${env.BASE_URL}/checkout?success=1&session_id={CHECKOUT_SESSION_ID}`,
@@ -233,7 +266,7 @@ export async function createCartCheckoutSession(checkoutData: CartCheckoutSchema
       throw new Error(error.message);
     }
 
-    const { items, total, discountAmount, finalTotal, couponCode } = data;
+    const { items, total, discountAmount, finalTotal, couponCode, shippingFee } = data;
 
     if (items.length === 0) {
       throw new Error("Cart is empty");
@@ -257,8 +290,8 @@ export async function createCartCheckoutSession(checkoutData: CartCheckoutSchema
     // Calculate the amount to charge (use finalTotal if available, otherwise use total)
     const amountToCharge = finalTotal || total;
 
-    // Create line items with manual discount
-    const lineItems = createLineItemsWithDiscount(items, discountAmount || 0, couponCode);
+    // Create line items with manual discount and shipping fee
+    const lineItems = createLineItemsWithDiscount(items, discountAmount || 0, couponCode, shippingFee || 0);
 
     const stripeParams: Stripe.Checkout.SessionCreateParams = {
       mode: "payment" as const,
@@ -272,6 +305,7 @@ export async function createCartCheckoutSession(checkoutData: CartCheckoutSchema
         couponCode: couponCode || "",
         productIds: JSON.stringify(items.map((item) => item.productId)),
         discountMethod: "manual", // Indicate this was a manual discount
+        shippingFee: (shippingFee || 0).toString(),
       },
       customer_email: session.user.email,
       success_url: `${env.BASE_URL}/checkout?success=1&session_id={CHECKOUT_SESSION_ID}`,
@@ -313,7 +347,7 @@ export async function createAnonymousCheckoutSession(checkoutData: CartCheckoutS
       throw new Error(error.message);
     }
 
-    const { items, total, discountAmount, finalTotal, couponCode, sessionId } = data;
+    const { items, total, discountAmount, finalTotal, couponCode, sessionId, shippingFee } = data;
 
     if (items.length === 0) {
       throw new Error("Cart is empty");
@@ -322,8 +356,8 @@ export async function createAnonymousCheckoutSession(checkoutData: CartCheckoutS
     // Calculate the amount to charge (use finalTotal if available, otherwise use total)
     const amountToCharge = finalTotal || total;
 
-    // Create line items with discount
-    const lineItems = createLineItemsWithDiscount(items, discountAmount || 0, couponCode);
+    // Create line items with discount and shipping fee
+    const lineItems = createLineItemsWithDiscount(items, discountAmount || 0, couponCode, shippingFee || 0);
 
     const stripeParams: Stripe.Checkout.SessionCreateParams = {
       mode: "payment" as const,
@@ -337,6 +371,7 @@ export async function createAnonymousCheckoutSession(checkoutData: CartCheckoutS
         discountAmount: (discountAmount || 0).toString(),
         couponCode: couponCode || "",
         productIds: JSON.stringify(items.map((item) => item.productId)),
+        shippingFee: (shippingFee || 0).toString(),
       },
       success_url: `${env.BASE_URL}/checkout?success=1&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${env.BASE_URL}/checkout?cancelled=1`,

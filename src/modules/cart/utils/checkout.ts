@@ -24,13 +24,19 @@ export function prepareCartForCheckout(
     return sum + price * item.quantity;
   }, 0);
 
+  // Calculate shipping fee
+  const shippingFee = cart.some((item) => item.product.isDeliveryFree)
+    ? 0
+    : cart.reduce((sum, item) => sum + Number(item.product.deliveryFee), 0);
+
   return {
     items,
     total,
     discountAmount,
-    finalTotal: finalTotal || total,
+    finalTotal: finalTotal || total + shippingFee,
     couponCode,
     sessionId,
+    shippingFee, // Add shipping fee to checkout data
   };
 }
 

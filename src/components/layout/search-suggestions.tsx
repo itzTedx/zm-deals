@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 
 import { IconSearch, IconTrendingUp } from "@/assets/icons";
 
+import { getPopularSearches, getSearchSuggestions } from "@/modules/product/actions/popular-searches";
+
 import { Button } from "../ui/button";
 
 interface SearchSuggestionsProps {
@@ -12,31 +14,67 @@ interface SearchSuggestionsProps {
   onSelectSuggestion: (suggestion: string) => void;
 }
 
-const popularSearches = ["electronics", "home decor", "fashion", "books", "sports", "beauty", "kitchen", "garden"];
-
 export function SearchSuggestions({ query, isVisible, onSelectSuggestion }: SearchSuggestionsProps) {
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [popularSearches, setPopularSearches] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
+  // Load popular searches on component mount
   useEffect(() => {
-    if (query.trim().length > 0) {
-      // Filter popular searches that match the query
-      const filtered = popularSearches.filter((search) => search.toLowerCase().includes(query.toLowerCase()));
-      setSuggestions(filtered.slice(0, 5));
-    } else {
-      setSuggestions([]);
+    async function loadPopularSearches() {
+      try {
+        const searches = await getPopularSearches({ limit: 8 });
+        setPopularSearches(searches);
+      } catch (error) {
+        console.error("Failed to load popular searches:", error);
+        // Fallback to default searches if database fails
+        setPopularSearches(["electronics", "home decor", "fashion", "books", "sports", "beauty", "kitchen", "garden"]);
+      }
     }
-  }, [query]);
+
+    loadPopularSearches();
+  }, []);
+
+  // Load search suggestions based on query
+  useEffect(() => {
+    async function loadSuggestions() {
+      if (query.trim().length > 0) {
+        setIsLoading(true);
+        try {
+          const dbSuggestions = await getSearchSuggestions(query, 5);
+          if (dbSuggestions.length > 0) {
+            setSuggestions(dbSuggestions);
+          } else {
+            // Fallback to filtering popular searches if no database suggestions
+            const filtered = popularSearches.filter((search) => search.toLowerCase().includes(query.toLowerCase()));
+            setSuggestions(filtered.slice(0, 5));
+          }
+        } catch (error) {
+          console.error("Failed to load search suggestions:", error);
+          // Fallback to filtering popular searches
+          const filtered = popularSearches.filter((search) => search.toLowerCase().includes(query.toLowerCase()));
+          setSuggestions(filtered.slice(0, 5));
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
+        setSuggestions([]);
+      }
+    }
+
+    loadSuggestions();
+  }, [query, popularSearches]);
 
   if (!isVisible) return null;
 
   return (
-    <div className="absolute top-full right-0 left-0 z-50 mt-1 rounded-lg border bg-background shadow-lg">
+    <div className="absolute top-full right-0 left-0 z-50 mt-1 rounded-lg border bg-card shadow-xl">
       <div className="p-2">
         {suggestions.length > 0 && (
           <div className="mb-2">
             <div className="flex items-center gap-2 px-2 py-1 font-medium text-muted-foreground text-xs">
               <IconSearch className="size-3" />
-              Suggestions
+              {isLoading ? "Loading..." : "Suggestions"}
             </div>
             {suggestions.map((suggestion) => (
               <Button

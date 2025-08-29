@@ -121,7 +121,6 @@ export default async function ProductPage({ params }: Props) {
 
   // Get combo deals that include this product
   const comboDeals = await getComboDealsByProductId(res.id);
-  console.log("comboDeals: ", comboDeals);
 
   const productUrl = `${env.BASE_URL}/${res.slug}`;
   const mainImage = res.images[0]?.media?.url || "/default-product-image.jpg";
@@ -234,9 +233,9 @@ export default async function ProductPage({ params }: Props) {
           <SeparatorBox />
           <div className="space-y-4">
             <Banner
-              className={cn(res.isDeliveryFree ? "bg-green-100" : "bg-red-100")}
+              className={cn(res.isDeliveryFree ? "bg-green-100" : null)}
               size={res.isDeliveryFree ? "sm" : "default"}
-              variant={res.isDeliveryFree ? "success" : "destructive"}
+              variant={res.isDeliveryFree ? "success" : null}
             >
               <BannerContent className={cn(res.isDeliveryFree ? "items-center" : "items-start")}>
                 <BannerIcon>
@@ -248,8 +247,12 @@ export default async function ProductPage({ params }: Props) {
                   </BannerTitle>
                   {!res.isDeliveryFree && (
                     <BannerDescription>
-                      <p>
-                        Shipping fee of <span className="font-medium">AED{res.deliveryFee}</span>
+                      <p className="flex items-center gap-1">
+                        Shipping fee of{" "}
+                        <span className="inline-flex items-center font-medium">
+                          <IconCurrency className="size-3.5" />
+                          {res.deliveryFee}
+                        </span>
                       </p>
                     </BannerDescription>
                   )}
@@ -315,15 +318,7 @@ export default async function ProductPage({ params }: Props) {
       <Reviews productId={res.id} reviews={res.reviews} />
 
       {/* Frequently Bought Together Section */}
-      <FrequentlyBoughtTogether
-        comboDeals={comboDeals}
-        currentProduct={{
-          title: res.title,
-          price: res.price,
-          images: res.images,
-        }}
-        currentProductId={res.id}
-      />
+      <FrequentlyBoughtTogether comboDeals={comboDeals} currentProduct={res} />
 
       {/* Related Deals Section */}
       {/* <Deals /> */}

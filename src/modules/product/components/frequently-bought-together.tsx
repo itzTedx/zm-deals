@@ -10,25 +10,14 @@ import { IconCurrency } from "@/assets/icons";
 import { calculateDiscount } from "@/lib/utils";
 import type { ComboDealWithProducts } from "@/modules/combo-deals/types";
 
+import { ProductQueryResult } from "../types";
+
 interface FrequentlyBoughtTogetherProps {
   comboDeals: ComboDealWithProducts[];
-  currentProductId: string;
-  currentProduct: {
-    title: string;
-    price: string;
-    images: Array<{
-      media?: {
-        url: string | null;
-      } | null;
-    }>;
-  };
+  currentProduct: ProductQueryResult;
 }
 
-export function FrequentlyBoughtTogether({
-  comboDeals,
-  currentProductId,
-  currentProduct,
-}: FrequentlyBoughtTogetherProps) {
+export function FrequentlyBoughtTogether({ comboDeals, currentProduct }: FrequentlyBoughtTogetherProps) {
   if (!comboDeals || comboDeals.length === 0) {
     return null;
   }
@@ -38,7 +27,7 @@ export function FrequentlyBoughtTogether({
 
   // Get all products in the combo, excluding the current product
   const otherProducts = comboDeal.products
-    .filter((cp) => cp.product && cp.product.id !== currentProductId)
+    .filter((cp) => cp.product && cp.product.id !== currentProduct.id)
     .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
 
   if (otherProducts.length === 0) {

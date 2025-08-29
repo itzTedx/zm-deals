@@ -79,7 +79,7 @@ export const getColumns = ({ data, onEdit, onDelete, isDeleting }: GetColumnsPro
         </div>
       );
     },
-    size: 300,
+    size: 180,
     enableHiding: false,
   },
   {
@@ -94,7 +94,7 @@ export const getColumns = ({ data, onEdit, onDelete, isDeleting }: GetColumnsPro
       };
 
       return (
-        <div>
+        <div className="space-y-1">
           <div className="font-medium">{formatDiscount(row.original)}</div>
           {row.original.discountType === "percentage" && row.original.maxDiscount && (
             <div className="text-muted-foreground text-xs">Max: ${row.original.maxDiscount}</div>
@@ -102,7 +102,7 @@ export const getColumns = ({ data, onEdit, onDelete, isDeleting }: GetColumnsPro
         </div>
       );
     },
-    size: 80,
+    size: 150,
   },
   {
     header: "Status",
@@ -155,12 +155,12 @@ export const getColumns = ({ data, onEdit, onDelete, isDeleting }: GetColumnsPro
     accessorKey: "startDate",
     cell: ({ row }) => (
       <div className="text-sm">
-        <div>{format(row.original.startDate, "MMM dd, yyyy")}</div>
-        <div className="text-muted-foreground">to</div>
-        <div>{format(row.original.endDate, "MMM dd, yyyy")}</div>
+        <div>
+          {format(row.original.startDate, "MMM dd, yyyy")} - {format(row.original.endDate, "MMM dd, yyyy")}
+        </div>
       </div>
     ),
-    size: 200,
+    size: 180,
   },
   {
     header: "Min Order",
@@ -188,7 +188,7 @@ export const getColumns = ({ data, onEdit, onDelete, isDeleting }: GetColumnsPro
         </span>
       </div>
     ),
-    size: 120,
+    size: 140,
   },
   {
     id: "actions",

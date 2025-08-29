@@ -42,33 +42,40 @@ export function CartSummary({ cartItems, cartLength }: CartSummaryProps) {
   // Use calculated total instead of prop
   const currentCartTotal = calculatedTotal;
 
+  // Calculate shipping fee
+  const shippingFee = cartItems.some((item) => item.product.isDeliveryFree)
+    ? 0
+    : cartItems.reduce((total, item) => total + Number(item.product.deliveryFee), 0);
+
   const [appliedCoupon, setAppliedCoupon] = useState<CouponValidationResult["coupon"] | undefined>();
   const [discountAmount, setDiscountAmount] = useState(0);
-  const [finalTotal, setFinalTotal] = useState(currentCartTotal);
+  const [finalTotal, setFinalTotal] = useState(currentCartTotal + shippingFee);
 
   // Update final total when cart total changes
   useEffect(() => {
     if (appliedCoupon) {
       // Recalculate discount and final total when cart changes
-      // This would need to be implemented based on your coupon logic
-      setFinalTotal(currentCartTotal - discountAmount);
+      // Apply discount to subtotal, then add shipping fee
+      const subtotalAfterDiscount = currentCartTotal - discountAmount;
+      setFinalTotal(subtotalAfterDiscount + shippingFee);
     } else {
-      setFinalTotal(currentCartTotal);
+      setFinalTotal(currentCartTotal + shippingFee);
     }
-  }, [currentCartTotal, appliedCoupon, discountAmount]);
+  }, [currentCartTotal, appliedCoupon, discountAmount, shippingFee]);
 
   const handleCouponApplied = (result: CouponValidationResult) => {
     if (result.isValid && result.coupon) {
       setAppliedCoupon(result.coupon);
       setDiscountAmount(result.discountAmount);
-      setFinalTotal(result.finalPrice);
+      // The coupon result should include shipping fee in the final price
+      setFinalTotal(result.finalPrice + shippingFee);
     }
   };
 
   const handleCouponRemoved = () => {
     setAppliedCoupon(undefined);
     setDiscountAmount(0);
-    setFinalTotal(currentCartTotal);
+    setFinalTotal(currentCartTotal + shippingFee);
   };
 
   async function handleCheckout() {
@@ -168,14 +175,24 @@ export function CartSummary({ cartItems, cartLength }: CartSummaryProps) {
         {appliedCoupon && (
           <div className="flex justify-between font-medium text-sm">
             <h4 className="text-muted-foreground">Discount</h4>
-            <p className="font-semibold text-green-700">-${discountAmount.toFixed(2)}</p>
+            <p className="font-semibold text-green-600">-${discountAmount.toFixed(2)}</p>
           </div>
         )}
 
-        <div className="flex justify-between font-medium text-sm">
-          <h4 className="text-muted-foreground">Shipping Fee</h4>
-          <p className="font-semibold text-green-700">Free</p>
-        </div>
+        {shippingFee === 0 ? (
+          <div className="flex justify-between font-medium text-sm">
+            <h4 className="text-muted-foreground">Shipping Fee</h4>
+            <p className="font-semibold text-green-600">Free</p>
+          </div>
+        ) : (
+          <div className="flex justify-between font-medium text-sm">
+            <h4 className="text-muted-foreground">Shipping Fee</h4>
+            <p className="flex items-center gap-0.5 font-semibold text-green-600">
+              <IconCurrency className="size-3.5" />
+              {shippingFee.toFixed(2)}
+            </p>
+          </div>
+        )}
       </div>
 
       <Separator />

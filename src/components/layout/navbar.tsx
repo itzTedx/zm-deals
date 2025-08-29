@@ -18,7 +18,7 @@ export const Navbar = async () => {
   return (
     <header className="sticky top-0 z-999 h-fit">
       <div className="relative z-999 bg-card text-foreground">
-        <nav className="container relative z-999 mx-auto flex max-w-7xl items-center justify-between gap-4 py-2.5 font-helvetica max-md:justify-between md:gap-8">
+        <nav className="container relative z-999 flex items-center justify-between gap-4 py-2.5 font-helvetica max-md:justify-between md:gap-8">
           <div className="flex items-center gap-2 md:gap-6">
             <Link aria-label="go home" className="flex items-center gap-2" href="/">
               <LogoIcon />

@@ -9,7 +9,7 @@ export const searches = pgTable(
   {
     id,
     userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }), // nullable for guest searches
-    query: varchar("query", { length: 255 }).notNull(),
+    query: varchar("query", { length: 255 }).notNull().unique(),
 
     // tracking popularity
     searchCount: integer("search_count").default(1).notNull(),

@@ -27,7 +27,7 @@ export function LoadingSwap({
       <div
         className={cn("col-start-1 col-end-2 row-start-1 row-end-2", isLoading ? "visible" : "invisible", className)}
       >
-        <Loader2Icon className="animate-spin" />
+        <Loader2Icon className="size-4 animate-spin" />
       </div>
     </div>
   );

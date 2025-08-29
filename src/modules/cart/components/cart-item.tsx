@@ -181,10 +181,12 @@ export const CartItem = ({ item }: Props) => {
                     </span>
                   </p>
                 </div>
-                <p className="flex items-center gap-1 font-medium text-gray-500 text-xs">
-                  <IconTruck className="size-3 text-blue-600 sm:size-4" />
-                  <span>Free Delivery</span>
-                </p>
+                {item.product.isDeliveryFree && (
+                  <p className="flex items-center gap-1 font-medium text-gray-500 text-xs">
+                    <IconTruck className="size-3 text-blue-600 sm:size-4" />
+                    <span>Free Delivery</span>
+                  </p>
+                )}
               </div>
 
               {/* Stock Status and Quantity */}

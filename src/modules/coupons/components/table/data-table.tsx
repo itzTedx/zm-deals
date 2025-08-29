@@ -80,12 +80,7 @@ export function CouponsDataTable({ data, onEdit, onDelete, isDeleting }: Coupons
 
       {/* Table */}
       <div className="overflow-auto">
-        <Table
-          className="table-fixed border-separate border-spacing-0 [&_tr:not(:last-child)_td]:border-b"
-          style={{
-            width: table.getTotalSize(),
-          }}
-        >
+        <Table className="w-full border-separate border-spacing-0 [&_tr:not(:last-child)_td]:border-b">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow className="hover:bg-transparent" key={headerGroup.id}>

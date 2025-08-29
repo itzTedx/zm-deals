@@ -256,6 +256,24 @@ export async function searchProducts(query: string, limit = 20) {
     limit,
   });
 
+  if (query && searchResults.length > 0) {
+    const session = await getSession();
+    await db
+      .insert(searches)
+      .values({
+        userId: session?.user.id ?? null,
+        query: query.toLowerCase(),
+        searchCount: 1,
+      })
+      .onConflictDoUpdate({
+        target: [searches.query],
+        set: {
+          searchCount: sql`${searches.searchCount} + 1`,
+          lastSearchedAt: new Date(),
+        },
+      });
+  }
+
   return searchResults;
 }
 
