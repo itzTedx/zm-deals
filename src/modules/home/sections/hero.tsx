@@ -78,7 +78,7 @@ export const Hero = async () => {
                     <div className="relative flex justify-center md:justify-end">
                       <Image
                         alt={product.title}
-                        className="z-10 w-full max-w-xs sm:max-w-sm md:max-w-none"
+                        className="z-10 w-full max-w-xs sm:max-w-sm md:max-w-xs"
                         height={500}
                         src={product.image}
                         width={500}

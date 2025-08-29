@@ -56,6 +56,10 @@ export const products = pgTable(
     index("products_price_idx").on(table.price),
     index("products_ends_in_idx").on(table.endsIn),
     index("products_meta_id_idx").on(table.metaId),
+    // Text search indexes for better search performance
+    index("products_title_search_idx").on(table.title),
+    index("products_description_search_idx").on(table.description),
+    index("products_overview_search_idx").on(table.overview),
   ]
 );
 

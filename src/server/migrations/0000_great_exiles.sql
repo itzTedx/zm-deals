@@ -104,6 +104,7 @@ CREATE TABLE "coupons" (
 	"used_count" integer DEFAULT 0 NOT NULL,
 	"is_active" boolean DEFAULT true NOT NULL,
 	"description" text,
+	"stripe_coupon_id" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "coupons_code_unique" UNIQUE("code")
@@ -214,6 +215,34 @@ CREATE TABLE "refunds" (
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "combo_deal_products" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"combo_deal_id" uuid,
+	"product_id" uuid,
+	"quantity" integer DEFAULT 1 NOT NULL,
+	"sort_order" integer DEFAULT 0,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "combo_deals" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"title" text NOT NULL,
+	"description" text,
+	"slug" text NOT NULL,
+	"original_price" numeric(10, 2) NOT NULL,
+	"combo_price" numeric(10, 2) NOT NULL,
+	"savings" numeric(10, 2),
+	"is_featured" boolean DEFAULT false NOT NULL,
+	"is_active" boolean DEFAULT true NOT NULL,
+	"starts_at" timestamp,
+	"ends_at" timestamp,
+	"max_quantity" integer,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "combo_deals_slug_unique" UNIQUE("slug")
+);
+--> statement-breakpoint
 CREATE TABLE "product_images" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"is_featured" boolean DEFAULT false,
@@ -244,6 +273,16 @@ CREATE TABLE "products" (
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "products_slug_unique" UNIQUE("slug")
+);
+--> statement-breakpoint
+CREATE TABLE "recently_viewed" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" uuid,
+	"session_id" text,
+	"product_id" uuid NOT NULL,
+	"viewed_at" timestamp NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "reviews" (
@@ -288,10 +327,14 @@ ALTER TABLE "orders" ADD CONSTRAINT "orders_user_id_users_id_fk" FOREIGN KEY ("u
 ALTER TABLE "orders" ADD CONSTRAINT "orders_coupon_id_coupons_id_fk" FOREIGN KEY ("coupon_id") REFERENCES "public"."coupons"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "refunds" ADD CONSTRAINT "refunds_order_id_orders_id_fk" FOREIGN KEY ("order_id") REFERENCES "public"."orders"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "refunds" ADD CONSTRAINT "refunds_order_item_id_order_items_id_fk" FOREIGN KEY ("order_item_id") REFERENCES "public"."order_items"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "combo_deal_products" ADD CONSTRAINT "combo_deal_products_combo_deal_id_combo_deals_id_fk" FOREIGN KEY ("combo_deal_id") REFERENCES "public"."combo_deals"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "combo_deal_products" ADD CONSTRAINT "combo_deal_products_product_id_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "product_images" ADD CONSTRAINT "product_images_product_id_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "product_images" ADD CONSTRAINT "product_images_media_id_media_id_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "products" ADD CONSTRAINT "products_category_id_categories_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."categories"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "products" ADD CONSTRAINT "products_meta_id_seo_meta_id_fk" FOREIGN KEY ("meta_id") REFERENCES "public"."seo_meta"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "recently_viewed" ADD CONSTRAINT "recently_viewed_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "recently_viewed" ADD CONSTRAINT "recently_viewed_product_id_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "reviews" ADD CONSTRAINT "reviews_product_id_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "reviews" ADD CONSTRAINT "reviews_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "wishlist_items" ADD CONSTRAINT "wishlist_items_wishlist_id_wishlists_id_fk" FOREIGN KEY ("wishlist_id") REFERENCES "public"."wishlists"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -332,6 +375,16 @@ CREATE INDEX "orders_created_at_idx" ON "orders" USING btree ("created_at");--> 
 CREATE INDEX "refunds_order_id_idx" ON "refunds" USING btree ("order_id");--> statement-breakpoint
 CREATE INDEX "refunds_order_item_id_idx" ON "refunds" USING btree ("order_item_id");--> statement-breakpoint
 CREATE INDEX "refunds_is_processed_idx" ON "refunds" USING btree ("is_processed");--> statement-breakpoint
+CREATE INDEX "combo_deal_products_combo_deal_id_idx" ON "combo_deal_products" USING btree ("combo_deal_id");--> statement-breakpoint
+CREATE INDEX "combo_deal_products_product_id_idx" ON "combo_deal_products" USING btree ("product_id");--> statement-breakpoint
+CREATE INDEX "combo_deal_products_sort_order_idx" ON "combo_deal_products" USING btree ("sort_order");--> statement-breakpoint
+CREATE UNIQUE INDEX "combo_deal_products_unique_idx" ON "combo_deal_products" USING btree ("combo_deal_id","product_id");--> statement-breakpoint
+CREATE UNIQUE INDEX "combo_deals_slug_idx" ON "combo_deals" USING btree ("slug");--> statement-breakpoint
+CREATE INDEX "combo_deals_active_idx" ON "combo_deals" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX "combo_deals_featured_idx" ON "combo_deals" USING btree ("is_featured");--> statement-breakpoint
+CREATE INDEX "combo_deals_price_idx" ON "combo_deals" USING btree ("combo_price");--> statement-breakpoint
+CREATE INDEX "combo_deals_starts_at_idx" ON "combo_deals" USING btree ("starts_at");--> statement-breakpoint
+CREATE INDEX "combo_deals_ends_at_idx" ON "combo_deals" USING btree ("ends_at");--> statement-breakpoint
 CREATE INDEX "product_images_product_id_idx" ON "product_images" USING btree ("product_id");--> statement-breakpoint
 CREATE INDEX "product_images_media_id_idx" ON "product_images" USING btree ("media_id");--> statement-breakpoint
 CREATE INDEX "product_images_is_featured_idx" ON "product_images" USING btree ("is_featured");--> statement-breakpoint
@@ -341,6 +394,12 @@ CREATE INDEX "products_featured_idx" ON "products" USING btree ("is_featured");-
 CREATE INDEX "products_price_idx" ON "products" USING btree ("price");--> statement-breakpoint
 CREATE INDEX "products_ends_in_idx" ON "products" USING btree ("ends_in");--> statement-breakpoint
 CREATE INDEX "products_meta_id_idx" ON "products" USING btree ("meta_id");--> statement-breakpoint
+CREATE INDEX "recently_viewed_user_id_idx" ON "recently_viewed" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "recently_viewed_session_id_idx" ON "recently_viewed" USING btree ("session_id");--> statement-breakpoint
+CREATE INDEX "recently_viewed_product_id_idx" ON "recently_viewed" USING btree ("product_id");--> statement-breakpoint
+CREATE INDEX "recently_viewed_viewed_at_idx" ON "recently_viewed" USING btree ("viewed_at");--> statement-breakpoint
+CREATE INDEX "recently_viewed_user_viewed_at_idx" ON "recently_viewed" USING btree ("user_id","viewed_at");--> statement-breakpoint
+CREATE INDEX "recently_viewed_session_viewed_at_idx" ON "recently_viewed" USING btree ("session_id","viewed_at");--> statement-breakpoint
 CREATE INDEX "reviews_product_id_idx" ON "reviews" USING btree ("product_id");--> statement-breakpoint
 CREATE INDEX "reviews_user_id_idx" ON "reviews" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "reviews_rating_idx" ON "reviews" USING btree ("rating");--> statement-breakpoint

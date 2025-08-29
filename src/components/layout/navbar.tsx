@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { IconChevronRight, IconSearch } from "@/assets/icons";
 import { LogoIcon } from "@/assets/logo";
 
 import { getSession } from "@/lib/auth/server";
@@ -9,8 +8,8 @@ import { getCategoriesWithProductCount } from "@/modules/categories/actions/quer
 import { WishlistIcon } from "@/modules/wishlist/components/wishlist-icon";
 
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { NavigationMenuComponent } from "./navigation-menu";
+import { SearchForm } from "./search-form";
 import UserMenu from "./user-menu";
 
 export const Navbar = async () => {
@@ -32,23 +31,8 @@ export const Navbar = async () => {
             </div>
           </div>
 
-          <div className="group relative mx-auto max-w-sm flex-1 sm:max-w-md">
-            <Input
-              className="peer h-10 ps-9 pe-14 text-sm hover:placeholder:text-muted-foreground sm:h-11 sm:ps-10 sm:pe-16 sm:text-base"
-              id="search"
-              placeholder="What are you looking for?"
-              type="search"
-            />
-            <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-gray-300 group-hover:text-muted-foreground/80 group-active:text-muted-foreground/80 peer-disabled:opacity-50">
-              <IconSearch className="size-4 sm:size-5" />
-            </div>
-            <Button
-              aria-label="Submit search"
-              className="absolute inset-y-0 end-2 my-auto h-6 shadow-lg sm:end-3 sm:h-7"
-              type="submit"
-            >
-              <IconChevronRight aria-hidden="true" className="size-2.5 sm:size-3" />
-            </Button>
+          <div className="mx-auto max-w-sm flex-1 sm:max-w-md">
+            <SearchForm />
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">

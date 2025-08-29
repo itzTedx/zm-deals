@@ -121,7 +121,7 @@ export default async function ComboDealPage({ params }: ComboDealPageProps) {
             {comboDeal.products
               .filter((cp) => cp.product)
               .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
-              .map((comboProduct, index) => (
+              .map((comboProduct) => (
                 <div className="flex items-center space-x-4 rounded-lg border p-4" key={comboProduct.id}>
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
@@ -129,7 +129,7 @@ export default async function ComboDealPage({ params }: ComboDealPageProps) {
                       <Badge variant="outline">${comboProduct.product?.price}</Badge>
                     </div>
                     <p className="text-muted-foreground text-sm">
-                      Quantity: {comboProduct.quantity} | Sort Order: {comboProduct.sortOrder || 0}
+                      Qty: {comboProduct.quantity} | Sort Order: {comboProduct.sortOrder || 0}
                     </p>
                   </div>
                 </div>

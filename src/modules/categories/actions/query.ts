@@ -153,8 +153,6 @@ export async function getCategoriesForSelect() {
 export async function getCategoriesWithProductCount() {
   const log = createLog("Category");
 
-  log.info("Fetching categories with product count");
-
   try {
     const categoriesData = await db.query.categories.findMany({
       with: {
@@ -176,8 +174,6 @@ export async function getCategoriesWithProductCount() {
       ...category,
       productCount: category.products.length,
     }));
-
-    log.success("Categories with product count fetched successfully", { count: categoriesWithCount.length });
 
     return categoriesWithCount;
   } catch (error) {

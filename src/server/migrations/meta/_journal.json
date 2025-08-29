@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1756361308616,
-      "tag": "0000_magical_black_cat",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1756382424920,
-      "tag": "0002_oval_young_avengers",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1756383070688,
-      "tag": "0002_black_phil_sheldon",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1756386973808,
-      "tag": "0003_salty_squirrel_girl",
+      "when": 1756447988225,
+      "tag": "0000_great_exiles",
       "breakpoints": true
     }
   ]

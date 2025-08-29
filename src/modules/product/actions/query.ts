@@ -1,10 +1,11 @@
 "use server";
 
-import { and, desc, eq, gte, isNull, lte } from "drizzle-orm";
+import { and, desc, eq, gte, ilike, isNull, lte, or, sql } from "drizzle-orm";
 
 import { getSession } from "@/lib/auth/server";
 import { db } from "@/server/db";
 import { products, reviews } from "@/server/schema";
+import { searches } from "@/server/schema/search-schema";
 
 export async function getProducts() {
   const products = await db.query.products.findMany({
@@ -215,4 +216,140 @@ export async function getCurrentUserReview(productId: string) {
     console.error("Error getting current user review:", error);
     return null;
   }
+}
+
+export async function searchProducts(query: string, limit = 20) {
+  if (!query || query.trim().length === 0) {
+    return [];
+  }
+
+  const searchTerm = `%${query.trim()}%`;
+
+  const searchResults = await db.query.products.findMany({
+    where: and(
+      eq(products.status, "published"),
+      or(
+        ilike(products.title, searchTerm),
+        ilike(products.description, searchTerm),
+        ilike(products.overview, searchTerm)!
+      )
+    ),
+    with: {
+      meta: true,
+      inventory: true,
+      images: {
+        with: {
+          media: true,
+        },
+      },
+      reviews: {
+        with: {
+          user: true,
+        },
+      },
+      category: true,
+    },
+    orderBy: [
+      desc(products.isFeatured), // Featured products first
+      desc(products.createdAt), // Then by newest
+    ],
+    limit,
+  });
+
+  return searchResults;
+}
+
+interface AdvancedSearchParams {
+  query?: string;
+  categoryId?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  isFeatured?: boolean;
+  limit?: number;
+}
+
+export async function advancedSearchProducts({
+  query,
+  categoryId,
+  minPrice,
+  maxPrice,
+  isFeatured,
+  limit = 20,
+}: AdvancedSearchParams) {
+  const conditions = [eq(products.status, "published")];
+  const session = await getSession();
+
+  // Text search
+  if (query && query.trim().length > 0) {
+    const searchTerm = `%${query.trim()}%`;
+    const searchConditions = [ilike(products.title, searchTerm), ilike(products.description, searchTerm)];
+
+    // Add overview search - use non-null assertion for optional field
+    searchConditions.push(ilike(products.overview, searchTerm)!);
+
+    // @ts-expect-error - searchConditions is not typed correctly
+    conditions.push(or(...searchConditions));
+  }
+
+  // Category filter
+  if (categoryId) {
+    conditions.push(eq(products.categoryId, categoryId));
+  }
+
+  // Price range filter
+  if (minPrice !== undefined) {
+    conditions.push(gte(products.price, minPrice.toString()));
+  }
+
+  if (maxPrice !== undefined) {
+    conditions.push(lte(products.price, maxPrice.toString()));
+  }
+
+  // Featured filter
+  if (isFeatured !== undefined) {
+    conditions.push(eq(products.isFeatured, isFeatured));
+  }
+
+  const searchResults = await db.query.products.findMany({
+    where: and(...conditions),
+    with: {
+      meta: true,
+      inventory: true,
+      images: {
+        with: {
+          media: true,
+        },
+      },
+      reviews: {
+        with: {
+          user: true,
+        },
+      },
+      category: true,
+    },
+    orderBy: [
+      desc(products.isFeatured), // Featured products first
+      desc(products.createdAt), // Then by newest
+    ],
+    limit,
+  });
+
+  if (query && searchResults.length > 0) {
+    await db
+      .insert(searches)
+      .values({
+        userId: session?.user.id ?? null,
+        query: query,
+        searchCount: 1,
+      })
+      .onConflictDoUpdate({
+        target: [searches.query],
+        set: {
+          searchCount: sql`${searches.searchCount} + 1`,
+          lastSearchedAt: new Date(),
+        },
+      });
+  }
+
+  return searchResults;
 }

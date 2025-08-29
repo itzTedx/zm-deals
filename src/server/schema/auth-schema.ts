@@ -3,6 +3,7 @@ import { boolean, pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-
 
 import { createdAt, id } from "./helpers";
 import { reviews } from "./review-schema";
+import { searches } from "./search-schema";
 
 export const rolesEnum = pgEnum("roles", ["user", "admin"]);
 
@@ -73,6 +74,9 @@ export const guests = pgTable("guests", {
 export const userRelation = relations(users, ({ many }) => ({
   reviews: many(reviews, {
     relationName: "user-reviews-relations",
+  }),
+  searches: many(searches, {
+    relationName: "user-search-relations",
   }),
 }));
 
