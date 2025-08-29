@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
+import { formatDate } from "@/lib/functions/format-date";
+
 import { bulkDeleteCategories } from "../actions/mutation";
 import { CategoryWithRelations } from "../types";
 import { DeleteButton } from "./delete-button";
@@ -63,14 +65,6 @@ export function CategoriesTable({ data }: CategoriesTableProps) {
     } else {
       setSelectedCategories((prev) => prev.filter((id) => id !== categoryId));
     }
-  };
-
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
   };
 
   return (
@@ -147,7 +141,9 @@ export function CategoriesTable({ data }: CategoriesTableProps) {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="text-muted-foreground text-sm">{formatDate(category.createdAt)}</div>
+                    <div className="text-muted-foreground text-sm">
+                      {formatDate(category.createdAt, { includeTime: true, relative: true })}
+                    </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
