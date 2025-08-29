@@ -8,6 +8,7 @@ export const categorySchema = z.object({
   slug: z.string().min(1),
   description: z.string().max(256, "Description must be at most 256 characters").optional(),
   image: mediaSchema.optional(),
+  banners: z.array(mediaSchema).optional(),
 });
 
 export type CategorySchema = z.infer<typeof categorySchema>;

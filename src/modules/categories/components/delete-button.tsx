@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
+import { cn } from "@/lib/utils";
+
 import { deleteCategory } from "../actions/mutation";
 
 interface DeleteButtonProps {
@@ -59,13 +61,9 @@ export const DeleteButton = ({
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
-          className={
-            variant === "icon"
-              ? "h-8 w-8 p-0 text-destructive hover:text-destructive"
-              : "text-destructive hover:text-destructive"
-          }
+          className={cn("bg-destructive/10 p-0 text-destructive", variant === "icon" && "size-8")}
           size={size}
-          variant="ghost"
+          variant="destructive"
         >
           <Trash2 className="h-4 w-4" />
           {variant === "default" && "Delete"}

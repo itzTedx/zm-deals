@@ -21,7 +21,7 @@ export const EditButton = ({ categoryId, variant = "default", size = "default" }
   };
 
   return (
-    <Button onClick={handleEdit} size={size} type="button" variant="ghost">
+    <Button onClick={handleEdit} size={size} type="button" variant="outline">
       <Pencil className="h-4 w-4" />
       {variant === "default" && "Edit"}
     </Button>

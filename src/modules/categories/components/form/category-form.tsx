@@ -5,8 +5,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useUploadFile } from "better-upload/client";
-import { useForm } from "react-hook-form";
+import { useUploadFiles } from "better-upload/client";
+import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -14,14 +14,23 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import { Textarea } from "@/components/ui/textarea";
-import { UploadButton } from "@/components/ui/upload-button";
+import { UploadDropzoneProgress } from "@/components/ui/upload-dropzone-progress";
 
 import { CategorySchema, categorySchema } from "@/modules/categories/schema";
 import { getImageMetadata } from "@/modules/product/actions/helper";
-import { CATEGORY_FILE_TYPES, CATEGORY_UPLOAD_ROUTE } from "@/modules/product/constants";
+import {
+  CATEGORY_BANNER_FILE_MAX_FILES,
+  CATEGORY_BANNER_FILE_MAX_SIZE,
+  CATEGORY_BANNER_FILE_TYPES,
+  CATEGORY_BANNER_UPLOAD_ROUTE,
+  CATEGORY_FILE_MAX_SIZE,
+  CATEGORY_FILE_TYPES,
+  CATEGORY_UPLOAD_ROUTE,
+} from "@/modules/product/constants";
 import { MediaSchema } from "@/modules/product/schema";
 
 import { upsertCategory } from "../../actions/mutation";
+import { BannerManagement } from "./banner-management";
 
 interface CategoryFormProps {
   initialData?: CategorySchema;
@@ -40,31 +49,93 @@ export const CategoryForm = ({ initialData, isEdit = false, setModalOpen }: Cate
       slug: initialData?.slug ?? "",
       description: initialData?.description ?? "",
       image: initialData?.image ?? undefined,
+      banners: initialData?.banners ?? [],
     },
     reValidateMode: "onBlur",
   });
 
-  const { control } = useUploadFile({
+  const {
+    fields: bannerFields,
+    append: appendBanner,
+    move: moveBanner,
+    remove: removeBanner,
+  } = useFieldArray({
+    control: form.control,
+    name: "banners",
+  });
+
+  const { control: thumbnailControl } = useUploadFiles({
     route: CATEGORY_UPLOAD_ROUTE,
-    onUploadComplete: async ({ file, metadata: objectMetadata }) => {
-      const metadata = await getImageMetadata(file.raw);
+    onUploadComplete: async ({ files, metadata: objectMetadata }) => {
+      if (files.length === 0) return;
 
-      console.log("metadata", metadata);
-      const image: MediaSchema = {
-        ...metadata,
-        url: objectMetadata.url as string,
-        key: file.objectKey,
-        type: "thumbnail",
-      };
+      const file = files[0];
+      try {
+        const metadata = await getImageMetadata(file.raw);
 
-      form.setValue("image", {
-        url: image.url,
-        key: image.key,
-        type: image.type,
-        ...metadata,
-      });
+        const image: MediaSchema = {
+          ...metadata,
+          url: (objectMetadata.urls as string[])[0] || (objectMetadata.url as string),
+          key: file.objectKey,
+          type: "thumbnail",
+        };
 
-      toast.success("Image uploaded successfully");
+        form.setValue("image", {
+          url: image.url,
+          key: image.key,
+          type: image.type,
+          ...metadata,
+        });
+
+        toast.success("Thumbnail uploaded successfully");
+      } catch (error) {
+        console.error("Error processing thumbnail:", error);
+        toast.error("Failed to process thumbnail");
+      }
+    },
+  });
+
+  const { control: bannerControl } = useUploadFiles({
+    route: CATEGORY_BANNER_UPLOAD_ROUTE,
+    onUploadComplete: async ({ files, metadata: objectMetadata }) => {
+      if (files.length === 0) return;
+
+      const currentBanners = form.getValues("banners") || [];
+      const availableSlots = CATEGORY_BANNER_FILE_MAX_FILES - currentBanners.length;
+      const filesToProcess = files.slice(0, availableSlots);
+
+      if (filesToProcess.length === 0) {
+        toast.error(`Maximum ${CATEGORY_BANNER_FILE_MAX_FILES} banners allowed`);
+        return;
+      }
+
+      for (let i = 0; i < filesToProcess.length; i++) {
+        const file = filesToProcess[i];
+        try {
+          const metadata = await getImageMetadata(file.raw);
+
+          const banner: MediaSchema = {
+            ...metadata,
+            url: (objectMetadata.urls as string[])[i] || (objectMetadata.url as string),
+            key: file.objectKey,
+            type: "banner",
+            order: currentBanners.length + i,
+          };
+
+          appendBanner({
+            url: banner.url,
+            key: banner.key,
+            type: banner.type,
+            order: banner.order,
+            ...metadata,
+          });
+        } catch (error) {
+          console.error("Error processing banner:", error);
+          toast.error(`Failed to process banner ${i + 1}`);
+        }
+      }
+
+      toast.success(`${filesToProcess.length} banner(s) uploaded successfully`);
     },
   });
 
@@ -86,13 +157,6 @@ export const CategoryForm = ({ initialData, isEdit = false, setModalOpen }: Cate
       }
     });
   }
-
-  // DEBUG
-  // const validation = categorySchema.safeParse(form.watch());
-  // console.log("validation success:", validation.success);
-  // if (!validation.success) {
-  //   console.log("validation errors:", z.prettifyError(validation.error));
-  // }
 
   return (
     <Form {...form}>
@@ -153,7 +217,7 @@ export const CategoryForm = ({ initialData, isEdit = false, setModalOpen }: Cate
             )}
           />
         </div>
-        <div className="space-y-4">
+        <div className="space-y-6">
           <FormField
             control={form.control}
             name="image"
@@ -161,9 +225,9 @@ export const CategoryForm = ({ initialData, isEdit = false, setModalOpen }: Cate
               <FormItem>
                 <FormLabel>Thumbnail</FormLabel>
                 <FormControl>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      {form.watch("image")?.url && (
+                  <div className="space-y-2">
+                    {form.watch("image")?.url && (
+                      <div className="flex items-center gap-2">
                         <Image
                           alt="Category Thumbnail"
                           className="h-20 w-20 rounded-md object-cover"
@@ -171,17 +235,51 @@ export const CategoryForm = ({ initialData, isEdit = false, setModalOpen }: Cate
                           src={form.watch("image")?.url ?? ""}
                           width={120}
                         />
-                      )}
-                    </div>
+                      </div>
+                    )}
 
-                    <UploadButton accept={CATEGORY_FILE_TYPES.join(", ")} control={control} />
+                    <UploadDropzoneProgress
+                      accept={CATEGORY_FILE_TYPES.join(", ")}
+                      control={thumbnailControl}
+                      description={{
+                        maxFiles: 1,
+                        maxFileSize: CATEGORY_FILE_MAX_SIZE.toString(),
+                        fileTypes: CATEGORY_FILE_TYPES.join(", "),
+                      }}
+                    />
                   </div>
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="banners"
+            render={() => (
+              <FormItem>
+                <FormLabel>Banners (for carousel)</FormLabel>
+                <FormControl>
+                  <div className="space-y-4">
+                    <UploadDropzoneProgress
+                      accept={CATEGORY_BANNER_FILE_TYPES.join(", ")}
+                      control={bannerControl}
+                      description={{
+                        maxFiles: CATEGORY_BANNER_FILE_MAX_FILES - (form.watch("banners")?.length || 0),
+                        maxFileSize: CATEGORY_BANNER_FILE_MAX_SIZE.toString(),
+                        fileTypes: CATEGORY_BANNER_FILE_TYPES.join(", "),
+                      }}
+                    />
+
+                    <BannerManagement fields={bannerFields} onRemove={removeBanner} onReorder={moveBanner} />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <Button className="w-full" disabled={isPending} type="submit">
             <LoadingSwap isLoading={isPending}>{isEdit ? "Update Category" : "Create Category"}</LoadingSwap>
           </Button>

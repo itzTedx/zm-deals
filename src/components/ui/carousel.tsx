@@ -315,7 +315,6 @@ function CarouselProgress({ className, ...props }: React.ComponentProps<"div">) 
     </div>
   );
 }
-
 export {
   type CarouselApi,
   Carousel,

@@ -17,6 +17,7 @@ interface CategoryData {
       height: number | null;
       blurData: string | null;
     } | null;
+    type: "thumbnail" | "banner";
   }>;
   products?: Array<{ id: string }>;
 }
@@ -46,21 +47,36 @@ export function validateSlug(slug: string): boolean {
  * Transform category data for form usage
  */
 export function transformCategoryForForm(category: CategoryData): CategorySchema {
+  const thumbnailImage = category.images?.find((img) => img.media && img.type === "thumbnail")?.media;
+  const bannerImages =
+    category.images
+      ?.filter((img) => img.media && img.type === "banner")
+      .map((img) => img.media)
+      .filter(Boolean) || [];
+
   return {
     id: category.id,
     name: category.name,
     slug: category.slug,
     description: category.description || "",
-    image: category.images?.[0]?.media
+    image: thumbnailImage
       ? {
-          url: category.images[0].media.url || "",
-          key: category.images[0].media.key || "",
+          url: thumbnailImage.url || "",
+          key: thumbnailImage.key || "",
           type: "thumbnail",
-          width: category.images[0].media.width || undefined,
-          height: category.images[0].media.height || undefined,
-          blurData: category.images[0].media.blurData || undefined,
+          width: thumbnailImage.width || undefined,
+          height: thumbnailImage.height || undefined,
+          blurData: thumbnailImage.blurData || undefined,
         }
       : undefined,
+    banners: bannerImages.map((banner) => ({
+      url: banner!.url || "",
+      key: banner!.key || "",
+      type: "banner" as const,
+      width: banner!.width || undefined,
+      height: banner!.height || undefined,
+      blurData: banner!.blurData || undefined,
+    })),
   };
 }
 
@@ -89,8 +105,8 @@ export function validateCategoryData(data: unknown): { success: boolean; data?: 
     return { success: true, data: validatedData };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const zodError = error as z.ZodError;
-      return { success: false, error: zodError.errors.map((e: z.ZodIssue) => e.message).join(", ") };
+      const zodError = error as z.ZodError<unknown>;
+      return { success: false, error: z.prettifyError(zodError) };
     }
     return { success: false, error: "Invalid category data" };
   }

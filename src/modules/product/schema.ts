@@ -15,7 +15,7 @@ export type CheckoutSchema = z.infer<typeof checkoutSchema>;
 export const mediaSchema = z.object({
   url: z.string().min(1, { message: "Image URL is required" }),
   key: z.string("Failed to upload image").optional(),
-  type: z.enum(["thumbnail", "image"]).optional(),
+  type: z.enum(["thumbnail", "banner"]).optional(),
 
   // Metadata
   width: z.number({ message: "Width must be a number." }).nullish(),

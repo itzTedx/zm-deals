@@ -93,13 +93,16 @@ export async function upsertCategory(rawData: unknown): Promise<{ success: boole
 
       // Handle image upload if provided
       if (data.image && upsertedCategory) {
-        // Clean up existing images for this category
+        // Clean up existing thumbnail images for this category
         if (isUpdate) {
-          log.db("Cleaning up existing category images", "category_images");
-          await tx.delete(categoryImages).where(eq(categoryImages.categoryId, upsertedCategory.id));
+          log.db("Cleaning up existing category thumbnail images", "category_images");
+          await tx
+            .delete(categoryImages)
+            .where(eq(categoryImages.categoryId, upsertedCategory.id) && eq(categoryImages.type, "thumbnail"));
 
           // Clean up orphaned media (only if not used by other categories)
           const orphanedMediaIds = existingCategory.images
+            .filter((img) => img.type === "thumbnail")
             .map((img) => img.mediaId)
             .filter((mediaId) => mediaId !== null) as string[];
 
@@ -113,17 +116,17 @@ export async function upsertCategory(rawData: unknown): Promise<{ success: boole
                 await tx.delete(mediaTable).where(eq(mediaTable.id, mediaId));
               }
             }
-            log.success("Cleaned up orphaned media", { count: orphanedMediaIds.length });
+            log.success("Cleaned up orphaned thumbnail media", { count: orphanedMediaIds.length });
           }
         }
 
-        // Create media record
-        log.db("Creating media record", "media");
-        const [insertedMedia] = await tx
+        // Create media record for thumbnail
+        log.db("Creating thumbnail media record", "media");
+        const [insertedThumbnailMedia] = await tx
           .insert(mediaTable)
           .values({
             url: data.image.url,
-            alt: `${data.name} - Category Image`,
+            alt: `${data.name} - Category Thumbnail`,
             width: data.image.width || null,
             height: data.image.height || null,
             blurData: data.image.blurData || null,
@@ -133,15 +136,75 @@ export async function upsertCategory(rawData: unknown): Promise<{ success: boole
             id: mediaTable.id,
           });
 
-        // Insert category image
-        log.db("Creating category image record", "category_images");
+        // Insert category thumbnail image
+        log.db("Creating category thumbnail image record", "category_images");
         await tx.insert(categoryImages).values({
           categoryId: upsertedCategory.id,
-          mediaId: insertedMedia.id,
+          mediaId: insertedThumbnailMedia.id,
           type: "thumbnail",
         });
 
-        log.success("Category image processed successfully");
+        log.success("Category thumbnail processed successfully");
+      }
+
+      // Handle banner images if provided
+      if (data.banners && data.banners.length > 0 && upsertedCategory) {
+        // Clean up existing banner images for this category
+        if (isUpdate) {
+          log.db("Cleaning up existing category banner images", "category_images");
+          await tx
+            .delete(categoryImages)
+            .where(eq(categoryImages.categoryId, upsertedCategory.id) && eq(categoryImages.type, "banner"));
+
+          // Clean up orphaned banner media (only if not used by other categories)
+          const orphanedBannerMediaIds = existingCategory.images
+            .filter((img) => img.type === "banner")
+            .map((img) => img.mediaId)
+            .filter((mediaId) => mediaId !== null) as string[];
+
+          if (orphanedBannerMediaIds.length > 0) {
+            for (const mediaId of orphanedBannerMediaIds) {
+              const usedMedia = await tx.query.categoryImages.findFirst({
+                where: eq(categoryImages.mediaId, mediaId),
+              });
+
+              if (!usedMedia) {
+                await tx.delete(mediaTable).where(eq(mediaTable.id, mediaId));
+              }
+            }
+            log.success("Cleaned up orphaned banner media", { count: orphanedBannerMediaIds.length });
+          }
+        }
+
+        // Create media records and category image records for each banner
+        for (let i = 0; i < data.banners.length; i++) {
+          const banner = data.banners[i];
+
+          log.db(`Creating banner ${i + 1} media record`, "media");
+          const [insertedBannerMedia] = await tx
+            .insert(mediaTable)
+            .values({
+              url: banner.url,
+              alt: `${data.name} - Category Banner ${i + 1}`,
+              width: banner.width || null,
+              height: banner.height || null,
+              blurData: banner.blurData || null,
+              key: banner.key || null,
+            })
+            .returning({
+              id: mediaTable.id,
+            });
+
+          // Insert category banner image
+          log.db(`Creating category banner ${i + 1} image record`, "category_images");
+          await tx.insert(categoryImages).values({
+            categoryId: upsertedCategory.id,
+            mediaId: insertedBannerMedia.id,
+            type: "banner",
+          });
+        }
+
+        log.success("Category banners processed successfully", { count: data.banners.length });
       }
 
       log.success(

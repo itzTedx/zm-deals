@@ -48,6 +48,50 @@ export function UploadDropzoneProgress({
     noClick: true,
   });
 
+  // // Handle toast notifications for upload progress
+  // useEffect(() => {
+  //   progresses.forEach((progress) => {
+  //     const toastId = `upload-${progress.objectKey}`;
+
+  //     if (progress.status === "uploading" && progress.progress < 1) {
+  //       // Show progress toast
+  //       toast(
+  //         <div className={cn("flex items-center gap-2 rounded-lg border bg-transparent p-3 dark:bg-input/10")}>
+  //           <FileIcon type={progress.type} />
+
+  //           <div className="grid grow gap-1">
+  //             <div className="flex items-center gap-0.5">
+  //               <p className="max-w-40 truncate font-medium text-sm">{progress.name}</p>
+  //               <Dot className="size-4 text-muted-foreground" />
+  //               <p className="text-muted-foreground text-xs">{formatBytes(progress.size)}</p>
+  //             </div>
+
+  //             <div className="flex h-4 items-center">
+  //               <Progress className="h-1.5" value={progress.progress * 100} />
+  //             </div>
+  //           </div>
+  //         </div>,
+  //         {
+  //           id: toastId,
+  //           duration: Number.POSITIVE_INFINITY,
+  //         }
+  //       );
+  //     } else if (progress.status === "complete") {
+  //       // Show success toast
+  //       toast.success(`${progress.name} uploaded successfully (${formatBytes(progress.size)})`, {
+  //         id: toastId,
+  //         duration: 3000,
+  //       });
+  //     } else if (progress.status === "failed") {
+  //       // Show error toast
+  //       toast.error(`Failed to upload ${progress.name}`, {
+  //         id: toastId,
+  //         duration: 5000,
+  //       });
+  //     }
+  //   });
+  // }, [progresses]);
+
   return (
     <div className="flex flex-col gap-3">
       <div

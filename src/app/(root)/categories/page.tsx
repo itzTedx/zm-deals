@@ -3,6 +3,7 @@ import type { Route } from "next";
 import Image from "next/image";
 
 import { SectionHeader } from "@/components/layout/section-header";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { Separator } from "@/components/ui/separator";
 
 import { getCategories } from "@/modules/categories/actions/query";
@@ -16,14 +17,34 @@ export default async function CategoriesPage() {
       <div className="grid gap-3 sm:gap-4 md:gap-12 lg:gap-16">
         {categories.map((category) => {
           const thumbnail = category.images.find((image) => image.type === "thumbnail")?.media;
+          const banners = category.images.filter((image) => image.type === "banner");
           return (
             <Fragment key={category.id}>
               <section className="space-y-4 md:space-y-6 lg:space-y-8" id={category.name}>
-                {thumbnail && thumbnail.url && (
-                  <div className="relative h-56 w-full overflow-hidden rounded-xl">
-                    <Image alt={category.name} className="object-cover" fill src={thumbnail.url} />
-                  </div>
+                {banners.length > 1 ? (
+                  <Carousel>
+                    <CarouselContent>
+                      {banners.map((banner) => (
+                        <CarouselItem key={banner.id}>
+                          {banner.media && banner.media.url && (
+                            <div className="relative h-56 w-full overflow-hidden rounded-xl">
+                              <Image alt={category.name} className="object-cover" fill src={banner.media.url} />
+                            </div>
+                          )}
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                  </Carousel>
+                ) : (
+                  banners.length > 0 &&
+                  banners[0].media &&
+                  banners[0].media.url && (
+                    <div className="relative h-56 w-full overflow-hidden rounded-xl">
+                      <Image alt={category.name} className="object-cover" fill src={banners[0].media.url} />
+                    </div>
+                  )
                 )}
+
                 <SectionHeader
                   btnText={category.name}
                   description={category.description}
