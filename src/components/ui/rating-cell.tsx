@@ -94,16 +94,4 @@ const HeartRatingCells = React.forwardRef<React.ComponentRef<typeof ToggleGroupP
 );
 HeartRatingCells.displayName = "HeartRatingCells";
 
-export function RatingCellDemo() {
-  const [starValue, setStarValue] = React.useState("3");
-  const [heartValue, setHeartValue] = React.useState("2");
-
-  return (
-    <div className="flex w-full max-w-[360px] flex-col items-center gap-6">
-      <StarRatingCells onValueChange={setStarValue} value={starValue} />
-      <HeartRatingCells onValueChange={setHeartValue} value={heartValue} />
-    </div>
-  );
-}
-
 export { StarRatingCells, HeartRatingCells };

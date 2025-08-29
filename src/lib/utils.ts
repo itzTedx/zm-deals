@@ -31,43 +31,6 @@ export function calculateDiscount(originalPrice: number, currentPrice: number): 
 }
 
 /**
- * Formats a date as a time string in the format "3d 14h 22m"
- * For past dates: shows time ago
- * For future dates: shows time remaining
- * @param date - The date to format
- * @returns A formatted string representing time (e.g., "3d 14h 22m")
- */
-export function formatTime(date: Date | string | number): string {
-  const targetDate = new Date(date);
-  const now = new Date();
-  const diffInMs = Math.abs(targetDate.getTime() - now.getTime());
-
-  const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
-  const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
-  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-
-  const days = diffInDays;
-  const hours = diffInHours % 24;
-  const minutes = diffInMinutes % 60;
-
-  const parts: string[] = [];
-
-  if (days > 0) {
-    parts.push(`${days}d`);
-  }
-
-  if (hours > 0) {
-    parts.push(`${hours}h`);
-  }
-
-  if (minutes > 0 || parts.length === 0) {
-    parts.push(`${minutes}m`);
-  }
-
-  return parts.join(" ");
-}
-
-/**
  * Copies text to clipboard using the Web Clipboard API
  * @param text - The text to copy to clipboard
  * @returns Promise that resolves to true if successful, false otherwise

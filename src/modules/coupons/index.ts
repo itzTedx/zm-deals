@@ -3,7 +3,6 @@
 // Actions
 export * from "./actions/mutation";
 export * from "./actions/query";
-export { CheckoutIntegration } from "./components/checkout-integration";
 // Components
 export { CouponForm } from "./components/coupon-form";
 export { CouponManagement } from "./components/coupon-management";
