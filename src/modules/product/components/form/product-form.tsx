@@ -19,6 +19,7 @@ import { upsertProduct } from "../../actions/mutation";
 import { ProductSchema, productSchema } from "../../schema";
 import { getInitialValues } from "../../utils";
 import { Classification, PricingInventory, ProductDetails, ProductMeta, Scheduling } from "./sections";
+import { Shipping } from "./sections/shipping";
 
 interface Props {
   initialData: ProductSchema | null;
@@ -85,6 +86,7 @@ export const ProductForm = ({ initialData, isEditMode, categories }: Props) => {
           <div className="relative col-span-2 space-y-4">
             <ProductDetails />
             <PricingInventory />
+            <Shipping />
             <ProductMeta />
           </div>
           <div className="sticky top-28 h-fit space-y-4">

@@ -144,3 +144,42 @@ export async function getFeaturedComboDeals(): Promise<ComboDealWithProducts[]> 
 
   return comboDealsData;
 }
+
+export async function getComboDealsByProductId(productId: string): Promise<ComboDealWithProducts[]> {
+  const now = new Date();
+
+  const comboDealsData = await db.query.comboDeals.findMany({
+    where: and(
+      eq(comboDeals.isActive, true),
+      or(isNull(comboDeals.startsAt), lte(comboDeals.startsAt, now)),
+      or(isNull(comboDeals.endsAt), gte(comboDeals.endsAt, now))
+    ),
+    with: {
+      products: {
+        where: eq(comboDealProducts.productId, productId),
+        with: {
+          product: {
+            with: {
+              images: {
+                with: {
+                  media: true,
+                },
+              },
+              inventory: true,
+              reviews: {
+                with: {
+                  user: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: [comboDealProducts.sortOrder],
+      },
+    },
+    orderBy: [desc(comboDeals.isFeatured), desc(comboDeals.createdAt)],
+  });
+
+  // Filter out combo deals that don't actually contain the product
+  return comboDealsData.filter((comboDeal) => comboDeal.products.length > 0);
+}

@@ -22,6 +22,13 @@
       "when": 1756451940143,
       "tag": "0002_flippant_nextwave",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1756455470728,
+      "tag": "0003_lame_loners",
+      "breakpoints": true
     }
   ]
 }

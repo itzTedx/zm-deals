@@ -41,6 +41,9 @@ export const productSchema = z.object({
   deliveryFee: z.number().optional(),
   isDeliveryFree: z.boolean().optional(),
 
+  cashOnDelivery: z.boolean().optional(),
+  cashOnDeliveryFee: z.number().optional(),
+
   inventory: z.number("Inventory is required"),
 
   images: z.array(mediaSchema).min(1, { message: "Images are required" }),

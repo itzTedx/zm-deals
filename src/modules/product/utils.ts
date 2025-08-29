@@ -10,11 +10,14 @@ export function transformProduct(product: ProductQueryResult | null): ProductSch
     overview: product.overview ?? undefined,
     description: product.description,
     slug: product.slug,
+    categoryId: product.categoryId ?? undefined,
 
     price: Number(product.price),
     compareAtPrice: Number(product.compareAtPrice) ?? undefined,
     deliveryFee: Number(product.deliveryFee) ?? undefined,
     isDeliveryFree: product.isDeliveryFree ?? true,
+    cashOnDelivery: product.cashOnDelivery ?? false,
+    cashOnDeliveryFee: Number(product.cashOnDeliveryFee) ?? undefined,
 
     inventory: product.inventory.initialStock,
 

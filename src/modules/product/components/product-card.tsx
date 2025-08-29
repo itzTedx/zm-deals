@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import StarRating from "@/components/ui/rating";
 
-import { IconCurrency, IconTruck } from "@/assets/icons";
+import { IconCurrency, IconTruck, IconWallet2 } from "@/assets/icons";
 
 import { calculateDiscount, isWithinDays } from "@/lib/utils";
 
@@ -54,13 +54,25 @@ export const ProductCard = ({ data, showSeconds = true }: Props) => {
             )}
           </div>
         </CardHeader>
-        {data.isDeliveryFree && (
-          <div className="mt-1">
-            <p className="flex items-center gap-1 font-medium text-gray-500 text-xs">
-              <IconTruck className="size-4 text-blue-600" /> Free Delivery
-            </p>
-          </div>
-        )}
+        <div className="mt-1 flex flex-wrap items-center gap-1">
+          {data.isDeliveryFree && (
+            <div>
+              <p className="flex items-center gap-1 font-medium text-gray-500 text-xs">
+                <IconTruck className="size-4 text-success" /> Free Delivery
+              </p>
+            </div>
+          )}
+          {data.isDeliveryFree && data.cashOnDelivery && (
+            <div className="hidden size-0.5 rounded-full bg-gray-300 sm:block sm:size-1" />
+          )}
+          {data.cashOnDelivery && (
+            <div>
+              <p className="flex items-center gap-1 font-medium text-gray-500 text-xs">
+                <IconWallet2 className="size-4 text-blue-600" /> Cash on Delivery
+              </p>
+            </div>
+          )}
+        </div>
       </CardContent>
       {((data.endsIn && isWithinDays(data.endsIn)) || (data.reviews && data.reviews.length > 0)) && (
         <CardFooter className="flex items-center justify-between">

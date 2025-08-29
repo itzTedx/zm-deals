@@ -90,6 +90,8 @@ export async function upsertProduct(rawData: unknown): Promise<{ success: boolea
         categoryId: data.categoryId ?? null,
         deliveryFee: data.deliveryFee?.toString() ?? null,
         isDeliveryFree: data.isDeliveryFree ?? true,
+        cashOnDelivery: data.cashOnDelivery ?? false,
+        cashOnDeliveryFee: data.cashOnDeliveryFee?.toString() ?? null,
       };
 
       // Perform upsert operation using Drizzle's onConflictDoUpdate

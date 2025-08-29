@@ -33,9 +33,10 @@ import {
 
 import { env } from "@/lib/env/server";
 import { calculateDiscount, cn } from "@/lib/utils";
-import { Deals } from "@/modules/home/sections";
+import { getComboDealsByProductId } from "@/modules/combo-deals/actions/query";
 import { getProductBySlug, getProducts } from "@/modules/product/actions/query";
 import { EndsInCounter } from "@/modules/product/components/ends-in-counter";
+import { FrequentlyBoughtTogether } from "@/modules/product/components/frequently-bought-together";
 import { CheckboxBadge } from "@/modules/product/components/ui/checkbox-badge";
 import { CheckoutWithQuantity } from "@/modules/product/components/ui/checkout-with-quantity";
 import { Reviews } from "@/modules/product/sections/reviews";
@@ -117,6 +118,10 @@ export default async function ProductPage({ params }: Props) {
   if (!res) {
     return notFound();
   }
+
+  // Get combo deals that include this product
+  const comboDeals = await getComboDealsByProductId(res.id);
+  console.log("comboDeals: ", comboDeals);
 
   const productUrl = `${env.BASE_URL}/${res.slug}`;
   const mainImage = res.images[0]?.media?.url || "/default-product-image.jpg";
@@ -309,8 +314,19 @@ export default async function ProductPage({ params }: Props) {
       {/* Reviews Section */}
       <Reviews productId={res.id} reviews={res.reviews} />
 
+      {/* Frequently Bought Together Section */}
+      <FrequentlyBoughtTogether
+        comboDeals={comboDeals}
+        currentProduct={{
+          title: res.title,
+          price: res.price,
+          images: res.images,
+        }}
+        currentProductId={res.id}
+      />
+
       {/* Related Deals Section */}
-      <Deals />
+      {/* <Deals /> */}
     </main>
   );
 }
