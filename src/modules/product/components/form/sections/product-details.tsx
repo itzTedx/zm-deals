@@ -30,8 +30,6 @@ export const ProductDetails = () => {
   const { control } = useUploadFiles({
     route: PRODUCT_UPLOAD_ROUTE,
     onUploadComplete: async ({ files, metadata: objectMetadata }) => {
-      console.log("Upload completed:", { files: files.length, metadata: objectMetadata });
-
       // Get current images array
       const currentImages = form.getValues("images") || [];
 

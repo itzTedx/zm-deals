@@ -8,25 +8,10 @@ import { CreateButton } from "@/modules/categories/components/create-button";
 import { SearchBar } from "@/modules/categories/components/search-bar";
 import { ViewToggle } from "@/modules/categories/components/view-toggle";
 
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  description: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  images: Array<{
-    media: {
-      url: string | null;
-    } | null;
-  }>;
-  products: Array<{
-    id: string;
-  }>;
-}
+import { CategoryWithRelations } from "../types";
 
 interface CategoriesViewProps {
-  categories: Category[];
+  categories: CategoryWithRelations[];
 }
 
 export function CategoriesView({ categories }: CategoriesViewProps) {

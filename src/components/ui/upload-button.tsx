@@ -5,20 +5,28 @@ import { Loader2, Upload } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
+import { cn } from "@/lib/utils";
+
 type UploadButtonProps = {
   control: UploadHookControl<false>;
   accept?: string;
   metadata?: Record<string, unknown>;
   uploadOverride?: (...args: Parameters<UploadHookControl<false>["upload"]>) => void;
-
+  className?: string;
   // Add any additional props you need.
 };
 
-export function UploadButton({ control: { upload, isPending }, accept, metadata, uploadOverride }: UploadButtonProps) {
+export function UploadButton({
+  control: { upload, isPending },
+  accept,
+  metadata,
+  uploadOverride,
+  className,
+}: UploadButtonProps) {
   const id = useId();
 
   return (
-    <Button className="relative" disabled={isPending} type="button">
+    <Button className={cn("relative", className)} disabled={isPending} type="button">
       <label className="absolute inset-0 cursor-pointer" htmlFor={id}>
         <input
           accept={accept}

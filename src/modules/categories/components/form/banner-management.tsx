@@ -103,9 +103,7 @@ export function BannerManagement({ fields, onRemove, onReorder }: BannerManageme
       <div
         aria-describedby={isDragging ? "drag-instructions" : undefined}
         aria-label="Category banners grid"
-        className={`grid grid-cols-2 gap-2 transition-opacity duration-200 ${
-          isDragging ? "opacity-75" : "opacity-100"
-        }`}
+        className={`grid gap-2 transition-opacity duration-200 ${isDragging ? "opacity-75" : "opacity-100"}`}
         role="region"
       >
         <SortableContext items={sortableItems} strategy={rectSortingStrategy}>

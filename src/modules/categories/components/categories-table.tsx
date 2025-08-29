@@ -12,29 +12,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 import { bulkDeleteCategories } from "../actions/mutation";
+import { CategoryWithRelations } from "../types";
 import { DeleteButton } from "./delete-button";
 import { EditButton } from "./edit-button";
 
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  description: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  productCount?: number;
-  images: Array<{
-    media: {
-      url: string | null;
-    } | null;
-  }>;
-  products: Array<{
-    id: string;
-  }>;
-}
-
 interface CategoriesTableProps {
-  data: Category[];
+  data: CategoryWithRelations[];
 }
 
 export function CategoriesTable({ data }: CategoriesTableProps) {
@@ -160,7 +143,7 @@ export function CategoriesTable({ data }: CategoriesTableProps) {
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Package className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm">{category.products.length}</span>
+                      <span className="text-sm">{category.products?.length}</span>
                     </div>
                   </TableCell>
                   <TableCell>

@@ -1,26 +1,15 @@
 import { z } from "zod";
 
 import { CategorySchema, categorySchema } from "./schema";
-
-interface CategoryData {
-  id: string;
-  name: string;
-  slug: string;
-  description: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  images?: Array<{
-    media: {
-      url: string | null;
-      key: string | null;
-      width: number | null;
-      height: number | null;
-      blurData: string | null;
-    } | null;
-    type: "thumbnail" | "banner";
-  }>;
-  products?: Array<{ id: string }>;
-}
+import type {
+  CategoryBreadcrumb,
+  CategoryData,
+  CategoryResponse,
+  CategorySortBy,
+  CategorySortOrder,
+  CategoryStats,
+  CategoryValidationResult,
+} from "./types";
 
 /**
  * Generate a URL-friendly slug from a string
@@ -59,7 +48,7 @@ export function transformCategoryForForm(category: CategoryData): CategorySchema
     name: category.name,
     slug: category.slug,
     description: category.description || "",
-    image: thumbnailImage
+    thumbnail: thumbnailImage
       ? {
           url: thumbnailImage.url || "",
           key: thumbnailImage.key || "",
@@ -83,7 +72,7 @@ export function transformCategoryForForm(category: CategoryData): CategorySchema
 /**
  * Transform category data for API response
  */
-export function transformCategoryForResponse(category: CategoryData) {
+export function transformCategoryForResponse(category: CategoryData): CategoryResponse {
   return {
     id: category.id,
     name: category.name,
@@ -99,7 +88,7 @@ export function transformCategoryForResponse(category: CategoryData) {
 /**
  * Validate category data before submission
  */
-export function validateCategoryData(data: unknown): { success: boolean; data?: CategorySchema; error?: string } {
+export function validateCategoryData(data: unknown): CategoryValidationResult<CategorySchema> {
   try {
     const validatedData = categorySchema.parse(data);
     return { success: true, data: validatedData };
@@ -115,7 +104,7 @@ export function validateCategoryData(data: unknown): { success: boolean; data?: 
 /**
  * Get category statistics
  */
-export function getCategoryStats(categories: CategoryData[]) {
+export function getCategoryStats(categories: CategoryData[]): CategoryStats {
   const totalCategories = categories.length;
   const categoriesWithProducts = categories.filter((cat) => (cat.products?.length || 0) > 0).length;
   const totalProducts = categories.reduce((sum, cat) => sum + (cat.products?.length || 0), 0);
@@ -135,9 +124,9 @@ export function getCategoryStats(categories: CategoryData[]) {
  */
 export function sortCategories(
   categories: CategoryData[],
-  sortBy: "name" | "createdAt" | "productCount" = "name",
-  order: "asc" | "desc" = "asc"
-) {
+  sortBy: CategorySortBy = "name",
+  order: CategorySortOrder = "asc"
+): CategoryData[] {
   return [...categories].sort((a, b) => {
     let aValue: string | Date | number;
     let bValue: string | Date | number;
@@ -170,7 +159,7 @@ export function sortCategories(
 /**
  * Filter categories by search term
  */
-export function filterCategories(categories: CategoryData[], searchTerm: string) {
+export function filterCategories(categories: CategoryData[], searchTerm: string): CategoryData[] {
   if (!searchTerm.trim()) return categories;
 
   const term = searchTerm.toLowerCase();
@@ -185,9 +174,45 @@ export function filterCategories(categories: CategoryData[], searchTerm: string)
 /**
  * Get category breadcrumb data
  */
-export function getCategoryBreadcrumb(category: CategoryData) {
+export function getCategoryBreadcrumb(category: CategoryData): CategoryBreadcrumb {
   return [
     { label: "Categories", href: "/studio/categories" },
     { label: category.name, href: `/studio/categories/${category.slug}`, current: true },
   ];
+}
+
+export function transformCategoryData(category?: CategoryData | null): CategorySchema | undefined {
+  if (!category) return undefined;
+
+  const thumbnailImage = category.images?.find((img) => img.media && img.type === "thumbnail")?.media;
+  const bannerImages =
+    category.images
+      ?.filter((img) => img.media && img.type === "banner")
+      .map((img) => img.media)
+      .filter(Boolean) || [];
+
+  return {
+    id: category.id,
+    name: category.name,
+    slug: category.slug,
+    description: category.description || "",
+    thumbnail: thumbnailImage
+      ? {
+          url: thumbnailImage.url || "",
+          key: thumbnailImage.key || "",
+          type: "thumbnail",
+          width: thumbnailImage.width || undefined,
+          height: thumbnailImage.height || undefined,
+          blurData: thumbnailImage.blurData || undefined,
+        }
+      : undefined,
+    banners: bannerImages.map((banner) => ({
+      url: banner!.url || "",
+      key: banner!.key || "",
+      type: "banner" as const,
+      width: banner!.width || undefined,
+      height: banner!.height || undefined,
+      blurData: banner!.blurData || undefined,
+    })),
+  };
 }

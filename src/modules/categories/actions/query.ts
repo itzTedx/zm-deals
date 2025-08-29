@@ -3,10 +3,11 @@
 import { asc, desc, eq } from "drizzle-orm";
 
 import { createLog } from "@/lib/logging";
+import type { CategoryData } from "@/modules/categories/types";
 import { db } from "@/server/db";
 import { categories } from "@/server/schema";
 
-export async function getCategories() {
+export async function getCategories(): Promise<CategoryData[]> {
   const log = createLog("Category");
 
   try {
@@ -37,7 +38,7 @@ export async function getCategories() {
   }
 }
 
-export async function getCategory(id: string) {
+export async function getCategory(id: string): Promise<CategoryData | undefined | null> {
   const log = createLog("Category");
 
   if (id === "create") return null;
@@ -78,7 +79,7 @@ export async function getCategory(id: string) {
   }
 }
 
-export async function getCategoryBySlug(slug: string) {
+export async function getCategoryBySlug(slug: string): Promise<CategoryData | null | undefined> {
   const log = createLog("Category");
 
   log.info("Fetching category by slug", { slug });
@@ -119,7 +120,7 @@ export async function getCategoryBySlug(slug: string) {
   }
 }
 
-export async function getCategoriesForSelect() {
+export async function getCategoriesForSelect(): Promise<Array<{ value: string; label: string }>> {
   const log = createLog("Category");
 
   log.info("Fetching categories for select");
@@ -149,7 +150,7 @@ export async function getCategoriesForSelect() {
   }
 }
 
-export async function getCategoriesWithProductCount() {
+export async function getCategoriesWithProductCount(): Promise<Array<CategoryData & { productCount: number }>> {
   const log = createLog("Category");
 
   try {
@@ -182,7 +183,7 @@ export async function getCategoriesWithProductCount() {
   }
 }
 
-export async function getRecentCategories(limit = 5) {
+export async function getRecentCategories(limit = 5): Promise<CategoryData[]> {
   const log = createLog("Category");
 
   log.info("Fetching recent categories", { limit });
@@ -215,7 +216,7 @@ export async function getRecentCategories(limit = 5) {
   }
 }
 
-export async function searchCategories(query: string) {
+export async function searchCategories(query: string): Promise<CategoryData[]> {
   const log = createLog("Category");
 
   log.info("Searching categories", { query });

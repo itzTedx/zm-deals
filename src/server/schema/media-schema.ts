@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import { index, integer, pgTable, text } from "drizzle-orm/pg-core";
 
 import { createdAt, id, updatedAt } from "./helpers";
@@ -25,3 +25,6 @@ export const mediaRelation = relations(mediaTable, ({ many }) => ({
     relationName: "product-image-media-relations",
   }),
 }));
+
+export type InsertMedia = InferInsertModel<typeof mediaTable>;
+export type Media = InferSelectModel<typeof mediaTable>;

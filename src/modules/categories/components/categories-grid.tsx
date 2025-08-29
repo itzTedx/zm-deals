@@ -1,26 +1,10 @@
 "use client";
 
+import { CategoryWithRelations } from "../types";
 import { CategoryCard } from "./category-card";
 
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  description: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  images: Array<{
-    media: {
-      url: string | null;
-    } | null;
-  }>;
-  products: Array<{
-    id: string;
-  }>;
-}
-
 interface CategoriesGridProps {
-  data: Category[];
+  data: CategoryWithRelations[];
 }
 
 export function CategoriesGrid({ data }: CategoriesGridProps) {

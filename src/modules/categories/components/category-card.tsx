@@ -7,26 +7,12 @@ import { Package } from "lucide-react";
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
+import { CategoryWithRelations } from "../types";
 import { DeleteButton } from "./delete-button";
 import { EditButton } from "./edit-button";
 
 interface CategoryCardProps {
-  category: {
-    id: string;
-    name: string;
-    slug: string;
-    description: string | null;
-    createdAt: Date;
-    updatedAt: Date;
-    images: Array<{
-      media: {
-        url: string | null;
-      } | null;
-    }>;
-    products: Array<{
-      id: string;
-    }>;
-  };
+  category: CategoryWithRelations;
 }
 
 export function CategoryCard({ category }: CategoryCardProps) {
@@ -58,7 +44,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center gap-1 text-muted-foreground">
             <Package className="size-4" />
-            <span>{category.products.length} products</span>
+            <span>{category.products?.length} products</span>
           </div>
           <span className="text-muted-foreground text-xs">{format(category.createdAt, "MMM dd, yyyy")}</span>
         </div>

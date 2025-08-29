@@ -2,18 +2,30 @@
 
 import { headers } from "next/headers";
 
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import z from "zod";
 
 import { auth } from "@/lib/auth/server";
 import { createLog } from "@/lib/logging";
 import { categorySchema } from "@/modules/categories/schema";
+import type { CategoryData } from "@/modules/categories/types";
+import type { MediaSchema } from "@/modules/product/schema";
 import { db } from "@/server/db";
 import { categories, categoryImages, mediaTable } from "@/server/schema";
 
-export async function upsertCategory(rawData: unknown): Promise<{ success: boolean; message: string }> {
-  const log = createLog("Category");
+export type Trx = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
+const log = createLog("Category");
+
+// Type for category with images (for internal use in this file)
+type CategoryWithImages = CategoryData & {
+  images: NonNullable<CategoryData["images"]>;
+};
+
+// Type for category image with media
+type CategoryImageWithMedia = NonNullable<CategoryData["images"]>[0];
+
+export async function upsertCategory(rawData: unknown): Promise<{ success: boolean; message: string }> {
   log.info("Starting category upsert operation");
 
   const session = await auth.api.getSession({ headers: await headers() });
@@ -91,120 +103,26 @@ export async function upsertCategory(rawData: unknown): Promise<{ success: boole
           description: categories.description,
         });
 
-      // Handle image upload if provided
-      if (data.image && upsertedCategory) {
-        // Clean up existing thumbnail images for this category
-        if (isUpdate) {
-          log.db("Cleaning up existing category thumbnail images", "category_images");
-          await tx
-            .delete(categoryImages)
-            .where(eq(categoryImages.categoryId, upsertedCategory.id) && eq(categoryImages.type, "thumbnail"));
-
-          // Clean up orphaned media (only if not used by other categories)
-          const orphanedMediaIds = existingCategory.images
-            .filter((img) => img.type === "thumbnail")
-            .map((img) => img.mediaId)
-            .filter((mediaId) => mediaId !== null) as string[];
-
-          if (orphanedMediaIds.length > 0) {
-            for (const mediaId of orphanedMediaIds) {
-              const usedMedia = await tx.query.categoryImages.findFirst({
-                where: eq(categoryImages.mediaId, mediaId),
-              });
-
-              if (!usedMedia) {
-                await tx.delete(mediaTable).where(eq(mediaTable.id, mediaId));
-              }
-            }
-            log.success("Cleaned up orphaned thumbnail media", { count: orphanedMediaIds.length });
-          }
-        }
-
-        // Create media record for thumbnail
-        log.db("Creating thumbnail media record", "media");
-        const [insertedThumbnailMedia] = await tx
-          .insert(mediaTable)
-          .values({
-            url: data.image.url,
-            alt: `${data.name} - Category Thumbnail`,
-            width: data.image.width || null,
-            height: data.image.height || null,
-            blurData: data.image.blurData || null,
-            key: data.image.key || null,
-          })
-          .returning({
-            id: mediaTable.id,
-          });
-
-        // Insert category thumbnail image
-        log.db("Creating category thumbnail image record", "category_images");
-        await tx.insert(categoryImages).values({
+      // Handle thumbnail image if provided
+      if (data.thumbnail && upsertedCategory) {
+        await handleThumbnailImage(tx, {
           categoryId: upsertedCategory.id,
-          mediaId: insertedThumbnailMedia.id,
-          type: "thumbnail",
+          imageData: data.thumbnail,
+          categoryName: data.name,
+          isUpdate,
+          existingCategory: existingCategory as CategoryWithImages | null,
         });
-
-        log.success("Category thumbnail processed successfully");
       }
 
       // Handle banner images if provided
       if (data.banners && data.banners.length > 0 && upsertedCategory) {
-        // Clean up existing banner images for this category
-        if (isUpdate) {
-          log.db("Cleaning up existing category banner images", "category_images");
-          await tx
-            .delete(categoryImages)
-            .where(eq(categoryImages.categoryId, upsertedCategory.id) && eq(categoryImages.type, "banner"));
-
-          // Clean up orphaned banner media (only if not used by other categories)
-          const orphanedBannerMediaIds = existingCategory.images
-            .filter((img) => img.type === "banner")
-            .map((img) => img.mediaId)
-            .filter((mediaId) => mediaId !== null) as string[];
-
-          if (orphanedBannerMediaIds.length > 0) {
-            for (const mediaId of orphanedBannerMediaIds) {
-              const usedMedia = await tx.query.categoryImages.findFirst({
-                where: eq(categoryImages.mediaId, mediaId),
-              });
-
-              if (!usedMedia) {
-                await tx.delete(mediaTable).where(eq(mediaTable.id, mediaId));
-              }
-            }
-            log.success("Cleaned up orphaned banner media", { count: orphanedBannerMediaIds.length });
-          }
-        }
-
-        // Create media records and category image records for each banner
-        for (let i = 0; i < data.banners.length; i++) {
-          const banner = data.banners[i];
-
-          log.db(`Creating banner ${i + 1} media record`, "media");
-          const [insertedBannerMedia] = await tx
-            .insert(mediaTable)
-            .values({
-              url: banner.url,
-              alt: `${data.name} - Category Banner ${i + 1}`,
-              width: banner.width || null,
-              height: banner.height || null,
-              blurData: banner.blurData || null,
-              key: banner.key || null,
-            })
-            .returning({
-              id: mediaTable.id,
-            });
-
-          // Insert category banner image
-          log.db(`Creating category banner ${i + 1} image record`, "category_images");
-          await tx.insert(categoryImages).values({
-            categoryId: upsertedCategory.id,
-            mediaId: insertedBannerMedia.id,
-            type: "banner",
-          });
-        }
-
-        log.success("Category banners processed successfully", { count: data.banners.length });
+        await handleBannerImages(tx, {
+          categoryId: upsertedCategory.id,
+          banners: data.banners,
+          categoryName: data.name,
+          isUpdate,
+          existingCategory: existingCategory as CategoryWithImages | null,
+        });
       }
 
       log.success(
@@ -224,6 +142,154 @@ export async function upsertCategory(rawData: unknown): Promise<{ success: boole
       success: false,
       message: "Failed to upsert category",
     };
+  }
+}
+
+interface ImageHandlerProps {
+  categoryId: string;
+  imageData: MediaSchema;
+  categoryName: string;
+  isUpdate: boolean;
+  existingCategory: CategoryWithImages | null;
+}
+
+async function handleThumbnailImage(
+  tx: Trx,
+  { categoryId, imageData, categoryName, isUpdate, existingCategory }: ImageHandlerProps
+) {
+  // Clean up existing thumbnail images for this category
+  if (isUpdate && existingCategory) {
+    const existingThumbnailImages = existingCategory.images.filter(
+      (img: CategoryImageWithMedia) => img.type === "thumbnail"
+    );
+
+    if (existingThumbnailImages.length > 0) {
+      const thumbnailMediaIds = existingThumbnailImages
+        .map((img: CategoryImageWithMedia) => img.mediaId)
+        .filter((id: string | null): id is string => id !== null);
+
+      // Delete category thumbnail images
+      log.db("Cleaning up existing category thumbnail images", "category_images");
+      await tx
+        .delete(categoryImages)
+        .where(and(eq(categoryImages.categoryId, categoryId), eq(categoryImages.type, "thumbnail")));
+
+      // Clean up orphaned media in batch
+      if (thumbnailMediaIds.length > 0) {
+        await cleanupOrphanedMedia(tx, thumbnailMediaIds, log);
+      }
+    }
+  }
+
+  // Create media record for thumbnail
+  log.db("Creating thumbnail media record", "media");
+  const [insertedThumbnailMedia] = await tx
+    .insert(mediaTable)
+    .values({
+      url: imageData.url,
+      alt: `${categoryName} - Category Thumbnail`,
+      width: imageData.width || null,
+      height: imageData.height || null,
+      blurData: imageData.blurData || null,
+      key: imageData.key || null,
+    })
+    .returning({
+      id: mediaTable.id,
+    });
+
+  // Insert category thumbnail image
+  log.db("Creating category thumbnail image record", "category_images");
+  await tx.insert(categoryImages).values({
+    categoryId,
+    mediaId: insertedThumbnailMedia.id,
+    type: "thumbnail",
+  });
+
+  log.success("Category thumbnail processed successfully");
+}
+
+interface BannerHandlerProps {
+  categoryId: string;
+  banners: MediaSchema[];
+  categoryName: string;
+  isUpdate: boolean;
+  existingCategory: CategoryWithImages | null;
+}
+
+async function handleBannerImages(
+  tx: Trx,
+  { categoryId, banners, categoryName, isUpdate, existingCategory }: BannerHandlerProps
+) {
+  // Clean up existing banner images for this category
+  if (isUpdate && existingCategory) {
+    const existingBannerImages = existingCategory.images.filter((img: CategoryImageWithMedia) => img.type === "banner");
+
+    if (existingBannerImages.length > 0) {
+      const bannerMediaIds = existingBannerImages
+        .map((img: CategoryImageWithMedia) => img.mediaId)
+        .filter((id: string | null): id is string => id !== null);
+
+      // Delete category banner images
+      log.db("Cleaning up existing category banner images", "category_images");
+      await tx
+        .delete(categoryImages)
+        .where(and(eq(categoryImages.categoryId, categoryId), eq(categoryImages.type, "banner")));
+
+      // Clean up orphaned media in batch
+      if (bannerMediaIds.length > 0) {
+        await cleanupOrphanedMedia(tx, bannerMediaIds, log);
+      }
+    }
+  }
+
+  // Create media records and category image records for each banner
+  for (let i = 0; i < banners.length; i++) {
+    const banner = banners[i];
+
+    log.db(`Creating banner ${i + 1} media record`, "media");
+    const [insertedBannerMedia] = await tx
+      .insert(mediaTable)
+      .values({
+        url: banner.url,
+        alt: `${categoryName} - Category Banner ${i + 1}`,
+        width: banner.width || null,
+        height: banner.height || null,
+        blurData: banner.blurData || null,
+        key: banner.key || null,
+      })
+      .returning({
+        id: mediaTable.id,
+      });
+
+    // Insert category banner image
+    log.db(`Creating category banner ${i + 1} image record`, "category_images");
+    await tx.insert(categoryImages).values({
+      categoryId,
+      mediaId: insertedBannerMedia.id,
+      type: "banner",
+    });
+  }
+
+  log.success("Category banners processed successfully", { count: banners.length });
+}
+
+async function cleanupOrphanedMedia(tx: Trx, mediaIds: string[], log: ReturnType<typeof createLog>) {
+  if (mediaIds.length === 0) return;
+
+  // Find media that are still used by other categories
+  const usedMediaIds = await tx
+    .select({ mediaId: categoryImages.mediaId })
+    .from(categoryImages)
+    .where(inArray(categoryImages.mediaId, mediaIds));
+
+  const usedMediaIdSet = new Set(usedMediaIds.map((item) => item.mediaId));
+  const orphanedMediaIds = mediaIds.filter((id) => !usedMediaIdSet.has(id));
+
+  if (orphanedMediaIds.length > 0) {
+    // Delete orphaned media in batch
+    await tx.delete(mediaTable).where(inArray(mediaTable.id, orphanedMediaIds));
+
+    log.success("Cleaned up orphaned media", { count: orphanedMediaIds.length });
   }
 }
 

@@ -1,7 +1,6 @@
-"use client";
+import Link from "next/link";
 
 import { Pencil } from "lucide-react";
-import { parseAsBoolean, parseAsString, useQueryState } from "nuqs";
 
 import { Button } from "@/components/ui/button";
 
@@ -12,18 +11,20 @@ interface EditButtonProps {
 }
 
 export const EditButton = ({ categoryId, variant = "default", size = "default" }: EditButtonProps) => {
-  const [_, setIsOpen] = useQueryState("category", parseAsBoolean);
-  const [__, setCategoryId] = useQueryState("categoryId", parseAsString);
+  // const [_, setIsOpen] = useQueryState("category", parseAsBoolean);
+  // const [__, setCategoryId] = useQueryState("categoryId", parseAsString);
 
-  const handleEdit = () => {
-    setCategoryId(categoryId);
-    setIsOpen(true);
-  };
+  // const handleEdit = () => {
+  //   setCategoryId(categoryId);
+  //   setIsOpen(true);
+  // };
 
   return (
-    <Button onClick={handleEdit} size={size} type="button" variant="outline">
-      <Pencil className="h-4 w-4" />
-      {variant === "default" && "Edit"}
+    <Button asChild size={size} type="button" variant="outline">
+      <Link href={`/studio/products/categories/${categoryId}`}>
+        <Pencil className="h-4 w-4" />
+        {variant === "default" && "Edit"}
+      </Link>
     </Button>
   );
 };

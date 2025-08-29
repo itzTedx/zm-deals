@@ -7,8 +7,14 @@ export const categorySchema = z.object({
   name: z.string().min(1),
   slug: z.string().min(1),
   description: z.string().max(256, "Description must be at most 256 characters").optional(),
-  image: mediaSchema.optional(),
+  thumbnail: mediaSchema.optional(),
   banners: z.array(mediaSchema).optional(),
+
+  meta: z.object({
+    title: z.string().optional(),
+    description: z.string().optional(),
+    keywords: z.string().optional(),
+  }),
 });
 
 export type CategorySchema = z.infer<typeof categorySchema>;

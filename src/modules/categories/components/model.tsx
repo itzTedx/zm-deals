@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { getCategory } from "@/modules/categories/actions/query";
 import { CategoryForm } from "@/modules/categories/components/form/category-form";
 import { CategorySchema } from "@/modules/categories/schema";
+import { transformCategoryForForm } from "@/modules/categories/utils";
 
 export const CategoryModal = () => {
   const [isOpen, setIsOpen] = useQueryState("category", parseAsBoolean.withDefault(false));
@@ -25,23 +26,8 @@ export const CategoryModal = () => {
       getCategory(categoryId)
         .then((category) => {
           if (category) {
-            // Transform the category data to match the form schema
-            const transformedData: CategorySchema = {
-              id: category.id,
-              name: category.name,
-              slug: category.slug,
-              description: category.description || "",
-              image: category.images?.[0]?.media
-                ? {
-                    url: category.images[0].media.url || "",
-                    key: category.images[0].media.key || "",
-                    type: "thumbnail",
-                    width: category.images[0].media.width || undefined,
-                    height: category.images[0].media.height || undefined,
-                    blurData: category.images[0].media.blurData || undefined,
-                  }
-                : undefined,
-            };
+            // Use the utility function to properly transform the category data
+            const transformedData = transformCategoryForForm(category);
             setCategoryData(transformedData);
           }
         })
