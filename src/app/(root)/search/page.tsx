@@ -40,7 +40,7 @@ export async function generateMetadata(searchParams: SearchParams): Promise<Meta
 
 export default async function SearchPage({ searchParams }: { searchParams: SearchParams }) {
   const query = (await searchParams).q || "";
-  console.log("query: ", query);
+
   return (
     <main className="container relative space-y-12 pt-9 pb-8 sm:pb-12 md:space-y-16 md:pb-16 lg:pb-20">
       {query && (

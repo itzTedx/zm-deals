@@ -16,7 +16,7 @@ import { LoadingSwap } from "../ui/loading-swap";
 import { SearchSuggestions } from "./search-suggestions";
 
 const searchFormSchema = z.object({
-  query: z.string().min(1, "Search query is required").optional(),
+  query: z.string().max(80, "Search query is too long").optional(),
 });
 
 type SearchFormData = z.infer<typeof searchFormSchema>;

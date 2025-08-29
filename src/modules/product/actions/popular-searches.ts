@@ -2,6 +2,17 @@
 
 import { and, desc, eq, gte, sql } from "drizzle-orm";
 
+import {
+  cachePersonalizedSearches,
+  cachePopularSearches,
+  cacheSearchSuggestions,
+  cacheTrendingSearches,
+  getCachedPersonalizedSearches,
+  getCachedPopularSearches,
+  getCachedSearchSuggestions,
+  getCachedTrendingSearches,
+  invalidateSearchCacheOnNewSearch,
+} from "@/lib/cache/search-cache";
 import { db } from "@/server/db";
 import { searches } from "@/server/schema/search-schema";
 
@@ -20,7 +31,7 @@ interface PopularSearchesOptions {
 }
 
 /**
- * Get popular searches from the database using a scoring algorithm
+ * Get popular searches from the database using a scoring algorithm with Redis caching
  *
  * Algorithm factors:
  * 1. Search count (weight: 0.4) - How many times this term was searched
@@ -31,6 +42,12 @@ export async function getPopularSearches(options: PopularSearchesOptions = {}): 
   const { limit = 8, timeWindow = "7d", minSearchCount = 2, excludeQueries = [] } = options;
 
   try {
+    // Try to get from cache first
+    const cachedSearches = await getCachedPopularSearches(options);
+    if (cachedSearches) {
+      return cachedSearches;
+    }
+
     // Calculate time threshold based on window
     const now = new Date();
     let timeThreshold: Date | null = null;
@@ -103,10 +120,15 @@ export async function getPopularSearches(options: PopularSearchesOptions = {}): 
     });
 
     // Sort by score and return top results
-    return scoredSearches
+    const results = scoredSearches
       .sort((a, b) => b.score - a.score)
       .slice(0, limit)
       .map((search) => search.query);
+
+    // Cache the results
+    await cachePopularSearches(results, options);
+
+    return results;
   } catch (error) {
     console.error("Error fetching popular searches:", error);
     return [];
@@ -114,13 +136,18 @@ export async function getPopularSearches(options: PopularSearchesOptions = {}): 
 }
 
 /**
- * Get trending searches (searches that have increased in popularity recently)
+ * Get trending searches (searches that have increased in popularity recently) with Redis caching
  */
 export async function getTrendingSearches(limit = 6): Promise<string[]> {
   try {
+    // Try to get from cache first
+    const cachedSearches = await getCachedTrendingSearches(limit);
+    if (cachedSearches) {
+      return cachedSearches;
+    }
+
     const now = new Date();
     const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
 
     // Get searches with recent activity
     const recentSearches = await db
@@ -143,6 +170,9 @@ export async function getTrendingSearches(limit = 6): Promise<string[]> {
       .slice(0, limit)
       .map((search) => search.query);
 
+    // Cache the results
+    await cacheTrendingSearches(trendingSearches, limit);
+
     return trendingSearches;
   } catch (error) {
     console.error("Error fetching trending searches:", error);
@@ -151,10 +181,16 @@ export async function getTrendingSearches(limit = 6): Promise<string[]> {
 }
 
 /**
- * Get personalized popular searches based on user's search history
+ * Get personalized popular searches based on user's search history with Redis caching
  */
 export async function getPersonalizedPopularSearches(userId: string, limit = 6): Promise<string[]> {
   try {
+    // Try to get from cache first
+    const cachedSearches = await getCachedPersonalizedSearches(userId, limit);
+    if (cachedSearches) {
+      return cachedSearches;
+    }
+
     // Get user's recent searches
     const userSearches = await db
       .select({
@@ -169,7 +205,9 @@ export async function getPersonalizedPopularSearches(userId: string, limit = 6):
 
     if (userSearches.length === 0) {
       // If no user searches, return global popular searches
-      return getPopularSearches({ limit });
+      const globalSearches = await getPopularSearches({ limit });
+      await cachePersonalizedSearches(userId, globalSearches, limit);
+      return globalSearches;
     }
 
     // Get global popular searches
@@ -180,8 +218,12 @@ export async function getPersonalizedPopularSearches(userId: string, limit = 6):
 
     // Combine user searches with global searches, prioritizing user searches
     const combinedSearches = [...userSearches.map((s) => s.query), ...globalSearches];
+    const results = combinedSearches.slice(0, limit);
 
-    return combinedSearches.slice(0, limit);
+    // Cache the results
+    await cachePersonalizedSearches(userId, results, limit);
+
+    return results;
   } catch (error) {
     console.error("Error fetching personalized popular searches:", error);
     return [];
@@ -189,7 +231,7 @@ export async function getPersonalizedPopularSearches(userId: string, limit = 6):
 }
 
 /**
- * Get search suggestions based on partial query
+ * Get search suggestions based on partial query with Redis caching
  */
 export async function getSearchSuggestions(partialQuery: string, limit = 5): Promise<string[]> {
   if (!partialQuery || partialQuery.trim().length < 2) {
@@ -198,6 +240,12 @@ export async function getSearchSuggestions(partialQuery: string, limit = 5): Pro
 
   try {
     const query = partialQuery.trim().toLowerCase();
+
+    // Try to get from cache first
+    const cachedSuggestions = await getCachedSearchSuggestions(query, limit);
+    if (cachedSuggestions) {
+      return cachedSuggestions;
+    }
 
     const suggestions = await db
       .select({
@@ -209,9 +257,42 @@ export async function getSearchSuggestions(partialQuery: string, limit = 5): Pro
       .orderBy(desc(searches.searchCount), desc(searches.lastSearchedAt))
       .limit(limit);
 
-    return suggestions.map((s) => s.query);
+    const results = suggestions.map((s) => s.query);
+
+    // Cache the results
+    await cacheSearchSuggestions(query, results, limit);
+
+    return results;
   } catch (error) {
     console.error("Error fetching search suggestions:", error);
     return [];
+  }
+}
+
+/**
+ * Record a new search and invalidate relevant cache
+ */
+export async function recordSearch(query: string, userId?: string): Promise<void> {
+  try {
+    // Record the search in the database
+    await db
+      .insert(searches)
+      .values({
+        userId: userId ?? null,
+        query: query.toLowerCase(),
+        searchCount: 1,
+      })
+      .onConflictDoUpdate({
+        target: [searches.query],
+        set: {
+          searchCount: sql`${searches.searchCount} + 1`,
+          lastSearchedAt: new Date(),
+        },
+      });
+
+    // Invalidate relevant cache entries
+    await invalidateSearchCacheOnNewSearch(query);
+  } catch (error) {
+    console.error("Error recording search:", error);
   }
 }

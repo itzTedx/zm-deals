@@ -63,7 +63,7 @@ export function PopularSearches({
       <div className="flex flex-wrap gap-1 p-2">
         {searches.map((search) => (
           <Button
-            className="text-xs"
+            className="h-7 text-xs capitalize"
             key={search}
             onClick={() => handleSearchClick(search)}
             size="sm"

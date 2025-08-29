@@ -98,7 +98,7 @@ export function SearchSuggestions({ query, isVisible, onSelectSuggestion }: Sear
           <div className="flex flex-wrap gap-1 p-2">
             {popularSearches.slice(0, 6).map((search) => (
               <Button
-                className="text-xs"
+                className="h-7 px-2.5 text-xs capitalize"
                 key={search}
                 onClick={() => onSelectSuggestion(search)}
                 size="sm"
