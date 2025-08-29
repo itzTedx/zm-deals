@@ -9,4 +9,5 @@ export * from "./orders-schema";
 export * from "./product-schema";
 export * from "./recently-viewed-schema";
 export * from "./review-schema";
+export * from "./search-schema";
 export * from "./wishlist-schema";

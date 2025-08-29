@@ -9,8 +9,6 @@ import { categories } from "@/server/schema";
 export async function getCategories() {
   const log = createLog("Category");
 
-  log.info("Fetching all categories");
-
   try {
     const categoriesData = await db.query.categories.findMany({
       with: {
@@ -20,15 +18,15 @@ export async function getCategories() {
           },
         },
         products: {
-          columns: {
-            id: true,
+          with: {
+            inventory: true,
+            images: { with: { media: true } },
+            reviews: { with: { user: true } },
           },
         },
       },
       orderBy: [asc(categories.name)],
     });
-
-    log.success("Categories fetched successfully", { count: categoriesData.length });
 
     return categoriesData;
   } catch (error) {

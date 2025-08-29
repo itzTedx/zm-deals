@@ -8,6 +8,20 @@
       "when": 1756447988225,
       "tag": "0000_great_exiles",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1756451801332,
+      "tag": "0001_rapid_forgotten_one",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1756451940143,
+      "tag": "0002_flippant_nextwave",
+      "breakpoints": true
     }
   ]
 }

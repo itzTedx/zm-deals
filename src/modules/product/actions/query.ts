@@ -4,11 +4,11 @@ import { and, desc, eq, gte, ilike, isNull, lte, or, sql } from "drizzle-orm";
 
 import { getSession } from "@/lib/auth/server";
 import { db } from "@/server/db";
-import { products, reviews } from "@/server/schema";
+import { categories, products, reviews } from "@/server/schema";
 import { searches } from "@/server/schema/search-schema";
 
 export async function getProducts() {
-  const products = await db.query.products.findMany({
+  const result = await db.query.products.findMany({
     with: {
       meta: true,
       inventory: true,
@@ -25,7 +25,7 @@ export async function getProducts() {
     },
   });
 
-  return products;
+  return result;
 }
 
 export async function getLastMinuteDeals(hoursLimit = 24) {
@@ -352,4 +352,41 @@ export async function advancedSearchProducts({
   }
 
   return searchResults;
+}
+
+export async function getProductsByCategorySlug(categorySlug: string) {
+  // First get the category by slug
+  const category = await db.query.categories.findFirst({
+    where: eq(categories.slug, categorySlug),
+  });
+
+  if (!category) {
+    return [];
+  }
+
+  // Then get products by category ID
+  const result = await db.query.products.findMany({
+    where: and(eq(products.status, "published"), eq(products.categoryId, category.id)),
+    with: {
+      meta: true,
+      inventory: true,
+      images: {
+        with: {
+          media: true,
+        },
+      },
+      reviews: {
+        with: {
+          user: true,
+        },
+      },
+      category: true,
+    },
+    orderBy: [
+      desc(products.isFeatured), // Featured products first
+      desc(products.createdAt), // Then by newest
+    ],
+  });
+
+  return result;
 }

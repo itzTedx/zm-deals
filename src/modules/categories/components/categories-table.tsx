@@ -4,20 +4,16 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-import { MoreHorizontal, Package, Pencil, Trash2 } from "lucide-react";
+import { Package } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-import { bulkDeleteCategories, deleteCategory } from "../actions/mutation";
+import { bulkDeleteCategories } from "../actions/mutation";
+import { DeleteButton } from "./delete-button";
+import { EditButton } from "./edit-button";
 
 interface Category {
   id: string;
@@ -42,32 +38,9 @@ interface CategoriesTableProps {
 }
 
 export function CategoriesTable({ data }: CategoriesTableProps) {
-  const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const router = useRouter();
-
-  const handleEdit = (categoryId: string) => {
-    router.push(`?category=true&categoryId=${categoryId}`);
-  };
-
-  const handleDelete = async (categoryId: string) => {
-    setIsDeleting(categoryId);
-    try {
-      const result = await deleteCategory(categoryId);
-      if (result.success) {
-        toast.success("Category deleted successfully");
-        router.refresh();
-      } else {
-        toast.error(result.message || "Failed to delete category");
-      }
-    } catch (error) {
-      console.error("Error deleting category:", error);
-      toast.error("Something went wrong");
-    } finally {
-      setIsDeleting(null);
-    }
-  };
 
   const handleBulkDelete = async () => {
     if (selectedCategories.length === 0) {
@@ -147,7 +120,7 @@ export function CategoriesTable({ data }: CategoriesTableProps) {
               <TableHead>Description</TableHead>
               <TableHead>Products</TableHead>
               <TableHead>Created</TableHead>
-              <TableHead className="w-[70px]">Actions</TableHead>
+              <TableHead className="w-[100px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -194,28 +167,10 @@ export function CategoriesTable({ data }: CategoriesTableProps) {
                     <div className="text-muted-foreground text-sm">{formatDate(category.createdAt)}</div>
                   </TableCell>
                   <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button className="h-8 w-8 p-0" variant="ghost">
-                          <span className="sr-only">Open menu</span>
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleEdit(category.id)}>
-                          <Pencil className="mr-2 h-4 w-4" />
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          className="text-destructive"
-                          disabled={isDeleting === category.id}
-                          onClick={() => handleDelete(category.id)}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          {isDeleting === category.id ? "Deleting..." : "Delete"}
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <div className="flex items-center gap-1">
+                      <EditButton categoryId={category.id} size="sm" variant="icon" />
+                      <DeleteButton categoryId={category.id} categoryName={category.name} size="sm" variant="icon" />
+                    </div>
                   </TableCell>
                 </TableRow>
               );
