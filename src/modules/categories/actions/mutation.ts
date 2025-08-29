@@ -6,6 +6,13 @@ import { and, eq, inArray } from "drizzle-orm";
 import z from "zod";
 
 import { auth } from "@/lib/auth/server";
+import {
+  invalidateAllCategoriesCache,
+  invalidateCategoriesSearchCache,
+  invalidateCategoryBySlugCache,
+  invalidateCategoryCache,
+} from "@/lib/cache/categories-cache";
+import { revalidateCategoriesCache, revalidateCategoryCache } from "@/lib/cache/next-cache";
 import { createLog } from "@/lib/logging";
 import { categorySchema } from "@/modules/categories/schema";
 import type { CategoryData } from "@/modules/categories/types";
@@ -129,6 +136,18 @@ export async function upsertCategory(rawData: unknown): Promise<{ success: boole
         `Category ${isUpdate ? "updated" : "created"} successfully`,
         `ID: ${upsertedCategory.id}, Name: ${upsertedCategory.name}`
       );
+
+      // Invalidate caches after successful operation
+      await Promise.all([
+        // Invalidate Redis caches
+        invalidateAllCategoriesCache(),
+        invalidateCategoryCache(upsertedCategory.id),
+        invalidateCategoryBySlugCache(data.slug),
+        invalidateCategoriesSearchCache(),
+        // Invalidate Next.js caches
+        revalidateCategoriesCache(),
+        revalidateCategoryCache(upsertedCategory.id),
+      ]);
 
       return {
         success: true,
@@ -360,6 +379,18 @@ export async function deleteCategory(categoryId: string): Promise<{ success: boo
 
       log.success("Category deletion operation completed successfully");
 
+      // Invalidate caches after successful deletion
+      await Promise.all([
+        // Invalidate Redis caches
+        invalidateAllCategoriesCache(),
+        invalidateCategoryCache(categoryId),
+        invalidateCategoryBySlugCache(category.slug),
+        invalidateCategoriesSearchCache(),
+        // Invalidate Next.js caches
+        revalidateCategoriesCache(),
+        revalidateCategoryCache(categoryId),
+      ]);
+
       return {
         success: true,
         message: `Category ${category.name} deleted successfully`,
@@ -445,6 +476,15 @@ export async function bulkDeleteCategories(
       }
 
       log.success("Bulk category deletion operation completed successfully");
+
+      // Invalidate caches after successful bulk deletion
+      await Promise.all([
+        // Invalidate Redis caches
+        invalidateAllCategoriesCache(),
+        invalidateCategoriesSearchCache(),
+        // Invalidate Next.js caches
+        revalidateCategoriesCache(),
+      ]);
 
       return {
         success: true,

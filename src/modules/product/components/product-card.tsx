@@ -72,6 +72,18 @@ export const ProductCard = ({ data, showSeconds = true }: Props) => {
               </p>
             </div>
           )}
+
+          {(data.isDeliveryFree || data.cashOnDelivery) && data.inventory.stock < 5 && (
+            <div className="hidden size-0.5 rounded-full bg-gray-300 sm:block sm:size-1" />
+          )}
+
+          {data.inventory.stock < 5 && (
+            <div>
+              <p className="flex items-center gap-1 font-medium text-destructive text-xs">
+                <IconTruck className="size-4" /> Only {data.inventory.stock} left
+              </p>
+            </div>
+          )}
         </div>
       </CardContent>
       {((data.endsIn && isWithinDays(data.endsIn)) || (data.reviews && data.reviews.length > 0)) && (

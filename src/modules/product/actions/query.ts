@@ -5,69 +5,133 @@ import { after } from "next/server";
 import { and, desc, eq, gte, ilike, isNull, lte, or, sql } from "drizzle-orm";
 
 import { getSession } from "@/lib/auth/server";
-import { cacheSearchResults, getCachedSearchResults, invalidateSearchCacheOnNewSearch } from "@/lib/cache/search-cache";
+import {
+  CACHE_TTL,
+  createCachedProductFunction,
+  getCachedAdvancedSearch,
+  getCachedDataHybrid,
+  getCachedProduct,
+  getCachedProductBySlug,
+  getCachedProductsByCategory,
+  getCachedSearchResults,
+  invalidateSearchCache,
+  PRODUCT_CACHE_TAGS,
+  setCachedAdvancedSearch,
+  setCachedProduct,
+  setCachedProductBySlug,
+  setCachedProductsByCategory,
+  setCachedSearchResults,
+} from "@/lib/cache/product-cache";
 import { db } from "@/server/db";
 import { categories, products, reviews } from "@/server/schema";
 import { searches } from "@/server/schema/search-schema";
 
 import { ProductQueryResult } from "../types";
 
-export async function getProducts() {
-  const result = await db.query.products.findMany({
-    with: {
-      meta: true,
-      inventory: true,
-      images: {
-        with: {
-          media: true,
+// Create cached versions of database queries for Next.js cache
+const getProductsCached = createCachedProductFunction(
+  async () => {
+    return await db.query.products.findMany({
+      with: {
+        meta: true,
+        inventory: true,
+        images: {
+          with: {
+            media: true,
+          },
+        },
+        reviews: {
+          with: {
+            user: true,
+          },
         },
       },
-      reviews: {
-        with: {
-          user: true,
-        },
-      },
-    },
-  });
+    });
+  },
+  PRODUCT_CACHE_TAGS.PRODUCTS,
+  1800 // 30 minutes
+);
 
-  return result;
+const getLastMinuteDealsCached = createCachedProductFunction(
+  async (...args: unknown[]) => {
+    const hoursLimit = args[0] as number;
+    const now = new Date();
+    const timeLimit = new Date(now.getTime() + hoursLimit * 60 * 60 * 1000);
+
+    return await db.query.products.findMany({
+      where: and(eq(products.status, "published"), gte(products.endsIn, now), lte(products.endsIn, timeLimit)),
+      with: {
+        meta: true,
+        inventory: true,
+        images: {
+          with: {
+            media: true,
+          },
+        },
+        reviews: {
+          with: {
+            user: true,
+          },
+        },
+      },
+      orderBy: [products.endsIn],
+    });
+  },
+  PRODUCT_CACHE_TAGS.PRODUCTS,
+  300 // 5 minutes for last minute deals
+);
+
+const getFeaturedProductCached = createCachedProductFunction(
+  async () => {
+    const [res] = await db.query.products.findMany({
+      where: eq(products.isFeatured, true),
+      limit: 1,
+      with: {
+        meta: true,
+        inventory: true,
+        images: {
+          with: {
+            media: true,
+          },
+        },
+      },
+    });
+    return res;
+  },
+  PRODUCT_CACHE_TAGS.PRODUCTS,
+  900 // 15 minutes
+);
+
+export async function getProducts() {
+  return await getCachedDataHybrid(
+    "products:all",
+    PRODUCT_CACHE_TAGS.PRODUCTS,
+    getProductsCached,
+    CACHE_TTL.PRODUCTS,
+    1800
+  );
 }
 
 export async function getLastMinuteDeals(hoursLimit = 24) {
-  const now = new Date();
-  const timeLimit = new Date(now.getTime() + hoursLimit * 60 * 60 * 1000);
-
-  const lastMinuteDeals = await db.query.products.findMany({
-    where: and(
-      eq(products.status, "published"),
-      // Deal must end in the future (not already expired)
-      gte(products.endsIn, now),
-      // Deal must end within the specified time limit
-      lte(products.endsIn, timeLimit)
-    ),
-    with: {
-      meta: true,
-      inventory: true,
-      images: {
-        with: {
-          media: true,
-        },
-      },
-      reviews: {
-        with: {
-          user: true,
-        },
-      },
-    },
-    orderBy: [products.endsIn], // Sort by urgency (deals ending sooner come first)
-  });
-
-  return lastMinuteDeals;
+  return await getCachedDataHybrid(
+    `products:last-minute:${hoursLimit}`,
+    PRODUCT_CACHE_TAGS.PRODUCTS,
+    () => getLastMinuteDealsCached(hoursLimit),
+    CACHE_TTL.LAST_MINUTE_DEALS,
+    300
+  );
 }
 
 export async function getProduct(id: string) {
   if (id === "create") return null;
 
+  // Try Redis cache first
+  const cachedProduct = await getCachedProduct(id);
+  if (cachedProduct) {
+    return cachedProduct;
+  }
+
+  // Fallback to database query
   const product = await db.query.products.findFirst({
     where: eq(products.id, id),
     with: {
@@ -83,10 +147,20 @@ export async function getProduct(id: string) {
 
   if (!product) return null;
 
+  // Cache the result
+  await setCachedProduct(id, product);
+
   return product;
 }
 
 export async function getProductBySlug(slug: string) {
+  // Try Redis cache first
+  const cachedProduct = await getCachedProductBySlug(slug);
+  if (cachedProduct) {
+    return cachedProduct;
+  }
+
+  // Fallback to database query
   const product = await db.query.products.findFirst({
     where: eq(products.slug, slug),
     with: {
@@ -107,46 +181,53 @@ export async function getProductBySlug(slug: string) {
     },
   });
 
+  if (product) {
+    // Cache the result
+    await setCachedProductBySlug(slug, product);
+  }
+
   return product;
 }
 
 export async function getFeaturedProducts() {
-  const [res] = await db.query.products.findMany({
-    where: eq(products.isFeatured, true),
-    limit: 1,
-    with: {
-      meta: true,
-      inventory: true,
-      images: {
-        with: {
-          media: true,
-        },
-      },
-    },
-  });
-
-  return res;
+  return await getCachedDataHybrid(
+    "products:featured",
+    PRODUCT_CACHE_TAGS.PRODUCTS,
+    getFeaturedProductCached,
+    CACHE_TTL.FEATURED_PRODUCT,
+    900
+  );
 }
 
 export async function getProductReviews(productId: string, limit?: number) {
-  if (limit) {
-    return await db.query.reviews.findMany({
-      where: and(eq(reviews.productId, productId), isNull(reviews.deletedAt)),
-      with: {
-        user: true,
-      },
-      orderBy: [desc(reviews.createdAt)],
-      limit,
-    });
-  }
+  const cacheKey = `product:reviews:${productId}:${limit || "all"}`;
 
-  return await db.query.reviews.findMany({
-    where: and(eq(reviews.productId, productId), isNull(reviews.deletedAt)),
-    with: {
-      user: true,
+  return await getCachedDataHybrid(
+    cacheKey,
+    PRODUCT_CACHE_TAGS.REVIEWS,
+    async () => {
+      if (limit) {
+        return await db.query.reviews.findMany({
+          where: and(eq(reviews.productId, productId), isNull(reviews.deletedAt)),
+          with: {
+            user: true,
+          },
+          orderBy: [desc(reviews.createdAt)],
+          limit,
+        });
+      }
+
+      return await db.query.reviews.findMany({
+        where: and(eq(reviews.productId, productId), isNull(reviews.deletedAt)),
+        with: {
+          user: true,
+        },
+        orderBy: [desc(reviews.createdAt)],
+      });
     },
-    orderBy: [desc(reviews.createdAt)],
-  });
+    CACHE_TTL.REVIEWS,
+    1800
+  );
 }
 
 export async function getUserReview(productId: string, userId: string) {
@@ -161,44 +242,54 @@ export async function getUserReview(productId: string, userId: string) {
 }
 
 export async function getReviewStats(productId: string) {
-  const allReviews = await db.query.reviews.findMany({
-    where: and(eq(reviews.productId, productId), isNull(reviews.deletedAt)),
-    columns: {
-      rating: true,
+  const cacheKey = `product:review-stats:${productId}`;
+
+  return await getCachedDataHybrid(
+    cacheKey,
+    PRODUCT_CACHE_TAGS.REVIEWS,
+    async () => {
+      const allReviews = await db.query.reviews.findMany({
+        where: and(eq(reviews.productId, productId), isNull(reviews.deletedAt)),
+        columns: {
+          rating: true,
+        },
+      });
+
+      if (allReviews.length === 0) {
+        return {
+          averageRating: 0,
+          totalReviews: 0,
+          ratingDistribution: {
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0,
+          },
+        };
+      }
+
+      const totalReviews = allReviews.length;
+      const totalRating = allReviews.reduce((sum, review) => sum + review.rating, 0);
+      const averageRating = Math.round((totalRating / totalReviews) * 10) / 10;
+
+      const ratingDistribution = allReviews.reduce(
+        (acc, review) => {
+          acc[review.rating as keyof typeof acc]++;
+          return acc;
+        },
+        { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+      );
+
+      return {
+        averageRating,
+        totalReviews,
+        ratingDistribution,
+      };
     },
-  });
-
-  if (allReviews.length === 0) {
-    return {
-      averageRating: 0,
-      totalReviews: 0,
-      ratingDistribution: {
-        1: 0,
-        2: 0,
-        3: 0,
-        4: 0,
-        5: 0,
-      },
-    };
-  }
-
-  const totalReviews = allReviews.length;
-  const totalRating = allReviews.reduce((sum, review) => sum + review.rating, 0);
-  const averageRating = Math.round((totalRating / totalReviews) * 10) / 10;
-
-  const ratingDistribution = allReviews.reduce(
-    (acc, review) => {
-      acc[review.rating as keyof typeof acc]++;
-      return acc;
-    },
-    { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+    CACHE_TTL.REVIEW_STATS,
+    3600
   );
-
-  return {
-    averageRating,
-    totalReviews,
-    ratingDistribution,
-  };
 }
 
 export async function getCurrentUserReview(productId: string) {
@@ -269,7 +360,7 @@ export async function searchProducts(query: string, limit = 20): Promise<Product
     });
 
     // Cache the results
-    await cacheSearchResults(searchTerm, searchResults, limit);
+    await setCachedSearchResults(searchTerm, searchResults, limit);
 
     after(async () => {
       if (query && searchResults.length > 0) {
@@ -290,7 +381,7 @@ export async function searchProducts(query: string, limit = 20): Promise<Product
           });
 
         // Invalidate relevant cache entries
-        await invalidateSearchCacheOnNewSearch(query);
+        await invalidateSearchCache();
       }
     });
 
@@ -353,9 +444,16 @@ export async function advancedSearchProducts({
   }
 
   try {
-    // For advanced search, we'll use a more specific cache key
-    const cacheKey = `advanced:${query}:${categoryId}:${minPrice}:${maxPrice}:${isFeatured}:${limit}`;
-    const cachedResults = await getCachedSearchResults(cacheKey, limit);
+    // Try to get from cache first
+    const cachedResults = await getCachedAdvancedSearch({
+      query,
+      categoryId,
+      minPrice,
+      maxPrice,
+      isFeatured,
+      limit,
+    });
+
     if (cachedResults) {
       return cachedResults;
     }
@@ -385,7 +483,7 @@ export async function advancedSearchProducts({
     });
 
     // Cache the results
-    await cacheSearchResults(cacheKey, searchResults, limit);
+    await setCachedAdvancedSearch({ query, categoryId, minPrice, maxPrice, isFeatured, limit }, searchResults);
 
     after(async () => {
       if (query && searchResults.length > 0) {
@@ -405,7 +503,7 @@ export async function advancedSearchProducts({
           });
 
         // Invalidate relevant cache entries
-        await invalidateSearchCacheOnNewSearch(query);
+        await invalidateSearchCache();
       }
     });
 
@@ -417,6 +515,12 @@ export async function advancedSearchProducts({
 }
 
 export async function getProductsByCategorySlug(categorySlug: string) {
+  // Try to get from cache first
+  const cachedProducts = await getCachedProductsByCategory(categorySlug);
+  if (cachedProducts) {
+    return cachedProducts;
+  }
+
   // First get the category by slug
   const category = await db.query.categories.findFirst({
     where: eq(categories.slug, categorySlug),
@@ -449,6 +553,9 @@ export async function getProductsByCategorySlug(categorySlug: string) {
       desc(products.createdAt), // Then by newest
     ],
   });
+
+  // Cache the results
+  await setCachedProductsByCategory(categorySlug, result);
 
   return result;
 }
