@@ -70,8 +70,6 @@ export const CategoryBanners = () => {
           toast.error(`Failed to process banner ${i + 1}`);
         }
       }
-
-      toast.success(`${filesToProcess.length} banner(s) uploaded successfully`);
     },
   });
 
@@ -86,15 +84,17 @@ export const CategoryBanners = () => {
               <FormLabel>Banners (for carousel)</FormLabel>
               <FormControl>
                 <div className="space-y-4">
-                  <UploadDropzoneProgress
-                    accept={CATEGORY_BANNER_FILE_TYPES.join(", ")}
-                    control={bannerControl}
-                    description={{
-                      maxFiles: CATEGORY_BANNER_FILE_MAX_FILES - (form.watch("banners")?.length || 0),
-                      maxFileSize: CATEGORY_BANNER_FILE_MAX_SIZE.toString(),
-                      fileTypes: CATEGORY_BANNER_FILE_TYPES.join(", "),
-                    }}
-                  />
+                  {(form.watch("banners")?.length || 0) < CATEGORY_BANNER_FILE_MAX_FILES && (
+                    <UploadDropzoneProgress
+                      accept={CATEGORY_BANNER_FILE_TYPES.join(", ")}
+                      control={bannerControl}
+                      description={{
+                        maxFiles: CATEGORY_BANNER_FILE_MAX_FILES - (form.watch("banners")?.length || 0),
+                        maxFileSize: CATEGORY_BANNER_FILE_MAX_SIZE.toString(),
+                        fileTypes: CATEGORY_BANNER_FILE_TYPES.join(", "),
+                      }}
+                    />
+                  )}
 
                   <BannerManagement fields={bannerFields} onRemove={removeBanner} onReorder={moveBanner} />
                 </div>

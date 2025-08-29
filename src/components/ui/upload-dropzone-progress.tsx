@@ -1,4 +1,4 @@
-import { useEffect, useId } from "react";
+import { useEffect, useId, useRef } from "react";
 
 import type { UploadHookControl } from "better-upload/client";
 import { formatBytes } from "better-upload/client/helpers";
@@ -34,6 +34,7 @@ export function UploadDropzoneProgress({
   uploadOverride,
 }: UploadDropzoneProgressProps) {
   const id = useId();
+  const previousProgresses = useRef<typeof progresses>([]);
 
   const { getRootProps, getInputProps, isDragActive, inputRef } = useDropzone({
     onDrop: (files) => {
@@ -49,46 +50,74 @@ export function UploadDropzoneProgress({
     noClick: true,
   });
 
-  // Handle toast notifications for upload progress
+  // Track progress changes and show toasts for completed uploads
   useEffect(() => {
     progresses.forEach((progress) => {
-      const toastId = `upload-${progress.objectKey}`;
+      const previousProgress = previousProgresses.current.find((p) => p.objectKey === progress.objectKey);
 
-      if (progress.status === "uploading" && progress.progress < 1) {
-        // Show progress toast
-        toast(
-          <div className={cn("flex items-center gap-2 rounded-lg border bg-transparent p-3 dark:bg-input/10")}>
-            <FileIcon type={progress.type} />
-
-            <div className="grid grow gap-1">
-              <div className="flex items-center gap-0.5">
-                <p className="max-w-40 truncate font-medium text-sm">{progress.name}</p>
-                <Dot className="size-4 text-muted-foreground" />
-                <p className="text-muted-foreground text-xs">{formatBytes(progress.size)}</p>
-              </div>
-
-              <div className="flex h-4 items-center">
-                <Progress className="h-1.5" value={progress.progress * 100} />
-              </div>
-            </div>
-          </div>,
-          {
-            id: toastId,
-            duration: Number.POSITIVE_INFINITY,
-          }
-        );
-      } else if (progress.status === "complete") {
-        // Show success toast
-        toast.success(`${progress.name} uploaded successfully (${formatBytes(progress.size)})`, {
-          id: toastId,
+      // Check if upload just completed (progress was < 1 and now is 1, or status changed to completed)
+      if (
+        progress.progress === 1 &&
+        progress.status !== "failed" &&
+        (!previousProgress || previousProgress.progress < 1)
+      ) {
+        toast.success(`${progress.name} uploaded successfully!`, {
           duration: 3000,
         });
-      } else if (progress.status === "failed") {
-        // Show error toast
+      }
+
+      // Check if upload failed
+      if (progress.status === "failed" && (!previousProgress || previousProgress.status !== "failed")) {
         toast.error(`Failed to upload ${progress.name}`, {
-          id: toastId,
-          duration: 5000,
+          duration: 3000,
         });
+      }
+    });
+
+    previousProgresses.current = progresses;
+  }, [progresses]);
+
+  // Show progress toasts for active uploads
+  useEffect(() => {
+    progresses.forEach((progress) => {
+      if (progress.progress < 1 && progress.status !== "failed") {
+        toast.custom(
+          (t) => (
+            <div
+              className={cn("flex w-fill items-center gap-2 rounded-lg border bg-card p-3", {
+                "border-red-500/60 bg-red-500/[0.04]!": progress.status === "failed",
+              })}
+            >
+              <FileIcon type={progress.type} />
+
+              <div className="grid grow gap-1">
+                <div className="flex items-center gap-0.5">
+                  <p className="max-w-40 truncate font-medium text-sm">{progress.name}</p>
+                  <Dot className="size-4 text-muted-foreground" />
+                  <p className="text-muted-foreground text-xs">{formatBytes(progress.size)}</p>
+                </div>
+
+                <div className="flex h-4 items-center">
+                  {progress.progress < 1 && progress.status !== "failed" ? (
+                    <Progress className="h-1.5" value={progress.progress * 100} />
+                  ) : progress.status === "failed" ? (
+                    <p className="text-red-500 text-xs">Failed</p>
+                  ) : (
+                    <p className="text-muted-foreground text-xs">Completed</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          ),
+          {
+            position: "bottom-right",
+            id: progress.objectKey,
+            duration: progress.progress < 1 ? Number.POSITIVE_INFINITY : 2000,
+          }
+        );
+      } else if (progress.progress === 1 && progress.status !== "failed") {
+        // Dismiss the progress toast when upload completes
+        toast.dismiss(progress.objectKey);
       }
     });
   }, [progresses]);
@@ -147,37 +176,6 @@ export function UploadDropzoneProgress({
             </div>
           </div>
         )}
-      </div>
-
-      <div className="grid gap-2">
-        {progresses.map((progress) => (
-          <div
-            className={cn("flex items-center gap-2 rounded-lg border bg-transparent p-3 dark:bg-input/10", {
-              "border-red-500/60 bg-red-500/[0.04]!": progress.status === "failed",
-            })}
-            key={progress.objectKey}
-          >
-            <FileIcon type={progress.type} />
-
-            <div className="grid grow gap-1">
-              <div className="flex items-center gap-0.5">
-                <p className="max-w-40 truncate font-medium text-sm">{progress.name}</p>
-                <Dot className="size-4 text-muted-foreground" />
-                <p className="text-muted-foreground text-xs">{formatBytes(progress.size)}</p>
-              </div>
-
-              <div className="flex h-4 items-center">
-                {progress.progress < 1 && progress.status !== "failed" ? (
-                  <Progress className="h-1.5" value={progress.progress * 100} />
-                ) : progress.status === "failed" ? (
-                  <p className="text-red-500 text-xs">Failed</p>
-                ) : (
-                  <p className="text-muted-foreground text-xs">Completed</p>
-                )}
-              </div>
-            </div>
-          </div>
-        ))}
       </div>
     </div>
   );
