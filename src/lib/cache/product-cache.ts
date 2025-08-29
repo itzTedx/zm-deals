@@ -87,19 +87,19 @@ function getProductsByCategoryKey(categorySlug: string): string {
   return `${CACHE_PREFIXES.PRODUCTS_BY_CATEGORY}:${categorySlug}`;
 }
 
-/**
- * Generate cache key for reviews
- */
-function getReviewsKey(productId: string, limit?: number): string {
-  return `${CACHE_PREFIXES.REVIEWS}:${productId}:${limit || "all"}`;
-}
+// /**
+//  * Generate cache key for reviews
+//  */
+// function getReviewsKey(productId: string, limit?: number): string {
+//   return `${CACHE_PREFIXES.REVIEWS}:${productId}:${limit || "all"}`;
+// }
 
-/**
- * Generate cache key for review stats
- */
-function getReviewStatsKey(productId: string): string {
-  return `${CACHE_PREFIXES.REVIEW_STATS}:${productId}`;
-}
+// /**
+//  * Generate cache key for review stats
+//  */
+// function getReviewStatsKey(productId: string): string {
+//   return `${CACHE_PREFIXES.REVIEW_STATS}:${productId}`;
+// }
 
 /**
  * Serialize data for Redis storage
