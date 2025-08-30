@@ -7,6 +7,9 @@ import { isAdmin } from "@/lib/auth/permissions";
 import { getProducts } from "@/modules/product/actions/query";
 import { ProductsTable } from "@/modules/product/components/table/data-table";
 
+// Add cache configuration for the products page
+export const revalidate = 300; // Revalidate every 5 minutes
+
 export default async function ProductsUpsertPage() {
   await isAdmin();
   const products = await getProducts();

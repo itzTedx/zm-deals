@@ -6,6 +6,7 @@ import { and, eq, inArray } from "drizzle-orm";
 import z from "zod";
 
 import { auth } from "@/lib/auth/server";
+import { homeDealsInvalidation } from "@/lib/cache/home-deals-invalidation";
 import { cacheInvalidation } from "@/lib/cache/invalidation-service";
 import { createLog } from "@/lib/logging";
 import { db } from "@/server/db";
@@ -262,6 +263,7 @@ export async function upsertProduct(rawData: unknown): Promise<{ success: boolea
 
       // Invalidate relevant caches after successful operation
       try {
+        // Invalidate product-related caches
         await cacheInvalidation.smartInvalidate({
           type: isUpdate ? "update" : "create",
           entity: "product",
@@ -271,6 +273,17 @@ export async function upsertProduct(rawData: unknown): Promise<{ success: boolea
             categoryId: data.categoryId,
           },
         });
+
+        // Invalidate home deals cache since product changes affect deals
+        await homeDealsInvalidation.smartInvalidate({
+          type: isUpdate ? "update" : "create",
+          entity: "product",
+          data: {
+            id: productId,
+            slug: data.slug,
+          },
+        });
+
         log.success("Cache invalidation completed");
       } catch (cacheError) {
         log.error("Cache invalidation failed", cacheError instanceof Error ? cacheError.message : String(cacheError));
@@ -375,6 +388,7 @@ export async function deleteProduct(productId: string): Promise<{ success: boole
 
       // Invalidate relevant caches after successful deletion
       try {
+        // Invalidate product-related caches
         await cacheInvalidation.smartInvalidate({
           type: "delete",
           entity: "product",
@@ -384,6 +398,17 @@ export async function deleteProduct(productId: string): Promise<{ success: boole
             categoryId: product.categoryId || undefined,
           },
         });
+
+        // Invalidate home deals cache since product deletion affects deals
+        await homeDealsInvalidation.smartInvalidate({
+          type: "delete",
+          entity: "product",
+          data: {
+            id: productId,
+            slug: product.slug || undefined,
+          },
+        });
+
         log.success("Cache invalidation completed");
       } catch (cacheError) {
         log.error("Cache invalidation failed", cacheError instanceof Error ? cacheError.message : String(cacheError));
@@ -438,6 +463,7 @@ export async function updateProductStatus(
 
     // Invalidate relevant caches after status update
     try {
+      // Invalidate product-related caches
       await cacheInvalidation.smartInvalidate({
         type: "status_change",
         entity: "product",
@@ -446,6 +472,17 @@ export async function updateProductStatus(
           status,
         },
       });
+
+      // Invalidate home deals cache since status changes affect deals visibility
+      await homeDealsInvalidation.smartInvalidate({
+        type: "status_change",
+        entity: "product",
+        data: {
+          id: productId,
+          status,
+        },
+      });
+
       log.success("Cache invalidation completed");
     } catch (cacheError) {
       log.error("Cache invalidation failed", cacheError instanceof Error ? cacheError.message : String(cacheError));
@@ -502,7 +539,18 @@ export async function bulkUpdateProductStatus(
 
     // Invalidate relevant caches after bulk status update
     try {
+      // Invalidate product-related caches
       await cacheInvalidation.invalidateMultipleProducts(productIds);
+
+      // Invalidate home deals cache since bulk status changes affect deals
+      await homeDealsInvalidation.smartInvalidate({
+        type: "status_change",
+        entity: "product",
+        data: {
+          id: productIds[0], // Use first ID as representative
+        },
+      });
+
       log.success("Cache invalidation completed");
     } catch (cacheError) {
       log.error("Cache invalidation failed", cacheError instanceof Error ? cacheError.message : String(cacheError));
@@ -561,6 +609,7 @@ export async function updateInventory(
 
     // Invalidate relevant caches after inventory update
     try {
+      // Invalidate product-related caches
       await cacheInvalidation.smartInvalidate({
         type: "inventory_update",
         entity: "product",
@@ -568,6 +617,16 @@ export async function updateInventory(
           id: productId,
         },
       });
+
+      // Invalidate home deals cache since inventory changes might affect deals
+      await homeDealsInvalidation.smartInvalidate({
+        type: "inventory_update",
+        entity: "product",
+        data: {
+          id: productId,
+        },
+      });
+
       log.success("Cache invalidation completed");
     } catch (cacheError) {
       log.error("Cache invalidation failed", cacheError instanceof Error ? cacheError.message : String(cacheError));
