@@ -34,7 +34,7 @@ export const RegisterForm = () => {
 
   function onSubmit(data: RegisterSchema) {
     startTransition(async () => {
-      await signUp.email(
+      const res = await signUp.email(
         {
           email: data.email,
           name: data.username,
@@ -51,6 +51,8 @@ export const RegisterForm = () => {
           },
         }
       );
+
+      console.log(res);
     });
   }
 
