@@ -1,6 +1,6 @@
 import { InferSelectModel } from "drizzle-orm";
 
-import { inventory, mediaTable, metaTable, productImages, products, Review, reviews } from "@/server/schema";
+import { Category, inventory, mediaTable, metaTable, productImages, products, Review, reviews } from "@/server/schema";
 
 // Database Review Type
 export type DatabaseReview = InferSelectModel<typeof reviews>;
@@ -21,6 +21,7 @@ export type ProductQueryResult = InferSelectModel<typeof products> & {
   images: ProductImage[];
   meta?: Meta | null;
   inventory: Inventory;
+  category: Category;
 };
 
 export type ProductCardDate = InferSelectModel<typeof products> & {

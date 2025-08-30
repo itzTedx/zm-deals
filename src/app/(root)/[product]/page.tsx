@@ -15,6 +15,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import ImageCarousel from "@/components/ui/carousel-with-thumbnail";
 import { SeparatorBox } from "@/components/ui/separator";
@@ -33,9 +34,11 @@ import {
 import { env } from "@/lib/env/server";
 import { calculateDiscount, cn } from "@/lib/utils";
 import { getComboDealsByProductId } from "@/modules/combo-deals/actions/query";
-import { getProductBySlug } from "@/modules/product/actions/query";
+import { getProductBySlug, getProductsByCategorySlug } from "@/modules/product/actions/query";
+import { ProductCard } from "@/modules/product/components";
 import { EndsInCounter } from "@/modules/product/components/ends-in-counter";
 import { FrequentlyBoughtTogether } from "@/modules/product/components/frequently-bought-together";
+import { ProductCardSkeleton } from "@/modules/product/components/product-card";
 import { CheckboxBadge } from "@/modules/product/components/ui/checkbox-badge";
 import { CheckoutWithQuantity } from "@/modules/product/components/ui/checkout-with-quantity";
 import { Reviews } from "@/modules/product/sections/reviews";
@@ -117,7 +120,7 @@ export default async function ProductPage({ params }: Props) {
   if (!res) {
     return notFound();
   }
-
+  console.log(res);
   // Get combo deals that include this product
   const comboDeals = await getComboDealsByProductId(res.id);
 
@@ -137,7 +140,7 @@ export default async function ProductPage({ params }: Props) {
         brand="ZM Deals"
         category="Deals"
         currency="AED"
-        description={res.description || res.overview || ""}
+        description={res.overview || ""}
         image={mainImage}
         name={res.title}
         price={Number(res.price)}
@@ -319,7 +322,45 @@ export default async function ProductPage({ params }: Props) {
       <FrequentlyBoughtTogether comboDeals={comboDeals} currentProduct={res} />
 
       {/* Related Deals Section */}
-      {/* <Deals /> */}
+      <Suspense fallback={<RelatedDealsSkeleton />}>
+        <OtherDeals categoryName={res.category.name} categorySlug={res.category.slug} />
+      </Suspense>
     </main>
+  );
+}
+interface OtherDealsProps {
+  categorySlug: string;
+  categoryName: string | null;
+}
+
+async function OtherDeals({ categorySlug, categoryName }: OtherDealsProps) {
+  if (!categorySlug) {
+    return null;
+  }
+
+  const relatedDeals = await getProductsByCategorySlug(categorySlug);
+
+  return (
+    <article className="container pb-12 md:pb-16 lg:pb-20">
+      <div className="flex items-center justify-between">
+        <h3 className="font-medium text-lg lg:text-xl">Related Deals in {categoryName}</h3>
+        <Button size="sm">View All</Button>
+      </div>
+      <div className="mt-6 grid grid-cols-2 gap-2 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-4">
+        {relatedDeals.map((deal) => (
+          <ProductCard data={deal} key={deal.id} />
+        ))}
+      </div>
+    </article>
+  );
+}
+
+function RelatedDealsSkeleton() {
+  return (
+    <div className="mt-6 grid grid-cols-2 gap-2 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-4">
+      {Array.from({ length: 8 }).map((_, i) => (
+        <ProductCardSkeleton key={i} />
+      ))}
+    </div>
   );
 }

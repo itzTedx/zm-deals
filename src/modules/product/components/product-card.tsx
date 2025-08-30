@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import StarRating from "@/components/ui/rating";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { IconCurrency, IconTruck, IconWallet2 } from "@/assets/icons";
 
@@ -105,6 +106,69 @@ export const ProductCard = ({ data, showSeconds = true }: Props) => {
           )}
         </CardFooter>
       )}
+    </Card>
+  );
+};
+
+export const ProductCardSkeleton = () => {
+  return (
+    <Card className="relative">
+      <CardContent className="relative h-full p-3 max-md:p-3">
+        <div className="absolute top-3 right-3 z-20">
+          <Skeleton className="size-6 rounded-full" />
+        </div>
+        <div className="relative aspect-square overflow-hidden rounded-lg">
+          <Skeleton className="h-full w-full" />
+        </div>
+        <CardHeader className="pt-2">
+          <CardTitle className="text-sm sm:text-base">
+            <Skeleton className="h-4 w-3/4" />
+          </CardTitle>
+
+          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+            <div className="flex items-center gap-1">
+              <Skeleton className="size-4 rounded" />
+              <Skeleton className="h-6 w-16" />
+            </div>
+            <Skeleton className="h-3 w-12" />
+            <div className="size-0.5 rounded-full bg-gray-300 sm:size-1" />
+            <Skeleton className="h-5 w-12" />
+          </div>
+        </CardHeader>
+        <div className="mt-1 flex flex-wrap items-center gap-1">
+          <div>
+            <div className="flex items-center gap-1">
+              <Skeleton className="size-4 rounded" />
+              <Skeleton className="h-3 w-20" />
+            </div>
+          </div>
+          <div className="hidden size-0.5 rounded-full bg-gray-300 sm:block sm:size-1" />
+          <div>
+            <div className="flex items-center gap-1">
+              <Skeleton className="size-4 rounded" />
+              <Skeleton className="h-3 w-24" />
+            </div>
+          </div>
+          <div className="hidden size-0.5 rounded-full bg-gray-300 sm:block sm:size-1" />
+          <div>
+            <div className="flex items-center gap-1">
+              <Skeleton className="size-4 rounded" />
+              <Skeleton className="h-3 w-20" />
+            </div>
+          </div>
+        </div>
+      </CardContent>
+      <CardFooter className="flex items-center justify-between">
+        <Skeleton className="h-5 w-20" />
+        <div className="ml-auto flex items-center gap-1 md:gap-2">
+          <div className="flex gap-0.5">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton className="size-3 rounded" key={i} />
+            ))}
+          </div>
+          <Skeleton className="ml-1 h-3 w-8" />
+        </div>
+      </CardFooter>
     </Card>
   );
 };

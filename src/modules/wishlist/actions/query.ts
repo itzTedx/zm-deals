@@ -26,6 +26,7 @@ export async function getWishlist(): Promise<WishlistItem[]> {
             with: {
               product: {
                 with: {
+                  category: true,
                   meta: true,
                   inventory: true,
                   images: {
@@ -209,6 +210,7 @@ export async function getWishlistData(): Promise<WishlistData> {
             with: {
               product: {
                 with: {
+                  category: true,
                   meta: true,
                   inventory: true,
                   images: {
@@ -262,6 +264,7 @@ export async function getWishlistData(): Promise<WishlistData> {
           with: {
             product: {
               with: {
+                category: true,
                 meta: true,
                 inventory: true,
                 images: {

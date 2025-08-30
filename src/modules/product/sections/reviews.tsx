@@ -14,7 +14,7 @@ interface ReviewsProps {
 
 export const Reviews = ({ reviews, productId }: ReviewsProps) => {
   return (
-    <section className="container relative max-w-7xl py-12 md:py-16 lg:py-20">
+    <section className="container relative max-w-7xl pb-12 md:pb-16 lg:pb-20">
       <div className="mt-9 grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="top-24 h-fit space-y-3 md:sticky">
           <SectionHeader description="What our customers are saying" hasButton={false} title="Ratings & Reviews" />

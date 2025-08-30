@@ -12,10 +12,10 @@ import { IconHeart, IconHeartFilled } from "@/assets/icons";
 import { toggleWishlist } from "@/modules/wishlist/actions/mutation";
 import { isInWishlist } from "@/modules/wishlist/actions/query";
 
-import { ProductQueryResult } from "../../types";
+import { ProductCardDate } from "../../types";
 
 interface Props {
-  data: ProductQueryResult;
+  data: ProductCardDate;
 }
 
 export const FavButton = ({ data }: Props) => {
