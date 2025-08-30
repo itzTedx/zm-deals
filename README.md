@@ -55,16 +55,17 @@ A full-featured e-commerce platform built with Next.js 15, TypeScript, and moder
 
 ### 🎨 Modern UI/UX
 - **Shadcn UI**: Beautiful, accessible components
-- **Tailwind CSS**: Utility-first styling with animations
+- **Tailwind CSS 4.1.12**: Utility-first styling with animations
 - **Responsive Design**: Mobile-first approach
 - **Dark Mode**: Theme switching support
-- **Animations**: Smooth interactions with Framer Motion
+- **Animations**: Smooth interactions with Motion (Framer Motion)
 - **Carousel**: Product image carousels with Embla
-- **Drag & Drop**: Interactive drag and drop functionality
+- **Drag & Drop**: Interactive drag and drop functionality with DND Kit
+- **Rich Text Editor**: TipTap-based content editor for admin
 
 ### 🛠️ Developer Experience
-- **TypeScript**: Full type safety throughout the application
-- **Biome**: Fast linting and formatting
+- **TypeScript 5.9.2**: Full type safety throughout the application
+- **Biome 2.2.2**: Fast linting and formatting
 - **Drizzle ORM**: Type-safe database operations
 - **Turbopack**: Lightning-fast development builds
 - **Docker**: Containerized development environment
@@ -168,24 +169,28 @@ zm-deals/
 │   │   │   ├── cart/          # Shopping cart
 │   │   │   ├── checkout/      # Payment processing
 │   │   │   ├── account/       # User account management
-│   │   │   ├── orders/        # Order management
 │   │   │   ├── categories/    # Product categories
 │   │   │   ├── search/        # Search functionality
 │   │   │   ├── testimonials/  # Customer testimonials
 │   │   │   ├── about/         # About page
 │   │   │   ├── faqs/          # Frequently asked questions
 │   │   │   ├── legal/         # Legal pages
-│   │   │   ├── current-deal/  # Featured deals
 │   │   │   └── [product]/     # Individual product pages
 │   │   ├── auth/              # Authentication routes
 │   │   ├── api/               # API routes
+│   │   │   ├── auth/          # Better Auth endpoints
+│   │   │   └── upload/        # File upload handling
 │   │   └── studio/            # Admin dashboard
+│   │       ├── products/      # Product management
+│   │       ├── orders/        # Order management
+│   │       ├── users/         # User management
+│   │       └── coupons/       # Coupon management
 │   ├── components/            # Reusable UI components
 │   │   ├── ui/               # Shadcn UI components
-│   │   ├── forms/            # Form components
-│   │   ├── layout/           # Layout components
 │   │   ├── admin/            # Admin-specific components
-│   │   ├── tables/           # Data table components
+│   │   ├── category/         # Category-related components
+│   │   ├── editor/           # Rich text editor components
+│   │   ├── layout/           # Layout components
 │   │   ├── seo/              # SEO components
 │   │   └── global/           # Global components
 │   ├── modules/              # Feature modules
@@ -204,34 +209,35 @@ zm-deals/
 │   ├── lib/                  # Utilities and configurations
 │   │   ├── actions/          # Server actions
 │   │   ├── auth/             # Authentication utilities
+│   │   ├── cache/            # Caching utilities
 │   │   ├── env/              # Environment configuration
 │   │   ├── utils/            # Helper functions
 │   │   ├── stripe/           # Stripe integration
 │   │   ├── functions/        # Utility functions
-│   │   ├── health/           # Health check utilities
+│   │   ├── logging/          # Logging utilities
 │   │   └── redis.ts          # Redis configuration
 │   ├── server/               # Server-side code
-│   │   ├── schema/           # Database schemas
-│   │   │   ├── auth-schema.ts
-│   │   │   ├── product-schema.ts
-│   │   │   ├── cart-schema.ts
-│   │   │   ├── orders-schema.ts
-│   │   │   ├── coupons-schema.ts
-│   │   │   ├── categories-schema.ts
-│   │   │   ├── wishlist-schema.ts
-│   │   │   ├── inventory-schema.ts
-│   │   │   ├── review-schema.ts
-│   │   │   ├── search-schema.ts
-│   │   │   ├── recently-viewed-schema.ts
-│   │   │   └── media-schema.ts
-│   │   └── migrations/       # Database migrations
+│   │   └── schema/           # Database schemas
+│   │       ├── auth-schema.ts
+│   │       ├── product-schema.ts
+│   │       ├── cart-schema.ts
+│   │       ├── orders-schema.ts
+│   │       ├── coupons-schema.ts
+│   │       ├── categories-schema.ts
+│   │       ├── wishlist-schema.ts
+│   │       ├── inventory-schema.ts
+│   │       ├── review-schema.ts
+│   │       ├── search-schema.ts
+│   │       ├── recently-viewed-schema.ts
+│   │       ├── media-schema.ts
+│   │       ├── meta-schema.ts
+│   │       └── helpers.ts
 │   ├── hooks/                # Custom React hooks
 │   ├── data/                 # Static data and constants
 │   ├── content/              # Content management
 │   ├── assets/               # Static assets and icons
 │   └── styles/               # Global styles
 ├── public/                   # Static assets
-├── docs/                     # Documentation
 ├── scripts/                  # Build and utility scripts
 └── docker-compose.yml        # Docker configuration
 ```
@@ -277,6 +283,8 @@ The application uses PostgreSQL with Drizzle ORM. Key tables include:
 - **reviews**: Product reviews and ratings
 - **recently_viewed**: User browsing history
 - **search_logs**: Search analytics and behavior tracking
+- **media**: File uploads and media management
+- **meta**: SEO and metadata management
 
 ## 🔧 Technology Stack
 
@@ -287,10 +295,14 @@ The application uses PostgreSQL with Drizzle ORM. Key tables include:
 - **Tailwind CSS 4.1.12**: Utility-first styling
 - **Shadcn UI**: Component library
 - **Radix UI**: Accessible primitives
-- **Framer Motion**: Animations
+- **Motion**: Animations (Framer Motion)
 - **Embla Carousel**: Image carousels
 - **React Hook Form**: Form management
 - **Zod**: Schema validation
+- **TipTap**: Rich text editor
+- **DND Kit**: Drag and drop functionality
+- **React Dropzone**: File upload handling
+- **React Zoom Pan Pinch**: Image zoom functionality
 
 ### Backend
 - **Next.js API Routes**: Server-side API endpoints
@@ -304,13 +316,12 @@ The application uses PostgreSQL with Drizzle ORM. Key tables include:
 ### Infrastructure
 - **PostgreSQL 17.0**: Primary database
 - **Redis 7.2**: Session storage and caching
-- **RedisInsight**: Redis management interface
+- **RedisInsight 2.70**: Redis management interface
 - **Docker**: Containerization
 
 ### Development Tools
-- **Biome**: Linting and formatting
+- **Biome 2.2.2**: Linting and formatting
 - **Turbopack**: Fast bundling
-- **Husky**: Git hooks
 - **TypeScript**: Type checking
 - **pnpm**: Package management
 
@@ -401,6 +412,16 @@ Comprehensive search and recommendation system:
 - **Product Recommendations**: AI-powered suggestions
 - **Search Analytics**: Monitor search patterns
 
+## 🎨 Rich Text Editor
+
+Built-in content management with TipTap:
+
+### Features
+- **WYSIWYG Editor**: Visual content creation
+- **Multiple Extensions**: Typography, images, horizontal rules
+- **Custom Styling**: Tailwind CSS integration
+- **Admin Interface**: Easy content management
+
 ## 🚀 Deployment
 
 ### Vercel (Recommended)
@@ -433,35 +454,6 @@ Comprehensive documentation is available in the `docs/` folder:
 - **Webhook Flow**: Payment event processing
 - **Review System**: Product review management
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Commit Message Convention
-```
-<type>(<scope>): <description>
-
-[optional body]
-
-[optional footer]
-```
-
-Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
-
-For support and questions:
-- Create an issue in the repository
-- Check the documentation in the `docs/` folder
-- Review the code examples in the codebase
 
 ## 🔗 Links
 
@@ -470,7 +462,14 @@ For support and questions:
 - [Better Auth](https://better-auth.com/)
 - [Stripe Documentation](https://stripe.com/docs)
 - [Shadcn UI](https://ui.shadcn.com/)
+- [TipTap Editor](https://tiptap.dev/)
+- [Embla Carousel](https://www.embla-carousel.com/)
+- [DND Kit](https://dndkit.com/)
 
 ---
 
 Built with ❤️ using modern web technologies
+
+---
+
+**Website designed and developed by [Ziron Media](https://www.zironmedia.com)**
