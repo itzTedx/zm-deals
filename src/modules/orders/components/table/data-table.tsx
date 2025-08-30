@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   ColumnDef,
@@ -96,30 +96,35 @@ export function OrdersDataTable({ data: initialData }: OrdersDataTableProps) {
       }
     } catch (error) {
       setError("Failed to fetch orders");
+      console.error("Failed to fetch orders", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleStatusUpdate = async (
-    orderId: string,
-    newStatus: "pending" | "confirmed" | "processing" | "shipped" | "delivered" | "cancelled" | "refunded" | "failed"
-  ) => {
-    try {
-      setUpdatingOrder(orderId);
-      const result = await updateOrderStatus(orderId, newStatus);
-      if (result.success) {
-        // Refresh orders after update
-        fetchOrders();
-      } else {
-        setError(result.error || "Failed to update order status");
+  const handleStatusUpdate = useCallback(
+    async (
+      orderId: string,
+      newStatus: "pending" | "confirmed" | "processing" | "shipped" | "delivered" | "cancelled" | "refunded" | "failed"
+    ) => {
+      try {
+        setUpdatingOrder(orderId);
+        const result = await updateOrderStatus(orderId, newStatus);
+        if (result.success) {
+          // Refresh orders after update
+          fetchOrders();
+        } else {
+          setError(result.error || "Failed to update order status");
+        }
+      } catch (error) {
+        setError("Failed to update order status");
+        console.error("Failed to update order status", error);
+      } finally {
+        setUpdatingOrder(null);
       }
-    } catch (error) {
-      setError("Failed to update order status");
-    } finally {
-      setUpdatingOrder(null);
-    }
-  };
+    },
+    []
+  );
 
   // Simple columns for now
   const columns = useMemo<ColumnDef<OrderWithItemsAndProducts>[]>(
@@ -256,7 +261,7 @@ export function OrdersDataTable({ data: initialData }: OrdersDataTableProps) {
         },
       },
     ],
-    [updatingOrder]
+    [updatingOrder, handleStatusUpdate]
   );
 
   const table = useReactTable({

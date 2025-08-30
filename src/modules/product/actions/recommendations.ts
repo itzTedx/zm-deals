@@ -94,7 +94,7 @@ export async function getRecommendedProducts(
 
   if (strategy === "hybrid") {
     // Use hybrid approach - combine multiple strategies
-    const recommendations = await getHybridRecommendations(cartProducts, strategies, {
+    const recommendations = await getHybridRecommendations(strategies, {
       limit,
       excludeProductIds: allExcludedIds,
     });
@@ -308,7 +308,6 @@ async function getFeaturedRecommendations(options: RecommendationOptions): Promi
  * Get hybrid recommendations combining multiple strategies
  */
 async function getHybridRecommendations(
-  cartProducts: CartProduct[],
   strategies: Record<string, RecommendationStrategy>,
   options: RecommendationOptions
 ): Promise<ProductQueryResult[]> {
@@ -437,12 +436,6 @@ export async function getPersonalizedRecommendations(
  */
 export async function getTrendingProducts(options: RecommendationOptions = {}): Promise<ProductQueryResult[]> {
   const { limit = 8, excludeProductIds = [] } = options;
-
-  // TODO: Implement trending algorithm based on:
-  // - View count
-  // - Purchase frequency
-  // - Social shares
-  // - Recent activity
 
   // For now, return products with most reviews (as a proxy for popularity)
   const trendingProducts = await db.query.products.findMany({

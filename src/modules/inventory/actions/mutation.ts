@@ -9,8 +9,6 @@ import { createLog } from "@/lib/logging";
 import { db } from "@/server/db";
 import { inventory } from "@/server/schema/inventory-schema";
 
-const log = createLog("Inventory");
-
 /**
  * Check if products have sufficient stock for the requested quantities
  */
@@ -134,7 +132,6 @@ export async function reserveStock(
       };
     }
 
-    const productIds = items.map((item) => item.productId);
     const reservedItems: Array<{ productId: string; quantity: number; newStock: number }> = [];
 
     // Update inventory in a transaction
@@ -210,7 +207,6 @@ export async function releaseStock(
   const log = createLog("Inventory Release");
 
   try {
-    const productIds = items.map((item) => item.productId);
     const releasedItems: Array<{ productId: string; quantity: number; newStock: number }> = [];
 
     // Update inventory in a transaction

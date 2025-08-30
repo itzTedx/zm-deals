@@ -31,11 +31,6 @@ const s3 = new S3Client({
   },
 });
 
-log.info("S3 client initialized", {
-  region: env.AWS_BUCKET_REGION,
-  bucket: env.AWS_BUCKET_NAME,
-});
-
 const generateFileName = (bytes = 16) => crypto.randomBytes(bytes).toString("hex");
 
 // Utility functions to extract repeating code

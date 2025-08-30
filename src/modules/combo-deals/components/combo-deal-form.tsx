@@ -85,7 +85,7 @@ export function ComboDealForm({ initialData, isEditMode = false }: ComboDealForm
           productId: cp.productId || "",
           quantity: cp.quantity,
           sortOrder: cp.sortOrder || 0,
-          product: cp.product,
+          product: cp.product || undefined,
         }));
       setSelectedProducts(mappedProducts);
       setFormData((prev) => ({
@@ -95,7 +95,7 @@ export function ComboDealForm({ initialData, isEditMode = false }: ComboDealForm
     }
   }, [initialData]);
 
-  const handleInputChange = (field: keyof ComboDealFormData, value: any) => {
+  const handleInputChange = (field: keyof ComboDealFormData, value: string | number | boolean | Date | undefined) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -115,7 +115,7 @@ export function ComboDealForm({ initialData, isEditMode = false }: ComboDealForm
     setSelectedProducts((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const updateProduct = (index: number, field: string, value: any) => {
+  const updateProduct = (index: number, field: "productId" | "quantity" | "sortOrder", value: string | number) => {
     setSelectedProducts((prev) => {
       const updated = [...prev];
       updated[index] = { ...updated[index], [field]: value };
@@ -166,10 +166,10 @@ export function ComboDealForm({ initialData, isEditMode = false }: ComboDealForm
       if (result.success) {
         router.push("/studio/products/combo");
       } else {
-        alert(result.message);
+        console.error(result.message);
       }
     } catch (error) {
-      alert("Failed to save combo deal");
+      console.error("Failed to save combo deal", error);
     } finally {
       setIsLoading(false);
     }
@@ -260,7 +260,7 @@ export function ComboDealForm({ initialData, isEditMode = false }: ComboDealForm
               <Input
                 id="maxQuantity"
                 onChange={(e) =>
-                  handleInputChange("maxQuantity", e.target.value ? Number.parseInt(e.target.value) : undefined)
+                  handleInputChange("maxQuantity", e.target.value ? Number.parseInt(e.target.value, 10) : undefined)
                 }
                 placeholder="Unlimited"
                 type="number"
@@ -379,7 +379,7 @@ export function ComboDealForm({ initialData, isEditMode = false }: ComboDealForm
                   <Label>Quantity</Label>
                   <Input
                     min="1"
-                    onChange={(e) => updateProduct(index, "quantity", Number.parseInt(e.target.value))}
+                    onChange={(e) => updateProduct(index, "quantity", Number.parseInt(e.target.value, 10))}
                     type="number"
                     value={selectedProduct.quantity}
                   />
@@ -389,7 +389,7 @@ export function ComboDealForm({ initialData, isEditMode = false }: ComboDealForm
                   <Label>Sort Order</Label>
                   <Input
                     min="0"
-                    onChange={(e) => updateProduct(index, "sortOrder", Number.parseInt(e.target.value))}
+                    onChange={(e) => updateProduct(index, "sortOrder", Number.parseInt(e.target.value, 10))}
                     type="number"
                     value={selectedProduct.sortOrder}
                   />

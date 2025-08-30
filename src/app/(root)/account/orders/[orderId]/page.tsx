@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -145,10 +146,12 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
                 {order.items.map((item) => (
                   <div className="flex items-center gap-4 rounded-lg border p-4" key={item.id}>
                     {item.product.image && (
-                      <img
+                      <Image
                         alt={item.product.title}
                         className="h-16 w-16 rounded-md object-cover"
+                        height={64}
                         src={item.product.image}
+                        width={64}
                       />
                     )}
                     <div className="flex-1">

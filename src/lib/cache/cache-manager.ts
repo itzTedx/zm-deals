@@ -257,9 +257,9 @@ export async function monitorCachePerformance(): Promise<{
     const keyspaceHits = lines.find((line) => line.startsWith("keyspace_hits:"));
     const keyspaceMisses = lines.find((line) => line.startsWith("keyspace_misses:"));
 
-    const total = Number.parseInt(totalCommands?.split(":")[1] || "0");
-    const hits = Number.parseInt(keyspaceHits?.split(":")[1] || "0");
-    const misses = Number.parseInt(keyspaceMisses?.split(":")[1] || "0");
+    const total = Number.parseInt(totalCommands?.split(":")[1] || "0", 10);
+    const hits = Number.parseInt(keyspaceHits?.split(":")[1] || "0", 10);
+    const misses = Number.parseInt(keyspaceMisses?.split(":")[1] || "0", 10);
 
     const hitRate = total > 0 ? (hits / (hits + misses)) * 100 : 0;
 

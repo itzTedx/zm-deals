@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 
@@ -35,7 +37,15 @@ export const getColumns = (): ColumnDef<UserData>[] => [
       const user = row.original;
       return (
         <div className="flex items-center gap-3">
-          {user.image && <img alt={user.name} className="h-8 w-8 rounded-full object-cover" src={user.image} />}
+          {user.image && (
+            <Image
+              alt={user.name}
+              className="h-8 w-8 rounded-full object-cover"
+              height={32}
+              src={user.image}
+              width={32}
+            />
+          )}
           <div className="flex flex-col">
             <span className="font-medium">{user.name}</span>
             <span className="text-muted-foreground text-sm">{user.email}</span>

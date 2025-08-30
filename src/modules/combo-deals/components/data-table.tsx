@@ -35,13 +35,13 @@ export function ComboDealsDataTable({ data }: ComboDealsDataTableProps) {
       try {
         const result = await deleteComboDeal({ id });
         if (!result.success) {
-          alert(result.message);
+          console.error(result.message);
         } else {
           // Refresh the page to show updated data
           window.location.reload();
         }
       } catch (error) {
-        alert("Failed to delete combo deal");
+        console.error("Failed to delete combo deal", error);
       } finally {
         setIsDeleting(null);
       }
@@ -53,13 +53,13 @@ export function ComboDealsDataTable({ data }: ComboDealsDataTableProps) {
     try {
       const result = await toggleComboDealStatus(id);
       if (!result.success) {
-        alert(result.message);
+        console.error(result.message);
       } else {
         // Refresh the page to show updated data
         window.location.reload();
       }
     } catch (error) {
-      alert("Failed to toggle combo deal status");
+      console.error("Failed to toggle combo deal status", error);
     } finally {
       setIsToggling(null);
     }

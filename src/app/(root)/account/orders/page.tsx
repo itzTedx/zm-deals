@@ -121,7 +121,7 @@ export default async function OrdersPage() {
                         {item.productImage && (
                           <Image
                             alt={item.productTitle}
-                            className="rounded object-cover"
+                            className="rounded-md object-cover"
                             height={100}
                             src={item.productImage}
                             width={100}

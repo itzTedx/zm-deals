@@ -70,7 +70,7 @@ export function usePopularSearches(options: UsePopularSearchesOptions = {}): Use
 
   useEffect(() => {
     fetchSearches();
-  }, [limit, timeWindow, type]);
+  }, []);
 
   return {
     searches,

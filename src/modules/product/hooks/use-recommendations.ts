@@ -58,9 +58,10 @@ export function useRecommendations({
     }
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: it's fine
   useEffect(() => {
     fetchRecommendations();
-  }, [cartProductIds.join(","), currentProductId, limit, strategy, enabled]);
+  }, []);
 
   return {
     products,
