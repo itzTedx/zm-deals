@@ -178,6 +178,8 @@ function CarouselPrevious({
 }: React.ComponentProps<typeof Button>) {
   const { orientation, scrollPrev, canScrollPrev } = useCarousel();
   const ref = React.useRef<MoveLeftIconHandle>(null);
+
+  if (!canScrollPrev) return null;
   return (
     <Button
       className={cn(
@@ -210,6 +212,8 @@ function CarouselNext({
 }: React.ComponentProps<typeof Button>) {
   const { orientation, scrollNext, canScrollNext } = useCarousel();
   const ref = React.useRef<MoveRightIconHandle>(null);
+
+  if (!canScrollNext) return null;
 
   return (
     <Button

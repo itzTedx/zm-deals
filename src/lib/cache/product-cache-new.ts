@@ -16,6 +16,8 @@ const PRODUCT_CACHE_CONFIG = {
     PRODUCTS_BY_CATEGORY: CACHE_CONFIG.TTL.MEDIUM, // 30 minutes
     REVIEWS: CACHE_CONFIG.TTL.MEDIUM, // 30 minutes
     REVIEW_STATS: CACHE_CONFIG.TTL.LONG, // 1 hour
+    COMBO_DEALS: CACHE_CONFIG.TTL.MEDIUM, // 30 minutes
+    ACTIVE_COMBO_DEALS: CACHE_CONFIG.TTL.SHORT, // 5 minutes
   },
 
   REVALIDATE: {
@@ -28,6 +30,8 @@ const PRODUCT_CACHE_CONFIG = {
     PRODUCTS_BY_CATEGORY: CACHE_CONFIG.REVALIDATE.MEDIUM, // 30 minutes
     REVIEWS: CACHE_CONFIG.REVALIDATE.MEDIUM, // 30 minutes
     REVIEW_STATS: CACHE_CONFIG.REVALIDATE.LONG, // 1 hour
+    COMBO_DEALS: CACHE_CONFIG.REVALIDATE.MEDIUM, // 30 minutes
+    ACTIVE_COMBO_DEALS: CACHE_CONFIG.REVALIDATE.SHORT, // 5 minutes
   },
 } as const;
 
@@ -42,6 +46,8 @@ const PRODUCT_KEYS = {
   searchResults: (query: string) => cache.keys.search(query),
   reviews: (productId: string) => cache.keys.reviews(productId),
   reviewStats: (productId: string) => `${CACHE_CONFIG.PREFIXES.REVIEW}:stats:${productId}`,
+  comboDeals: () => `${CACHE_CONFIG.PREFIXES.PRODUCTS}:combo-deals`,
+  activeComboDeals: () => `${CACHE_CONFIG.PREFIXES.PRODUCTS}:active-combo-deals`,
 } as const;
 
 // Product cache tags
@@ -51,6 +57,7 @@ const PRODUCT_TAGS = {
   SEARCH: CACHE_CONFIG.TAGS.SEARCH,
   CATEGORY: CACHE_CONFIG.TAGS.CATEGORY,
   REVIEWS: CACHE_CONFIG.TAGS.REVIEW,
+  COMBO_DEALS: "combo-deals",
 } as const;
 
 // Product cache operations
@@ -142,7 +149,7 @@ export class ProductCache {
   // Get search results with hybrid caching
   static async getSearchResults<T>(query: string, databaseFn: () => Promise<T>): Promise<T> {
     const redisKey = PRODUCT_KEYS.searchResults(query);
-    const nextJsTag = PRODUCT_TAGS.SEARCH;
+    const nextJsTag = PRODUCT_TAGS.PRODUCTS;
 
     return cache.hybrid.get(
       redisKey,
@@ -150,6 +157,34 @@ export class ProductCache {
       databaseFn,
       PRODUCT_CACHE_CONFIG.TTL.SEARCH_RESULTS,
       PRODUCT_CACHE_CONFIG.REVALIDATE.SEARCH_RESULTS
+    );
+  }
+
+  // Get combo deals with hybrid caching
+  static async getComboDeals<T>(databaseFn: () => Promise<T>): Promise<T> {
+    const redisKey = PRODUCT_KEYS.comboDeals();
+    const nextJsTag = PRODUCT_TAGS.COMBO_DEALS;
+
+    return cache.hybrid.get(
+      redisKey,
+      nextJsTag,
+      databaseFn,
+      PRODUCT_CACHE_CONFIG.TTL.COMBO_DEALS,
+      PRODUCT_CACHE_CONFIG.REVALIDATE.COMBO_DEALS
+    );
+  }
+
+  // Get active combo deals with hybrid caching
+  static async getActiveComboDeals<T>(databaseFn: () => Promise<T>): Promise<T> {
+    const redisKey = PRODUCT_KEYS.activeComboDeals();
+    const nextJsTag = PRODUCT_TAGS.COMBO_DEALS;
+
+    return cache.hybrid.get(
+      redisKey,
+      nextJsTag,
+      databaseFn,
+      PRODUCT_CACHE_CONFIG.TTL.ACTIVE_COMBO_DEALS,
+      PRODUCT_CACHE_CONFIG.REVALIDATE.ACTIVE_COMBO_DEALS
     );
   }
 
@@ -233,6 +268,24 @@ export class ProductCache {
 
     await cache.hybrid.invalidate(redisKey, nextJsTags);
     log.info("Product reviews cache invalidated", { productId });
+  }
+
+  // Invalidate combo deals cache
+  static async invalidateComboDeals(): Promise<void> {
+    const redisKey = PRODUCT_KEYS.comboDeals();
+    const nextJsTags = [PRODUCT_TAGS.COMBO_DEALS];
+
+    await cache.hybrid.invalidate(redisKey, nextJsTags);
+    log.info("Combo deals cache invalidated");
+  }
+
+  // Invalidate active combo deals cache
+  static async invalidateActiveComboDeals(): Promise<void> {
+    const redisKey = PRODUCT_KEYS.activeComboDeals();
+    const nextJsTags = [PRODUCT_TAGS.COMBO_DEALS];
+
+    await cache.hybrid.invalidate(redisKey, nextJsTags);
+    log.info("Active combo deals cache invalidated");
   }
 
   // Invalidate all product-related cache

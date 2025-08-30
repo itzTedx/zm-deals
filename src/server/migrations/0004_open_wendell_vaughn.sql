@@ -1,1 +1,0 @@
-ALTER TABLE "search-histories" ADD CONSTRAINT "search-histories_query_unique" UNIQUE("query");

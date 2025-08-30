@@ -346,10 +346,10 @@ export async function searchProducts(query: string, limit = 20): Promise<Product
       searchProductsFromDatabase(searchTerm, limit)
     );
 
+    const session = await getSession();
     // Track search analytics in the background
     after(async () => {
       if (query && searchResults.length > 0) {
-        const session = await getSession();
         await db
           .insert(searches)
           .values({

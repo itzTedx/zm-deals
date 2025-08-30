@@ -7,6 +7,7 @@ import { and, eq, inArray, ne } from "drizzle-orm";
 import z from "zod";
 
 import { auth } from "@/lib/auth/server";
+import { ProductCache } from "@/lib/cache/product-cache-new";
 import { createLog } from "@/lib/logging";
 import { db } from "@/server/db";
 import { comboDealProducts, comboDeals, products } from "@/server/schema/product-schema";
@@ -111,6 +112,10 @@ export async function createComboDeal(rawData: unknown): Promise<{ success: bool
 
       revalidatePath("/studio/products/combo");
       revalidatePath("/deals/combo");
+
+      // Invalidate combo deals cache
+      await ProductCache.invalidateComboDeals();
+      await ProductCache.invalidateActiveComboDeals();
 
       return {
         success: true,
@@ -243,6 +248,10 @@ export async function updateComboDeal(rawData: unknown): Promise<{ success: bool
       revalidatePath("/studio/products/combo");
       revalidatePath("/deals/combo");
 
+      // Invalidate combo deals cache
+      await ProductCache.invalidateComboDeals();
+      await ProductCache.invalidateActiveComboDeals();
+
       return {
         success: true,
         message: "Combo deal updated successfully",
@@ -309,6 +318,10 @@ export async function deleteComboDeal(rawData: unknown): Promise<{ success: bool
       revalidatePath("/studio/products/combo");
       revalidatePath("/deals/combo");
 
+      // Invalidate combo deals cache
+      await ProductCache.invalidateComboDeals();
+      await ProductCache.invalidateActiveComboDeals();
+
       return {
         success: true,
         message: "Combo deal deleted successfully",
@@ -363,6 +376,10 @@ export async function toggleComboDealStatus(id: string): Promise<{ success: bool
 
     revalidatePath("/studio/products/combo");
     revalidatePath("/deals/combo");
+
+    // Invalidate combo deals cache
+    await ProductCache.invalidateComboDeals();
+    await ProductCache.invalidateActiveComboDeals();
 
     return {
       success: true,

@@ -93,7 +93,7 @@ export function SearchForm({
                   <Input
                     {...field}
                     autoComplete="off"
-                    className="peer h-10 ps-9 pe-14 text-sm hover:placeholder:text-muted-foreground sm:h-11 sm:ps-10 sm:pe-16 sm:text-base"
+                    className="peer h-10 bg-card ps-9 pe-14 text-sm hover:placeholder:text-muted-foreground sm:h-11 sm:ps-10 sm:pe-16 sm:text-base"
                     id="search"
                     onChange={(e) => {
                       field.onChange(e);

@@ -7,15 +7,12 @@ import { SeparatorBox } from "@/components/ui/separator";
 
 import { IconChevronRight, IconFire, IconHourglass } from "@/assets/icons";
 
-import { getActiveComboDeals } from "@/modules/combo-deals";
-import { getLastMinuteDeals, getProducts } from "@/modules/product/actions/query";
+import { getOptimizedDealsData } from "@/modules/home/actions/query";
 import { ProductCard } from "@/modules/product/components/product-card";
 
 export const Deals = async () => {
-  const products = await getProducts();
-  const todayDeals = await getLastMinuteDeals(24);
-  const lastMinuteDeals = await getLastMinuteDeals(6);
-  const comboDeals = await getActiveComboDeals();
+  const { products, comboDeals, lastMinuteDeals, todayDeals } = await getOptimizedDealsData();
+
   return (
     <section className="container relative space-y-12 pb-8 sm:pb-12 md:space-y-16 md:pb-16 lg:pb-20">
       {lastMinuteDeals.length > 0 && (

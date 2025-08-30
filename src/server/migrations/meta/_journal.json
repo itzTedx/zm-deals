@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1756447988225,
-      "tag": "0000_great_exiles",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1756451801332,
-      "tag": "0001_rapid_forgotten_one",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1756451940143,
-      "tag": "0002_flippant_nextwave",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1756455470728,
-      "tag": "0003_lame_loners",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1756460137285,
-      "tag": "0004_open_wendell_vaughn",
+      "when": 1756533886726,
+      "tag": "0000_abandoned_ozymandias",
       "breakpoints": true
     }
   ]

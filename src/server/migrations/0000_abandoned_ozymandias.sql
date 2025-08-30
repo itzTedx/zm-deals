@@ -264,6 +264,8 @@ CREATE TABLE "products" (
 	"compare_at_price" numeric(10, 2),
 	"delivery_fee" numeric(10, 2),
 	"is_delivery_free" boolean DEFAULT true NOT NULL,
+	"cash_on_delivery" boolean DEFAULT false NOT NULL,
+	"cash_on_delivery_fee" numeric(10, 2),
 	"image" text NOT NULL,
 	"is_featured" boolean DEFAULT false NOT NULL,
 	"ends_in" timestamp,
@@ -294,6 +296,16 @@ CREATE TABLE "reviews" (
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE "search-histories" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" uuid,
+	"query" varchar(255) NOT NULL,
+	"search_count" integer DEFAULT 1 NOT NULL,
+	"last_searched_at" timestamp DEFAULT now() NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "search-histories_query_unique" UNIQUE("query")
 );
 --> statement-breakpoint
 CREATE TABLE "wishlist_items" (
@@ -337,6 +349,7 @@ ALTER TABLE "recently_viewed" ADD CONSTRAINT "recently_viewed_user_id_users_id_f
 ALTER TABLE "recently_viewed" ADD CONSTRAINT "recently_viewed_product_id_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "reviews" ADD CONSTRAINT "reviews_product_id_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "reviews" ADD CONSTRAINT "reviews_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "search-histories" ADD CONSTRAINT "search-histories_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "wishlist_items" ADD CONSTRAINT "wishlist_items_wishlist_id_wishlists_id_fk" FOREIGN KEY ("wishlist_id") REFERENCES "public"."wishlists"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "wishlist_items" ADD CONSTRAINT "wishlist_items_product_id_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "wishlists" ADD CONSTRAINT "wishlists_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -394,6 +407,9 @@ CREATE INDEX "products_featured_idx" ON "products" USING btree ("is_featured");-
 CREATE INDEX "products_price_idx" ON "products" USING btree ("price");--> statement-breakpoint
 CREATE INDEX "products_ends_in_idx" ON "products" USING btree ("ends_in");--> statement-breakpoint
 CREATE INDEX "products_meta_id_idx" ON "products" USING btree ("meta_id");--> statement-breakpoint
+CREATE INDEX "products_title_search_idx" ON "products" USING btree ("title");--> statement-breakpoint
+CREATE INDEX "products_description_search_idx" ON "products" USING btree ("description");--> statement-breakpoint
+CREATE INDEX "products_overview_search_idx" ON "products" USING btree ("overview");--> statement-breakpoint
 CREATE INDEX "recently_viewed_user_id_idx" ON "recently_viewed" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "recently_viewed_session_id_idx" ON "recently_viewed" USING btree ("session_id");--> statement-breakpoint
 CREATE INDEX "recently_viewed_product_id_idx" ON "recently_viewed" USING btree ("product_id");--> statement-breakpoint
@@ -404,6 +420,12 @@ CREATE INDEX "reviews_product_id_idx" ON "reviews" USING btree ("product_id");--
 CREATE INDEX "reviews_user_id_idx" ON "reviews" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "reviews_rating_idx" ON "reviews" USING btree ("rating");--> statement-breakpoint
 CREATE INDEX "reviews_created_at_idx" ON "reviews" USING btree ("created_at");--> statement-breakpoint
+CREATE INDEX "searches_user_id_idx" ON "search-histories" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "searches_query_idx" ON "search-histories" USING btree ("query");--> statement-breakpoint
+CREATE INDEX "searches_search_count_idx" ON "search-histories" USING btree ("search_count");--> statement-breakpoint
+CREATE INDEX "searches_last_searched_at_idx" ON "search-histories" USING btree ("last_searched_at");--> statement-breakpoint
+CREATE INDEX "searches_created_at_idx" ON "search-histories" USING btree ("created_at");--> statement-breakpoint
+CREATE INDEX "searches_user_last_searched_idx" ON "search-histories" USING btree ("user_id","last_searched_at");--> statement-breakpoint
 CREATE INDEX "wishlist_items_wishlist_id_idx" ON "wishlist_items" USING btree ("wishlist_id");--> statement-breakpoint
 CREATE INDEX "wishlist_items_product_id_idx" ON "wishlist_items" USING btree ("product_id");--> statement-breakpoint
 CREATE INDEX "wishlist_items_added_at_idx" ON "wishlist_items" USING btree ("added_at");--> statement-breakpoint

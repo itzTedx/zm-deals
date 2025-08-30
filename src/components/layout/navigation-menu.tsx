@@ -28,7 +28,12 @@ interface Category {
 }
 
 interface NavigationMenuComponentProps {
-  categories: Category[];
+  categories: {
+    id: string;
+    name: string;
+    slug: string;
+    productCount: number;
+  }[];
 }
 
 export function NavigationMenuComponent({ categories }: NavigationMenuComponentProps) {
@@ -62,11 +67,13 @@ export function NavigationMenuComponent({ categories }: NavigationMenuComponentP
           </NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-2 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-              {categories.map((category) => (
-                <ListItem href={`/categories/${category.slug}`} key={category.id} title={category.name}>
-                  {category.description || `Browse ${category.name.toLowerCase()} deals`}
-                </ListItem>
-              ))}
+              <div>
+                {categories.map((category) => (
+                  <ListItem href={`/categories/${category.slug}`} key={category.id} title={category.name}>
+                    {/* {category.description || `Browse ${category.name.toLowerCase()} deals`} */}
+                  </ListItem>
+                ))}
+              </div>
               <ListItem href="/categories" title="View All Categories">
                 Explore all product categories and find the best deals
               </ListItem>

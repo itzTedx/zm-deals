@@ -66,6 +66,7 @@ export function SearchSuggestions({ query, isVisible, onSelectSuggestion }: Sear
   }, [query, popularSearches]);
 
   if (!isVisible) return null;
+  if (suggestions.length === 0 && popularSearches.length === 0) return null;
 
   return (
     <div className="absolute top-full right-0 left-0 z-50 mt-1 rounded-lg border bg-card shadow-xl">
