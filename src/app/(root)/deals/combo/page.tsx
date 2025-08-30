@@ -3,10 +3,12 @@ import { Badge } from "@/components/ui/badge";
 
 import { IconHourglass } from "@/assets/icons";
 
-import { DEALS } from "@/data/product";
+import { getComboDeals } from "@/modules/combo-deals";
 import { ProductCard } from "@/modules/product/components/product-card";
 
-export default function ComboDeals() {
+export default async function ComboDeals() {
+  const deals = await getComboDeals();
+
   return (
     <main className="container relative max-w-7xl space-y-12 border-x pt-12 pb-8 sm:pb-12 md:space-y-16 md:pb-16 lg:pb-20">
       <div>
@@ -23,7 +25,7 @@ export default function ComboDeals() {
           title="Save More with Combos"
         />
         <div className="mt-6 grid grid-cols-2 gap-3 pb-12 sm:mt-8 sm:gap-4 md:mt-12 md:pb-16 lg:grid-cols-3 lg:pb-20">
-          {DEALS.filter((product) => product.combo).map((product) => (
+          {deals.map((product) => (
             <ProductCard data={product} key={product.id} />
           ))}
         </div>

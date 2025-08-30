@@ -15,12 +15,11 @@ async function getComboDealsFromDatabase(): Promise<ComboDealTableData[]> {
       products: {
         with: {
           product: {
-            columns: {
-              id: true,
-              title: true,
-              slug: true,
-              image: true,
-              price: true,
+            with: {
+              images: { with: { media: true } },
+              inventory: true,
+              reviews: { with: { user: true } },
+              meta: true,
             },
           },
         },
