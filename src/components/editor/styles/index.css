@@ -4,7 +4,6 @@
 @import "./partials/typography.css";
 @import "./partials/zoom.css";
 
-
 :root {
   --mt-overlay: rgba(251, 251, 251, 0.75);
   --mt-transparent-foreground: rgba(0, 0, 0, 0.4);
@@ -200,7 +199,7 @@
 }
 
 .minimal-tiptap-editor .ProseMirror img.ProseMirror-selectednode {
-  @apply  outline-2 outline-ring outline-offset-2;
+  @apply outline-2 outline-ring outline-offset-2;
 }
 
 .minimal-tiptap-editor .ProseMirror img[data-size="small"] {
