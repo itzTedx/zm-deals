@@ -187,3 +187,34 @@
 .minimal-tiptap-editor .ProseMirror .selection::selection {
   background: transparent;
 }
+
+/* Image styles */
+.minimal-tiptap-editor .ProseMirror img {
+  @apply max-w-full h-auto rounded-md;
+  @apply border border-border;
+  @apply transition-all duration-200;
+}
+
+.minimal-tiptap-editor .ProseMirror img:hover {
+  @apply border-ring shadow-sm;
+}
+
+.minimal-tiptap-editor .ProseMirror img.ProseMirror-selectednode {
+  @apply  outline-2 outline-ring outline-offset-2;
+}
+
+.minimal-tiptap-editor .ProseMirror img[data-size="small"] {
+  @apply max-w-xs;
+}
+
+.minimal-tiptap-editor .ProseMirror img[data-size="medium"] {
+  @apply max-w-md;
+}
+
+.minimal-tiptap-editor .ProseMirror img[data-size="large"] {
+  @apply max-w-2xl;
+}
+
+.minimal-tiptap-editor .ProseMirror img[data-size="full"] {
+  @apply w-full;
+}

@@ -9,7 +9,7 @@ import { StarterKit } from "@tiptap/starter-kit";
 
 import { cn } from "@/lib/utils";
 
-import { HorizontalRule, ResetMarksOnEnter, UnsetAllMarks } from "../extensions";
+import { HorizontalRule, Image, ResetMarksOnEnter, UnsetAllMarks } from "../extensions";
 import { useThrottle } from "../hooks/use-throttle";
 import { getOutput } from "../utils";
 
@@ -61,6 +61,7 @@ const createExtensions = ({ placeholder }: { placeholder: string }) => [
   Typography,
   UnsetAllMarks,
   HorizontalRule,
+  Image,
   ResetMarksOnEnter,
   Placeholder.configure({ placeholder: () => placeholder }),
 ];

@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { IconLogout, IconPackage, IconUser } from "@/assets/icons";
 
+import { useIsMobile } from "@/hooks/use-mobile";
 import { AuthSession } from "@/lib/auth/server";
 import { LogoutButton } from "@/modules/auth/components/logout-button";
 
@@ -20,6 +21,8 @@ import {
 } from "../ui/dropdown-menu";
 
 export default function UserMenu({ session }: { session: AuthSession }) {
+  const isMobile = useIsMobile();
+
   if (!session) {
     return (
       <Button asChild className="text-muted-foreground" variant="outline">
@@ -40,7 +43,7 @@ export default function UserMenu({ session }: { session: AuthSession }) {
           {/* <p className="text-muted/80 text-xs">{session.user.email}</p> */}
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="z-99999 max-w-72">
+      <DropdownMenuContent align={isMobile ? "end" : "start"} className="z-99999 max-w-72">
         <DropdownMenuLabel className="flex min-w-0 items-center gap-1.5">
           <Avatar className="size-11 rounded-sm">
             <AvatarImage alt="Profile image" src={session.user.image ?? undefined} />

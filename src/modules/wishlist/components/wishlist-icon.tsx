@@ -10,7 +10,7 @@ export const WishlistIcon = async () => {
   const itemCount = await getWishlistItemCount();
 
   return (
-    <Button asChild className="relative" size="icon" variant="outline">
+    <Button asChild className="relative hidden md:inline-flex" size="icon" variant="outline">
       <Link href="/account/wishlist">
         <IconHeart className="size-5 text-muted-foreground hover:text-brand-500" />
 

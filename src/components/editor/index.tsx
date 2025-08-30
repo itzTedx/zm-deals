@@ -43,7 +43,7 @@ const Toolbar = ({ editor }: { editor: TiptapEditor }) => (
 
       <Separator className="mx-1.5" orientation="vertical" />
 
-      <SectionFive activeActions={["codeBlock", "blockquote", "horizontalRule"]} editor={editor} mainActionCount={0} />
+      <SectionFive activeActions={["image", "blockquote", "horizontalRule"]} editor={editor} mainActionCount={0} />
     </div>
   </div>
 );

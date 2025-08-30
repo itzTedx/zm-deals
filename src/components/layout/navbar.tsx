@@ -36,11 +36,10 @@ export const Navbar = async () => {
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">
-            <UserMenu session={session} />
-
-            <div className="hidden h-5 w-px flex-1 shrink-0 bg-gray-200 md:block" />
             <WishlistIcon />
             <CartIcon />
+            <div className="hidden h-5 w-px flex-1 shrink-0 bg-gray-200 md:block" />
+            <UserMenu session={session} />
           </div>
         </nav>
         <div className="container border-y">

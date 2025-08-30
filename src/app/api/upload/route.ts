@@ -12,6 +12,9 @@ import {
   CATEGORY_FILE_MAX_SIZE,
   CATEGORY_FILE_TYPES,
   CATEGORY_UPLOAD_ROUTE,
+  EDITOR_FILE_MAX_SIZE,
+  EDITOR_FILE_TYPES,
+  EDITOR_UPLOAD_ROUTE,
   PRODUCT_FILE_MAX_FILES,
   PRODUCT_FILE_MAX_SIZE,
   PRODUCT_FILE_TYPES,
@@ -81,6 +84,36 @@ const router: Router = {
   client: s3,
   bucketName: env.AWS_BUCKET_NAME,
   routes: {
+    [EDITOR_UPLOAD_ROUTE]: route({
+      fileTypes: EDITOR_FILE_TYPES,
+      multipleFiles: false,
+      maxFileSize: EDITOR_FILE_MAX_SIZE,
+
+      onBeforeUpload: async ({ file }) => {
+        try {
+          await authenticateUser();
+          const objectKey = generateObjectKey(file, EDITOR_UPLOAD_ROUTE);
+          return { objectKey };
+        } catch (error) {
+          log.error("Error in onBeforeUpload for editor", error);
+          throw error;
+        }
+      },
+
+      onAfterSignedUrl: async ({ file }) => {
+        try {
+          log.info("Processing editor image upload", file.objectKey);
+
+          const url = generatePublicUrl(file.objectKey);
+          log.file("Generated editor image URL", url);
+
+          return { metadata: { url } };
+        } catch (error) {
+          log.error("Error in onAfterSignedUrl for editor", error);
+          throw error;
+        }
+      },
+    }),
     [PRODUCT_UPLOAD_ROUTE]: route({
       fileTypes: PRODUCT_FILE_TYPES,
       multipleFiles: true,
