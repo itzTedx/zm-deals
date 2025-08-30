@@ -33,7 +33,7 @@ import {
 import { env } from "@/lib/env/server";
 import { calculateDiscount, cn } from "@/lib/utils";
 import { getComboDealsByProductId } from "@/modules/combo-deals/actions/query";
-import { getProductBySlug, getProducts } from "@/modules/product/actions/query";
+import { getProductBySlug } from "@/modules/product/actions/query";
 import { EndsInCounter } from "@/modules/product/components/ends-in-counter";
 import { FrequentlyBoughtTogether } from "@/modules/product/components/frequently-bought-together";
 import { CheckboxBadge } from "@/modules/product/components/ui/checkbox-badge";
@@ -47,16 +47,16 @@ interface Props {
 }
 
 // Generate static params for all categories
-export async function generateStaticParams() {
-  const products = await getProducts();
+// export async function generateStaticParams() {
+//   const products = await getProducts();
 
-  return products.map((product) => ({
-    slug: product.slug,
-  }));
-}
+//   return products.map((product) => ({
+//     slug: product.slug,
+//   }));
+// }
 
 // Revalidate pages every hour (3600 seconds)
-export const revalidate = 3600;
+// export const revalidate = 3600;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { product } = await params;

@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 
 import { eq } from "drizzle-orm";
 
-import { auth } from "@/lib/auth/server";
+import { auth, getSession } from "@/lib/auth/server";
 import { getOrCreateSessionId } from "@/lib/auth/session";
 import { db } from "@/server/db";
 import { wishlists } from "@/server/schema";
@@ -196,7 +196,7 @@ export async function isInWishlist(productId: string): Promise<boolean> {
 
 export async function getWishlistData(): Promise<WishlistData> {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getSession();
 
     if (!session) {
       // Handle guest wishlist
