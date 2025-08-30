@@ -85,8 +85,8 @@ export async function upsertProduct(rawData: unknown): Promise<{ success: boolea
         compareAtPrice: data.compareAtPrice?.toString() ?? null,
         image: featuredImageUrl,
         isFeatured: data.isFeatured,
-        endsIn: data.endsIn ?? null,
-        schedule: data.schedule ?? null,
+        endsIn: data.endsIn ? new Date(data.endsIn) : null,
+        schedule: data.schedule ? new Date(data.schedule) : null,
         status: "published" as const,
         categoryId: data.categoryId ?? null,
         deliveryFee: data.deliveryFee?.toString() ?? null,
@@ -279,7 +279,7 @@ export async function upsertProduct(rawData: unknown): Promise<{ success: boolea
 
       return {
         success: true,
-        message: `Product ${data.title} ${isUpdate ? "updated" : "created"} successfully with ${data.images.length} images`,
+        message: `Product ${data.title} ${isUpdate ? "updated" : "created"} successfully`,
       };
     });
   } catch (error) {

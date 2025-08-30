@@ -55,8 +55,8 @@ export const productSchema = z.object({
   }),
 
   isFeatured: z.boolean(),
-  endsIn: z.date().optional(),
-  schedule: z.date().optional(),
+  endsIn: z.string().optional(),
+  schedule: z.string().optional(),
 });
 
 export type ProductSchema = z.infer<typeof productSchema>;

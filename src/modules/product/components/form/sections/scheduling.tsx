@@ -48,7 +48,7 @@ export const Scheduling = () => {
                           field.onChange(date);
                           setOpen(false);
                         }}
-                        selected={field.value}
+                        selected={field.value ? new Date(field.value) : undefined}
                       />
                     </PopoverContent>
                   </Popover>
@@ -87,9 +87,9 @@ export const Scheduling = () => {
                         mode="single"
                         onSelect={(date) => {
                           field.onChange(date);
-                          setOpen(false);
+                          setOpen2(false);
                         }}
-                        selected={field.value}
+                        selected={field.value ? new Date(field.value) : undefined}
                       />
                     </PopoverContent>
                   </Popover>

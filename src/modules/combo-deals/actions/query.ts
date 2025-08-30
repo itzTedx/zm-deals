@@ -114,37 +114,6 @@ async function getActiveComboDealsFromDatabase(): Promise<ComboDealWithProducts[
   return comboDealsData;
 }
 
-async function getFeaturedComboDealsFromDatabase(): Promise<ComboDealWithProducts[]> {
-  const comboDealsData = await db.query.comboDeals.findMany({
-    where: and(eq(comboDeals.isActive, true), eq(comboDeals.isFeatured, true)),
-    with: {
-      products: {
-        with: {
-          product: {
-            with: {
-              images: {
-                with: {
-                  media: true,
-                },
-              },
-              inventory: true,
-              reviews: {
-                with: {
-                  user: true,
-                },
-              },
-            },
-          },
-        },
-        orderBy: [comboDealProducts.sortOrder],
-      },
-    },
-    orderBy: [desc(comboDeals.createdAt)],
-  });
-
-  return comboDealsData;
-}
-
 async function getComboDealsByProductIdFromDatabase(productId: string): Promise<ComboDealWithProducts[]> {
   const now = new Date();
 

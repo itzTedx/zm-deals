@@ -1,3 +1,5 @@
+import dynamic from "next/dynamic";
+
 import { useUploadFiles } from "better-upload/client";
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
 
@@ -7,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { UploadDropzoneProgress } from "@/components/ui/upload-dropzone-progress";
 
+import { cn } from "@/lib/utils";
 import { getImageMetadata } from "@/modules/product/actions/helper";
 import {
   PRODUCT_FILE_MAX_FILES,
@@ -17,6 +20,10 @@ import {
 import { MediaSchema, ProductSchema } from "@/modules/product/schema";
 
 import { ImageManagement } from "./ui/image-management";
+
+const Editor = dynamic(() => import("@/components/editor"), {
+  ssr: false,
+});
 
 export const ProductDetails = () => {
   const form = useFormContext<ProductSchema>();
@@ -114,17 +121,8 @@ export const ProductDetails = () => {
                       fileTypes: PRODUCT_FILE_TYPES.join(", "),
                     }}
                   />
-                  {/* <UploadDropzone
-                    accept="image/*"
-                    control={control}
-                    description={{
-                      maxFiles: PRODUCT_FILE_MAX_FILES - images.length,
-                      maxFileSize: PRODUCT_FILE_MAX_SIZE.toString(),
-                      fileTypes: PRODUCT_FILE_TYPES.join(", "),
-                    }}
-                  /> */}
 
-                  <ImageManagement control={control} fields={fields} reorder={move} />
+                  <ImageManagement fields={fields} reorder={move} />
                 </div>
               </FormControl>
               <FormMessage />
@@ -138,7 +136,18 @@ export const ProductDetails = () => {
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea className="min-h-32" placeholder="Product Description" {...field} />
+                <Editor
+                  {...field}
+                  className={cn("h-full min-h-96 w-full min-w-0 rounded-md")}
+                  content={field.value}
+                  editable={true}
+                  editorClassName="focus:outline-hidden px-4 pb-4 pt-px h-full bg-transparent w-full dark:bg-input/30"
+                  editorContentClassName="overflow-auto h-full prose dark:prose-invert prose-sm w-full max-w-none"
+                  key="product-description-editor"
+                  output="html"
+                  placeholder="Type your description here..."
+                  throttleDelay={1000}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

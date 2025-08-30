@@ -9,6 +9,7 @@ export * from "./currency";
 export * from "./diamonds";
 export * from "./discount";
 export * from "./edit";
+export * from "./editor";
 export * from "./email";
 export * from "./fire";
 export * from "./heart";

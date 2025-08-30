@@ -14,19 +14,6 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  description: string | null;
-  productCount?: number;
-  images: Array<{
-    media: {
-      url: string | null;
-    } | null;
-  }>;
-}
-
 interface NavigationMenuComponentProps {
   categories: {
     id: string;

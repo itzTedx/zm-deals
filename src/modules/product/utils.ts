@@ -40,8 +40,8 @@ export function transformProduct(product: ProductQueryResult | null): ProductSch
     },
 
     isFeatured: product.isFeatured,
-    endsIn: product.endsIn ?? undefined,
-    schedule: product.schedule ?? undefined,
+    endsIn: product.endsIn?.toString() ?? undefined,
+    schedule: product.schedule?.toString() ?? undefined,
   };
 }
 
