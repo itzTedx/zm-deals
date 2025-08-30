@@ -1,12 +1,11 @@
 import { Fragment } from "react";
 import type { Route } from "next";
-import Image from "next/image";
 
 import { SectionHeader } from "@/components/layout/section-header";
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { Separator } from "@/components/ui/separator";
 
 import { getCategories } from "@/modules/categories/actions/query";
+import { BannerCarousel } from "@/modules/categories/components/banner-carousel";
 import { ProductCard } from "@/modules/product/components";
 
 export default async function CategoriesPage() {
@@ -24,30 +23,7 @@ export default async function CategoriesPage() {
           return (
             <Fragment key={category.id}>
               <section className="space-y-4 md:space-y-6 lg:space-y-8" id={category.name}>
-                {banners && banners.length > 1 ? (
-                  <Carousel>
-                    <CarouselContent>
-                      {banners.map((banner) => (
-                        <CarouselItem key={banner.id}>
-                          {banner.media && banner.media.url && (
-                            <div className="relative h-56 w-full overflow-hidden rounded-xl">
-                              <Image alt={category.name} className="object-cover" fill src={banner.media.url} />
-                            </div>
-                          )}
-                        </CarouselItem>
-                      ))}
-                    </CarouselContent>
-                  </Carousel>
-                ) : (
-                  banners &&
-                  banners.length > 0 &&
-                  banners[0].media &&
-                  banners[0].media.url && (
-                    <div className="relative h-56 w-full overflow-hidden rounded-xl">
-                      <Image alt={category.name} className="object-cover" fill src={banners[0].media.url} />
-                    </div>
-                  )
-                )}
+                {banners && banners.length > 0 && <BannerCarousel banners={banners} categoryName={category.name} />}
 
                 <SectionHeader
                   btnText={category.name}

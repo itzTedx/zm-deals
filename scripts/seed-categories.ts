@@ -14,7 +14,7 @@ async function seedCategories() {
       slug: "appliances-cleaning",
       description: "Essential products for your home and kitchen needs",
       thumbnail: {
-        url: "https://foneflip-local.s3.us-east-1.amazonaws.com/70624b96-28e1-4df8-9087-4e85dfdd3e14/product/136dd7d941be286ec077cd715cbfa3db-exhibition-cargo.webp",
+        url: "https://zm-deals-local.s3.us-east-1.amazonaws.com/products/vacuum-holder-95fe347e5d6b4bc13d937389a40c1c74.png",
         alt: "Kitchen appliances and cleaning supplies",
         width: 400,
         height: 300,
@@ -23,7 +23,7 @@ async function seedCategories() {
         key: "categories/appliances-cleaning-thumbnail.webp",
       },
       banner: {
-        url: "https://foneflip-local.s3.us-east-1.amazonaws.com/70624b96-28e1-4df8-9087-4e85dfdd3e14/product/5073b3ecd80a7043d03871469f809303-f8ff9b5ce61343be95934135bbb798b5.webp",
+        url: "https://zm-deals-local.s3.us-east-1.amazonaws.com/products/vacuum-holder-95fe347e5d6b4bc13d937389a40c1c74.png",
         alt: "Kitchen appliances and cleaning supplies banner",
         width: 1200,
         height: 400,
@@ -37,7 +37,7 @@ async function seedCategories() {
       slug: "electronics-accessories",
       description: "Latest electronics and smart gadgets for modern living",
       thumbnail: {
-        url: "https://foneflip-local.s3.us-east-1.amazonaws.com/70624b96-28e1-4df8-9087-4e85dfdd3e14/product/55391da0ed923484224afcefd9097de8-f4104f65d4.jpg",
+        url: "https://zm-deals-local.s3.us-east-1.amazonaws.com/products/vacuum-holder-95fe347e5d6b4bc13d937389a40c1c74.png",
         alt: "Electronics and accessories",
         width: 400,
         height: 300,
@@ -46,7 +46,7 @@ async function seedCategories() {
         key: "categories/electronics-accessories-thumbnail.jpg",
       },
       banner: {
-        url: "https://foneflip-local.s3.us-east-1.amazonaws.com/70624b96-28e1-4df8-9087-4e85dfdd3e14/product/5c992c4f50d8d715c0100bef4eee811a-Green_1_284f66a1-dd5a-4ba2-834c-cf5fa47859c0.webp",
+        url: "https://zm-deals-local.s3.us-east-1.amazonaws.com/products/vacuum-holder-95fe347e5d6b4bc13d937389a40c1c74.png",
         alt: "Electronics and accessories banner",
         width: 1200,
         height: 400,
@@ -60,7 +60,7 @@ async function seedCategories() {
       slug: "bathroom-hygiene",
       description: "Bathroom essentials and personal hygiene products",
       thumbnail: {
-        url: "https://foneflip-local.s3.us-east-1.amazonaws.com/70624b96-28e1-4df8-9087-4e85dfdd3e14/product/5dd7706e78b2bae3a0ecf15cafda7cba-Green_1_284f66a1-dd5a-4ba2-834c-cf5fa47859c0.webp",
+        url: "https://zm-deals-local.s3.us-east-1.amazonaws.com/products/vacuum-holder-95fe347e5d6b4bc13d937389a40c1c74.png",
         alt: "Bathroom and hygiene products",
         width: 400,
         height: 300,
@@ -69,7 +69,7 @@ async function seedCategories() {
         key: "categories/bathroom-hygiene-thumbnail.webp",
       },
       banner: {
-        url: "https://foneflip-local.s3.us-east-1.amazonaws.com/70624b96-28e1-4df8-9087-4e85dfdd3e14/product/686b9fe6d12f584c2b433614e620a9a2-Green_2_18cdb17b-638e-4a2e-8231-15cd6f4b3c96.webp",
+        url: "https://zm-deals-local.s3.us-east-1.amazonaws.com/products/vacuum-holder-95fe347e5d6b4bc13d937389a40c1c74.png",
         alt: "Bathroom and hygiene products banner",
         width: 1200,
         height: 400,
@@ -83,7 +83,7 @@ async function seedCategories() {
       slug: "fashion-apparel",
       description: "Trendy clothing, shoes, and fashion accessories for all seasons",
       thumbnail: {
-        url: "https://foneflip-local.s3.us-east-1.amazonaws.com/70624b96-28e1-4df8-9087-4e85dfdd3e14/product/153a0f12a5e916433bd89d8a2408d0fd-5afaea25-140c-4a67-aedd-a81f570dec5d.jpg",
+        url: "https://zm-deals-local.s3.us-east-1.amazonaws.com/products/vacuum-holder-95fe347e5d6b4bc13d937389a40c1c74.png",
         alt: "Fashion and apparel collection",
         width: 400,
         height: 300,
@@ -92,7 +92,7 @@ async function seedCategories() {
         key: "categories/fashion-apparel-thumbnail.jpg",
       },
       banner: {
-        url: "https://foneflip-local.s3.us-east-1.amazonaws.com/70624b96-28e1-4df8-9087-4e85dfdd3e14/product/136dd7d941be286ec077cd715cbfa3db-exhibition-cargo.webp",
+        url: "https://zm-deals-local.s3.us-east-1.amazonaws.com/products/vacuum-holder-95fe347e5d6b4bc13d937389a40c1c74.png",
         alt: "Fashion and apparel collection banner",
         width: 1200,
         height: 400,
@@ -106,7 +106,7 @@ async function seedCategories() {
       slug: "home-garden",
       description: "Everything you need to beautify your home and garden",
       thumbnail: {
-        url: "https://foneflip-local.s3.us-east-1.amazonaws.com/70624b96-28e1-4df8-9087-4e85dfdd3e14/product/5073b3ecd80a7043d03871469f809303-f8ff9b5ce61343be95934135bbb798b5.webp",
+        url: "https://zm-deals-local.s3.us-east-1.amazonaws.com/products/vacuum-holder-95fe347e5d6b4bc13d937389a40c1c74.png",
         alt: "Home and garden decor",
         width: 400,
         height: 300,
@@ -115,7 +115,7 @@ async function seedCategories() {
         key: "categories/home-garden-thumbnail.webp",
       },
       banner: {
-        url: "https://foneflip-local.s3.us-east-1.amazonaws.com/70624b96-28e1-4df8-9087-4e85dfdd3e14/product/55391da0ed923484224afcefd9097de8-f4104f65d4.jpg",
+        url: "https://zm-deals-local.s3.us-east-1.amazonaws.com/products/vacuum-holder-95fe347e5d6b4bc13d937389a40c1c74.png",
         alt: "Home and garden decor banner",
         width: 1200,
         height: 400,
@@ -129,7 +129,7 @@ async function seedCategories() {
       slug: "sports-fitness",
       description: "Equipment and gear for sports, fitness, and outdoor activities",
       thumbnail: {
-        url: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop",
+        url: "https://zm-deals-local.s3.us-east-1.amazonaws.com/products/vacuum-holder-95fe347e5d6b4bc13d937389a40c1c74.png",
         alt: "Sports and fitness equipment",
         width: 400,
         height: 300,
@@ -138,7 +138,7 @@ async function seedCategories() {
         key: "categories/sports-fitness-thumbnail.jpg",
       },
       banner: {
-        url: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&h=400&fit=crop",
+        url: "https://zm-deals-local.s3.us-east-1.amazonaws.com/products/vacuum-holder-95fe347e5d6b4bc13d937389a40c1c74.png",
         alt: "Sports and fitness equipment banner",
         width: 1200,
         height: 400,
@@ -152,7 +152,7 @@ async function seedCategories() {
       slug: "beauty-personal-care",
       description: "Cosmetics, skincare, and personal care products for your beauty routine",
       thumbnail: {
-        url: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=300&fit=crop",
+        url: "https://zm-deals-local.s3.us-east-1.amazonaws.com/products/vacuum-holder-95fe347e5d6b4bc13d937389a40c1c74.png",
         alt: "Beauty and personal care products",
         width: 400,
         height: 300,
@@ -161,7 +161,7 @@ async function seedCategories() {
         key: "categories/beauty-personal-care-thumbnail.jpg",
       },
       banner: {
-        url: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1200&h=400&fit=crop",
+        url: "https://zm-deals-local.s3.us-east-1.amazonaws.com/products/vacuum-holder-95fe347e5d6b4bc13d937389a40c1c74.png",
         alt: "Beauty and personal care products banner",
         width: 1200,
         height: 400,
@@ -175,7 +175,7 @@ async function seedCategories() {
       slug: "toys-games",
       description: "Fun toys, games, and entertainment for all ages",
       thumbnail: {
-        url: "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=400&h=300&fit=crop",
+        url: "https://zm-deals-local.s3.us-east-1.amazonaws.com/products/vacuum-holder-95fe347e5d6b4bc13d937389a40c1c74.png",
         alt: "Toys and games collection",
         width: 400,
         height: 300,
@@ -184,7 +184,7 @@ async function seedCategories() {
         key: "categories/toys-games-thumbnail.jpg",
       },
       banner: {
-        url: "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=1200&h=400&fit=crop",
+        url: "https://zm-deals-local.s3.us-east-1.amazonaws.com/products/vacuum-holder-95fe347e5d6b4bc13d937389a40c1c74.png",
         alt: "Toys and games collection banner",
         width: 1200,
         height: 400,
@@ -198,7 +198,7 @@ async function seedCategories() {
       slug: "automotive-tools",
       description: "Car accessories, tools, and automotive maintenance products",
       thumbnail: {
-        url: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&h=300&fit=crop",
+        url: "https://zm-deals-local.s3.us-east-1.amazonaws.com/products/vacuum-holder-95fe347e5d6b4bc13d937389a40c1c74.png",
         alt: "Automotive and tools",
         width: 400,
         height: 300,
@@ -207,7 +207,7 @@ async function seedCategories() {
         key: "categories/automotive-tools-thumbnail.jpg",
       },
       banner: {
-        url: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=1200&h=400&fit=crop",
+        url: "https://zm-deals-local.s3.us-east-1.amazonaws.com/products/vacuum-holder-95fe347e5d6b4bc13d937389a40c1c74.png",
         alt: "Automotive and tools banner",
         width: 1200,
         height: 400,
@@ -221,7 +221,7 @@ async function seedCategories() {
       slug: "books-stationery",
       description: "Books, office supplies, and stationery for work and study",
       thumbnail: {
-        url: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop",
+        url: "https://zm-deals-local.s3.us-east-1.amazonaws.com/products/vacuum-holder-95fe347e5d6b4bc13d937389a40c1c74.png",
         alt: "Books and stationery",
         width: 400,
         height: 300,
@@ -230,7 +230,7 @@ async function seedCategories() {
         key: "categories/books-stationery-thumbnail.jpg",
       },
       banner: {
-        url: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1200&h=400&fit=crop",
+        url: "https://zm-deals-local.s3.us-east-1.amazonaws.com/products/vacuum-holder-95fe347e5d6b4bc13d937389a40c1c74.png",
         alt: "Books and stationery banner",
         width: 1200,
         height: 400,

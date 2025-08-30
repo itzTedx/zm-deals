@@ -2,21 +2,29 @@
 
 import { useMemo, useState } from "react";
 
+import { parseAsStringEnum, useQueryState } from "nuqs";
+
 import { CategoriesGrid } from "@/modules/categories/components/categories-grid";
 import { CategoriesTable } from "@/modules/categories/components/categories-table";
 import { CreateButton } from "@/modules/categories/components/create-button";
 import { SearchBar } from "@/modules/categories/components/search-bar";
 import { ViewToggle } from "@/modules/categories/components/view-toggle";
 
-import { CategoryWithRelations } from "../types";
+import { CategoryData } from "../types";
 
 interface CategoriesViewProps {
-  categories: CategoryWithRelations[];
+  categories: CategoryData[];
 }
 
+type View = "table" | "cards";
+
 export function CategoriesView({ categories }: CategoriesViewProps) {
-  const [view, setView] = useState<"table" | "cards">("table");
+  const [view, setView] = useQueryState("view", parseAsStringEnum<View>(["table", "cards"]).withDefault("cards"));
   const [searchQuery, setSearchQuery] = useState("");
+
+  const handleViewChange = (newView: View) => {
+    setView(newView);
+  };
 
   const filteredCategories = useMemo(() => {
     if (!searchQuery.trim()) {
@@ -33,14 +41,14 @@ export function CategoriesView({ categories }: CategoriesViewProps) {
   }, [categories, searchQuery]);
 
   return (
-    <div className="flex w-full flex-col gap-6">
+    <div className="flex w-full flex-col gap-6 pb-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-bold text-2xl tracking-tight">Categories</h1>
           <p className="text-muted-foreground">Manage your product categories and organize your inventory.</p>
         </div>
         <div className="flex items-center gap-2">
-          <ViewToggle onViewChange={setView} view={view} />
+          <ViewToggle onViewChange={handleViewChange} view={view || "cards"} />
           <CreateButton />
         </div>
       </div>
@@ -54,15 +62,13 @@ export function CategoriesView({ categories }: CategoriesViewProps) {
         </div>
       </div>
 
-      <div className="rounded-lg border bg-card">
-        {view === "table" ? (
+      {view === "table" ? (
+        <div className="rounded-lg border bg-card">
           <CategoriesTable data={filteredCategories} />
-        ) : (
-          <div className="p-6">
-            <CategoriesGrid data={filteredCategories} />
-          </div>
-        )}
-      </div>
+        </div>
+      ) : (
+        <CategoriesGrid data={filteredCategories} />
+      )}
     </div>
   );
 }

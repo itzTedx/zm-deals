@@ -4,12 +4,12 @@ import { asc, desc, eq } from "drizzle-orm";
 
 import { cache } from "@/lib/cache/core";
 import { createLog } from "@/lib/logging";
-import type { CategoryData } from "@/modules/categories/types";
+import type { CategoryData, CategoryWithProducts } from "@/modules/categories/types";
 import { db } from "@/server/db";
 import { categories } from "@/server/schema";
 
 // Database query functions (these will be wrapped with caching)
-async function getCategoriesFromDatabase(): Promise<CategoryData[]> {
+async function getCategoriesFromDatabase(): Promise<CategoryWithProducts[]> {
   return await db.query.categories.findMany({
     with: {
       images: {
@@ -30,7 +30,15 @@ async function getCategoriesFromDatabase(): Promise<CategoryData[]> {
   });
 }
 
-async function getCategoryFromDatabase(id: string): Promise<CategoryData | null> {
+export async function getCategoriesForNavbar() {
+  return await db.query.categories.findMany({
+    with: {
+      images: { with: { media: true } },
+    },
+  });
+}
+
+async function getCategoryFromDatabase(id: string): Promise<CategoryWithProducts | null> {
   const category = await db.query.categories.findFirst({
     where: eq(categories.id, id),
     with: {
@@ -53,7 +61,7 @@ async function getCategoryFromDatabase(id: string): Promise<CategoryData | null>
   return category || null;
 }
 
-async function getCategoryBySlugFromDatabase(slug: string): Promise<CategoryData | null> {
+async function getCategoryBySlugFromDatabase(slug: string): Promise<CategoryWithProducts | null> {
   const category = await db.query.categories.findFirst({
     where: eq(categories.slug, slug),
     with: {
@@ -114,7 +122,7 @@ async function getCategoriesWithCountFromDatabase(): Promise<
   }));
 }
 
-async function getRecentCategoriesFromDatabase(limit = 5): Promise<CategoryData[]> {
+async function getRecentCategoriesFromDatabase(limit = 5): Promise<CategoryWithProducts[]> {
   return await db.query.categories.findMany({
     with: {
       images: {
@@ -136,7 +144,7 @@ async function getRecentCategoriesFromDatabase(limit = 5): Promise<CategoryData[
   });
 }
 
-async function searchCategoriesFromDatabase(query: string): Promise<CategoryData[]> {
+async function searchCategoriesFromDatabase(query: string): Promise<CategoryWithProducts[]> {
   const searchTerm = `%${query.trim()}%`;
 
   return await db.query.categories.findMany({

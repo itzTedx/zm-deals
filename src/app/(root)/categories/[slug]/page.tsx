@@ -5,6 +5,7 @@ import { SectionHeader } from "@/components/layout/section-header";
 import { SeparatorBox } from "@/components/ui/separator";
 
 import { getCategories, getCategoryBySlug } from "@/modules/categories/actions/query";
+import { BannerCarousel } from "@/modules/categories/components/banner-carousel";
 import { getProductsByCategorySlug } from "@/modules/product/actions/query";
 import { ProductCard } from "@/modules/product/components/product-card";
 
@@ -62,9 +63,13 @@ export default async function CategoryPage({ params }: { params: Params }) {
     notFound();
   }
 
+  const banners = category.images?.filter((image) => image.type === "banner");
+
   return (
     <main className="container relative space-y-6 pt-9 pb-8 sm:pb-12 md:space-y-9 md:pb-16 lg:pb-20">
       {/* Category Header */}
+
+      <BannerCarousel banners={banners} categoryName={category.name} />
 
       <SectionHeader
         description={category.description || `Explore our collection of ${category.name.toLowerCase()} products`}

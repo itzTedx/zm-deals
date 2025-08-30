@@ -4,7 +4,7 @@ import { LogoIcon } from "@/assets/logo";
 
 import { getSession } from "@/lib/auth/server";
 import { CartIcon } from "@/modules/cart/components/cart-icon";
-import { getCategoriesWithCount } from "@/modules/categories/actions/query";
+import { getCategoriesForNavbar } from "@/modules/categories/actions/query";
 import { WishlistIcon } from "@/modules/wishlist/components/wishlist-icon";
 
 import { CategoriesCarousel } from "./categories-carousel";
@@ -14,7 +14,7 @@ import UserMenu from "./user-menu";
 
 export const Navbar = async () => {
   const session = await getSession();
-  const categories = await getCategoriesWithCount();
+  const categories = await getCategoriesForNavbar();
 
   return (
     <header className="sticky top-0 z-999 h-fit">

@@ -17,13 +17,17 @@ export const LogoutButton = ({ children, className }: Props) => {
 
   async function logout() {
     startTransition(async () => {
-      await signOut({
+      const res = await signOut({
         fetchOptions: {
           onSuccess: () => {
-            router.push("/");
+            router.refresh();
           },
         },
       });
+
+      if (res.data?.success) {
+        router.push("/");
+      }
     });
   }
   return (

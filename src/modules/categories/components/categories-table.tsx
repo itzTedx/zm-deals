@@ -14,12 +14,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { formatDate } from "@/lib/functions/format-date";
 
 import { bulkDeleteCategories } from "../actions/mutation";
-import { CategoryWithRelations } from "../types";
+import { CategoryData } from "../types";
 import { DeleteButton } from "./delete-button";
 import { EditButton } from "./edit-button";
 
 interface CategoriesTableProps {
-  data: CategoryWithRelations[];
+  data: CategoryData[];
 }
 
 export function CategoriesTable({ data }: CategoriesTableProps) {

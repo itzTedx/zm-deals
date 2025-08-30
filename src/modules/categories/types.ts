@@ -13,8 +13,18 @@ export type CategoryWithRelations = Category & {
   products?: Array<ProductQueryResult>;
 };
 
+// Type for category database query result (without circular category reference)
+export type CategoryWithProducts = Category & {
+  images?: Array<
+    CategoryImage & {
+      media: Media | null;
+    }
+  >;
+  products?: Array<Omit<ProductQueryResult, "category">>;
+};
+
 // Type for category data used in transformations
-export type CategoryData = CategoryWithRelations;
+export type CategoryData = CategoryWithProducts;
 
 // Type for category response data
 export type CategoryResponse = {

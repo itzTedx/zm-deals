@@ -87,25 +87,24 @@ export const ProductCard = ({ data, showSeconds = true }: Props) => {
           )}
         </div>
       </CardContent>
-      {((data.endsIn && isWithinDays(data.endsIn)) || (data.reviews && data.reviews.length > 0)) && (
-        <CardFooter className="flex items-center justify-between">
-          {data.endsIn && isWithinDays(data.endsIn) && (
-            <Badge className="text-[10px] sm:text-xs" size="sm">
-              <AnimatedCountdown endsIn={data.endsIn} showSeconds={showSeconds} />
-            </Badge>
-          )}
 
-          {data.reviews && data.reviews.length > 0 && (
-            <div className="ml-auto flex items-center gap-1 md:gap-2">
-              <StarRating readOnly value={calculateAverageRating(data.reviews)} />
+      <CardFooter className="flex items-center justify-between">
+        {data.endsIn && isWithinDays(data.endsIn) && (
+          <Badge className="text-[10px] sm:text-xs" size="sm">
+            <AnimatedCountdown endsIn={data.endsIn} showSeconds={showSeconds} />
+          </Badge>
+        )}
 
-              <p className="hidden text-gray-600 text-xs sm:block">
-                {data.reviews?.reduce((sum, review) => sum + review.rating, 0)}
-              </p>
-            </div>
-          )}
-        </CardFooter>
-      )}
+        {data.reviews && data.reviews.length > 0 && (
+          <div className="ml-auto flex items-center gap-1 md:gap-2">
+            <StarRating readOnly value={calculateAverageRating(data.reviews)} />
+
+            <p className="hidden text-gray-600 text-xs sm:block">
+              {data.reviews?.reduce((sum, review) => sum + review.rating, 0)}
+            </p>
+          </div>
+        )}
+      </CardFooter>
     </Card>
   );
 };

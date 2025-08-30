@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ShareCard } from "@/components/global/share-card";
@@ -322,7 +323,7 @@ export default async function ProductPage({ params }: Props) {
       <FrequentlyBoughtTogether comboDeals={comboDeals} currentProduct={res} />
 
       {/* Related Deals Section */}
-      <Suspense fallback={<RelatedDealsSkeleton />}>
+      <Suspense fallback={<DealsSkeleton />}>
         <OtherDeals categoryName={res.category.name} categorySlug={res.category.slug} />
       </Suspense>
     </main>
@@ -344,7 +345,9 @@ async function OtherDeals({ categorySlug, categoryName }: OtherDealsProps) {
     <article className="container pb-12 md:pb-16 lg:pb-20">
       <div className="flex items-center justify-between">
         <h3 className="font-medium text-lg lg:text-xl">Related Deals in {categoryName}</h3>
-        <Button size="sm">View All</Button>
+        <Button asChild size="sm">
+          <Link href={`/deals?category=${categorySlug}`}>View All</Link>
+        </Button>
       </div>
       <div className="mt-6 grid grid-cols-2 gap-2 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-4">
         {relatedDeals.map((deal) => (
@@ -355,12 +358,18 @@ async function OtherDeals({ categorySlug, categoryName }: OtherDealsProps) {
   );
 }
 
-function RelatedDealsSkeleton() {
+function DealsSkeleton() {
   return (
-    <div className="mt-6 grid grid-cols-2 gap-2 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-4">
-      {Array.from({ length: 8 }).map((_, i) => (
-        <ProductCardSkeleton key={i} />
-      ))}
+    <div className="container pb-12 md:pb-16 lg:pb-20">
+      <div className="flex items-center justify-between">
+        <Skeleton className="h-6 w-32" />
+        <Skeleton className="h-8 w-24" />
+      </div>
+      <div className="mt-6 grid grid-cols-2 gap-2 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-4">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <ProductCardSkeleton key={i} />
+        ))}
+      </div>
     </div>
   );
 }
