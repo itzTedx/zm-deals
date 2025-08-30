@@ -1,6 +1,8 @@
 import type { Category, CategoryImage } from "@/server/schema/categories-schema";
 import type { Media } from "@/server/schema/media-schema";
 
+import { ProductQueryResult } from "../product/types";
+
 // Type for category with relations (from Drizzle query)
 export type CategoryWithRelations = Category & {
   images?: Array<
@@ -8,7 +10,7 @@ export type CategoryWithRelations = Category & {
       media: Media | null;
     }
   >;
-  products?: Array<{ id: string; title: string; slug: string; status: string }>;
+  products?: Array<ProductQueryResult>;
 };
 
 // Type for category data used in transformations
