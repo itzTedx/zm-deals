@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { ShareCard } from "@/components/global/share-card";
@@ -147,8 +146,8 @@ export default async function ProductPage({ params }: Props) {
       <BreadcrumbSchema items={breadcrumbItems} />
 
       <header className="container relative grid max-w-7xl grid-cols-1 gap-6 pt-6 pb-6 md:grid-cols-5 md:gap-8 md:pb-8 lg:gap-12 lg:pb-12">
-        {/* Image Carousel Section */}
         <div className="md:col-span-3">
+          {/* Breadcrumb Section */}
           <Breadcrumb className="pb-3">
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -166,18 +165,13 @@ export default async function ProductPage({ params }: Props) {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <ImageCarousel images={res.images} thumbPosition="bottom" />
+          {/* Image Carousel Section */}
+          <ImageCarousel images={res.images} showThumbs={res.images.length > 1} thumbPosition="bottom" />
+
+          {/* Product Overview Section */}
           <div className="mt-4 hidden space-y-2 md:block">
-            <h2 className="font-medium text-gray-500 text-sm">Product Overview</h2>
-            <p className="leading-relaxed">{res.description}</p>
-            <div className="mt-4 space-y-4">
-              {res.images.map((image) => (
-                <div className="relative aspect-4/3 overflow-hidden rounded-lg bg-card" key={image.media?.url}>
-                  <Image alt={res.title} className="object-cover" fill src={image.media?.url ?? ""} />
-                </div>
-              ))}
-            </div>
-            <p className="leading-relaxed">{res.overview}</p>
+            <p className="font-medium text-gray-500 text-sm">Product Overview</p>
+            <article className="prose" dangerouslySetInnerHTML={{ __html: res.description }} />
           </div>
         </div>
 
@@ -313,6 +307,10 @@ export default async function ProductPage({ params }: Props) {
           </div>
         </div>
       </header>
+
+      <div className="container md:hidden">
+        <article className="prose" dangerouslySetInnerHTML={{ __html: res.description }} />
+      </div>
 
       {/* Reviews Section */}
       <Reviews productId={res.id} reviews={res.reviews} />

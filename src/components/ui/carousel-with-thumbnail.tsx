@@ -57,6 +57,7 @@ const ImageContainer: React.FC<{
           <div className={"cursor-pointer"}>
             <Image
               alt={image?.alt ?? alt}
+              blurDataURL={image?.blurData ?? undefined}
               className={cn(
                 "absolute inset-0 h-full w-full",
                 fit === "contain" && "object-contain",
@@ -65,6 +66,7 @@ const ImageContainer: React.FC<{
                 classNameThumbnail
               )}
               fill
+              placeholder={image?.blurData ? "blur" : "empty"}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               src={image?.url ?? ""}
             />
