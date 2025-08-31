@@ -15,6 +15,8 @@ const nextConfig: NextConfig = {
     },
   },
 
+  allowedDevOrigins: ["zmdeals.shop"],
+
   // Turbopack optimizations
   experimental: {
     // Optimize package imports for Turbopack
