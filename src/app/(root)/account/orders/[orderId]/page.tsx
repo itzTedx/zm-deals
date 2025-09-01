@@ -9,22 +9,24 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { getSession } from "@/lib/auth/server";
+import { formatDate } from "@/lib/functions/format-date";
 import { getOrderById } from "@/modules/orders/actions/query";
 
+type Params = Promise<{ orderId: string }>;
+
 interface OrderDetailPageProps {
-  params: {
-    orderId: string;
-  };
+  params: Params;
 }
 
 export default async function OrderDetailPage({ params }: OrderDetailPageProps) {
   const session = await getSession();
+  const { orderId } = await params;
 
   if (!session) {
     redirect("/login");
   }
 
-  const result = await getOrderById(params.orderId);
+  const result = await getOrderById(orderId);
 
   if (!result.success || !result.order) {
     return (
@@ -84,19 +86,8 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
     }).format(numericPrice);
   };
 
-  const formatDate = (dateString: string | Date) => {
-    const date = typeof dateString === "string" ? new Date(dateString) : dateString;
-    return date.toLocaleDateString("en-AE", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
   return (
-    <div className="py-2">
+    <div className="pb-2">
       <div className="mb-6">
         <Button asChild className="mb-4" variant="ghost">
           <Link href="/account/orders">
@@ -104,7 +95,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
             Back to Orders
           </Link>
         </Button>
-        <h1 className="font-bold text-2xl">Order #{order.orderNumber}</h1>
+        <h1 className="font-medium text-2xl">Order #{order.orderNumber}</h1>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -112,12 +103,6 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
         <div className="space-y-6 lg:col-span-2">
           {/* Order Status */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                {getStatusIcon(order.status)}
-                Order Status
-              </CardTitle>
-            </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
@@ -138,8 +123,8 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
 
           {/* Order Items */}
           <Card>
-            <CardHeader>
-              <CardTitle>Items Ordered</CardTitle>
+            <CardHeader className="px-1.5 pt-1.5">
+              <CardTitle className="font-medium text-gray-500 text-sm">Items Ordered</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -172,8 +157,8 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
           {/* Order History */}
           {order.history && order.history.length > 0 && (
             <Card>
-              <CardHeader>
-                <CardTitle>Order History</CardTitle>
+              <CardHeader className="px-1.5 pt-1.5">
+                <CardTitle className="font-medium text-gray-500 text-sm">Order History</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -182,7 +167,11 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
                       <div className="mt-1 h-2 w-2 rounded-full bg-blue-500" />
                       <div className="flex-1">
                         <p className="font-medium text-sm">{history.changeReason || "Status updated"}</p>
-                        <p className="text-muted-foreground text-xs">{formatDate(history.createdAt)}</p>
+                        <p className="text-muted-foreground text-xs">
+                          {formatDate(history.createdAt, {
+                            includeTime: true,
+                          })}
+                        </p>
                         {history.changeNote && (
                           <p className="mt-1 text-muted-foreground text-xs">{history.changeNote}</p>
                         )}
@@ -199,8 +188,8 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
         <div className="space-y-6">
           {/* Order Summary */}
           <Card>
-            <CardHeader>
-              <CardTitle>Order Summary</CardTitle>
+            <CardHeader className="px-1.5 pt-1.5">
+              <CardTitle className="font-medium text-gray-500 text-sm">Order Summary</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
@@ -230,7 +219,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
 
           {/* Customer Information */}
           <Card>
-            <CardHeader>
+            <CardHeader className="px-1.5 pt-1.5">
               <CardTitle className="flex items-center gap-2">
                 <CreditCard className="h-4 w-4" />
                 Customer Information
@@ -298,7 +287,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
           {order.customerNote && (
             <Card>
               <CardHeader>
-                <CardTitle>Order Note</CardTitle>
+                <CardTitle className="font-medium text-gray-500 text-sm">Order Note</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm">{order.customerNote}</p>
