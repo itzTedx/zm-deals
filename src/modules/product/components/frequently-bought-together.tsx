@@ -9,9 +9,9 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { LoadingSwap } from "@/components/ui/loading-swap";
 
-import { IconCurrency } from "@/assets/icons";
+import { IconCheckboxFilled, IconCurrency } from "@/assets/icons";
 
 import { calculateDiscount } from "@/lib/utils";
 import { addComboDealToCart } from "@/modules/cart/actions/mutation";
@@ -73,100 +73,73 @@ export function FrequentlyBoughtTogether({ comboDeals, currentProduct }: Frequen
   return (
     <section className="container max-w-7xl space-y-6 pb-8 md:pb-12 lg:pb-16">
       <div className="space-y-4">
-        <h2 className="font-semibold text-gray-700 text-lg">FREQUENTLY BOUGHT TOGETHER</h2>
+        <h2 className="font-medium text-gray-700 text-lg">Buy together for less</h2>
 
         <Card className="border-2 border-gray-100">
           <CardContent className="p-6">
             <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:space-x-6 lg:space-y-0">
               {/* Products Carousel */}
-              <div className="flex-1">
-                <Carousel
-                  className="w-full"
-                  opts={{
-                    align: "start",
-                    loop: false,
-                    dragFree: true,
-                  }}
-                >
-                  <CarouselContent className="-ml-2">
-                    {/* Current Product */}
-                    <CarouselItem className="basis-auto pl-2">
-                      <div className="relative flex w-48 flex-col items-center space-y-2 rounded-lg border-2 border-blue-500 bg-blue-50 p-4">
-                        <div className="-top-2 -left-2 absolute flex h-6 w-6 items-center justify-center rounded-full bg-blue-500 text-white">
-                          <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                              clipRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              fillRule="evenodd"
-                            />
-                          </svg>
-                        </div>
+              <div className="flex flex-1 gap-2">
+                {/* Current Product */}
+                <div className="basis-auto pl-2">
+                  <div className="relative flex w-48 flex-col items-center space-y-2 rounded-lg border-2 border-blue-500 bg-blue-50 p-4">
+                    <div className="-top-2 -right-2 absolute flex size-6 items-center justify-center rounded-full bg-white">
+                      <IconCheckboxFilled className="relative z-10 size-6 text-blue-500" />
+                      <span className="absolute inset-0 rounded-full bg-card" />
+                    </div>
 
-                        <div className="relative h-24 w-24 overflow-hidden rounded-lg">
-                          <Image
-                            alt={currentProduct.title}
-                            className="object-cover"
-                            fill
-                            src={currentProduct.images[0]?.media?.url || "/placeholder-product.jpg"}
-                          />
-                        </div>
+                    <div className="relative h-24 w-24 overflow-hidden rounded-lg">
+                      <Image
+                        alt={currentProduct.title}
+                        className="object-cover"
+                        fill
+                        src={currentProduct.images[0]?.media?.url || "/placeholder-product.jpg"}
+                      />
+                    </div>
 
-                        <div className="text-center">
-                          <p className="line-clamp-2 font-medium text-sm">{currentProduct.title}</p>
-                          <div className="flex items-center justify-center gap-1">
-                            <IconCurrency className="h-3 w-3 text-brand-400" />
-                            <span className="font-medium text-sm">{currentProduct.price}</span>
-                          </div>
-                        </div>
+                    <div className="text-center">
+                      <p className="line-clamp-2 font-medium text-sm">{currentProduct.title}</p>
+                      <div className="flex items-center justify-center gap-1">
+                        <IconCurrency className="h-3 w-3 text-brand-400" />
+                        <span className="font-medium text-sm">{currentProduct.price}</span>
                       </div>
-                    </CarouselItem>
+                    </div>
+                  </div>
+                </div>
 
-                    {/* Plus Sign */}
-                    <CarouselItem className="flex basis-auto items-center pl-2">
-                      <div className="flex h-24 w-12 items-center justify-center">
-                        <span className="font-bold text-3xl text-gray-400">+</span>
+                {/* Plus Sign */}
+                <div className="flex basis-auto items-center pl-2">
+                  <div className="flex h-24 w-12 items-center justify-center">
+                    <span className="text-3xl text-gray-400">+</span>
+                  </div>
+                </div>
+
+                {/* Other Products */}
+                {otherProducts.map((comboProduct) => (
+                  <div className="basis-auto pl-2" key={comboProduct.id}>
+                    <div className="relative flex w-48 flex-col items-center space-y-2 rounded-lg border p-4">
+                      <div className="relative h-24 w-24 overflow-hidden rounded-lg">
+                        <Image
+                          alt={comboProduct.product?.title || "Product"}
+                          className="object-cover"
+                          fill
+                          src={comboProduct.product?.images?.[0]?.media?.url || "/placeholder-product.jpg"}
+                        />
                       </div>
-                    </CarouselItem>
 
-                    {/* Other Products */}
-                    {otherProducts.map((comboProduct) => (
-                      <CarouselItem className="basis-auto pl-2" key={comboProduct.id}>
-                        <div className="relative flex w-48 flex-col items-center space-y-2 rounded-lg border p-4">
-                          <div className="relative h-24 w-24 overflow-hidden rounded-lg">
-                            <Image
-                              alt={comboProduct.product?.title || "Product"}
-                              className="object-cover"
-                              fill
-                              src={comboProduct.product?.images?.[0]?.media?.url || "/placeholder-product.jpg"}
-                            />
-                          </div>
-
-                          <div className="text-center">
-                            <p className="line-clamp-2 font-medium text-sm">{comboProduct.product?.title}</p>
-                            <div className="flex items-center justify-center gap-1">
-                              <IconCurrency className="h-3 w-3 text-brand-400" />
-                              <span className="font-medium text-sm">{comboProduct.product?.price}</span>
-                            </div>
-                            <Badge className="mt-1 text-xs" variant="outline">
-                              {comboProduct.quantity > 1 ? `${comboProduct.quantity}x` : "1x"}
-                            </Badge>
-                          </div>
+                      <div className="text-center">
+                        <p className="line-clamp-2 font-medium text-sm">{comboProduct.product?.title}</p>
+                        <div className="flex items-center justify-center gap-1">
+                          <IconCurrency className="h-3 w-3 text-brand-400" />
+                          <span className="font-medium text-sm">{comboProduct.product?.price}</span>
                         </div>
-                      </CarouselItem>
-                    ))}
-
-                    {/* Scroll Button */}
-                    {otherProducts.length > 2 && (
-                      <CarouselItem className="flex basis-auto items-center pl-2">
-                        <CarouselNext className="static h-12 w-12 translate-y-0 border-2 border-gray-300 bg-white text-gray-600 hover:bg-gray-50" />
-                      </CarouselItem>
-                    )}
-                  </CarouselContent>
-
-                  {otherProducts.length > 2 && (
-                    <CarouselPrevious className="-left-4 -translate-y-1/2 absolute top-1/2 h-12 w-12 border-2 border-gray-300 bg-white text-gray-600 hover:bg-gray-50" />
-                  )}
-                </Carousel>
+                        <Badge className="absolute top-2 right-2" size="sm" variant="outline">
+                          {comboProduct.quantity}x
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
 
               {/* Combo Summary */}
@@ -197,31 +170,27 @@ export function FrequentlyBoughtTogether({ comboDeals, currentProduct }: Frequen
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600 text-sm">Original Price:</span>
                     <span className="text-gray-500 text-sm line-through">
-                      <IconCurrency className="inline h-3 w-3 text-brand-400" />
+                      <IconCurrency className="inline size-3 text-gray-400" />
                       {totalOriginalPrice.toFixed(2)}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600 text-sm">Combo Price:</span>
-                    <span className="font-bold text-brand-600 text-lg">
-                      <IconCurrency className="inline h-4 w-4 text-brand-400" />
-                      {comboDeal.comboPrice}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600 text-sm">You Save:</span>
-                    <Badge className="text-sm" variant="destructive">
-                      Save {calculateDiscount(totalOriginalPrice, Number(comboDeal.comboPrice))}%
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <Badge className="text-xs" size="sm" variant="destructive">
+                        Save {calculateDiscount(totalOriginalPrice, Number(comboDeal.comboPrice))}%
+                      </Badge>
+                      <span className="flex items-center font-bold text-brand-600 text-lg">
+                        <IconCurrency className="size-4" />
+                        {comboDeal.comboPrice}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
                 <Button className="w-full" disabled={isLoading} onClick={handleAddComboToCart} size="lg">
-                  {isLoading ? "Adding to Cart..." : "ADD COMBO TO CART FOR "}
-                  {!isLoading && <IconCurrency className="ml-1 h-4 w-4" />}
-                  {!isLoading && comboDeal.comboPrice}
+                  <LoadingSwap isLoading={isLoading}>Add Combo to cart</LoadingSwap>
                 </Button>
               </div>
             </div>
