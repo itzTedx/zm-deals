@@ -44,8 +44,13 @@ function getTimeBasedKey(): string {
 
 // Database query functions for individual sections
 async function getAllProductsFromDatabase(): Promise<ProductQueryResult[]> {
+  const now = new Date();
   const allProducts = await db.query.products.findMany({
-    where: eq(products.status, "published"),
+    where: and(
+      eq(products.status, "published"),
+      or(isNull(comboDeals.startsAt), lte(comboDeals.startsAt, now)),
+      or(isNull(comboDeals.endsAt), gte(comboDeals.endsAt, now))
+    ),
     with: {
       meta: true,
       inventory: true,

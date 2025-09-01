@@ -21,7 +21,7 @@ export type ProductQueryResult = InferSelectModel<typeof products> & {
   images: ProductImage[];
   meta?: Meta | null;
   inventory: Inventory;
-  category: Category;
+  category: Category | null;
 };
 
 export type ProductCardDate = InferSelectModel<typeof products> & {

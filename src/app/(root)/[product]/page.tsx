@@ -324,14 +324,14 @@ export default async function ProductPage({ params }: Props) {
 
       {/* Related Deals Section */}
       <Suspense fallback={<DealsSkeleton />}>
-        <OtherDeals categoryName={res.category.name} categorySlug={res.category.slug} />
+        <OtherDeals categoryName={res.category?.name} categorySlug={res.category?.slug} />
       </Suspense>
     </main>
   );
 }
 interface OtherDealsProps {
-  categorySlug: string;
-  categoryName: string | null;
+  categorySlug: string | undefined;
+  categoryName: string | undefined;
 }
 
 async function OtherDeals({ categorySlug, categoryName }: OtherDealsProps) {
