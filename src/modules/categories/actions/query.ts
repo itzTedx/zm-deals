@@ -36,6 +36,7 @@ export async function getCategoriesForNavbar() {
     with: {
       images: { with: { media: true } },
     },
+    orderBy: [asc(categories.name)],
   });
 }
 

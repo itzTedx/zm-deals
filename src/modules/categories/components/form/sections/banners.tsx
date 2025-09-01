@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { UploadDropzoneProgress } from "@/components/ui/upload-dropzone-progress";
 
-import { formatSize } from "@/lib/utils";
+import { formatBytes } from "@/lib/utils";
 import { CategorySchema } from "@/modules/categories/schema";
 import { getImageMetadata } from "@/modules/product/actions/helper";
 import {
@@ -91,7 +91,7 @@ export const CategoryBanners = () => {
                       control={bannerControl}
                       description={{
                         maxFiles: CATEGORY_BANNER_FILE_MAX_FILES - (form.watch("banners")?.length || 0),
-                        maxFileSize: formatSize(CATEGORY_BANNER_FILE_MAX_SIZE),
+                        maxFileSize: formatBytes(CATEGORY_BANNER_FILE_MAX_SIZE),
                       }}
                     />
                   )}

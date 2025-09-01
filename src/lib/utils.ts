@@ -65,7 +65,7 @@ export async function copyToClipboard(text: string): Promise<boolean> {
  * @param decimals - Number of decimal places (default: 2)
  * @returns A formatted string representing the file size (e.g., "1.5 MB", "2.3 GB")
  */
-export function formatSize(bytes: number, decimals = 2): string {
+export function formatBytes(bytes: number, decimals = 2): string {
   if (bytes === 0) return "0 Bytes";
 
   const k = 1024;

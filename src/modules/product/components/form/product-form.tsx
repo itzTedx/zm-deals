@@ -93,8 +93,8 @@ export const ProductForm = ({ initialData, isEditMode, categories }: Props) => {
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 pt-4 pb-12">
       <Form {...form}>
-        <form className="grid grid-cols-3 gap-4" onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="col-span-full flex items-center justify-between">
+        <form className="grid gap-4 md:grid-cols-3" onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="flex items-center justify-between md:col-span-full">
             <div className="flex items-center gap-2">
               <h1 className="flex items-center gap-2 font-medium text-gray-600 text-xl leading-none">
                 <IconProduct className="size-4 text-gray-500" /> <IconChevronRight className="text-gray-400" />{" "}
@@ -108,11 +108,13 @@ export const ProductForm = ({ initialData, isEditMode, categories }: Props) => {
                 </Button>
               )}
               <Button disabled={isLoading} size="sm">
-                <LoadingSwap isLoading={isLoading}>{isEditMode ? "Update" : "Create"} Product</LoadingSwap>
+                <LoadingSwap isLoading={isLoading}>
+                  {isEditMode ? "Update" : "Create"} <span className="hidden md:inline">Product</span>
+                </LoadingSwap>
               </Button>
             </div>
           </div>
-          <div className="relative col-span-2 space-y-4">
+          <div className="relative space-y-4 md:col-span-2">
             <ProductDetails />
             <PricingInventory />
             <Shipping />

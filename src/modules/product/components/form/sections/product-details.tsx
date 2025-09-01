@@ -9,14 +9,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { UploadDropzoneProgress } from "@/components/ui/upload-dropzone-progress";
 
-import { cn } from "@/lib/utils";
+import { cn, formatBytes } from "@/lib/utils";
 import { getImageMetadata } from "@/modules/product/actions/helper";
-import {
-  PRODUCT_FILE_MAX_FILES,
-  PRODUCT_FILE_MAX_SIZE,
-  PRODUCT_FILE_TYPES,
-  PRODUCT_UPLOAD_ROUTE,
-} from "@/modules/product/constants";
+import { PRODUCT_FILE_MAX_FILES, PRODUCT_FILE_MAX_SIZE, PRODUCT_UPLOAD_ROUTE } from "@/modules/product/constants";
 import { MediaSchema, ProductSchema } from "@/modules/product/schema";
 
 import { ImageManagement } from "./ui/image-management";
@@ -117,8 +112,7 @@ export const ProductDetails = () => {
                     control={control}
                     description={{
                       maxFiles: PRODUCT_FILE_MAX_FILES - images.length,
-                      maxFileSize: PRODUCT_FILE_MAX_SIZE.toString(),
-                      fileTypes: PRODUCT_FILE_TYPES.join(", "),
+                      maxFileSize: formatBytes(PRODUCT_FILE_MAX_SIZE),
                     }}
                   />
 
