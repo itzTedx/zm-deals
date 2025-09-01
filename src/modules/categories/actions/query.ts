@@ -191,13 +191,7 @@ export async function getCategory(id: string): Promise<CategoryData | null> {
   const log = createLog("Category");
 
   try {
-    return await cache.hybrid.get(
-      cache.keys.category(id),
-      cache.config.TAGS.CATEGORY,
-      () => getCategoryFromDatabase(id),
-      cache.config.TTL.LONG,
-      cache.config.REVALIDATE.LONG
-    );
+    return await getCategoryFromDatabase(id);
   } catch (error) {
     log.error("Error fetching category", error instanceof Error ? error.message : String(error));
     console.error("Error fetching category:", error);
