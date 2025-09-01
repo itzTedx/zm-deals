@@ -12,7 +12,7 @@ interface Props {
 
 export const AccountSidebar = ({ session }: Props) => {
   return (
-    <div className="hidden space-y-4 lg:block">
+    <div className="hidden h-fit space-y-4 sm:sticky sm:top-32 lg:block">
       {session && (
         <div className="rounded-lg bg-card p-4">
           <div className="flex items-center gap-2">

@@ -6,13 +6,13 @@ import { HeartIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
+import { ProductCard } from "@/modules/product/components";
 import { getWishlistData } from "@/modules/wishlist/actions/query";
-import { WishlistItems } from "@/modules/wishlist/components/wishlist-items";
 
 async function WishlistContent() {
-  const wishlistData = await getWishlistData();
+  const data = await getWishlistData();
 
-  if (wishlistData.itemCount === 0) {
+  if (data.itemCount === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
         <HeartIcon className="size-16 text-muted-foreground/50" />
@@ -25,7 +25,13 @@ async function WishlistContent() {
     );
   }
 
-  return <WishlistItems items={wishlistData.items} />;
+  return (
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {data.items.map((item) => (
+        <ProductCard data={item.product} key={item.id} />
+      ))}
+    </div>
+  );
 }
 
 export default function WishlistsPage() {
