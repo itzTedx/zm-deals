@@ -2,7 +2,7 @@
 
 import { headers } from "next/headers";
 
-import { desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 import { auth } from "@/lib/auth/server";
 import { createLog } from "@/lib/logging";
@@ -57,5 +57,40 @@ export async function getAllUsers(): Promise<{ success: boolean; users?: UserDat
   } catch (error) {
     log.error("Failed to fetch users", error);
     return { success: false, error: "Failed to fetch users" };
+  }
+}
+
+export async function getCurrentUser(): Promise<{ success: boolean; user?: UserData; error?: string }> {
+  const log = createLog("Current User");
+
+  log.info("Starting to fetch current user");
+
+  try {
+    // Get session and verify authentication
+    const session = await auth.api.getSession({ headers: await headers() });
+
+    if (!session) {
+      log.warn("Unauthorized access attempt to fetch current user");
+      return { success: false, error: "Not authenticated" };
+    }
+
+    log.auth("Current user fetch authorized", session.user.id);
+
+    // Fetch current user from the database
+    const currentUser = await db.query.users.findFirst({
+      where: eq(users.id, session.user.id),
+    });
+
+    if (!currentUser) {
+      log.warn("Current user not found in database", session.user.id);
+      return { success: false, error: "User not found" };
+    }
+
+    log.info("Successfully fetched current user");
+
+    return { success: true, user: currentUser };
+  } catch (error) {
+    log.error("Failed to fetch current user", error);
+    return { success: false, error: "Failed to fetch current user" };
   }
 }
