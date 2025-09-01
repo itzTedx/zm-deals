@@ -40,8 +40,8 @@ import { ProductCard } from "@/modules/product/components";
 import { EndsInCounter } from "@/modules/product/components/ends-in-counter";
 import { FrequentlyBoughtTogether } from "@/modules/product/components/frequently-bought-together";
 import { ProductCardSkeleton } from "@/modules/product/components/product-card";
+import { AddToCart } from "@/modules/product/components/ui/add-to-cart";
 import { CheckboxBadge } from "@/modules/product/components/ui/checkbox-badge";
-import { CheckoutWithQuantity } from "@/modules/product/components/ui/checkout-with-quantity";
 import { Reviews } from "@/modules/product/sections/reviews";
 
 type Params = Promise<{ product: string }>;
@@ -121,7 +121,7 @@ export default async function ProductPage({ params }: Props) {
   if (!res) {
     return notFound();
   }
-  console.log(res);
+
   // Get combo deals that include this product
   const comboDeals = await getComboDealsByProductId(res.id);
 
@@ -226,7 +226,7 @@ export default async function ProductPage({ params }: Props) {
           </div>
 
           {/* CTA Button */}
-          <CheckoutWithQuantity data={res} />
+          <AddToCart data={res} />
 
           <SeparatorBox />
           <div className="space-y-4">
@@ -266,25 +266,36 @@ export default async function ProductPage({ params }: Props) {
                 <BannerText>
                   <BannerTitle className="font-medium text-gray-500">Order Guarantee</BannerTitle>
                   <BannerDescription>
-                    <Carousel
-                      className="w-full"
-                      opts={{
-                        dragFree: true,
-                        containScroll: "trimSnaps",
-                      }}
-                    >
-                      <CarouselContent className="-ml-2">
-                        <CarouselItem className="basis-auto pl-2">
-                          <CheckboxBadge className="select-none">Free Returns</CheckboxBadge>
-                        </CarouselItem>
-                        <CarouselItem className="basis-auto pl-2">
-                          <CheckboxBadge className="select-none">Return if item damaged</CheckboxBadge>
-                        </CarouselItem>
-                        <CarouselItem className="basis-auto pl-2">
-                          <CheckboxBadge className="select-none">Cash on Delivery</CheckboxBadge>
-                        </CarouselItem>
-                      </CarouselContent>
-                    </Carousel>
+                    <div className="relative py-1">
+                      <Carousel
+                        className="w-full"
+                        opts={{
+                          align: "start",
+                          loop: false,
+                          dragFree: true,
+                        }}
+                      >
+                        <CarouselContent className="-ml-1">
+                          <CarouselItem className="basis-auto pl-1">
+                            <div className="inline-flex h-9 items-center justify-center whitespace-nowrap">
+                              <CheckboxBadge className="select-none">Free Returns</CheckboxBadge>
+                            </div>
+                          </CarouselItem>
+                          <CarouselItem className="basis-auto pl-1">
+                            <div className="inline-flex h-9 items-center justify-center whitespace-nowrap">
+                              <CheckboxBadge className="select-none">Return if item damaged</CheckboxBadge>
+                            </div>
+                          </CarouselItem>
+                          {!res.cashOnDelivery && (
+                            <CarouselItem className="basis-auto pl-1">
+                              <div className="inline-flex h-9 items-center justify-center whitespace-nowrap">
+                                <CheckboxBadge className="select-none">Cash on Delivery</CheckboxBadge>
+                              </div>
+                            </CarouselItem>
+                          )}
+                        </CarouselContent>
+                      </Carousel>
+                    </div>
                   </BannerDescription>
                 </BannerText>
               </BannerContent>

@@ -36,8 +36,8 @@ import { calculateDiscount, cn } from "@/lib/utils";
 import { Deals } from "@/modules/home/sections";
 import { getProductBySlug } from "@/modules/product/actions/query";
 import { EndsInCounter } from "@/modules/product/components/ends-in-counter";
+import { CheckoutWithQuantity } from "@/modules/product/components/ui/add-to-cart";
 import { CheckboxBadge } from "@/modules/product/components/ui/checkbox-badge";
-import { CheckoutWithQuantity } from "@/modules/product/components/ui/checkout-with-quantity";
 import { Reviews } from "@/modules/product/sections/reviews";
 
 type Params = Promise<{ product: string }>;

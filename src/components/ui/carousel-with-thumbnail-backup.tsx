@@ -40,10 +40,13 @@ const getAspectRatioClass = (ratio?: string) => {
 
 const ImageContainer: React.FC<{
   image: Media | null;
-
+  alt: string;
+  fit?: "cover" | "contain" | "fill";
   aspectRatio?: string;
+  showImageControls?: boolean;
   classNameImage?: string;
-}> = ({ aspectRatio, classNameImage, image }) => {
+  classNameThumbnail?: string;
+}> = ({ alt, aspectRatio, classNameImage, classNameThumbnail, fit = "cover", image, showImageControls }) => {
   return (
     <div className={cn("relative w-full overflow-hidden rounded-lg bg-card", getAspectRatioClass(aspectRatio))}>
       <Image
@@ -55,6 +58,79 @@ const ImageContainer: React.FC<{
         sizes="(max-width: 768px) 90vw, (max-width: 1200px) 80vw, 70vw"
         src={image?.url ?? ""}
       />
+      {/* <Dialog>
+        <DialogTrigger asChild>
+          <div className={"cursor-pointer"}>
+            <Image
+              alt={image?.alt ?? alt}
+              blurDataURL={image?.blurData ?? undefined}
+              className={cn(
+                "absolute inset-0 h-full w-full",
+                fit === "contain" && "object-contain",
+                fit === "cover" && "object-cover",
+                fit === "fill" && "object-fill",
+                classNameThumbnail
+              )}
+              fill
+              placeholder={image?.blurData ? "blur" : "empty"}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              src={image?.url ?? ""}
+            />
+          </div>
+        </DialogTrigger>
+
+        <DialogContent className="lg:max-w-fit" showCloseButton={false}>
+          <DialogTitle className="sr-only">{image?.alt ?? "Image"}</DialogTitle>
+          <DialogDescription className="sr-only">{image?.alt ?? "Image"}</DialogDescription>
+
+          <div>
+            <TransformWrapper initialPositionX={0} initialPositionY={0} initialScale={1}>
+              {({ zoomIn, zoomOut }) => (
+                <>
+                  <TransformComponent>
+                    <Image
+                      alt={image?.alt ?? "Full size"}
+                      blurDataURL={image?.blurData ?? undefined}
+                      className={cn("max-h-[90vh] max-w-[90vw] object-contain", classNameImage)}
+                      height={800}
+                      placeholder={image?.blurData ? "blur" : "empty"}
+                      sizes="(max-width: 768px) 90vw, (max-width: 1200px) 80vw, 70vw"
+                      src={image?.url ?? ""}
+                      width={1200}
+                    />
+                  </TransformComponent>
+                  {showImageControls && (
+                    <div className="-translate-x-1/2 absolute bottom-4 left-1/2 z-10 flex gap-2">
+                      <button
+                        aria-label="Zoom out"
+                        className="cursor-pointer rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
+                        onClick={() => zoomOut()}
+                      >
+                        <MinusCircle className="size-6" />
+                      </button>
+                      <button
+                        aria-label="Zoom in"
+                        className="cursor-pointer rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
+                        onClick={() => zoomIn()}
+                      >
+                        <PlusCircle className="size-6" />
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </TransformWrapper>
+            <DialogClose asChild>
+              <button
+                aria-label="Close"
+                className="absolute top-4 right-4 z-10 cursor-pointer rounded-full border bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
+              >
+                <X className="size-6" />
+              </button>
+            </DialogClose>
+          </div>
+        </DialogContent>
+      </Dialog> */}
     </div>
   );
 };
@@ -249,10 +325,6 @@ const ImageCarousel: React.FC<ImageCarousel_BasicProps> = ({
     };
   }, [emblaApi, onSelect]);
 
-  if (images.length === 1) {
-    return <ImageContainer aspectRatio={aspectRatio} classNameImage={classNameImage} image={images[0].media} />;
-  }
-
   return (
     <div
       aria-roledescription="carousel"
@@ -304,7 +376,15 @@ const ImageCarousel: React.FC<ImageCarousel_BasicProps> = ({
                 key={index}
                 role="group"
               >
-                <ImageContainer aspectRatio={aspectRatio} classNameImage={classNameImage} image={image.media} />
+                <ImageContainer
+                  alt={`Slide ${index + 1}`}
+                  aspectRatio={aspectRatio}
+                  classNameImage={classNameImage}
+                  classNameThumbnail={classNameThumbnail}
+                  fit={imageFit}
+                  image={image.media}
+                  showImageControls={showImageControls}
+                />
               </div>
             ))}
           </div>

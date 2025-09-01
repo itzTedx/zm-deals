@@ -10,7 +10,6 @@ import { LoadingSwap } from "@/components/ui/loading-swap";
 
 import { ChevronRightIcon, ChevronRightIconHandle } from "@/assets/icons";
 
-import { useSession } from "@/lib/auth/client";
 import { addToCart } from "@/modules/cart/actions/mutation";
 
 import { ProductQueryResult } from "../../types";
@@ -22,16 +21,10 @@ interface Props {
 
 export const BuyButton = ({ data, quantity = 1 }: Props) => {
   const ref = useRef<ChevronRightIconHandle>(null);
-  const { data: session } = useSession();
   const [isLoading, startTransition] = useTransition();
   const router = useRouter();
 
   async function handleCheckout() {
-    if (!session) {
-      toast.error("Please sign in to add items to cart");
-      return;
-    }
-
     startTransition(async () => {
       try {
         const result = await addToCart(data.id.toString(), quantity);

@@ -15,7 +15,7 @@ interface Props {
   data: ProductQueryResult;
 }
 
-export const CheckoutWithQuantity = ({ data }: Props) => {
+export const AddToCart = ({ data }: Props) => {
   const [quantity, setQuantity] = useState(1);
 
   const handleQuantityChange = (newQuantity: number) => {
