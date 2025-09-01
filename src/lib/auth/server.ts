@@ -146,6 +146,7 @@ export const auth = betterAuth({
       maxAge: 5 * 60,
     },
   },
+
   trustedOrigins: [env.BASE_URL, "http://192.168.1.30:3000", "https://zmdeals.shop"],
 });
 

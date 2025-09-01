@@ -12,6 +12,10 @@ import {
   CATEGORY_FILE_MAX_SIZE,
   CATEGORY_FILE_TYPES,
   CATEGORY_UPLOAD_ROUTE,
+  COMBO_DEAL_FILE_MAX_FILES,
+  COMBO_DEAL_FILE_MAX_SIZE,
+  COMBO_DEAL_FILE_TYPES,
+  COMBO_DEAL_UPLOAD_ROUTE,
   EDITOR_FILE_MAX_SIZE,
   EDITOR_FILE_TYPES,
   EDITOR_UPLOAD_ROUTE,
@@ -199,6 +203,44 @@ const router: Router = {
           return { metadata: { urls } };
         } catch (error) {
           log.error("Error in onAfterSignedUrl", error);
+          throw error;
+        }
+      },
+    }),
+    [COMBO_DEAL_UPLOAD_ROUTE]: route({
+      fileTypes: COMBO_DEAL_FILE_TYPES,
+      multipleFiles: true,
+      maxFiles: COMBO_DEAL_FILE_MAX_FILES,
+      maxFileSize: COMBO_DEAL_FILE_MAX_SIZE,
+
+      onBeforeUpload: async () => {
+        try {
+          await authenticateUser();
+          return {
+            generateObjectKey: ({ file }: { file: { name: string; size: number; type: string } }) =>
+              generateObjectKey(file, COMBO_DEAL_UPLOAD_ROUTE),
+          };
+        } catch (error) {
+          log.error("Error in onBeforeUpload for combo deal", error);
+          throw error;
+        }
+      },
+
+      onAfterSignedUrl: async ({ files }) => {
+        try {
+          log.info("Processing combo deal image uploads", { fileCount: files.length });
+
+          const urls = files.map((file) => {
+            const url = generatePublicUrl(file.objectKey);
+            log.file("Generated combo deal image URL", url);
+            return url;
+          });
+
+          log.success("Successfully generated URLs for combo deal images", { count: urls.length });
+
+          return { metadata: { urls } };
+        } catch (error) {
+          log.error("Error in onAfterSignedUrl for combo deal", error);
           throw error;
         }
       },

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { useUploadFiles } from "better-upload/client";
 import { format } from "date-fns";
 import { CalendarIcon, GripVertical, Plus, X } from "lucide-react";
 
@@ -16,9 +17,16 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { UploadDropzoneProgress } from "@/components/ui/upload-dropzone-progress";
 
-import { cn } from "@/lib/utils";
+import { cn, formatBytes } from "@/lib/utils";
+import { getImageMetadata } from "@/modules/product/actions/helper";
 import { getProducts } from "@/modules/product/actions/query";
+import {
+  COMBO_DEAL_FILE_MAX_FILES,
+  COMBO_DEAL_FILE_MAX_SIZE,
+  COMBO_DEAL_UPLOAD_ROUTE,
+} from "@/modules/product/constants";
 
 import { createComboDeal, updateComboDeal } from "../actions/mutation";
 import type { ComboDealFormData, ComboDealWithProducts } from "../types";
@@ -62,6 +70,7 @@ export function ComboDealForm({ initialData, isEditMode = false }: ComboDealForm
     endsAt: initialData?.endsAt || undefined,
     maxQuantity: initialData?.maxQuantity || undefined,
     products: [],
+    images: initialData?.images || [],
   });
 
   useEffect(() => {
@@ -144,6 +153,47 @@ export function ComboDealForm({ initialData, isEditMode = false }: ComboDealForm
     const original = calculateOriginalPrice();
     return original - formData.comboPrice;
   };
+
+  const { control: imageControl } = useUploadFiles({
+    route: COMBO_DEAL_UPLOAD_ROUTE,
+    onUploadComplete: async ({ files, metadata: objectMetadata }) => {
+      // Get current images array
+      const currentImages = formData.images || [];
+
+      // Check if we can add more images
+      const availableSlots = COMBO_DEAL_FILE_MAX_FILES - currentImages.length;
+      const filesToProcess = files.slice(0, availableSlots);
+
+      if (filesToProcess.length === 0) {
+        return;
+      }
+
+      // Process each uploaded file
+      for (let i = 0; i < filesToProcess.length; i++) {
+        const file = filesToProcess[i];
+
+        try {
+          const metadata = await getImageMetadata(file.raw);
+
+          // Create new image object
+          const newImage = {
+            ...metadata,
+            url: (objectMetadata.urls as string[])[i] || (objectMetadata.url as string),
+            isFeatured: currentImages.length === 0 && i === 0,
+            sortOrder: currentImages.length === 0 && i === 0 ? 0 : currentImages.length + i + 1,
+            key: file.objectKey,
+          };
+
+          setFormData((prev) => ({
+            ...prev,
+            images: [...(prev.images || []), newImage],
+          }));
+        } catch (error) {
+          console.error("Error processing file:", error);
+        }
+      }
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -406,6 +456,52 @@ export function ComboDealForm({ initialData, isEditMode = false }: ComboDealForm
             <Plus className="mr-2 h-4 w-4" />
             Add Product
           </Button>
+        </CardContent>
+      </Card>
+
+      {/* Images Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Images</CardTitle>
+          <CardDescription>Upload images for your combo deal</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <UploadDropzoneProgress
+            accept="image/*"
+            control={imageControl}
+            description={{
+              maxFiles: COMBO_DEAL_FILE_MAX_FILES - (formData.images?.length || 0),
+              maxFileSize: formatBytes(COMBO_DEAL_FILE_MAX_SIZE),
+            }}
+          />
+
+          {formData.images && formData.images.length > 0 && (
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+              {formData.images.map((image, index) => (
+                <div className="group relative" key={index}>
+                  <img
+                    alt={image.alt || "Combo deal image"}
+                    className="h-32 w-full rounded-lg object-cover"
+                    src={image.url}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black bg-opacity-50 opacity-0 transition-opacity group-hover:opacity-100">
+                    <Button
+                      onClick={() => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          images: prev.images?.filter((_, i) => i !== index),
+                        }));
+                      }}
+                      size="sm"
+                      variant="destructive"
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
 

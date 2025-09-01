@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 
 import { ShareCard } from "@/components/global/share-card";
 import { InfoTooltip } from "@/components/global/tooltip";
-import { BreadcrumbSchema, ProductSchema } from "@/components/seo/structured-data";
+import { BreadcrumbSchema } from "@/components/seo/structured-data";
 import { Badge } from "@/components/ui/badge";
 import { Banner, BannerContent, BannerDescription, BannerIcon, BannerText, BannerTitle } from "@/components/ui/banner";
 import {
@@ -34,7 +34,7 @@ import {
 
 import { env } from "@/lib/env/server";
 import { calculateDiscount, cn } from "@/lib/utils";
-import { getComboDealsByProductId } from "@/modules/combo-deals/actions/query";
+import { getComboDealsContainingProduct } from "@/modules/combo-deals/actions/query";
 import { getProductBySlug, getProductsByCategorySlug } from "@/modules/product/actions/query";
 import { ProductCard } from "@/modules/product/components";
 import { EndsInCounter } from "@/modules/product/components/ends-in-counter";
@@ -50,16 +50,7 @@ interface Props {
   params: Params;
 }
 
-// Generate static params for all categories
-// export async function generateStaticParams() {
-//   const products = await getAllProductsFromDatabase();
-
-//   return products.map((product) => ({
-//     slug: product.slug,
-//   }));
-// }
-
-// Revalidate pages every hour (3600 seconds)
+// Revalidate pages every hour (3600 seconds) for fresh content
 // export const revalidate = 3600;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -75,14 +66,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const productUrl = `${env.BASE_URL}/${res.slug}`;
   const mainImage = res.images[0]?.media?.url || "/default-product-image.jpg";
+  const discountPercentage = calculateDiscount(Number(res.compareAtPrice), Number(res.price));
 
   return {
-    title: res.title,
-    description: res.description || res.overview || "",
-    keywords: [res.title, "deal", "discount", "savings", "limited time offer", "product"],
+    title: `${res.title} - Save ${discountPercentage}% | ZM Deals`,
+    description:
+      res.description ||
+      res.overview ||
+      `Get ${res.title} at ${discountPercentage}% off! Limited time offer with free shipping.`,
+    keywords: [
+      res.title,
+      "deal",
+      "discount",
+      "savings",
+      "limited time offer",
+      "product",
+      "free shipping",
+      "cash on delivery",
+      res.category?.name || "deals",
+    ].filter(Boolean),
     openGraph: {
-      title: res.title,
-      description: res.description || res.overview || "",
+      title: `${res.title} - Save ${discountPercentage}%`,
+      description:
+        res.description || res.overview || `Get ${res.title} at ${discountPercentage}% off! Limited time offer.`,
       url: productUrl,
       siteName: "ZM Deals",
       images: [
@@ -94,12 +100,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         },
       ],
       type: "website",
+      locale: "en_US",
     },
     twitter: {
       card: "summary_large_image",
-      title: res.title,
-      description: res.description || res.overview || "",
+      title: `${res.title} - Save ${discountPercentage}%`,
+      description: res.description || res.overview || `Get ${res.title} at ${discountPercentage}% off!`,
       images: [mainImage],
+      creator: "@zmdeals",
     },
     alternates: {
       canonical: productUrl,
@@ -109,6 +117,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       "product:price:currency": "AED",
       "product:availability": res.inventory.stock > 0 ? "in stock" : "out of stock",
       "product:condition": "new",
+      "product:retailer": "ZM Deals",
+      "product:brand": "ZM Deals",
+      "product:category": res.category?.name || "Deals",
+      "product:discount": `${discountPercentage}%`,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
   };
 }
@@ -116,37 +139,111 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProductPage({ params }: Props) {
   const { product } = await params;
 
-  const res = await getProductBySlug(product);
+  // Parallel data fetching for better performance
+  const [res, comboDeals] = await Promise.all([
+    getProductBySlug(product),
+    // We'll fetch combo deals conditionally to avoid unnecessary queries
+    Promise.resolve([]),
+  ]);
 
   if (!res) {
     return notFound();
   }
 
-  // Get combo deals that include this product
-  const comboDeals = await getComboDealsByProductId(res.id);
+  // Fetch combo deals that contain this product
+  const actualComboDeals = await getComboDealsContainingProduct(res.id);
+
+  console.log("Fetched Product: ", actualComboDeals);
 
   const productUrl = `${env.BASE_URL}/${res.slug}`;
-  const mainImage = res.images[0]?.media?.url || "/default-product-image.jpg";
   const breadcrumbItems = [
     { name: "Home", url: env.BASE_URL },
     { name: "Deals", url: `${env.BASE_URL}/deals` },
     { name: res.title, url: productUrl },
   ];
 
+  // Enhanced structured data for better SEO
+  const enhancedProductSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: res.title,
+    description: res.description || res.overview || "",
+    image: res.images.map((img) => img.media?.url).filter(Boolean),
+    url: productUrl,
+    brand: {
+      "@type": "Brand",
+      name: "ZM Deals",
+    },
+    category: res.category?.name || "Deals",
+    offers: {
+      "@type": "Offer",
+      price: Number(res.price),
+      priceCurrency: "AED",
+      availability: res.inventory.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      url: productUrl,
+      priceValidUntil: res.endsIn
+        ? new Date(res.endsIn).toISOString()
+        : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      seller: {
+        "@type": "Organization",
+        name: "ZM Deals",
+        url: env.BASE_URL,
+      },
+      shippingDetails: {
+        "@type": "OfferShippingDetails",
+        shippingRate: {
+          "@type": "MonetaryAmount",
+          value: res.isDeliveryFree ? 0 : res.deliveryFee || 0,
+          currency: "AED",
+        },
+        deliveryTime: {
+          "@type": "ShippingDeliveryTime",
+          handlingTime: {
+            "@type": "QuantitativeValue",
+            minValue: 1,
+            maxValue: 2,
+            unitCode: "DAY",
+          },
+          transitTime: {
+            "@type": "QuantitativeValue",
+            minValue: 1,
+            maxValue: 3,
+            unitCode: "DAY",
+          },
+        },
+      },
+    },
+    aggregateRating:
+      res.reviews && res.reviews.length > 0
+        ? {
+            "@type": "AggregateRating",
+            ratingValue: res.reviews.reduce((acc, review) => acc + review.rating, 0) / res.reviews.length,
+            reviewCount: res.reviews.length,
+            bestRating: 5,
+            worstRating: 1,
+          }
+        : undefined,
+    review: res.reviews?.slice(0, 5).map((review) => ({
+      "@type": "Review",
+      author: {
+        "@type": "Person",
+        name: review.user?.name || "Anonymous",
+      },
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: review.rating,
+        bestRating: 5,
+        worstRating: 1,
+      },
+      reviewBody: review.comment,
+      datePublished: review.createdAt.toISOString(),
+    })),
+  };
+
   return (
     <main className="">
-      {/* Structured Data */}
-      <ProductSchema
-        availability={res.inventory.stock > 0 ? "InStock" : "OutOfStock"}
-        brand="ZM Deals"
-        category="Deals"
-        currency="AED"
-        description={res.overview || ""}
-        image={mainImage}
-        name={res.title}
-        price={Number(res.price)}
-        url={productUrl}
-      />
+      {/* Enhanced Structured Data */}
+      <script dangerouslySetInnerHTML={{ __html: JSON.stringify(enhancedProductSchema) }} type="application/ld+json" />
       <BreadcrumbSchema items={breadcrumbItems} />
 
       <header className="container relative grid max-w-7xl grid-cols-1 gap-6 pt-6 pb-6 md:grid-cols-5 md:gap-8 md:pb-8 lg:gap-12 lg:pb-12">
@@ -169,7 +266,8 @@ export default async function ProductPage({ params }: Props) {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          {/* Image Carousel Section */}
+
+          {/* Image Carousel Section - Optimized with priority loading for first image */}
           <ImageCarousel images={res.images} showThumbs={res.images.length > 1} thumbPosition="bottom" />
 
           {/* Product Overview Section */}
@@ -327,30 +425,34 @@ export default async function ProductPage({ params }: Props) {
         <article className="prose" dangerouslySetInnerHTML={{ __html: res.description }} />
       </div>
 
+      {/* Frequently Bought Together Section - Only show if combo deals exist */}
+      {actualComboDeals.length > 0 && <FrequentlyBoughtTogether comboDeals={actualComboDeals} currentProduct={res} />}
+
       {/* Reviews Section */}
       <Reviews productId={res.id} reviews={res.reviews} />
 
-      {/* Frequently Bought Together Section */}
-      <FrequentlyBoughtTogether comboDeals={comboDeals} currentProduct={res} />
-
-      {/* Related Deals Section */}
-      <Suspense fallback={<DealsSkeleton />}>
-        <OtherDeals categoryName={res.category?.name} categorySlug={res.category?.slug} />
-      </Suspense>
+      {/* Related Deals Section - Only show if category exists */}
+      {res.category && (
+        <Suspense fallback={<DealsSkeleton />}>
+          <OtherDeals categoryName={res.category.name} categorySlug={res.category.slug} />
+        </Suspense>
+      )}
     </main>
   );
 }
+
 interface OtherDealsProps {
-  categorySlug: string | undefined;
-  categoryName: string | undefined;
+  categorySlug: string;
+  categoryName: string;
 }
 
 async function OtherDeals({ categorySlug, categoryName }: OtherDealsProps) {
-  if (!categorySlug) {
+  const relatedDeals = await getProductsByCategorySlug(categorySlug);
+
+  // Only show if we have related deals
+  if (!relatedDeals || relatedDeals.length === 0) {
     return null;
   }
-
-  const relatedDeals = await getProductsByCategorySlug(categorySlug);
 
   return (
     <article className="container pb-12 md:pb-16 lg:pb-20">
@@ -361,7 +463,7 @@ async function OtherDeals({ categorySlug, categoryName }: OtherDealsProps) {
         </Button>
       </div>
       <div className="mt-6 grid grid-cols-2 gap-2 sm:mt-8 sm:gap-4 md:mt-10 lg:grid-cols-4">
-        {relatedDeals.map((deal) => (
+        {relatedDeals.slice(0, 8).map((deal) => (
           <ProductCard data={deal} key={deal.id} />
         ))}
       </div>

@@ -18,6 +18,30 @@ interface ProductSchemaProps {
   availability?: "InStock" | "OutOfStock" | "PreOrder";
   brand?: string;
   category?: string;
+  // Enhanced props for better SEO
+  images?: string[];
+  priceValidUntil?: string;
+  seller?: {
+    name: string;
+    url: string;
+  };
+  shippingDetails?: {
+    isFree: boolean;
+    fee?: number;
+    currency?: string;
+  };
+  aggregateRating?: {
+    ratingValue: number;
+    reviewCount: number;
+    bestRating: number;
+    worstRating: number;
+  };
+  reviews?: Array<{
+    author: string;
+    rating: number;
+    reviewBody: string;
+    datePublished: string;
+  }>;
 }
 
 interface BreadcrumbSchemaProps {
@@ -57,13 +81,19 @@ export function ProductSchema({
   availability = "InStock",
   brand = "ZM Deals",
   category = "Deals",
+  images = [],
+  priceValidUntil,
+  seller,
+  shippingDetails,
+  aggregateRating,
+  reviews = [],
 }: ProductSchemaProps) {
   const schema = {
     "@context": "https://schema.org",
     "@type": "Product",
     name,
     description,
-    image,
+    image: images.length > 0 ? images : image,
     url,
     brand: {
       "@type": "Brand",
@@ -76,7 +106,42 @@ export function ProductSchema({
       priceCurrency: currency,
       availability: `https://schema.org/${availability}`,
       url,
+      ...(priceValidUntil && { priceValidUntil }),
+      ...(seller && {
+        seller: {
+          "@type": "Organization",
+          name: seller.name,
+          url: seller.url,
+        },
+      }),
+      ...(shippingDetails && {
+        shippingDetails: {
+          "@type": "OfferShippingDetails",
+          shippingRate: {
+            "@type": "MonetaryAmount",
+            value: shippingDetails.isFree ? 0 : shippingDetails.fee || 0,
+            currency: shippingDetails.currency || currency,
+          },
+          deliveryTime: {
+            "@type": "ShippingDeliveryTime",
+            handlingTime: {
+              "@type": "QuantitativeValue",
+              minValue: 1,
+              maxValue: 2,
+              unitCode: "DAY",
+            },
+            transitTime: {
+              "@type": "QuantitativeValue",
+              minValue: 1,
+              maxValue: 3,
+              unitCode: "DAY",
+            },
+          },
+        },
+      }),
     },
+    ...(aggregateRating && { aggregateRating }),
+    ...(reviews.length > 0 && { review: reviews }),
   };
 
   return (

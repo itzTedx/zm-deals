@@ -41,6 +41,11 @@ async function getProductBySlugFromDatabase(slug: string): Promise<ProductQueryR
   const product = await db.query.products.findFirst({
     where: eq(products.slug, slug),
     with: {
+      comboDeals: {
+        columns: {
+          comboDealId: true,
+        },
+      },
       meta: true,
       inventory: true,
       reviews: {
@@ -113,7 +118,7 @@ async function getLastMinuteDealsFromDatabase(hoursLimit = 24): Promise<ProductQ
 
 async function getFeaturedProductsFromDatabase(): Promise<ProductQueryResult[]> {
   return await db.query.products.findMany({
-    where: and(eq(products.isFeatured, true), eq(products.status, "published")),
+    where: and(eq(products.isFeatured, true), eq(products.status, "published"), gte(products.endsIn, new Date())),
     with: {
       meta: true,
       inventory: true,
@@ -131,7 +136,7 @@ async function getFeaturedProductsFromDatabase(): Promise<ProductQueryResult[]> 
       },
     },
     orderBy: [desc(products.createdAt)],
-    limit: 10,
+    limit: 4,
   });
 }
 

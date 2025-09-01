@@ -6,6 +6,17 @@ export interface ComboDealWithProducts extends ComboDeal {
   products: (ComboDealProduct & {
     product: ProductCardDate | null;
   })[];
+  images?: Array<{
+    id: string;
+    url: string;
+    alt?: string;
+    isFeatured: boolean;
+    sortOrder: number;
+    key?: string;
+    width?: number;
+    height?: number;
+    blurData?: string;
+  }>;
 }
 
 export interface ComboDealFormData {
@@ -25,6 +36,16 @@ export interface ComboDealFormData {
     quantity: number;
     sortOrder: number;
   }>;
+  images?: Array<{
+    url: string;
+    alt?: string;
+    isFeatured: boolean;
+    sortOrder: number;
+    key?: string;
+    width?: number;
+    height?: number;
+    blurData?: string;
+  }>;
 }
 
 export interface ComboDealTableData {
@@ -40,6 +61,7 @@ export interface ComboDealTableData {
   endsAt?: Date;
   maxQuantity?: number;
   productCount: number;
+  imageCount: number;
   createdAt: Date;
   updatedAt: Date;
 }

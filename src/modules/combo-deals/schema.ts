@@ -21,6 +21,20 @@ export const comboDealSchema = z.object({
       })
     )
     .min(1, "At least one product is required"),
+  images: z
+    .array(
+      z.object({
+        url: z.string().min(1, "Image URL is required"),
+        alt: z.string().optional(),
+        isFeatured: z.boolean().default(false),
+        sortOrder: z.number().min(0, "Sort order must be non-negative").default(0),
+        key: z.string().optional(),
+        width: z.number().optional(),
+        height: z.number().optional(),
+        blurData: z.string().optional(),
+      })
+    )
+    .optional(),
 });
 
 export const updateComboDealSchema = comboDealSchema.extend({
@@ -33,3 +47,4 @@ export const deleteComboDealSchema = z.object({
 
 export type ComboDealFormData = z.infer<typeof comboDealSchema>;
 export type UpdateComboDealFormData = z.infer<typeof updateComboDealSchema>;
+export type DeleteComboDealFormData = z.infer<typeof deleteComboDealSchema>;

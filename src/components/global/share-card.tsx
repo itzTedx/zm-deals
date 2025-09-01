@@ -30,22 +30,18 @@ export const ShareCard = ({
 }: Props) => {
   const handleEmailShare = () => {
     shareViaEmail(title, `${description}\n\n${link}`);
-    toast.success("Opening email client...");
   };
 
   const handleFacebookShare = () => {
     shareViaFacebook(link, description);
-    toast.success("Opening Facebook in new tab...");
   };
 
   const handleTwitterShare = () => {
     shareViaTwitter(link, description);
-    toast.success("Opening Twitter/X in new tab...");
   };
 
   const handleInstagramShare = () => {
     shareViaInstagram(link);
-    toast.success("Link copied! You can now paste it in Instagram.");
   };
 
   const handleCopyLink = async () => {

@@ -199,7 +199,7 @@ export async function updateCartItemQuantity(cartItemId: string, quantity: numbe
       columns: { productId: true },
     });
 
-    if (cartItem) {
+    if (cartItem && cartItem.productId) {
       const stockValidation = await validateStockAvailability([
         {
           productId: cartItem.productId,
@@ -441,5 +441,111 @@ export async function migrateAnonymousCart(
   } catch (error) {
     console.error("Error migrating anonymous cart:", error);
     return { success: false, error: error instanceof Error ? error.message : "Failed to migrate cart" };
+  }
+}
+
+export async function addComboDealToCart(comboDealId: string, quantity = 1): Promise<CartActionResponse> {
+  try {
+    const session = await getSession();
+
+    if (!session) {
+      // Handle guest cart
+      const sessionId = await getOrCreateSessionId();
+
+      // Get or create guest cart
+      let guestCart = await db.query.carts.findFirst({
+        where: and(eq(carts.sessionId, sessionId), eq(carts.isActive, true)),
+      });
+
+      if (!guestCart) {
+        const [newCart] = await db
+          .insert(carts)
+          .values({
+            sessionId,
+            isActive: true,
+          })
+          .returning();
+        guestCart = newCart;
+      }
+
+      // Check if combo deal already exists in guest cart
+      const existingCartItem = await db.query.cartItems.findFirst({
+        where: and(
+          eq(cartItems.cartId, guestCart.id),
+          eq(cartItems.comboDealId, comboDealId),
+          eq(cartItems.itemType, "combo")
+        ),
+      });
+
+      if (existingCartItem) {
+        // Update existing item quantity
+        await db
+          .update(cartItems)
+          .set({
+            quantity: existingCartItem.quantity + quantity,
+            updatedAt: new Date(),
+          })
+          .where(eq(cartItems.id, existingCartItem.id));
+      } else {
+        // Add new combo deal item to cart
+        await db.insert(cartItems).values({
+          cartId: guestCart.id,
+          comboDealId,
+          itemType: "combo",
+          quantity,
+        });
+      }
+
+      return { success: true };
+    }
+
+    // Handle authenticated user cart
+    let userCart = await db.query.carts.findFirst({
+      where: and(eq(carts.userId, session.user.id), eq(carts.isActive, true)),
+    });
+
+    if (!userCart) {
+      const [newCart] = await db
+        .insert(carts)
+        .values({
+          userId: session.user.id,
+          isActive: true,
+        })
+        .returning();
+      userCart = newCart;
+    }
+
+    // Check if combo deal already exists in cart
+    const existingCartItem = await db.query.cartItems.findFirst({
+      where: and(
+        eq(cartItems.cartId, userCart.id),
+        eq(cartItems.comboDealId, comboDealId),
+        eq(cartItems.itemType, "combo")
+      ),
+    });
+
+    if (existingCartItem) {
+      // Update existing item quantity
+      await db
+        .update(cartItems)
+        .set({
+          quantity: existingCartItem.quantity + quantity,
+          updatedAt: new Date(),
+        })
+        .where(eq(cartItems.id, existingCartItem.id));
+    } else {
+      // Add new combo deal item to cart
+      await db.insert(cartItems).values({
+        cartId: userCart.id,
+        comboDealId: comboDealId,
+        itemType: "combo",
+        quantity,
+      });
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error adding combo deal to cart:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Failed to add combo deal to cart" };
   }
 }

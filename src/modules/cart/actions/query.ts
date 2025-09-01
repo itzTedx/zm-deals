@@ -31,6 +31,29 @@ export async function getCart() {
                   },
                 },
               },
+              comboDeal: {
+                with: {
+                  products: {
+                    with: {
+                      product: {
+                        with: {
+                          images: {
+                            with: {
+                              media: true,
+                            },
+                          },
+                          inventory: true,
+                        },
+                      },
+                    },
+                  },
+                  images: {
+                    with: {
+                      media: true,
+                    },
+                  },
+                },
+              },
             },
           },
         },
@@ -43,7 +66,9 @@ export async function getCart() {
       return guestCart.items.map((item) => ({
         id: item.id,
         product: item.product,
+        comboDeal: item.comboDeal,
         quantity: item.quantity,
+        itemType: item.itemType,
       }));
     }
 
@@ -64,6 +89,29 @@ export async function getCart() {
                 },
               },
             },
+            comboDeal: {
+              with: {
+                products: {
+                  with: {
+                    product: {
+                      with: {
+                        images: {
+                          with: {
+                            media: true,
+                          },
+                        },
+                        inventory: true,
+                      },
+                    },
+                  },
+                },
+                images: {
+                  with: {
+                    media: true,
+                  },
+                },
+              },
+            },
           },
         },
       },
@@ -76,7 +124,9 @@ export async function getCart() {
     return userCart.items.map((item) => ({
       id: item.id,
       product: item.product,
+      comboDeal: item.comboDeal,
       quantity: item.quantity,
+      itemType: item.itemType,
     }));
   } catch (error) {
     console.error("Error getting cart:", error);
@@ -149,7 +199,7 @@ export async function getCartTotal() {
       }
 
       return guestCart.items.reduce((total, item) => {
-        const price = Number(item.product.price);
+        const price = Number(item.product?.price);
         return total + price * item.quantity;
       }, 0);
     }
@@ -171,7 +221,7 @@ export async function getCartTotal() {
     }
 
     return userCart.items.reduce((total, item) => {
-      const price = Number(item.product.price);
+      const price = Number(item.product?.price);
       return total + price * item.quantity;
     }, 0);
   } catch (error) {
@@ -225,7 +275,7 @@ export async function getCartData() {
 
       const itemCount = guestCart.items.reduce((total, item) => total + item.quantity, 0);
       const total = guestCart.items.reduce((total, item) => {
-        const price = Number(item.product.price);
+        const price = Number(item.product?.price);
         return total + price * item.quantity;
       }, 0);
 
@@ -274,7 +324,7 @@ export async function getCartData() {
 
     const itemCount = userCart.items.reduce((total, item) => total + item.quantity, 0);
     const total = userCart.items.reduce((total, item) => {
-      const price = Number(item.product.price);
+      const price = Number(item.product?.price);
       return total + price * item.quantity;
     }, 0);
 

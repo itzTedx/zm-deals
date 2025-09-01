@@ -3,7 +3,7 @@ import { boolean, index, integer, pgTable, text, timestamp, uuid } from "drizzle
 
 import { users } from "./auth-schema";
 import { createdAt, id, updatedAt } from "./helpers";
-import { products } from "./product-schema";
+import { comboDeals, products } from "./product-schema";
 
 export const carts = pgTable(
   "carts",
@@ -31,9 +31,9 @@ export const cartItems = pgTable(
       .references(() => carts.id, { onDelete: "cascade" })
       .notNull(),
     quantity: integer("quantity").notNull().default(1),
-    productId: uuid("product_id")
-      .references(() => products.id, { onDelete: "cascade" })
-      .notNull(),
+    productId: uuid("product_id").references(() => products.id, { onDelete: "cascade" }),
+    comboDealId: uuid("combo_deal_id").references(() => comboDeals.id, { onDelete: "cascade" }),
+    itemType: text("item_type").notNull().default("product"),
     addedAt: timestamp("added_at")
       .$defaultFn(() => /* @__PURE__ */ new Date())
       .notNull(),
@@ -43,6 +43,8 @@ export const cartItems = pgTable(
     // Indexes for better query performance
     index("cart_items_cart_id_idx").on(table.cartId),
     index("cart_items_product_id_idx").on(table.productId),
+    index("cart_items_combo_deal_id_idx").on(table.comboDealId),
+    index("cart_items_item_type_idx").on(table.itemType),
     index("cart_items_added_at_idx").on(table.addedAt),
   ]
 );
@@ -64,5 +66,9 @@ export const cartItemRelations = relations(cartItems, ({ one }) => ({
   product: one(products, {
     fields: [cartItems.productId],
     references: [products.id],
+  }),
+  comboDeal: one(comboDeals, {
+    fields: [cartItems.comboDealId],
+    references: [comboDeals.id],
   }),
 }));

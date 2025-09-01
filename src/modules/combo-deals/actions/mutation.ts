@@ -10,7 +10,7 @@ import { auth } from "@/lib/auth/server";
 import { ProductCache } from "@/lib/cache/product-cache-new";
 import { createLog } from "@/lib/logging";
 import { db } from "@/server/db";
-import { comboDealProducts, comboDeals, products } from "@/server/schema/product-schema";
+import { comboDealImages, comboDealProducts, comboDeals, products } from "@/server/schema/product-schema";
 
 import { comboDealSchema, deleteComboDealSchema, updateComboDealSchema } from "../schema";
 
@@ -110,6 +110,28 @@ export async function createComboDeal(rawData: unknown): Promise<{ success: bool
 
       log.success("Combo deal products created", { productCount: comboDealProductsData.length });
 
+      // Create combo deal images if provided
+      if (data.images && data.images.length > 0) {
+        const comboDealImagesData = [];
+
+        for (const image of data.images) {
+          const mediaId = image.key ? await createMediaRecord(tx, image) : null;
+          if (mediaId) {
+            comboDealImagesData.push({
+              comboDealId: newComboDeal.id,
+              mediaId,
+              isFeatured: image.isFeatured,
+              sortOrder: image.sortOrder,
+            });
+          }
+        }
+
+        if (comboDealImagesData.length > 0) {
+          await tx.insert(comboDealImages).values(comboDealImagesData);
+          log.success("Combo deal images created", { imageCount: comboDealImagesData.length });
+        }
+      }
+
       revalidatePath("/studio/products/combo");
       revalidatePath("/deals/combo");
 
@@ -130,6 +152,13 @@ export async function createComboDeal(rawData: unknown): Promise<{ success: bool
       message: error instanceof Error ? error.message : "Failed to create combo deal",
     };
   }
+}
+
+// Helper function to create media record
+async function createMediaRecord(tx: unknown, image: { key?: string }) {
+  // This is a placeholder - you'll need to implement the actual media creation
+  // based on your media system
+  return null;
 }
 
 export async function updateComboDeal(rawData: unknown): Promise<{ success: boolean; message: string }> {

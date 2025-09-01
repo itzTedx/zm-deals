@@ -137,6 +137,24 @@ export const comboDealProducts = pgTable(
   ]
 );
 
+export const comboDealImages = pgTable(
+  "combo_deal_images",
+  {
+    id,
+    isFeatured: boolean("is_featured").default(false),
+    sortOrder: integer("sort_order").default(0),
+    comboDealId: uuid("combo_deal_id").references(() => comboDeals.id, { onDelete: "cascade" }),
+    mediaId: uuid("media_id").references(() => mediaTable.id, { onDelete: "cascade" }),
+    createdAt,
+    updatedAt,
+  },
+  (table) => [
+    index("combo_deal_images_combo_deal_id_idx").on(table.comboDealId),
+    index("combo_deal_images_media_id_idx").on(table.mediaId),
+    index("combo_deal_images_is_featured_idx").on(table.isFeatured),
+  ]
+);
+
 // Relations
 // Product relations
 export const productRelation = relations(products, ({ one, many }) => ({
@@ -185,6 +203,9 @@ export const comboDealsRelation = relations(comboDeals, ({ many }) => ({
   products: many(comboDealProducts, {
     relationName: "combo-deal-products-relations",
   }),
+  images: many(comboDealImages, {
+    relationName: "combo-deal-images-relations",
+  }),
 }));
 
 // ComboDealProducts relations
@@ -201,6 +222,20 @@ export const comboDealProductsRelation = relations(comboDealProducts, ({ one }) 
   }),
 }));
 
+// ComboDealImages relations
+export const comboDealImagesRelation = relations(comboDealImages, ({ one }) => ({
+  comboDeal: one(comboDeals, {
+    fields: [comboDealImages.comboDealId],
+    references: [comboDeals.id],
+    relationName: "combo-deal-images-relations",
+  }),
+  media: one(mediaTable, {
+    fields: [comboDealImages.mediaId],
+    references: [mediaTable.id],
+    relationName: "combo-deal-image-media-relations",
+  }),
+}));
+
 // Types for better TypeScript support
 export type NewProduct = typeof products.$inferInsert;
 export type Product = typeof products.$inferSelect;
@@ -213,3 +248,6 @@ export type ComboDeal = typeof comboDeals.$inferSelect;
 
 export type NewComboDealProduct = typeof comboDealProducts.$inferInsert;
 export type ComboDealProduct = typeof comboDealProducts.$inferSelect;
+
+export type NewComboDealImage = typeof comboDealImages.$inferInsert;
+export type ComboDealImage = typeof comboDealImages.$inferSelect;

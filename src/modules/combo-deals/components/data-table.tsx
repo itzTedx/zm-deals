@@ -76,6 +76,7 @@ export function ComboDealsDataTable({ data }: ComboDealsDataTableProps) {
             <TableHead>Combo Price</TableHead>
             <TableHead>Savings</TableHead>
             <TableHead>Products</TableHead>
+            <TableHead>Images</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Featured</TableHead>
             <TableHead>Created</TableHead>
@@ -91,6 +92,7 @@ export function ComboDealsDataTable({ data }: ComboDealsDataTableProps) {
               <TableCell>${comboDeal.comboPrice}</TableCell>
               <TableCell>${comboDeal.savings}</TableCell>
               <TableCell>{comboDeal.productCount}</TableCell>
+              <TableCell>{comboDeal.imageCount}</TableCell>
               <TableCell>
                 <Badge variant={comboDeal.isActive ? "default" : "secondary"}>
                   {comboDeal.isActive ? "Active" : "Inactive"}

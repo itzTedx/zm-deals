@@ -1,10 +1,10 @@
 "use server";
 
-import { and, desc, eq, gte, isNull, lte, or } from "drizzle-orm";
+import { and, desc, eq, gte, inArray, isNull, lte, or } from "drizzle-orm";
 
 import { ProductCache } from "@/lib/cache/product-cache-new";
 import { db } from "@/server/db";
-import { comboDealProducts, comboDeals } from "@/server/schema/product-schema";
+import { comboDealImages, comboDealProducts, comboDeals } from "@/server/schema/product-schema";
 
 import type { ComboDealTableData, ComboDealWithProducts } from "../types";
 
@@ -24,6 +24,12 @@ async function getComboDealsFromDatabase(): Promise<ComboDealTableData[]> {
           },
         },
       },
+      images: {
+        with: {
+          media: true,
+        },
+        orderBy: [comboDealImages.sortOrder],
+      },
     },
     orderBy: [desc(comboDeals.createdAt)],
   });
@@ -41,6 +47,7 @@ async function getComboDealsFromDatabase(): Promise<ComboDealTableData[]> {
     endsAt: comboDeal.endsAt || undefined,
     maxQuantity: comboDeal.maxQuantity || undefined,
     productCount: comboDeal.products.length,
+    imageCount: comboDeal.images?.length || 0,
     createdAt: comboDeal.createdAt,
     updatedAt: comboDeal.updatedAt,
   }));
@@ -54,26 +61,42 @@ async function getComboDealFromDatabase(id: string): Promise<ComboDealWithProduc
         with: {
           product: {
             with: {
-              images: {
-                with: {
-                  media: true,
-                },
-              },
+              images: { with: { media: true } },
               inventory: true,
-              reviews: {
-                with: {
-                  user: true,
-                },
-              },
+              reviews: { with: { user: true } },
+              meta: true,
             },
           },
         },
         orderBy: [comboDealProducts.sortOrder],
       },
+      images: {
+        with: {
+          media: true,
+        },
+        orderBy: [comboDealImages.sortOrder],
+      },
     },
   });
 
-  return comboDeal || null;
+  if (!comboDeal) return null;
+
+  // Transform the database result to match the expected type
+  return {
+    ...comboDeal,
+    images:
+      comboDeal.images?.map((img) => ({
+        id: img.id,
+        url: img.media?.url || "",
+        alt: img.media?.alt || undefined,
+        isFeatured: img.isFeatured || false,
+        sortOrder: img.sortOrder || 0,
+        key: img.media?.key || undefined,
+        width: img.media?.width || undefined,
+        height: img.media?.height || undefined,
+        blurData: img.media?.blurData || undefined,
+      })) || [],
+  };
 }
 
 async function getActiveComboDealsFromDatabase(): Promise<ComboDealWithProducts[]> {
@@ -106,25 +129,47 @@ async function getActiveComboDealsFromDatabase(): Promise<ComboDealWithProducts[
         },
         orderBy: [comboDealProducts.sortOrder],
       },
+      images: {
+        with: {
+          media: true,
+        },
+        orderBy: [comboDealImages.sortOrder],
+      },
     },
     orderBy: [desc(comboDeals.isFeatured), desc(comboDeals.createdAt)],
   });
 
-  return comboDealsData;
+  // Transform the database results to match the expected type
+  return comboDealsData.map((comboDeal) => ({
+    ...comboDeal,
+    images:
+      comboDeal.images?.map((img) => ({
+        id: img.id,
+        url: img.media?.url || "",
+        alt: img.media?.alt || undefined,
+        isFeatured: img.isFeatured || false,
+        sortOrder: img.sortOrder || 0,
+        key: img.media?.key || undefined,
+        width: img.media?.width || undefined,
+        height: img.media?.height || undefined,
+        blurData: img.media?.blurData || undefined,
+      })) || [],
+  }));
 }
 
-async function getComboDealsByProductIdFromDatabase(productId: string): Promise<ComboDealWithProducts[]> {
+async function getComboDealsByProductIdFromDatabase(comboId: string): Promise<ComboDealWithProducts[]> {
   const now = new Date();
 
   const comboDealsData = await db.query.comboDeals.findMany({
     where: and(
+      eq(comboDeals.id, comboId),
       eq(comboDeals.isActive, true),
       or(isNull(comboDeals.startsAt), lte(comboDeals.startsAt, now)),
       or(isNull(comboDeals.endsAt), gte(comboDeals.endsAt, now))
     ),
     with: {
       products: {
-        where: eq(comboDealProducts.productId, productId),
+        // where: eq(comboDealProducts.productId, productId),
         with: {
           product: {
             with: {
@@ -152,6 +197,61 @@ async function getComboDealsByProductIdFromDatabase(productId: string): Promise<
   return comboDealsData.filter((comboDeal) => comboDeal.products.length > 0);
 }
 
+async function getComboDealsContainingProductFromDatabase(productId: string): Promise<ComboDealWithProducts[]> {
+  const now = new Date();
+
+  // First, find all combo deal IDs that contain this product
+  const comboDealIds = await db.query.comboDealProducts.findMany({
+    where: eq(comboDealProducts.productId, productId),
+    columns: { comboDealId: true },
+  });
+
+  if (comboDealIds.length === 0) {
+    return [];
+  }
+
+  // Then fetch the full combo deal data for those IDs
+  const comboDealIdsArray = comboDealIds.map((cp) => cp.comboDealId).filter((id): id is string => id !== null);
+
+  if (comboDealIdsArray.length === 0) {
+    return [];
+  }
+
+  const comboDealsData = await db.query.comboDeals.findMany({
+    where: and(
+      inArray(comboDeals.id, comboDealIdsArray),
+      eq(comboDeals.isActive, true),
+      or(isNull(comboDeals.startsAt), lte(comboDeals.startsAt, now)),
+      or(isNull(comboDeals.endsAt), gte(comboDeals.endsAt, now))
+    ),
+    with: {
+      products: {
+        with: {
+          product: {
+            with: {
+              images: {
+                with: {
+                  media: true,
+                },
+              },
+              inventory: true,
+              reviews: {
+                with: {
+                  user: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: [comboDealProducts.sortOrder],
+      },
+    },
+    orderBy: [desc(comboDeals.isFeatured), desc(comboDeals.createdAt)],
+  });
+
+  return comboDealsData;
+}
+
 // Cached query functions using the unified caching system
 export async function getComboDeals(): Promise<ComboDealTableData[]> {
   return ProductCache.getComboDeals(() => getComboDealsFromDatabase());
@@ -172,7 +272,12 @@ export async function getFeaturedComboDeals(): Promise<ComboDealWithProducts[]> 
   return activeComboDeals.filter((comboDeal) => comboDeal.isFeatured);
 }
 
-export async function getComboDealsByProductId(productId: string): Promise<ComboDealWithProducts[]> {
+export async function getComboDealsByProductId(comboId: string): Promise<ComboDealWithProducts[]> {
   // Product-specific combo deals are not cached as they're personalized queries
-  return getComboDealsByProductIdFromDatabase(productId);
+  return getComboDealsByProductIdFromDatabase(comboId);
+}
+
+export async function getComboDealsContainingProduct(productId: string): Promise<ComboDealWithProducts[]> {
+  // Product-specific combo deals are not cached as they're personalized queries
+  return getComboDealsContainingProductFromDatabase(productId);
 }

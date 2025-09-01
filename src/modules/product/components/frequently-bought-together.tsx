@@ -1,4 +1,10 @@
+"use client";
+
+import { useTransition } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+
+import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,6 +14,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { IconCurrency } from "@/assets/icons";
 
 import { calculateDiscount } from "@/lib/utils";
+import { addComboDealToCart } from "@/modules/cart/actions/mutation";
 import type { ComboDealWithProducts } from "@/modules/combo-deals/types";
 
 import { ProductQueryResult } from "../types";
@@ -18,6 +25,9 @@ interface FrequentlyBoughtTogetherProps {
 }
 
 export function FrequentlyBoughtTogether({ comboDeals, currentProduct }: FrequentlyBoughtTogetherProps) {
+  const [isLoading, startTransition] = useTransition();
+  const router = useRouter();
+
   if (!comboDeals || comboDeals.length === 0) {
     return null;
   }
@@ -41,8 +51,27 @@ export function FrequentlyBoughtTogether({ comboDeals, currentProduct }: Frequen
     return total;
   }, 0);
 
+  async function handleAddComboToCart() {
+    startTransition(async () => {
+      try {
+        // Add the combo deal as a single cart item
+        const result = await addComboDealToCart(comboDeal.id, 1);
+        if (!result.success) {
+          toast.error(result.error || "Failed to add combo deal to cart");
+          return;
+        }
+
+        toast.success("Combo deal added to cart successfully!");
+        router.push("/cart");
+      } catch (error) {
+        console.error("Error adding combo deal to cart:", error);
+        toast.error("Failed to add combo deal to cart");
+      }
+    });
+  }
+
   return (
-    <section className="container max-w-7xl space-y-6 py-8">
+    <section className="container max-w-7xl space-y-6 pb-8 md:pb-12 lg:pb-16">
       <div className="space-y-4">
         <h2 className="font-semibold text-gray-700 text-lg">FREQUENTLY BOUGHT TOGETHER</h2>
 
@@ -145,6 +174,23 @@ export function FrequentlyBoughtTogether({ comboDeals, currentProduct }: Frequen
                 <div className="space-y-2">
                   <h3 className="font-semibold text-lg">{comboDeal.title}</h3>
                   <p className="text-gray-600 text-sm">{comboDeal.description}</p>
+
+                  {/* Combo Deal Images */}
+                  {comboDeal.images && comboDeal.images.length > 0 && (
+                    <div className="relative h-32 w-full overflow-hidden rounded-lg">
+                      <Image
+                        alt={comboDeal.title}
+                        className="object-cover"
+                        fill
+                        src={comboDeal.images[0]?.url || "/placeholder-product.jpg"}
+                      />
+                      {comboDeal.images.length > 1 && (
+                        <div className="absolute top-2 right-2 rounded bg-black bg-opacity-75 px-2 py-1 text-white text-xs">
+                          +{comboDeal.images.length - 1} more
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-3">
@@ -172,11 +218,10 @@ export function FrequentlyBoughtTogether({ comboDeals, currentProduct }: Frequen
                   </div>
                 </div>
 
-                <Button asChild className="w-full" size="lg">
-                  <a href={`/deals/combo/${comboDeal.slug}`}>
-                    BUY {comboDeal.products.length} TOGETHER FOR <IconCurrency className="ml-1 h-4 w-4" />
-                    {comboDeal.comboPrice}
-                  </a>
+                <Button className="w-full" disabled={isLoading} onClick={handleAddComboToCart} size="lg">
+                  {isLoading ? "Adding to Cart..." : "ADD COMBO TO CART FOR "}
+                  {!isLoading && <IconCurrency className="ml-1 h-4 w-4" />}
+                  {!isLoading && comboDeal.comboPrice}
                 </Button>
               </div>
             </div>
