@@ -22,6 +22,7 @@ async function getCategoriesFromDatabase(): Promise<CategoryWithProducts[]> {
           inventory: true,
           images: { with: { media: true } },
           reviews: { with: { user: true } },
+          category: true,
         },
         limit: 8,
       },
@@ -173,13 +174,7 @@ export async function getCategories(): Promise<CategoryData[]> {
   const log = createLog("Category");
 
   try {
-    return await cache.hybrid.get(
-      cache.keys.categories(),
-      cache.config.TAGS.CATEGORIES,
-      () => getCategoriesFromDatabase(),
-      cache.config.TTL.MEDIUM,
-      cache.config.REVALIDATE.MEDIUM
-    );
+    return await getCategoriesFromDatabase();
   } catch (error) {
     log.error("Error fetching categories", error instanceof Error ? error.message : String(error));
     console.error("Error fetching categories:", error);
@@ -203,13 +198,7 @@ export async function getCategoryBySlug(slug: string): Promise<CategoryData | nu
   const log = createLog("Category");
 
   try {
-    return await cache.hybrid.get(
-      cache.keys.categoryBySlug(slug),
-      cache.config.TAGS.CATEGORY,
-      () => getCategoryBySlugFromDatabase(slug),
-      cache.config.TTL.LONG,
-      cache.config.REVALIDATE.LONG
-    );
+    return await getCategoryBySlugFromDatabase(slug);
   } catch (error) {
     log.error("Error fetching category by slug", error instanceof Error ? error.message : String(error));
     console.error("Error fetching category by slug:", error);

@@ -27,7 +27,7 @@ export const ProductCard = ({ data, showSeconds = true, showAddToCart = false }:
     <Card className="relative">
       <CardContent className="relative h-full p-3 max-md:p-3">
         <Link className="absolute inset-0 z-10" href={`/${data.slug}`} />
-        <FavButton data={data} />
+        <FavButton productId={data.id} />
         <div className="relative aspect-square overflow-hidden rounded-lg">
           <Image alt={data.title} className="object-cover" fill src={data.image} />
         </div>

@@ -12,13 +12,11 @@ import { IconHeart, IconHeartFilled } from "@/assets/icons";
 import { toggleWishlist } from "@/modules/wishlist/actions/mutation";
 import { isInWishlist } from "@/modules/wishlist/actions/query";
 
-import { ProductCardDate } from "../../types";
-
 interface Props {
-  data: ProductCardDate;
+  productId: string;
 }
 
-export const FavButton = ({ data }: Props) => {
+export const FavButton = ({ productId }: Props) => {
   const [isInWishlistState, setIsInWishlistState] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -26,7 +24,7 @@ export const FavButton = ({ data }: Props) => {
   useEffect(() => {
     const checkWishlistState = async () => {
       try {
-        const inWishlist = await isInWishlist(data.id);
+        const inWishlist = await isInWishlist(productId);
         setIsInWishlistState(inWishlist);
       } catch (error) {
         console.error("Error checking wishlist state:", error);
@@ -34,12 +32,12 @@ export const FavButton = ({ data }: Props) => {
     };
 
     checkWishlistState();
-  }, [data.id]);
+  }, [productId]);
 
   const handleToggleWishlist = () => {
     startTransition(async () => {
       try {
-        const result = await toggleWishlist(data.id);
+        const result = await toggleWishlist(productId);
 
         if (result.success) {
           setIsInWishlistState(result.added ?? false);
