@@ -195,10 +195,10 @@ export async function getOptimizedDealsData(): Promise<{
 }> {
   // Use Next.js unstable_cache for immediate caching alongside ProductCache
   const [products, comboDeals, lastMinuteDeals6h, lastMinuteDeals24h] = await Promise.all([
-    getCachedAllProducts(),
-    getCachedActiveComboDeals(),
-    getCachedLastMinuteDeals6h(),
-    getCachedLastMinuteDeals24h(),
+    getAllProductsFromDatabase(),
+    getActiveComboDealsFromDatabase(),
+    getLastMinuteDeals6hFromDatabase(),
+    getLastMinuteDeals24hFromDatabase(),
   ]);
 
   return {
