@@ -15,7 +15,7 @@ import { IconChevronRight, IconProduct } from "@/assets/icons";
 
 import { Category } from "@/server/schema";
 
-import { upsertProduct } from "../../actions/mutation";
+import { deleteProduct, upsertProduct } from "../../actions/mutation";
 import { ProductSchema, productSchema } from "../../schema";
 import { getInitialValues } from "../../utils";
 import { Classification, PricingInventory, ProductDetails, ProductMeta, Scheduling } from "./sections";
@@ -29,6 +29,7 @@ interface Props {
 
 export const ProductForm = ({ initialData, isEditMode, categories }: Props) => {
   const [isLoading, startTransition] = useTransition();
+  const [isDeleteLoading, startDeleteTransition] = useTransition();
   const router = useRouter();
 
   const form = useForm<ProductSchema>({
@@ -68,6 +69,27 @@ export const ProductForm = ({ initialData, isEditMode, categories }: Props) => {
       }
     });
   }
+
+  function onDelete() {
+    startDeleteTransition(async () => {
+      const { success, message } = await deleteProduct(initialData?.id ?? "");
+
+      if (!success) {
+        toast.error("Something went wrong", {
+          description: message,
+          duration: 1000,
+        });
+        return;
+      }
+
+      toast.success("Success", {
+        description: "Product deleted successfully",
+        duration: 1000,
+      });
+      router.push("/studio/products");
+    });
+  }
+
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 pt-4 pb-12">
       <Form {...form}>
@@ -79,9 +101,16 @@ export const ProductForm = ({ initialData, isEditMode, categories }: Props) => {
                 {isEditMode ? (initialData?.title ?? "Edit Product") : "Create Product"}
               </h1>
             </div>
-            <Button disabled={isLoading} size="sm">
-              <LoadingSwap isLoading={isLoading}>{isEditMode ? "Update" : "Create"} Product</LoadingSwap>
-            </Button>
+            <div>
+              <Button disabled={isLoading} size="sm">
+                <LoadingSwap isLoading={isLoading}>{isEditMode ? "Update" : "Create"} Product</LoadingSwap>
+              </Button>
+              {isEditMode && (
+                <Button disabled={isDeleteLoading} onClick={onDelete} size="sm">
+                  <LoadingSwap isLoading={isDeleteLoading}>Delete Product</LoadingSwap>
+                </Button>
+              )}
+            </div>
           </div>
           <div className="relative col-span-2 space-y-4">
             <ProductDetails />

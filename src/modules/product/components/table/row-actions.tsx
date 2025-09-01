@@ -2,6 +2,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 
 import { RiMoreLine } from "@remixicon/react";
+import { toast } from "sonner";
 
 import {
   AlertDialog,
@@ -23,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import { deleteProduct } from "../../actions/mutation";
 import { ProductQueryResult } from "../../types";
 
 export function RowActions({ data, item }: { data: ProductQueryResult[]; item: ProductQueryResult }) {
@@ -30,9 +32,16 @@ export function RowActions({ data, item }: { data: ProductQueryResult[]; item: P
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const handleDelete = () => {
-    startUpdateTransition(() => {
-      data.filter((dataItem) => dataItem.id !== item.id);
+    startUpdateTransition(async () => {
+      const { success, message } = await deleteProduct(item.id);
 
+      if (!success) {
+        toast.error("Something went wrong", {
+          description: message,
+          duration: 1000,
+        });
+        return;
+      }
       setShowDeleteDialog(false);
     });
   };
