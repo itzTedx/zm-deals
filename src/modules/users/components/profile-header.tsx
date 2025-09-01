@@ -4,6 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 import { IconEmail, IconShield } from "@/assets/icons";
 
+import { formatDate } from "@/lib/functions/format-date";
+
 interface ProfileHeaderProps {
   user: {
     id: string;
@@ -19,21 +21,21 @@ interface ProfileHeaderProps {
 export function ProfileHeader({ user }: ProfileHeaderProps) {
   return (
     <Card>
-      <CardHeader className="text-center">
-        <div className="flex flex-col items-center space-y-4">
-          <Avatar className="size-24">
-            <AvatarImage alt={user.name} src={user.image || undefined} />
-            <AvatarFallback className="font-semibold text-2xl">{user.name.charAt(0).toUpperCase()}</AvatarFallback>
-          </Avatar>
-          <div className="space-y-2">
-            <CardTitle className="text-2xl">{user.name}</CardTitle>
-            <CardDescription className="text-base">
-              Member since {new Date(user.createdAt).toLocaleDateString()}
-            </CardDescription>
-          </div>
-        </div>
-      </CardHeader>
       <CardContent>
+        <CardHeader className="text-center">
+          <div className="flex flex-col items-center space-y-4">
+            <Avatar className="size-24">
+              <AvatarImage alt={user.name} src={user.image || undefined} />
+              <AvatarFallback className="font-semibold text-2xl">{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+            </Avatar>
+            <div className="space-y-2">
+              <CardTitle className="text-2xl">{user.name}</CardTitle>
+              <CardDescription className="text-base">
+                Member since {formatDate(user.createdAt, { includeTime: true })}
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
         <div className="flex flex-wrap justify-center gap-2">
           <Badge className="flex items-center gap-1" variant="secondary">
             <IconEmail className="size-3" />
