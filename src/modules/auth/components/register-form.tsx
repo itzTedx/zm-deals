@@ -43,7 +43,6 @@ export const RegisterForm = () => {
         },
         {
           onSuccess: async (_response) => {
-            toast.success("Registration Successful!");
             router.push("/");
           },
           onError: (error) => {

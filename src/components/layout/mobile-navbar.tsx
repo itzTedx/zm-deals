@@ -31,7 +31,10 @@ export const MobileNavbar = async () => {
         </li>
         <li>
           {isLoggedIn ? (
-            <Link className="flex flex-col items-center px-6 py-2.5 text-muted-foreground text-sm" href="/orders">
+            <Link
+              className="flex flex-col items-center px-6 py-2.5 text-muted-foreground text-sm"
+              href="/account/orders"
+            >
               <IconPackage className="size-5 text-gray-800" />
               Orders
             </Link>

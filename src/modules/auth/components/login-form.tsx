@@ -41,7 +41,6 @@ export const LoginForm = () => {
         },
         {
           onSuccess: async (_response) => {
-            toast.success("Login Successful!");
             router.push("/");
           },
           onError: (error) => {
