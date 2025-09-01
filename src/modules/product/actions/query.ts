@@ -289,7 +289,7 @@ export async function getProductBySlug(slug: string): Promise<ProductQueryResult
 }
 
 export async function getFeaturedProducts(): Promise<ProductQueryResult[]> {
-  return ProductCache.getFeaturedProducts(() => getFeaturedProductsFromDatabase());
+  return await getFeaturedProductsFromDatabase();
 }
 
 export async function getProductReviews(productId: string, limit?: number) {
