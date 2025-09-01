@@ -92,6 +92,7 @@ async function getActiveComboDealsFromDatabase(): Promise<ComboDealWithProducts[
               inventory: true,
               reviews: { with: { user: true } },
               meta: true,
+              category: true,
             },
           },
         },

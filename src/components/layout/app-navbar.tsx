@@ -5,7 +5,6 @@ import { LogoIcon } from "@/assets/logo";
 import { getSession } from "@/lib/auth/server";
 
 import { Button } from "../ui/button";
-import { SearchForm } from "./sidebar/search-bar";
 import UserMenu from "./user-menu";
 
 export const AppNavbar = async () => {
@@ -19,7 +18,7 @@ export const AppNavbar = async () => {
           <Link href="/">Live Website</Link>
         </Button>
       </div>
-      <SearchForm />
+      {/* <SearchForm /> */}
       <div>
         <UserMenu session={session} />
       </div>

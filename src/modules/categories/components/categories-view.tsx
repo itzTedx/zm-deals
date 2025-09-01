@@ -41,7 +41,7 @@ export function CategoriesView({ categories }: CategoriesViewProps) {
   }, [categories, searchQuery]);
 
   return (
-    <div className="flex w-full flex-col gap-6 pb-6">
+    <div className="container flex w-full flex-col gap-6 pb-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-bold text-2xl tracking-tight">Categories</h1>

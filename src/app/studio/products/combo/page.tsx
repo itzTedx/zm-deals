@@ -14,7 +14,7 @@ export default async function ComboAdminPage() {
   const comboDeals = await getComboDeals();
 
   return (
-    <div className="space-y-4">
+    <div className="container space-y-4">
       <div className="flex w-full items-center justify-between">
         <h1 className="font-bold text-2xl">Combo Deals</h1>
         <Button asChild size="sm">

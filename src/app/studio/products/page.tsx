@@ -15,7 +15,7 @@ export default async function ProductsUpsertPage() {
   const products = await getProducts();
 
   return (
-    <div className="space-y-4">
+    <div className="container space-y-4">
       <div className="flex w-full items-center justify-between">
         <h1 className="font-bold text-2xl">Products</h1>
         <Button asChild size="sm">
