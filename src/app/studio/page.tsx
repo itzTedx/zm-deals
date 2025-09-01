@@ -8,7 +8,7 @@ export default async function StudioPage() {
   await isAdmin();
 
   return (
-    <main className="container flex-1 space-y-4 py-4 pt-6 md:py-8">
+    <main className="container flex-1 space-y-4 py-4 md:py-8 md:pt-6">
       <div className="flex items-center justify-between space-y-2">
         <h2 className="font-bold text-3xl tracking-tight">Admin Dashboard</h2>
         <div className="flex items-center space-x-2">

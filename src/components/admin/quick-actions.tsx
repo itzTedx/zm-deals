@@ -1,10 +1,10 @@
 import { Route } from "next";
 import Link from "next/link";
 
-import { Package, PackageIcon, Plus, ShoppingCart, Users } from "lucide-react";
+import { PackageIcon, Plus, ShoppingCart } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface QuickActionProps {
   title: string;
@@ -16,7 +16,7 @@ interface QuickActionProps {
 
 function QuickAction({ title, description, icon, href, variant = "outline" }: QuickActionProps) {
   return (
-    <Button asChild className="h-auto justify-start p-4" variant={variant}>
+    <Button asChild className="h-auto justify-start p-3" variant={variant}>
       <Link href={href}>
         <div className="flex items-center space-x-3">
           {icon}
@@ -32,12 +32,11 @@ function QuickAction({ title, description, icon, href, variant = "outline" }: Qu
 
 export function QuickActions() {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Quick Actions</CardTitle>
-        <CardDescription>Common admin tasks and shortcuts</CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-wrap gap-4">
+    <Card className="md:p-0.5">
+      <CardContent className="h-full space-y-3.5 p-4">
+        <CardHeader>
+          <CardTitle>Quick Actions</CardTitle>
+        </CardHeader>
         <QuickAction
           description="Create a new product listing"
           href={"/studio/products/create" as Route}
@@ -58,27 +57,6 @@ export function QuickActions() {
           href="/studio/orders"
           icon={<ShoppingCart className="h-5 w-5" />}
           title="Manage Orders"
-        />
-
-        <QuickAction
-          description="Manage customer accounts and permissions"
-          href="/studio/users"
-          icon={<Users className="h-5 w-5" />}
-          title="User Management"
-        />
-
-        <QuickAction
-          description="Edit existing products and inventory"
-          href="/studio/products"
-          icon={<Package className="h-5 w-5" />}
-          title="Product Catalog"
-        />
-
-        <QuickAction
-          description="Manage combo deals and bundles"
-          href="/studio/products/combo"
-          icon={<PackageIcon className="h-5 w-5" />}
-          title="Combo Deals"
         />
       </CardContent>
     </Card>

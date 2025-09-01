@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { AdminNavbar } from "@/components/layout/admin-navbar";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { LoadingSwap } from "@/components/ui/loading-swap";
@@ -91,27 +92,29 @@ export const ProductForm = ({ initialData, isEditMode, categories }: Props) => {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 pt-4 pb-12">
-      <Form {...form}>
-        <form className="grid gap-4 md:grid-cols-3" onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="flex items-center justify-between md:col-span-full">
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <AdminNavbar currentPage={isEditMode ? (initialData?.title ?? "Edit Product") : "Create Product"}>
+          <div className="flex items-center gap-2">
+            {isEditMode && (
+              <Button disabled={isDeleteLoading} onClick={onDelete} size="sm" variant="destructive">
+                <LoadingSwap isLoading={isDeleteLoading}>Delete</LoadingSwap>
+              </Button>
+            )}
+            <Button disabled={isLoading} size="sm">
+              <LoadingSwap isLoading={isLoading}>
+                {isEditMode ? "Update" : "Create"} <span className="hidden md:inline">Product</span>
+              </LoadingSwap>
+            </Button>
+          </div>
+        </AdminNavbar>
+        <div className="container grid max-w-6xl gap-4 py-4 md:grid-cols-3">
+          <div className="sr-only flex items-center justify-between md:col-span-full">
             <div className="flex items-center gap-2">
               <h1 className="flex items-center gap-2 font-medium text-gray-600 text-xl leading-none">
                 <IconProduct className="size-4 text-gray-500" /> <IconChevronRight className="text-gray-400" />{" "}
                 {isEditMode ? (initialData?.title ?? "Edit Product") : "Create Product"}
               </h1>
-            </div>
-            <div className="flex items-center gap-2">
-              {isEditMode && (
-                <Button disabled={isDeleteLoading} onClick={onDelete} size="sm" variant="destructive">
-                  <LoadingSwap isLoading={isDeleteLoading}>Delete</LoadingSwap>
-                </Button>
-              )}
-              <Button disabled={isLoading} size="sm">
-                <LoadingSwap isLoading={isLoading}>
-                  {isEditMode ? "Update" : "Create"} <span className="hidden md:inline">Product</span>
-                </LoadingSwap>
-              </Button>
             </div>
           </div>
           <div className="relative space-y-4 md:col-span-2">
@@ -120,12 +123,12 @@ export const ProductForm = ({ initialData, isEditMode, categories }: Props) => {
             <Shipping />
             <ProductMeta />
           </div>
-          <div className="sticky top-28 h-fit space-y-4">
+          <div className="sticky top-16 h-fit space-y-4">
             <Scheduling />
             <Classification categories={categories} />
           </div>
-        </form>
-      </Form>
-    </div>
+        </div>
+      </form>
+    </Form>
   );
 };

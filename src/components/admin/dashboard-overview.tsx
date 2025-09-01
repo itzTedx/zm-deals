@@ -5,21 +5,16 @@ import { RecentOrders } from "./recent-orders";
 export async function AdminDashboardOverview() {
   return (
     <div className="space-y-6">
-      {/* Key Metrics */}
-      <DashboardMetrics />
-
-      {/* Main Content Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        {/* Recent Orders */}
-        <div className="col-span-5">
-          <RecentOrders />
+      <div className="grid gap-2 md:grid-cols-3">
+        {/* Key Metrics */}
+        <div className="md:col-span-2">
+          <DashboardMetrics />
         </div>
-
-        {/* Quick Actions & Stats */}
-        <div className="col-span-2 space-y-4">
-          <QuickActions />
-        </div>
+        {/* Quick Actions  */}
+        <QuickActions />
       </div>
+
+      <RecentOrders />
     </div>
   );
 }

@@ -1,10 +1,12 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { format } from "date-fns";
 
+import { AdminNavbar } from "@/components/layout/admin-navbar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { isAdmin } from "@/lib/auth/permissions";
 import { getComboDeal } from "@/modules/combo-deals/actions/query";
@@ -31,14 +33,13 @@ export default async function ComboDealPage({ params }: ComboDealPageProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex w-full items-center justify-between">
-        <h1 className="font-bold text-2xl">{comboDeal.title}</h1>
+      <AdminNavbar currentPage={comboDeal.title}>
         <Button asChild size="sm">
           <Link href={`/studio/products/combo/${id}/edit`}>Edit Combo Deal</Link>
         </Button>
-      </div>
+      </AdminNavbar>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="container grid grid-cols-1 gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Basic Information</CardTitle>
@@ -113,17 +114,23 @@ export default async function ComboDealPage({ params }: ComboDealPageProps) {
         </Card>
 
         <Card>
-          <CardHeader>
-            <CardTitle>Products ({comboDeal.products.length})</CardTitle>
-            <CardDescription>Products included in this combo deal</CardDescription>
+          <CardHeader className="px-2.5">
+            <CardTitle className="font-medium text-gray-500 text-sm">Products ({comboDeal.products.length})</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 p-4">
             {comboDeal.products
               .filter((cp) => cp.product)
               .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
               .map((comboProduct) => (
-                <div className="flex items-center space-x-4 rounded-lg border p-4" key={comboProduct.id}>
-                  <div className="flex-1">
+                <div className="flex items-center rounded-lg border p-4" key={comboProduct.id}>
+                  <Image
+                    alt={comboProduct.product?.title ?? ""}
+                    className="size-16 rounded-lg object-cover"
+                    height={64}
+                    src={comboProduct.product?.images?.[0].media?.url ?? ""}
+                    width={64}
+                  />
+                  <div className="ml-3 flex-1">
                     <div className="flex items-center justify-between">
                       <h4 className="font-medium">{comboProduct.product?.title}</h4>
                       <Badge variant="outline">${comboProduct.product?.price}</Badge>
@@ -137,24 +144,6 @@ export default async function ComboDealPage({ params }: ComboDealPageProps) {
           </CardContent>
         </Card>
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Timestamps</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div>
-              <h4 className="font-medium text-muted-foreground text-sm">Created</h4>
-              <p>{format(comboDeal.createdAt, "PPP 'at' p")}</p>
-            </div>
-            <div>
-              <h4 className="font-medium text-muted-foreground text-sm">Last Updated</h4>
-              <p>{format(comboDeal.updatedAt, "PPP 'at' p")}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }

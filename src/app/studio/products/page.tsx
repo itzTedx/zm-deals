@@ -1,29 +1,26 @@
 import Link from "next/link";
 
+import { AdminNavbar } from "@/components/layout/admin-navbar";
 import { Button } from "@/components/ui/button";
-import { SeparatorBox } from "@/components/ui/separator";
 
 import { isAdmin } from "@/lib/auth/permissions";
 import { getProducts } from "@/modules/product/actions/query";
 import { ProductsTable } from "@/modules/product/components/table/data-table";
-
-// Add cache configuration for the products page
-export const revalidate = 300; // Revalidate every 5 minutes
 
 export default async function ProductsUpsertPage() {
   await isAdmin();
   const products = await getProducts();
 
   return (
-    <div className="container space-y-4">
-      <div className="flex w-full items-center justify-between">
-        <h1 className="font-bold text-2xl">Products</h1>
+    <div className="space-y-4">
+      <AdminNavbar>
         <Button asChild size="sm">
           <Link href="/studio/products/create">Add Product</Link>
         </Button>
+      </AdminNavbar>
+      <div className="container">
+        <ProductsTable data={products} />
       </div>
-      <SeparatorBox />
-      <ProductsTable data={products} />
     </div>
   );
 }

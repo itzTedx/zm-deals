@@ -76,21 +76,19 @@ export async function RecentOrders() {
 
   return (
     <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
+      <CardContent className="p-4">
+        <CardHeader>
+          <div className="flex items-center justify-between">
             <CardTitle>Recent Orders</CardTitle>
-            <CardDescription>Latest customer orders and their status</CardDescription>
+
+            <Button asChild size="sm" variant="outline">
+              <Link href="/studio/orders">
+                <Eye className="mr-2 h-4 w-4" />
+                View All
+              </Link>
+            </Button>
           </div>
-          <Button asChild size="sm" variant="outline">
-            <Link href="/studio/orders">
-              <Eye className="mr-2 h-4 w-4" />
-              View All
-            </Link>
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent>
+        </CardHeader>
         {recentOrders.length === 0 ? (
           <div className="py-8 text-center text-muted-foreground">
             <ShoppingCart className="mx-auto mb-4 h-12 w-12 opacity-50" />

@@ -1,52 +1,38 @@
-import { DollarSign, Package, ShoppingCart, TrendingDown, TrendingUp, Users } from "lucide-react";
-
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
+import { IconCurrency, IconProduct, IconShoppingBag2, IconUser } from "@/assets/icons";
+
+import { cn } from "@/lib/utils";
 import { getAllOrders } from "@/modules/orders/actions/query";
 import { getProducts } from "@/modules/product/actions/query";
 import { getAllUsers } from "@/modules/users/actions/query";
 
 interface MetricCardProps {
-  title: string;
-  value: string | number;
-  description: string;
   icon: React.ReactNode;
-  trend?: {
-    value: number;
-    isPositive: boolean;
-  };
-  badge?: {
-    text: string;
-    variant: "default" | "secondary" | "destructive" | "outline";
-  };
+  value: string | number;
+  label: string;
+  subtitle: string;
+  trend: React.ReactNode;
+  className?: string;
 }
 
-function MetricCard({ title, value, description, icon, trend, badge }: MetricCardProps) {
+function MetricCard({ icon, value, label, subtitle, trend, className }: MetricCardProps) {
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="font-medium text-sm">{title}</CardTitle>
-        {icon}
-      </CardHeader>
-      <CardContent>
-        <div className="font-bold text-2xl">{value}</div>
-        <p className="text-muted-foreground text-xs">{description}</p>
-        {trend && (
-          <div className="mt-2 flex items-center space-x-1">
-            {trend.isPositive ? (
-              <TrendingUp className="h-3 w-3 text-green-500" />
-            ) : (
-              <TrendingDown className="h-3 w-3 text-red-500" />
-            )}
-            <span className={`text-xs ${trend.isPositive ? "text-green-500" : "text-red-500"}`}>{trend.value}%</span>
+    <Card className="md:p-0.5">
+      <CardContent className={cn("flex h-full flex-col justify-between p-4 text-background", className)}>
+        <div className="flex items-center justify-between">
+          <div className="flex size-9 items-center justify-center rounded-full bg-card shadow-lg">{icon}</div>
+        </div>
+        <div className="mt-4 flex items-end justify-between">
+          <div>
+            <p className="font-medium text-2xl">
+              {value.toLocaleString()} {label}
+            </p>
+            <h2 className="text-sm">{subtitle}</h2>
           </div>
-        )}
-        {badge && (
-          <Badge className="mt-2" variant={badge.variant}>
-            {badge.text}
-          </Badge>
-        )}
+          <div className="font-medium text-sm">{trend}</div>
+        </div>
       </CardContent>
     </Card>
   );
@@ -96,61 +82,45 @@ export async function DashboardMetrics() {
     : 0;
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-2 md:grid-cols-2">
       <MetricCard
-        badge={{
-          text: "Active",
-          variant: "secondary",
-        }}
-        description={`${recentUsers} new this week`}
-        icon={<Users className="h-4 w-4 text-muted-foreground" />}
-        title="Total Users"
-        trend={{
-          value: totalUsers > 0 ? Math.round((recentUsers / totalUsers) * 100) : 0,
-          isPositive: recentUsers > 0,
-        }}
-        value={totalUsers.toLocaleString()}
+        className="bg-brand-500"
+        icon={<IconUser className="size-4 text-muted-foreground" />}
+        label="Users"
+        subtitle={`${recentUsers} new this week`}
+        trend={`+${recentUsers > 0 ? Math.round((recentUsers / totalUsers) * 100) : 0}%`}
+        value={totalUsers}
       />
 
       <MetricCard
-        badge={{
-          text: "Processing",
-          variant: "outline",
-        }}
-        description={`${recentOrders} this week`}
-        icon={<ShoppingCart className="h-4 w-4 text-muted-foreground" />}
-        title="Total Orders"
-        trend={{
-          value: totalOrders > 0 ? Math.round((recentOrders / totalOrders) * 100) : 0,
-          isPositive: recentOrders > 0,
-        }}
-        value={totalOrders.toLocaleString()}
+        className="bg-gray-800"
+        icon={<IconShoppingBag2 className="size-4 text-muted-foreground" />}
+        label="Orders"
+        subtitle={`${recentOrders} this week`}
+        trend={`+${totalOrders > 0 ? Math.round((recentOrders / totalOrders) * 100) : 0}%`}
+        value={totalOrders}
       />
 
       <MetricCard
-        badge={{
-          text: "Growing",
-          variant: "default",
-        }}
-        description={`$${recentRevenue.toLocaleString()} this week`}
-        icon={<DollarSign className="h-4 w-4 text-muted-foreground" />}
-        title="Total Revenue"
-        trend={{
-          value: totalRevenue > 0 ? Math.round((recentRevenue / totalRevenue) * 100) : 0,
-          isPositive: recentRevenue > 0,
-        }}
-        value={`$${totalRevenue.toLocaleString()}`}
+        className="bg-gray-800"
+        icon={<IconCurrency className="size-4 text-muted-foreground" />}
+        label=""
+        subtitle={`${totalRevenue} this week`}
+        trend={`+${totalRevenue > 0 ? Math.round((recentRevenue / totalRevenue) * 100) : 0}%`}
+        value={totalRevenue}
       />
 
       <MetricCard
-        badge={{
-          text: "Live",
-          variant: "secondary",
-        }}
-        description="Active products in catalog"
-        icon={<Package className="h-4 w-4 text-muted-foreground" />}
-        title="Total Products"
-        value={totalProducts.toLocaleString()}
+        className="bg-gray-800"
+        icon={<IconProduct className="size-4 text-muted-foreground" />}
+        label=""
+        subtitle="Active products in catalog"
+        trend={
+          <Badge className="text-xs" size="sm" variant="secondary">
+            Active
+          </Badge>
+        }
+        value={totalProducts}
       />
     </div>
   );
