@@ -1,10 +1,8 @@
 "use server";
 
-import { headers } from "next/headers";
-
 import { eq } from "drizzle-orm";
 
-import { auth, getSession } from "@/lib/auth/server";
+import { getSession } from "@/lib/auth/server";
 import { getOrCreateSessionId } from "@/lib/auth/session";
 import { db } from "@/server/db";
 import { wishlists } from "@/server/schema";
@@ -13,7 +11,7 @@ import { WishlistData, WishlistItem } from "../types";
 
 export async function getWishlist(): Promise<WishlistItem[]> {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getSession();
 
     if (!session) {
       // Handle guest wishlist
@@ -72,6 +70,7 @@ export async function getWishlist(): Promise<WishlistItem[]> {
           with: {
             product: {
               with: {
+                category: true,
                 meta: true,
                 inventory: true,
                 images: {
@@ -115,7 +114,7 @@ export async function getWishlist(): Promise<WishlistItem[]> {
 
 export async function getWishlistItemCount(): Promise<number> {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getSession();
 
     if (!session) {
       // Handle guest wishlist
@@ -156,7 +155,7 @@ export async function getWishlistItemCount(): Promise<number> {
 
 export async function isInWishlist(productId: string): Promise<boolean> {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getSession();
 
     if (!session) {
       // Handle guest wishlist
