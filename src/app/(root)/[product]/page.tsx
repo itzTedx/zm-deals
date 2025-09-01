@@ -139,12 +139,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProductPage({ params }: Props) {
   const { product } = await params;
 
-  // Parallel data fetching for better performance
-  const [res, comboDeals] = await Promise.all([
-    getProductBySlug(product),
-    // We'll fetch combo deals conditionally to avoid unnecessary queries
-    Promise.resolve([]),
-  ]);
+  // Fetch product data
+  const res = await getProductBySlug(product);
 
   if (!res) {
     return notFound();
@@ -152,8 +148,6 @@ export default async function ProductPage({ params }: Props) {
 
   // Fetch combo deals that contain this product
   const actualComboDeals = await getComboDealsContainingProduct(res.id);
-
-  console.log("Fetched Product: ", actualComboDeals);
 
   const productUrl = `${env.BASE_URL}/${res.slug}`;
   const breadcrumbItems = [
