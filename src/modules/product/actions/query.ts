@@ -271,7 +271,7 @@ async function getProductsByCategorySlugFromDatabase(categorySlug: string): Prom
 
 // Cached query functions using the new unified caching system
 export async function getProducts(): Promise<ProductQueryResult[]> {
-  return ProductCache.getProducts(() => getAllProductsFromDatabase());
+  return await getAllProductsFromDatabase();
 }
 
 export async function getLastMinuteDeals(hoursLimit = 24): Promise<ProductQueryResult[]> {
