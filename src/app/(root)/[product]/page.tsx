@@ -35,6 +35,7 @@ import {
 import { env } from "@/lib/env/server";
 import { calculateDiscount, cn } from "@/lib/utils";
 import { getComboDealsByProductId } from "@/modules/combo-deals/actions/query";
+import { getAllProductsFromDatabase } from "@/modules/home/actions/query";
 import { getProductBySlug, getProductsByCategorySlug } from "@/modules/product/actions/query";
 import { ProductCard } from "@/modules/product/components";
 import { EndsInCounter } from "@/modules/product/components/ends-in-counter";
@@ -51,16 +52,16 @@ interface Props {
 }
 
 // Generate static params for all categories
-// export async function generateStaticParams() {
-//   const products = await getProducts();
+export async function generateStaticParams() {
+  const products = await getAllProductsFromDatabase();
 
-//   return products.map((product) => ({
-//     slug: product.slug,
-//   }));
-// }
+  return products.map((product) => ({
+    slug: product.slug,
+  }));
+}
 
 // Revalidate pages every hour (3600 seconds)
-// export const revalidate = 3600;
+export const revalidate = 3600;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { product } = await params;

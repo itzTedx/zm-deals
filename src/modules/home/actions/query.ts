@@ -43,7 +43,7 @@ function getTimeBasedKey(): string {
 }
 
 // Database query functions for individual sections
-async function getAllProductsFromDatabase(): Promise<ProductQueryResult[]> {
+export async function getAllProductsFromDatabase(): Promise<ProductQueryResult[]> {
   const now = new Date();
   const allProducts = await db.query.products.findMany({
     where: and(
