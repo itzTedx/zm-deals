@@ -48,8 +48,8 @@ async function getAllProductsFromDatabase(): Promise<ProductQueryResult[]> {
   const allProducts = await db.query.products.findMany({
     where: and(
       eq(products.status, "published"),
-      or(isNull(comboDeals.startsAt), lte(comboDeals.startsAt, now)),
-      or(isNull(comboDeals.endsAt), gte(comboDeals.endsAt, now))
+      or(isNull(products.schedule), lte(products.schedule, now)),
+      or(isNull(products.endsIn), gte(products.endsIn, now))
     ),
     with: {
       meta: true,
