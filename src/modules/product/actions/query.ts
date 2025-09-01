@@ -342,9 +342,7 @@ export async function searchProducts(query: string, limit = 20): Promise<Product
   const searchTerm = query.trim();
 
   try {
-    const searchResults = await ProductCache.getSearchResults(searchTerm, () =>
-      searchProductsFromDatabase(searchTerm, limit)
-    );
+    const searchResults = await searchProductsFromDatabase(searchTerm, limit);
 
     const session = await getSession();
     // Track search analytics in the background
