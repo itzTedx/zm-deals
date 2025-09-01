@@ -53,8 +53,8 @@ export const Footer = () => {
           </p>
         </div>
         <Watermark className="mx-auto mb-0 w-full md:w-auto" />
-        <div className="-left-1.5 -top-1.5 pointer-events-none absolute z-10 size-2.5 shrink-0 rounded border bg-card" />
-        <div className="-right-1.5 -top-1.5 pointer-events-none absolute z-10 size-2.5 shrink-0 rounded border bg-card" />
+        <div className="-left-1.5 -top-1.5 pointer-events-none absolute z-10 hidden size-2.5 shrink-0 rounded border bg-card md:block" />
+        <div className="-right-1.5 -top-1.5 pointer-events-none absolute z-10 hidden size-2.5 shrink-0 rounded border bg-card md:block" />
       </div>
     </footer>
   );

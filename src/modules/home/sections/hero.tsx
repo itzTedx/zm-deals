@@ -36,10 +36,11 @@ export const Hero = async () => {
               {product && (
                 <CarouselItem className="basis-1/1 rounded-2xl py-5 pl-4 lg:basis-2/3">
                   <div className="grid grid-cols-2 items-center gap-4 overflow-hidden rounded-2xl bg-card p-6 shadow-lg sm:gap-8 md:p-12">
-                    <div className="relative z-10 space-y-2 sm:space-y-4">
+                    <div className="relative z-50 space-y-2 sm:space-y-4">
                       {product[0].endsIn && (
-                        <Badge className="pl-2 font-normal" variant="default">
-                          <IconHourglass className="text-brand-50" /> Offer ends in{" "}
+                        <Badge className="px-1.5 font-normal md:pl-2" variant="default">
+                          <IconHourglass className="text-brand-50" /> <span className="hidden md:block">Offer</span>{" "}
+                          Ends in{" "}
                           <AnimatedCountdown
                             className="font-medium text-card text-xs sm:text-sm"
                             endsIn={product[0].endsIn}
