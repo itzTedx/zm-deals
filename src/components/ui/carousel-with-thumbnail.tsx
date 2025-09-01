@@ -5,8 +5,7 @@ import Image from "next/image";
 
 import { type EmblaOptionsType } from "embla-carousel";
 import useEmblaCarousel from "embla-carousel-react";
-import { ArrowLeft, ArrowRight, MinusCircle, PlusCircle, X } from "lucide-react";
-import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
+import { ArrowLeft, ArrowRight, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
@@ -78,7 +77,17 @@ const ImageContainer: React.FC<{
           <DialogDescription className="sr-only">{image?.alt ?? "Image"}</DialogDescription>
 
           <div>
-            <TransformWrapper initialPositionX={0} initialPositionY={0} initialScale={1}>
+            <Image
+              alt={image?.alt ?? "Full size"}
+              blurDataURL={image?.blurData ?? undefined}
+              className={cn("max-h-[90vh] max-w-[90vw] object-contain", classNameImage)}
+              height={800}
+              placeholder={image?.blurData ? "blur" : "empty"}
+              sizes="(max-width: 768px) 90vw, (max-width: 1200px) 80vw, 70vw"
+              src={image?.url ?? ""}
+              width={1200}
+            />
+            {/* <TransformWrapper initialPositionX={0} initialPositionY={0} initialScale={1}>
               {({ zoomIn, zoomOut }) => (
                 <>
                   <TransformComponent>
@@ -113,7 +122,7 @@ const ImageContainer: React.FC<{
                   )}
                 </>
               )}
-            </TransformWrapper>
+            </TransformWrapper> */}
             <DialogClose asChild>
               <button
                 aria-label="Close"

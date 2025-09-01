@@ -43,12 +43,6 @@ export const FavButton = ({ data }: Props) => {
 
         if (result.success) {
           setIsInWishlistState(result.added ?? false);
-
-          if (result.added) {
-            toast.success("Added to wishlist");
-          } else {
-            toast.success("Removed from wishlist");
-          }
         } else {
           toast.error(result.error || "Failed to update wishlist");
         }

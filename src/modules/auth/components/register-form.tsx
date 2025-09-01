@@ -75,7 +75,7 @@ export const RegisterForm = () => {
               <FormItem>
                 <FormLabel>Username</FormLabel>
                 <FormControl>
-                  <Input autoComplete="username" placeholder="shadcn" type="text" {...field} />
+                  <Input autoComplete="username" placeholder="username" type="text" {...field} />
                 </FormControl>
 
                 <FormMessage />
