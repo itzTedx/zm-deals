@@ -12,7 +12,6 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { arrayMove, rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
-import { Plus } from "lucide-react";
 import { FieldArrayWithId, useFormContext } from "react-hook-form";
 
 import { ProductSchema } from "@/modules/product/schema";
@@ -117,12 +116,12 @@ export function ImageManagement({ fields, reorder }: ImageManagementProps) {
             <SortableImageItem index={index} isFirst={index === 0} item={item} key={item.id} />
           ))}
 
-          <button
+          {/* <button
             className="flex cursor-pointer items-center justify-center rounded-md border transition-colors hover:bg-muted"
             type="button"
           >
             <Plus className="size-5 text-gray-600" />
-          </button>
+          </button> */}
         </SortableContext>
       </div>
 
