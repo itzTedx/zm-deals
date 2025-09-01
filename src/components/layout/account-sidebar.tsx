@@ -13,18 +13,21 @@ interface Props {
 export const AccountSidebar = ({ session }: Props) => {
   return (
     <div className="hidden space-y-4 lg:block">
-      <div className="rounded-lg bg-card p-4">
-        <div className="flex items-center gap-2">
-          <Avatar className="size-12">
-            <AvatarFallback>{session?.user.name?.charAt(0)}</AvatarFallback>
-            <AvatarImage src={session?.user.image ?? undefined} />
-          </Avatar>
-          <div>
-            <p className="font-medium">{session?.user.name}</p>
-            <p className="text-muted-foreground text-xs">{session?.user.email}</p>
+      {session && (
+        <div className="rounded-lg bg-card p-4">
+          <div className="flex items-center gap-2">
+            <Avatar className="size-12">
+              <AvatarFallback>{session.user.name.charAt(0)}</AvatarFallback>
+              <AvatarImage src={session.user.image ?? undefined} />
+            </Avatar>
+            <div>
+              <p className="font-medium">{session.user.name}</p>
+              <p className="text-muted-foreground text-xs">{session?.user.email}</p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
       <ul className="space-y-2 rounded-lg bg-card p-2">
         <li>
           <SidebarLink href="/cart" icon={<IconShoppingBag2 className="size-5" />}>

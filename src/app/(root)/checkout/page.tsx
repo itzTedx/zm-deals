@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
+import { formatDate } from "@/lib/functions/format-date";
 import { getOrderBySessionId } from "@/modules/orders/actions/query";
 import { OrderWithItemsAndProducts } from "@/modules/orders/types";
 
@@ -111,17 +112,6 @@ export default async function CheckoutStatusPage({ searchParams }: { searchParam
       style: "currency",
       currency: "AED",
     }).format(numericPrice);
-  };
-
-  const formatDate = (dateString: string | Date) => {
-    const date = typeof dateString === "string" ? new Date(dateString) : dateString;
-    return date.toLocaleDateString("en-AE", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
   };
 
   return (
