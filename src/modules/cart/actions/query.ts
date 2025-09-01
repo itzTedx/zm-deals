@@ -189,6 +189,7 @@ export async function getCartTotal() {
           items: {
             with: {
               product: true,
+              comboDeal: true,
             },
           },
         },
@@ -199,8 +200,15 @@ export async function getCartTotal() {
       }
 
       return guestCart.items.reduce((total, item) => {
-        const price = Number(item.product?.price);
-        return total + price * item.quantity;
+        if (item.itemType === "product" && item.product) {
+          const price = Number(item.product.price);
+          return total + price * item.quantity;
+        }
+        if (item.itemType === "combo" && item.comboDeal) {
+          const price = Number(item.comboDeal.comboPrice);
+          return total + price * item.quantity;
+        }
+        return total;
       }, 0);
     }
 
@@ -211,6 +219,7 @@ export async function getCartTotal() {
         items: {
           with: {
             product: true,
+            comboDeal: true,
           },
         },
       },
@@ -221,8 +230,15 @@ export async function getCartTotal() {
     }
 
     return userCart.items.reduce((total, item) => {
-      const price = Number(item.product?.price);
-      return total + price * item.quantity;
+      if (item.itemType === "product" && item.product) {
+        const price = Number(item.product.price);
+        return total + price * item.quantity;
+      }
+      if (item.itemType === "combo" && item.comboDeal) {
+        const price = Number(item.comboDeal.comboPrice);
+        return total + price * item.quantity;
+      }
+      return total;
     }, 0);
   } catch (error) {
     console.error("Error getting cart total:", error);
@@ -254,6 +270,29 @@ export async function getCartData() {
                   },
                 },
               },
+              comboDeal: {
+                with: {
+                  products: {
+                    with: {
+                      product: {
+                        with: {
+                          images: {
+                            with: {
+                              media: true,
+                            },
+                          },
+                          inventory: true,
+                        },
+                      },
+                    },
+                  },
+                  images: {
+                    with: {
+                      media: true,
+                    },
+                  },
+                },
+              },
             },
           },
         },
@@ -270,13 +309,22 @@ export async function getCartData() {
       const items = guestCart.items.map((item) => ({
         id: item.id,
         product: item.product,
+        comboDeal: item.comboDeal,
         quantity: item.quantity,
+        itemType: item.itemType as "product" | "combo",
       }));
 
       const itemCount = guestCart.items.reduce((total, item) => total + item.quantity, 0);
       const total = guestCart.items.reduce((total, item) => {
-        const price = Number(item.product?.price);
-        return total + price * item.quantity;
+        if (item.itemType === "product" && item.product) {
+          const price = Number(item.product.price);
+          return total + price * item.quantity;
+        }
+        if (item.itemType === "combo" && item.comboDeal) {
+          const price = Number(item.comboDeal.comboPrice);
+          return total + price * item.quantity;
+        }
+        return total;
       }, 0);
 
       return {
@@ -303,6 +351,29 @@ export async function getCartData() {
                 },
               },
             },
+            comboDeal: {
+              with: {
+                products: {
+                  with: {
+                    product: {
+                      with: {
+                        images: {
+                          with: {
+                            media: true,
+                          },
+                        },
+                        inventory: true,
+                      },
+                    },
+                  },
+                },
+                images: {
+                  with: {
+                    media: true,
+                  },
+                },
+              },
+            },
           },
         },
       },
@@ -319,13 +390,22 @@ export async function getCartData() {
     const items = userCart.items.map((item) => ({
       id: item.id,
       product: item.product,
+      comboDeal: item.comboDeal,
       quantity: item.quantity,
+      itemType: item.itemType as "product" | "combo",
     }));
 
     const itemCount = userCart.items.reduce((total, item) => total + item.quantity, 0);
     const total = userCart.items.reduce((total, item) => {
-      const price = Number(item.product?.price);
-      return total + price * item.quantity;
+      if (item.itemType === "product" && item.product) {
+        const price = Number(item.product.price);
+        return total + price * item.quantity;
+      }
+      if (item.itemType === "combo" && item.comboDeal) {
+        const price = Number(item.comboDeal.comboPrice);
+        return total + price * item.quantity;
+      }
+      return total;
     }, 0);
 
     return {

@@ -35,17 +35,30 @@ export function CartSummary({ cartItems, cartLength }: CartSummaryProps) {
 
   // Calculate total dynamically from cart items
   const calculatedTotal = cartItems.reduce((total, item) => {
-    const price = Number(item.product.price);
-    return total + price * item.quantity;
+    if (item.itemType === "product" && item.product) {
+      const price = Number(item.product.price);
+      return total + price * item.quantity;
+    }
+    if (item.itemType === "combo" && item.comboDeal) {
+      const price = Number(item.comboDeal.comboPrice);
+      return total + price * item.quantity;
+    }
+    return total;
   }, 0);
 
   // Use calculated total instead of prop
   const currentCartTotal = calculatedTotal;
 
   // Calculate shipping fee
-  const shippingFee = cartItems.some((item) => item.product.isDeliveryFree)
+  const shippingFee = cartItems.some((item) => item.itemType === "product" && item.product?.isDeliveryFree)
     ? 0
-    : cartItems.reduce((total, item) => total + Number(item.product.deliveryFee), 0);
+    : cartItems.reduce((total, item) => {
+        if (item.itemType === "product" && item.product) {
+          return total + Number(item.product.deliveryFee);
+        }
+        // Combo deals don't have individual delivery fees, use a default or calculate based on products
+        return total + 0; // You can adjust this logic as needed
+      }, 0);
 
   const [appliedCoupon, setAppliedCoupon] = useState<CouponValidationResult["coupon"] | undefined>();
   const [discountAmount, setDiscountAmount] = useState(0);

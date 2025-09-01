@@ -10,6 +10,7 @@ import { auth } from "@/lib/auth/server";
 import { ProductCache } from "@/lib/cache/product-cache-new";
 import { createLog } from "@/lib/logging";
 import { db } from "@/server/db";
+import { mediaTable } from "@/server/schema/media-schema";
 import { comboDealImages, comboDealProducts, comboDeals, products } from "@/server/schema/product-schema";
 
 import { comboDealSchema, deleteComboDealSchema, updateComboDealSchema } from "../schema";
@@ -112,24 +113,42 @@ export async function createComboDeal(rawData: unknown): Promise<{ success: bool
 
       // Create combo deal images if provided
       if (data.images && data.images.length > 0) {
-        const comboDealImagesData = [];
+        log.db("Processing combo deal images", "media & combo_deal_images");
 
-        for (const image of data.images) {
-          const mediaId = image.key ? await createMediaRecord(tx, image) : null;
-          if (mediaId) {
-            comboDealImagesData.push({
-              comboDealId: newComboDeal.id,
-              mediaId,
-              isFeatured: image.isFeatured,
-              sortOrder: image.sortOrder,
-            });
-          }
+        // Prepare media records for batch insertion
+        const mediaToInsert = data.images.map((image, index) => ({
+          url: image.url,
+          alt: image.alt || `${data.title} - Image ${index + 1}`,
+          width: image.width || null,
+          height: image.height || null,
+          blurData: image.blurData || null,
+          key: image.key || null,
+        }));
+
+        // Batch insert all media records
+        let insertedMedia: { id: string; url: string | null }[] = [];
+        if (mediaToInsert.length > 0) {
+          insertedMedia = await tx.insert(mediaTable).values(mediaToInsert).returning({
+            id: mediaTable.id,
+            url: mediaTable.url,
+          });
+          log.success("Inserted new media", { count: insertedMedia.length });
         }
+
+        // Create combo_deal_images junction records
+        const comboDealImagesData = data.images.map((image, index) => ({
+          comboDealId: newComboDeal.id,
+          mediaId: insertedMedia[index].id,
+          isFeatured: image.isFeatured,
+          sortOrder: image.sortOrder,
+        }));
 
         if (comboDealImagesData.length > 0) {
           await tx.insert(comboDealImages).values(comboDealImagesData);
           log.success("Combo deal images created", { imageCount: comboDealImagesData.length });
         }
+
+        log.success(`All ${data.images.length} images processed successfully`);
       }
 
       revalidatePath("/studio/products/combo");
@@ -152,13 +171,6 @@ export async function createComboDeal(rawData: unknown): Promise<{ success: bool
       message: error instanceof Error ? error.message : "Failed to create combo deal",
     };
   }
-}
-
-// Helper function to create media record
-async function createMediaRecord(tx: unknown, image: { key?: string }) {
-  // This is a placeholder - you'll need to implement the actual media creation
-  // based on your media system
-  return null;
 }
 
 export async function updateComboDeal(rawData: unknown): Promise<{ success: boolean; message: string }> {
@@ -273,6 +285,53 @@ export async function updateComboDeal(rawData: unknown): Promise<{ success: bool
       await tx.insert(comboDealProducts).values(comboDealProductsData);
 
       log.success("Combo deal products updated", { productCount: comboDealProductsData.length });
+
+      // Handle combo deal images if provided
+      if (data.images && data.images.length > 0) {
+        log.db("Processing combo deal images update", "media & combo_deal_images");
+
+        // Clean up existing combo deal images
+        await tx.delete(comboDealImages).where(eq(comboDealImages.comboDealId, data.id));
+
+        // Prepare media records for batch insertion
+        const mediaToInsert = data.images.map((image, index) => ({
+          url: image.url,
+          alt: image.alt || `${data.title} - Image ${index + 1}`,
+          width: image.width || null,
+          height: image.height || null,
+          blurData: image.blurData || null,
+          key: image.key || null,
+        }));
+
+        // Batch insert all media records
+        let insertedMedia: { id: string; url: string | null }[] = [];
+        if (mediaToInsert.length > 0) {
+          insertedMedia = await tx.insert(mediaTable).values(mediaToInsert).returning({
+            id: mediaTable.id,
+            url: mediaTable.url,
+          });
+          log.success("Inserted new media", { count: insertedMedia.length });
+        }
+
+        // Create combo_deal_images junction records
+        const comboDealImagesData = data.images.map((image, index) => ({
+          comboDealId: data.id,
+          mediaId: insertedMedia[index].id,
+          isFeatured: image.isFeatured,
+          sortOrder: image.sortOrder,
+        }));
+
+        if (comboDealImagesData.length > 0) {
+          await tx.insert(comboDealImages).values(comboDealImagesData);
+          log.success("Combo deal images updated", { imageCount: comboDealImagesData.length });
+        }
+
+        log.success(`All ${data.images.length} images processed successfully`);
+      } else {
+        // If no images provided, clean up existing images
+        await tx.delete(comboDealImages).where(eq(comboDealImages.comboDealId, data.id));
+        log.success("Cleaned up existing combo deal images");
+      }
 
       revalidatePath("/studio/products/combo");
       revalidatePath("/deals/combo");
