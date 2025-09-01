@@ -285,7 +285,7 @@ export async function getProduct(id: string): Promise<ProductQueryResult | null>
 }
 
 export async function getProductBySlug(slug: string): Promise<ProductQueryResult | null> {
-  return ProductCache.getProductBySlug(slug, () => getProductBySlugFromDatabase(slug));
+  return await getProductBySlugFromDatabase(slug);
 }
 
 export async function getFeaturedProducts(): Promise<ProductQueryResult[]> {
