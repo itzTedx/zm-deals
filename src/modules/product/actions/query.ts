@@ -281,7 +281,7 @@ export async function getLastMinuteDeals(hoursLimit = 24): Promise<ProductQueryR
 export async function getProduct(id: string): Promise<ProductQueryResult | null> {
   if (id === "create") return null;
 
-  return ProductCache.getProduct(id, () => getProductFromDatabase(id));
+  return await getProductFromDatabase(id);
 }
 
 export async function getProductBySlug(slug: string): Promise<ProductQueryResult | null> {
