@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { getSession } from "@/lib/auth/server";
 import { formatDate } from "@/lib/functions/format-date";
+import { cn } from "@/lib/utils";
 import { getOrderById } from "@/modules/orders/actions/query";
 
 type Params = Promise<{ orderId: string }>;
@@ -42,50 +43,6 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
 
   const order = result.order;
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "confirmed":
-      case "delivered":
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
-      case "pending":
-      case "processing":
-        return <Clock className="h-5 w-5 text-yellow-500" />;
-      case "shipped":
-        return <Truck className="h-5 w-5 text-blue-500" />;
-      case "cancelled":
-      case "failed":
-        return <XCircle className="h-5 w-5 text-red-500" />;
-      default:
-        return <Package className="h-5 w-5 text-gray-500" />;
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "confirmed":
-      case "delivered":
-        return "bg-green-100 text-green-800";
-      case "pending":
-      case "processing":
-        return "bg-yellow-100 text-yellow-800";
-      case "shipped":
-        return "bg-blue-100 text-blue-800";
-      case "cancelled":
-      case "failed":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  const formatPrice = (price: number | string) => {
-    const numericPrice = typeof price === "string" ? Number.parseFloat(price) : price;
-    return new Intl.NumberFormat("en-AE", {
-      style: "currency",
-      currency: "AED",
-    }).format(numericPrice);
-  };
-
   return (
     <div className="pb-2">
       <div className="mb-6">
@@ -103,11 +60,12 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
         <div className="space-y-6 lg:col-span-2">
           {/* Order Status */}
           <Card>
-            <CardContent>
+            <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <p className="font-medium text-sm">Order Status</p>
-                  <Badge className={getStatusColor(order.status)}>
+                  <Badge className={cn(getStatusColor(order.status), "flex items-center gap-2 pl-2")}>
+                    {getStatusIcon(order.status)}
                     {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                   </Badge>
                 </div>
@@ -126,7 +84,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
             <CardHeader className="px-1.5 pt-1.5">
               <CardTitle className="font-medium text-gray-500 text-sm">Items Ordered</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4">
               <div className="space-y-4">
                 {order.items.map((item) => (
                   <div className="flex items-center gap-4 rounded-lg border p-4" key={item.id}>
@@ -160,7 +118,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
               <CardHeader className="px-1.5 pt-1.5">
                 <CardTitle className="font-medium text-gray-500 text-sm">Order History</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-4">
                 <div className="space-y-4">
                   {order.history.map((history) => (
                     <div className="flex items-start gap-3" key={history.id}>
@@ -191,7 +149,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
             <CardHeader className="px-1.5 pt-1.5">
               <CardTitle className="font-medium text-gray-500 text-sm">Order Summary</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4">
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
@@ -220,37 +178,49 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
           {/* Customer Information */}
           <Card>
             <CardHeader className="px-1.5 pt-1.5">
-              <CardTitle className="flex items-center gap-2">
-                <CreditCard className="h-4 w-4" />
+              <CardTitle className="flex items-center gap-2 text-gray-500 text-sm">
+                <CreditCard className="size-3.5" />
                 Customer Information
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4">
               <div className="space-y-2 text-sm">
                 <p>
-                  <strong>Email:</strong> {order.customerEmail}
+                  <strong className="font-medium">Email:</strong> {order.customerEmail}
                 </p>
                 {order.customerPhone && (
                   <p>
-                    <strong>Phone:</strong> {order.customerPhone}
+                    <strong className="font-medium">Phone:</strong> {order.customerPhone}
                   </p>
                 )}
                 <p>
-                  <strong>Order Date:</strong> {formatDate(order.createdAt)}
+                  <strong className="font-medium">Order Date:</strong>{" "}
+                  {formatDate(order.createdAt, {
+                    includeTime: true,
+                  })}
                 </p>
                 {order.confirmedAt && (
                   <p>
-                    <strong>Confirmed:</strong> {formatDate(order.confirmedAt)}
+                    <strong className="font-medium">Confirmed:</strong>{" "}
+                    {formatDate(order.confirmedAt, {
+                      includeTime: true,
+                    })}
                   </p>
                 )}
                 {order.shippedAt && (
                   <p>
-                    <strong>Shipped:</strong> {formatDate(order.shippedAt)}
+                    <strong className="font-medium">Shipped:</strong>{" "}
+                    {formatDate(order.shippedAt, {
+                      includeTime: true,
+                    })}
                   </p>
                 )}
                 {order.deliveredAt && (
                   <p>
-                    <strong>Delivered:</strong> {formatDate(order.deliveredAt)}
+                    <strong className="font-medium">Delivered:</strong>{" "}
+                    {formatDate(order.deliveredAt, {
+                      includeTime: true,
+                    })}
                   </p>
                 )}
               </div>
@@ -266,7 +236,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
                   Shipping Address
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-4">
                 <div className="space-y-1 text-sm">
                   <p>
                     {order.shippingAddress.firstName} {order.shippingAddress.lastName}
@@ -289,7 +259,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
               <CardHeader>
                 <CardTitle className="font-medium text-gray-500 text-sm">Order Note</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-4">
                 <p className="text-sm">{order.customerNote}</p>
               </CardContent>
             </Card>
@@ -299,3 +269,47 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
     </div>
   );
 }
+
+const getStatusIcon = (status: string) => {
+  switch (status) {
+    case "confirmed":
+    case "delivered":
+      return <CheckCircle className="h-5 w-5 text-green-500" />;
+    case "pending":
+    case "processing":
+      return <Clock className="h-5 w-5 text-yellow-500" />;
+    case "shipped":
+      return <Truck className="h-5 w-5 text-blue-500" />;
+    case "cancelled":
+    case "failed":
+      return <XCircle className="h-5 w-5 text-red-500" />;
+    default:
+      return <Package className="h-5 w-5 text-gray-500" />;
+  }
+};
+
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case "confirmed":
+    case "delivered":
+      return "bg-green-100 text-green-800";
+    case "pending":
+    case "processing":
+      return "bg-yellow-100 text-yellow-800";
+    case "shipped":
+      return "bg-blue-100 text-blue-800";
+    case "cancelled":
+    case "failed":
+      return "bg-red-100 text-red-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
+};
+
+const formatPrice = (price: number | string) => {
+  const numericPrice = typeof price === "string" ? Number.parseFloat(price) : price;
+  return new Intl.NumberFormat("en-AE", {
+    style: "currency",
+    currency: "AED",
+  }).format(numericPrice);
+};

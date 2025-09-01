@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { IconLogout, IconPackage, IconUser } from "@/assets/icons";
+import { IconLogin, IconLogout, IconPackage, IconUser } from "@/assets/icons";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import { AuthSession } from "@/lib/auth/server";
@@ -26,7 +26,10 @@ export default function UserMenu({ session }: { session: AuthSession }) {
   if (!session) {
     return (
       <Button asChild className="text-muted-foreground" variant="outline">
-        <Link href="/auth/login">Login</Link>
+        <Link href="/auth/login">
+          <IconLogin />
+          <span className="hidden md:inline-block">Login</span>
+        </Link>
       </Button>
     );
   }

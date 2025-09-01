@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { CheckCircle, Clock, Eye, Package, Truck, XCircle } from "lucide-react";
+import { CheckCircle, Clock, Package, Truck, XCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -101,20 +101,10 @@ export default async function OrdersPage() {
                       <Badge className={getStatusColor(order.status)}>{order.status}</Badge>
                       </div> */}
                   </div>
-
-                  {/* Actions */}
-                  <div className="flex items-center gap-2">
-                    <Button asChild size="sm" variant="outline">
-                      <Link href={`/account/orders/${order.id}`}>
-                        <Eye className="mr-2 size-4" />
-                        View Details
-                      </Link>
-                    </Button>
-                  </div>
                 </div>
 
                 {/* Order Items Preview */}
-                <div className="mt-4 border-t pt-4">
+                <div className="border-t pt-4">
                   <div className="space-y-2">
                     {order.items?.slice(0, 2).map((item) => (
                       <div className="flex items-center gap-3" key={item.id}>
