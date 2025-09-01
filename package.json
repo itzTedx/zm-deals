@@ -76,6 +76,7 @@
     "@tailwindcss/postcss": "^4.1.12",
     "@tailwindcss/typography": "^0.5.16",
     "@types/node": "^20.19.11",
+    "@types/nodemailer": "^7.0.1",
     "@types/pg": "^8.15.5",
     "@types/react": "19.1.10",
     "@types/react-dom": "19.1.7",

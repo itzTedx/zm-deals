@@ -21,6 +21,12 @@ export const env = createEnv({
     AWS_SECRET_ACCESS_KEY: z.string(),
 
     BASE_URL: z.string(),
+
+    SMTP_HOST: z.string(),
+    SMTP_PORT: z.string(),
+    SMTP_USER: z.string(),
+    SMTP_PASS: z.string(),
+    SMTP_FROM: z.string(),
   },
 
   // biome-ignore lint/style/noProcessEnv: We have to use process.env here

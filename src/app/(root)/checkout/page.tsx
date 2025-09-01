@@ -36,6 +36,11 @@ export default async function CheckoutStatusPage({ searchParams }: { searchParam
       sessionId: sessionId as string,
     };
 
+    // sendEmail({
+    //   email: "test@test.com",
+    //   subject: "Test",
+    //   react: <InvoiceEmail />,
+    // });
     // Fetch order details
     try {
       const result = await getOrderBySessionId(sessionId as string);

@@ -36,13 +36,14 @@ export default function UserMenu({ session }: { session: AuthSession }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex cursor-pointer items-center gap-2">
-        <Avatar className="flex items-center justify-center">
-          <IconUser className="size-4 text-gray-600" />
-        </Avatar>
-        {session && (
+        {session ? (
           <Avatar>
             <AvatarImage alt="Profile image" src={session.user.image ?? undefined} />
             <AvatarFallback className="text-muted-foreground">{session.user.name.slice(0, 1)}</AvatarFallback>
+          </Avatar>
+        ) : (
+          <Avatar className="flex items-center justify-center">
+            <IconUser className="size-4 text-gray-600" />
           </Avatar>
         )}
 
