@@ -421,7 +421,7 @@ export default async function ProductPage({ params }: Props) {
         </div>
       </header>
 
-      <div className="container md:hidden">
+      <div className="container pb-6 md:hidden md:pb-8 lg:pb-12">
         <article className="prose" dangerouslySetInnerHTML={{ __html: res.description }} />
       </div>
 
