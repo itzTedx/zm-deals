@@ -25,10 +25,10 @@ export default function UserMenu({ session }: { session: AuthSession }) {
 
   if (!session) {
     return (
-      <Button asChild className="text-muted-foreground" variant="outline">
+      <Button asChild className="hidden text-muted-foreground md:inline-block" variant="outline">
         <Link href="/auth/login">
           <IconLogin />
-          <span className="hidden md:inline-block">Login</span>
+          <span className="hidden sm:inline-block">Login</span>
         </Link>
       </Button>
     );
