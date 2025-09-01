@@ -61,21 +61,21 @@ export const Hero = async () => {
             >
               <CarouselContent className="-ml-3">
                 {/* First Product - Full Width */}
-                <CarouselItem className="basis-full rounded-2xl py-5 pl-4 lg:basis-2/3">
-                  <HeroProductCard isFirst product={firstProduct} />
+                <CarouselItem className="h-72 basis-full rounded-2xl py-5 pl-4 lg:basis-full">
+                  <HeroBanner />
                 </CarouselItem>
 
                 {/* Hero Banner */}
-                <CarouselItem className="basis-full py-5 pl-4 lg:basis-1/3">
+                <CarouselItem className="py-5 pl-4">
                   <HeroBanner />
                 </CarouselItem>
 
                 {/* Remaining Products */}
-                {remainingProducts.map((product) => (
+                {/* {remainingProducts.map((product) => (
                   <CarouselItem className="basis-full rounded-2xl py-5 pl-4 lg:basis-2/3" key={product.id}>
                     <HeroProductCard product={product} />
                   </CarouselItem>
-                ))}
+                ))} */}
               </CarouselContent>
 
               <CarouselPrevious
@@ -90,7 +90,7 @@ export const Hero = async () => {
           </div>
         </div>
 
-        <TrustBanner />
+        {/* <TrustBanner /> */}
       </section>
     );
   } catch (error) {

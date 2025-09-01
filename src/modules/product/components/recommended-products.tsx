@@ -62,7 +62,7 @@ export async function RecommendedProducts({
         />
       )}
 
-      <div className="col-span-full grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="col-span-full grid grid-cols-2 gap-2 md:gap-3 lg:grid-cols-3 xl:grid-cols-4">
         {products.map((product) => (
           <ProductCard data={product} key={product.id} />
         ))}

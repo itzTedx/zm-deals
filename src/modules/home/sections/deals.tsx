@@ -98,8 +98,18 @@ export const Deals = async () => {
 
       <SeparatorBox />
 
-      <div className="relative aspect-16/5 w-full">
+      {/* <div className="relative aspect-16/5 w-full">
         <Image alt="deals" className="rounded-2xl object-cover shadow-xl" fill src="/images/combo-banner.webp" />
+      </div> */}
+
+      <div className="relative aspect-16/3 w-full md:aspect-16/2">
+        <Image
+          alt="Trust indicators and guarantees"
+          className="rounded-lg object-cover md:rounded-2xl"
+          fill
+          sizes="(max-width: 768px) 100vw, 80vw"
+          src="/images/trust-banner.webp"
+        />
       </div>
 
       {comboDeals.map((combo) => (
