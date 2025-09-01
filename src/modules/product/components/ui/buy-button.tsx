@@ -10,6 +10,7 @@ import { LoadingSwap } from "@/components/ui/loading-swap";
 
 import { ChevronRightIcon, ChevronRightIconHandle } from "@/assets/icons";
 
+import { cn } from "@/lib/utils";
 import { addToCart } from "@/modules/cart/actions/mutation";
 
 import { ProductQueryResult } from "../../types";
@@ -17,9 +18,10 @@ import { ProductQueryResult } from "../../types";
 interface Props {
   data: ProductQueryResult;
   quantity?: number;
+  className?: string;
 }
 
-export const BuyButton = ({ data, quantity = 1 }: Props) => {
+export const BuyButton = ({ data, quantity = 1, className }: Props) => {
   const ref = useRef<ChevronRightIconHandle>(null);
   const [isLoading, startTransition] = useTransition();
   const router = useRouter();
@@ -45,7 +47,7 @@ export const BuyButton = ({ data, quantity = 1 }: Props) => {
 
   return (
     <Button
-      className="w-full"
+      className={cn("w-full", className)}
       disabled={isLoading}
       onClick={handleCheckout}
       onMouseEnter={() => ref.current?.startAnimation()}

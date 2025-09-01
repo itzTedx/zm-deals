@@ -11,21 +11,22 @@ import { IconCurrency, IconTruck, IconWallet2 } from "@/assets/icons";
 import { calculateDiscount, isWithinDays } from "@/lib/utils";
 
 import { calculateAverageRating } from "../actions/helper";
-import { ProductCardDate } from "../types";
+import { ProductQueryResult } from "../types";
 import { AnimatedCountdown } from "./ends-in-counter";
+import { AddToCart } from "./ui/add-to-cart";
 import { FavButton } from "./ui/fav-button";
 
 interface Props {
-  data: ProductCardDate;
+  data: ProductQueryResult;
   showSeconds?: boolean;
+  showAddToCart?: boolean;
 }
 
-export const ProductCard = ({ data, showSeconds = true }: Props) => {
+export const ProductCard = ({ data, showSeconds = true, showAddToCart = false }: Props) => {
   return (
     <Card className="relative">
-      <Link className="absolute inset-0 z-10" href={`/${data.slug}`} />
-
       <CardContent className="relative h-full p-3 max-md:p-3">
+        <Link className="absolute inset-0 z-10" href={`/${data.slug}`} />
         <FavButton data={data} />
         <div className="relative aspect-square overflow-hidden rounded-lg">
           <Image alt={data.title} className="object-cover" fill src={data.image} />
@@ -55,7 +56,7 @@ export const ProductCard = ({ data, showSeconds = true }: Props) => {
             )}
           </div>
         </CardHeader>
-        <div className="mt-1 flex flex-wrap items-center gap-1">
+        <div className="my-1 flex flex-wrap items-center gap-1">
           {data.isDeliveryFree && (
             <div>
               <p className="flex items-center gap-1 font-medium text-gray-500 text-xs">
@@ -86,6 +87,7 @@ export const ProductCard = ({ data, showSeconds = true }: Props) => {
             </div>
           )}
         </div>
+        {showAddToCart && <AddToCart className="relative z-50" data={data} onlyAddToCart />}
       </CardContent>
 
       <CardFooter className="flex items-center justify-between">

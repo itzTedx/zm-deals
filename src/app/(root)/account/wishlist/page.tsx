@@ -28,7 +28,7 @@ async function WishlistContent() {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {data.items.map((item) => (
-        <ProductCard data={item.product} key={item.id} />
+        <ProductCard data={item.product} key={item.id} showAddToCart />
       ))}
     </div>
   );
