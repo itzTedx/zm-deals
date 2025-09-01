@@ -282,6 +282,7 @@ export function ProductsTable({ data }: { data: ProductQueryResult[] }) {
                   className="aria-disabled:pointer-events-none aria-disabled:opacity-50"
                   disabled={!table.getCanPreviousPage()}
                   onClick={() => table.previousPage()}
+                  size="sm"
                   variant="outline"
                 >
                   Previous
@@ -293,6 +294,7 @@ export function ProductsTable({ data }: { data: ProductQueryResult[] }) {
                   className="aria-disabled:pointer-events-none aria-disabled:opacity-50"
                   disabled={!table.getCanNextPage()}
                   onClick={() => table.nextPage()}
+                  size="sm"
                   variant="outline"
                 >
                   Next

@@ -101,15 +101,15 @@ export const ProductForm = ({ initialData, isEditMode, categories }: Props) => {
                 {isEditMode ? (initialData?.title ?? "Edit Product") : "Create Product"}
               </h1>
             </div>
-            <div>
+            <div className="flex items-center gap-2">
+              {isEditMode && (
+                <Button disabled={isDeleteLoading} onClick={onDelete} size="sm" variant="destructive">
+                  <LoadingSwap isLoading={isDeleteLoading}>Delete</LoadingSwap>
+                </Button>
+              )}
               <Button disabled={isLoading} size="sm">
                 <LoadingSwap isLoading={isLoading}>{isEditMode ? "Update" : "Create"} Product</LoadingSwap>
               </Button>
-              {isEditMode && (
-                <Button disabled={isDeleteLoading} onClick={onDelete} size="sm">
-                  <LoadingSwap isLoading={isDeleteLoading}>Delete Product</LoadingSwap>
-                </Button>
-              )}
             </div>
           </div>
           <div className="relative col-span-2 space-y-4">
