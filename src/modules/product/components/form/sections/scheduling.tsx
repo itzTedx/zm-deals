@@ -45,7 +45,7 @@ export const Scheduling = () => {
                         captionLayout="dropdown"
                         mode="single"
                         onSelect={(date) => {
-                          field.onChange(date);
+                          field.onChange(date?.toISOString());
                           setOpen(false);
                         }}
                         selected={field.value ? new Date(field.value) : undefined}
@@ -86,7 +86,7 @@ export const Scheduling = () => {
                         captionLayout="dropdown"
                         mode="single"
                         onSelect={(date) => {
-                          field.onChange(date);
+                          field.onChange(date?.toISOString());
                           setOpen2(false);
                         }}
                         selected={field.value ? new Date(field.value) : undefined}
