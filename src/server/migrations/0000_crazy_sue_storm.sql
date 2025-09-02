@@ -59,7 +59,9 @@ CREATE TABLE "cart_items" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"cart_id" uuid NOT NULL,
 	"quantity" integer DEFAULT 1 NOT NULL,
-	"product_id" uuid NOT NULL,
+	"product_id" uuid,
+	"combo_deal_id" uuid,
+	"item_type" text DEFAULT 'product' NOT NULL,
 	"added_at" timestamp NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -215,6 +217,16 @@ CREATE TABLE "refunds" (
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "combo_deal_images" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"is_featured" boolean DEFAULT false,
+	"sort_order" integer DEFAULT 0,
+	"combo_deal_id" uuid,
+	"media_id" uuid,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "combo_deal_products" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"combo_deal_id" uuid,
@@ -327,6 +339,7 @@ CREATE TABLE "wishlists" (
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "cart_items" ADD CONSTRAINT "cart_items_cart_id_carts_id_fk" FOREIGN KEY ("cart_id") REFERENCES "public"."carts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "cart_items" ADD CONSTRAINT "cart_items_product_id_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "cart_items" ADD CONSTRAINT "cart_items_combo_deal_id_combo_deals_id_fk" FOREIGN KEY ("combo_deal_id") REFERENCES "public"."combo_deals"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "carts" ADD CONSTRAINT "carts_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "category_images" ADD CONSTRAINT "category_images_category_id_categories_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."categories"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "category_images" ADD CONSTRAINT "category_images_media_id_media_id_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -339,6 +352,8 @@ ALTER TABLE "orders" ADD CONSTRAINT "orders_user_id_users_id_fk" FOREIGN KEY ("u
 ALTER TABLE "orders" ADD CONSTRAINT "orders_coupon_id_coupons_id_fk" FOREIGN KEY ("coupon_id") REFERENCES "public"."coupons"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "refunds" ADD CONSTRAINT "refunds_order_id_orders_id_fk" FOREIGN KEY ("order_id") REFERENCES "public"."orders"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "refunds" ADD CONSTRAINT "refunds_order_item_id_order_items_id_fk" FOREIGN KEY ("order_item_id") REFERENCES "public"."order_items"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "combo_deal_images" ADD CONSTRAINT "combo_deal_images_combo_deal_id_combo_deals_id_fk" FOREIGN KEY ("combo_deal_id") REFERENCES "public"."combo_deals"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "combo_deal_images" ADD CONSTRAINT "combo_deal_images_media_id_media_id_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "combo_deal_products" ADD CONSTRAINT "combo_deal_products_combo_deal_id_combo_deals_id_fk" FOREIGN KEY ("combo_deal_id") REFERENCES "public"."combo_deals"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "combo_deal_products" ADD CONSTRAINT "combo_deal_products_product_id_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "product_images" ADD CONSTRAINT "product_images_product_id_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -355,6 +370,8 @@ ALTER TABLE "wishlist_items" ADD CONSTRAINT "wishlist_items_product_id_products_
 ALTER TABLE "wishlists" ADD CONSTRAINT "wishlists_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "cart_items_cart_id_idx" ON "cart_items" USING btree ("cart_id");--> statement-breakpoint
 CREATE INDEX "cart_items_product_id_idx" ON "cart_items" USING btree ("product_id");--> statement-breakpoint
+CREATE INDEX "cart_items_combo_deal_id_idx" ON "cart_items" USING btree ("combo_deal_id");--> statement-breakpoint
+CREATE INDEX "cart_items_item_type_idx" ON "cart_items" USING btree ("item_type");--> statement-breakpoint
 CREATE INDEX "cart_items_added_at_idx" ON "cart_items" USING btree ("added_at");--> statement-breakpoint
 CREATE INDEX "carts_user_id_idx" ON "carts" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "carts_session_id_idx" ON "carts" USING btree ("session_id");--> statement-breakpoint
@@ -388,6 +405,9 @@ CREATE INDEX "orders_created_at_idx" ON "orders" USING btree ("created_at");--> 
 CREATE INDEX "refunds_order_id_idx" ON "refunds" USING btree ("order_id");--> statement-breakpoint
 CREATE INDEX "refunds_order_item_id_idx" ON "refunds" USING btree ("order_item_id");--> statement-breakpoint
 CREATE INDEX "refunds_is_processed_idx" ON "refunds" USING btree ("is_processed");--> statement-breakpoint
+CREATE INDEX "combo_deal_images_combo_deal_id_idx" ON "combo_deal_images" USING btree ("combo_deal_id");--> statement-breakpoint
+CREATE INDEX "combo_deal_images_media_id_idx" ON "combo_deal_images" USING btree ("media_id");--> statement-breakpoint
+CREATE INDEX "combo_deal_images_is_featured_idx" ON "combo_deal_images" USING btree ("is_featured");--> statement-breakpoint
 CREATE INDEX "combo_deal_products_combo_deal_id_idx" ON "combo_deal_products" USING btree ("combo_deal_id");--> statement-breakpoint
 CREATE INDEX "combo_deal_products_product_id_idx" ON "combo_deal_products" USING btree ("product_id");--> statement-breakpoint
 CREATE INDEX "combo_deal_products_sort_order_idx" ON "combo_deal_products" USING btree ("sort_order");--> statement-breakpoint

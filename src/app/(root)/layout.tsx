@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import { Footer } from "@/components/layout/footer";
-import { LoginPromptPopup } from "@/components/layout/login-prompt-popup";
 import { MobileNavbar } from "@/components/layout/mobile-navbar";
 import { Navbar } from "@/components/layout/navbar";
 
@@ -32,7 +31,7 @@ export default function RootLayout({
       <Navbar />
       {children}
       <Footer />
-      <LoginPromptPopup />
+      {/* <LoginPromptPopup /> */}
       <MobileNavbar />
     </>
   );

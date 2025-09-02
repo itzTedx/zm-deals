@@ -16,7 +16,7 @@ import { pluralize } from "@/lib/functions/pluralize";
 import { getOrCreateClientSessionId } from "@/lib/utils/client-session";
 import type { CouponValidationResult } from "@/modules/coupons/types";
 
-import { createCartCheckoutSession } from "../../checkout/mutation";
+import { createAnonymousCheckoutSession, createCartCheckoutSession } from "../../checkout/mutation";
 import { CartItem } from "../types";
 import { prepareCartForCheckout, validateCartForCheckout } from "../utils/checkout";
 import { Coupon } from "./coupon";
@@ -133,15 +133,15 @@ export function CartSummary({ cartItems, cartLength }: CartSummaryProps) {
             toast.error(result.error || "Failed to create checkout session");
           }
         } else {
-          toast.error("Please sign in to proceed to checkout");
+          // toast.error("Please sign in to proceed to checkout");
           // Anonymous user
-          // const result = await createAnonymousCheckoutSession(checkoutData);
-          // if (result.success && result.url) {
-          //   // Redirect to Stripe checkout
-          //   window.location.href = result.url;
-          // } else {
-          //   toast.error(result.error || "Failed to create checkout session");
-          // }
+          const result = await createAnonymousCheckoutSession(checkoutData);
+          if (result.success && result.url) {
+            // Redirect to Stripe checkout
+            window.location.href = result.url;
+          } else {
+            toast.error(result.error || "Failed to create checkout session");
+          }
         }
       } catch (error) {
         console.error("Error creating checkout session:", error);
