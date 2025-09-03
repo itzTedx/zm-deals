@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 import Stripe from "stripe";
 import z from "zod";
 
-import { auth } from "@/lib/auth/server";
+import { auth, getSession } from "@/lib/auth/server";
 import { env } from "@/lib/env/server";
 import { stripeClient } from "@/lib/stripe/client";
 
@@ -248,9 +248,7 @@ export async function createCartCheckoutSessionWithStripeCoupon(checkoutData: Ca
 // Enhanced cart-based checkout function that supports both approaches
 export async function createCartCheckoutSession(checkoutData: CartCheckoutSchema) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const session = await getSession();
 
     if (!session) {
       throw new Error("Please sign in to proceed with checkout");
