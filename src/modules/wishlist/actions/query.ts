@@ -1,5 +1,7 @@
 "use server";
 
+import { unstable_cache as cache } from "next/cache";
+
 import { eq } from "drizzle-orm";
 
 import { getSession } from "@/lib/auth/server";
@@ -8,6 +10,7 @@ import { db } from "@/server/db";
 import { wishlists } from "@/server/schema";
 
 import { WishlistData, WishlistItem } from "../types";
+import { getWishlistTag } from "./helper";
 
 export async function getWishlist(): Promise<WishlistItem[]> {
   try {
@@ -16,33 +19,41 @@ export async function getWishlist(): Promise<WishlistItem[]> {
     if (!session) {
       // Handle guest wishlist
       const sessionId = await getOrCreateSessionId();
+      const tag = getWishlistTag({ sessionId });
 
-      const guestWishlist = await db.query.wishlists.findFirst({
-        where: eq(wishlists.sessionId, sessionId),
-        with: {
-          items: {
+      const getGuestWishlist = cache(
+        async () =>
+          db.query.wishlists.findFirst({
+            where: eq(wishlists.sessionId, sessionId),
             with: {
-              product: {
+              items: {
                 with: {
-                  category: true,
-                  meta: true,
-                  inventory: true,
-                  images: {
+                  product: {
                     with: {
-                      media: true,
-                    },
-                  },
-                  reviews: {
-                    with: {
-                      user: true,
+                      category: true,
+                      meta: true,
+                      inventory: true,
+                      images: {
+                        with: {
+                          media: true,
+                        },
+                      },
+                      reviews: {
+                        with: {
+                          user: true,
+                        },
+                      },
                     },
                   },
                 },
               },
             },
-          },
-        },
-      });
+          }),
+        ["wishlist", "guest", sessionId, "full"],
+        { tags: [tag] }
+      );
+
+      const guestWishlist = await getGuestWishlist();
 
       if (!guestWishlist || !guestWishlist.items) {
         return [];
@@ -63,32 +74,41 @@ export async function getWishlist(): Promise<WishlistItem[]> {
     }
 
     // Handle authenticated user wishlist
-    const userWishlist = await db.query.wishlists.findFirst({
-      where: eq(wishlists.userId, session.user.id),
-      with: {
-        items: {
+    const tag = getWishlistTag({ userId: session.user.id });
+
+    const getUserWishlist = cache(
+      async () =>
+        db.query.wishlists.findFirst({
+          where: eq(wishlists.userId, session.user.id),
           with: {
-            product: {
+            items: {
               with: {
-                category: true,
-                meta: true,
-                inventory: true,
-                images: {
+                product: {
                   with: {
-                    media: true,
-                  },
-                },
-                reviews: {
-                  with: {
-                    user: true,
+                    category: true,
+                    meta: true,
+                    inventory: true,
+                    images: {
+                      with: {
+                        media: true,
+                      },
+                    },
+                    reviews: {
+                      with: {
+                        user: true,
+                      },
+                    },
                   },
                 },
               },
             },
           },
-        },
-      },
-    });
+        }),
+      ["wishlist", "user", session.user.id, "full"],
+      { tags: [tag] }
+    );
+
+    const userWishlist = await getUserWishlist();
 
     if (!userWishlist || !userWishlist.items) {
       return [];
@@ -119,13 +139,19 @@ export async function getWishlistItemCount(): Promise<number> {
     if (!session) {
       // Handle guest wishlist
       const sessionId = await getOrCreateSessionId();
+      const tag = getWishlistTag({ sessionId });
 
-      const guestWishlist = await db.query.wishlists.findFirst({
-        where: eq(wishlists.sessionId, sessionId),
-        with: {
-          items: true,
-        },
-      });
+      const getGuestWishlistCount = cache(
+        async () =>
+          db.query.wishlists.findFirst({
+            where: eq(wishlists.sessionId, sessionId),
+            with: { items: true },
+          }),
+        ["wishlist", "guest", sessionId, "count"],
+        { tags: [tag] }
+      );
+
+      const guestWishlist = await getGuestWishlistCount();
 
       if (!guestWishlist || !guestWishlist.items) {
         return 0;
@@ -135,12 +161,19 @@ export async function getWishlistItemCount(): Promise<number> {
     }
 
     // Handle authenticated user wishlist
-    const userWishlist = await db.query.wishlists.findFirst({
-      where: eq(wishlists.userId, session.user.id),
-      with: {
-        items: true,
-      },
-    });
+    const tag = getWishlistTag({ userId: session.user.id });
+
+    const getUserWishlistCount = cache(
+      async () =>
+        db.query.wishlists.findFirst({
+          where: eq(wishlists.userId, session.user.id),
+          with: { items: true },
+        }),
+      ["wishlist", "user", session.user.id, "count"],
+      { tags: [tag] }
+    );
+
+    const userWishlist = await getUserWishlistCount();
 
     if (!userWishlist || !userWishlist.items) {
       return 0;
@@ -155,18 +188,29 @@ export async function getWishlistItemCount(): Promise<number> {
 
 export async function isInWishlist(productId: string): Promise<boolean> {
   try {
+    console.log("fetching is in wishlist call");
     const session = await getSession();
 
     if (!session) {
       // Handle guest wishlist
       const sessionId = await getOrCreateSessionId();
+      const tag = getWishlistTag({ sessionId });
 
-      const guestWishlist = await db.query.wishlists.findFirst({
-        where: eq(wishlists.sessionId, sessionId),
-        with: {
-          items: true,
-        },
-      });
+      const getGuestWishlistIds = cache(
+        async () =>
+          db.query.wishlists.findFirst({
+            where: eq(wishlists.sessionId, sessionId),
+            with: {
+              items: {
+                columns: { productId: true },
+              },
+            },
+          }),
+        ["wishlist", "guest", sessionId, "ids"],
+        { tags: [tag] }
+      );
+
+      const guestWishlist = await getGuestWishlistIds();
 
       if (!guestWishlist?.items) {
         return false;
@@ -176,12 +220,23 @@ export async function isInWishlist(productId: string): Promise<boolean> {
     }
 
     // Handle authenticated user wishlist
-    const userWishlist = await db.query.wishlists.findFirst({
-      where: eq(wishlists.userId, session.user.id),
-      with: {
-        items: true,
-      },
-    });
+    const tag = getWishlistTag({ userId: session.user.id });
+
+    const getUserWishlistIds = cache(
+      async () =>
+        db.query.wishlists.findFirst({
+          where: eq(wishlists.userId, session.user.id),
+          with: {
+            items: {
+              columns: { productId: true },
+            },
+          },
+        }),
+      ["wishlist", "user", session.user.id, "ids"],
+      { tags: [tag] }
+    );
+
+    const userWishlist = await getUserWishlistIds();
 
     if (!userWishlist?.items) {
       return false;
@@ -201,33 +256,41 @@ export async function getWishlistData(): Promise<WishlistData> {
     if (!session) {
       // Handle guest wishlist
       const sessionId = await getOrCreateSessionId();
+      const tag = getWishlistTag({ sessionId });
 
-      const guestWishlist = await db.query.wishlists.findFirst({
-        where: eq(wishlists.sessionId, sessionId),
-        with: {
-          items: {
+      const getGuestWishlistData = cache(
+        async () =>
+          db.query.wishlists.findFirst({
+            where: eq(wishlists.sessionId, sessionId),
             with: {
-              product: {
+              items: {
                 with: {
-                  category: true,
-                  meta: true,
-                  inventory: true,
-                  images: {
+                  product: {
                     with: {
-                      media: true,
-                    },
-                  },
-                  reviews: {
-                    with: {
-                      user: true,
+                      category: true,
+                      meta: true,
+                      inventory: true,
+                      images: {
+                        with: {
+                          media: true,
+                        },
+                      },
+                      reviews: {
+                        with: {
+                          user: true,
+                        },
+                      },
                     },
                   },
                 },
               },
             },
-          },
-        },
-      });
+          }),
+        ["wishlist", "guest", sessionId, "data"],
+        { tags: [tag] }
+      );
+
+      const guestWishlist = await getGuestWishlistData();
 
       if (!guestWishlist || !guestWishlist.items) {
         return {
@@ -256,32 +319,41 @@ export async function getWishlistData(): Promise<WishlistData> {
     }
 
     // Handle authenticated user wishlist
-    const userWishlist = await db.query.wishlists.findFirst({
-      where: eq(wishlists.userId, session.user.id),
-      with: {
-        items: {
+    const tag = getWishlistTag({ userId: session.user.id });
+
+    const getUserWishlistData = cache(
+      async () =>
+        db.query.wishlists.findFirst({
+          where: eq(wishlists.userId, session.user.id),
           with: {
-            product: {
+            items: {
               with: {
-                category: true,
-                meta: true,
-                inventory: true,
-                images: {
+                product: {
                   with: {
-                    media: true,
-                  },
-                },
-                reviews: {
-                  with: {
-                    user: true,
+                    category: true,
+                    meta: true,
+                    inventory: true,
+                    images: {
+                      with: {
+                        media: true,
+                      },
+                    },
+                    reviews: {
+                      with: {
+                        user: true,
+                      },
+                    },
                   },
                 },
               },
             },
           },
-        },
-      },
-    });
+        }),
+      ["wishlist", "user", session.user.id, "data"],
+      { tags: [tag] }
+    );
+
+    const userWishlist = await getUserWishlistData();
 
     if (!userWishlist || !userWishlist.items) {
       return {

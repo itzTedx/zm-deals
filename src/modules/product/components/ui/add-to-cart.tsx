@@ -9,11 +9,11 @@ import { pluralize } from "@/lib/functions/pluralize";
 import { cn } from "@/lib/utils";
 
 import { calculateAverageRating } from "../../actions/helper";
-import { ProductQueryResult } from "../../types";
+import { ProductCardDate } from "../../types";
 import { BuyButton } from "./buy-button";
 
 interface Props {
-  data: ProductQueryResult;
+  data: ProductCardDate;
   showRating?: boolean;
   showQuantity?: boolean;
   onlyAddToCart?: boolean;

@@ -13,10 +13,10 @@ import { ChevronRightIcon, ChevronRightIconHandle } from "@/assets/icons";
 import { cn } from "@/lib/utils";
 import { addToCart } from "@/modules/cart/actions/mutation";
 
-import { ProductQueryResult } from "../../types";
+import { ProductCardDate } from "../../types";
 
 interface Props {
-  data: ProductQueryResult;
+  data: ProductCardDate;
   quantity?: number;
   className?: string;
 }

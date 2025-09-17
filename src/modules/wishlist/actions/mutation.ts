@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidateTag } from "next/cache";
 import { headers } from "next/headers";
 
 import { and, eq } from "drizzle-orm";
@@ -10,6 +11,7 @@ import { db } from "@/server/db";
 import { wishlistItems, wishlists } from "@/server/schema";
 
 import { WishlistActionResponse } from "../types";
+import { getWishlistTag } from "./helper";
 
 export async function addToWishlist(productId: string): Promise<WishlistActionResponse> {
   try {
@@ -18,6 +20,7 @@ export async function addToWishlist(productId: string): Promise<WishlistActionRe
     if (!session) {
       // Handle guest wishlist
       const sessionId = await getOrCreateSessionId();
+      const tag = getWishlistTag({ sessionId });
 
       // Get or create guest wishlist
       let guestWishlist = await db.query.wishlists.findFirst({
@@ -48,7 +51,7 @@ export async function addToWishlist(productId: string): Promise<WishlistActionRe
         wishlistId: guestWishlist.id,
         productId,
       });
-
+      revalidateTag(tag);
       return { success: true };
     }
 
@@ -81,7 +84,7 @@ export async function addToWishlist(productId: string): Promise<WishlistActionRe
       wishlistId: userWishlist.id,
       productId,
     });
-
+    revalidateTag(getWishlistTag({ userId: session.user.id }));
     return { success: true };
   } catch (error) {
     console.error("Error adding to wishlist:", error);
@@ -96,6 +99,7 @@ export async function removeFromWishlist(productId: string): Promise<WishlistAct
     if (!session) {
       // Handle guest wishlist
       const sessionId = await getOrCreateSessionId();
+      const tag = getWishlistTag({ sessionId });
 
       const guestWishlist = await db.query.wishlists.findFirst({
         where: eq(wishlists.sessionId, sessionId),
@@ -108,7 +112,7 @@ export async function removeFromWishlist(productId: string): Promise<WishlistAct
       await db
         .delete(wishlistItems)
         .where(and(eq(wishlistItems.wishlistId, guestWishlist.id), eq(wishlistItems.productId, productId)));
-
+      revalidateTag(tag);
       return { success: true };
     }
 
@@ -124,7 +128,7 @@ export async function removeFromWishlist(productId: string): Promise<WishlistAct
     await db
       .delete(wishlistItems)
       .where(and(eq(wishlistItems.wishlistId, userWishlist.id), eq(wishlistItems.productId, productId)));
-
+    revalidateTag(getWishlistTag({ userId: session.user.id }));
     return { success: true };
   } catch (error) {
     console.error("Error removing from wishlist:", error);
@@ -139,6 +143,7 @@ export async function clearWishlist(): Promise<WishlistActionResponse> {
     if (!session) {
       // Handle guest wishlist
       const sessionId = await getOrCreateSessionId();
+      const tag = getWishlistTag({ sessionId });
 
       const guestWishlist = await db.query.wishlists.findFirst({
         where: eq(wishlists.sessionId, sessionId),
@@ -147,7 +152,7 @@ export async function clearWishlist(): Promise<WishlistActionResponse> {
       if (guestWishlist) {
         await db.delete(wishlistItems).where(eq(wishlistItems.wishlistId, guestWishlist.id));
       }
-
+      revalidateTag(tag);
       return { success: true };
     }
 
@@ -159,7 +164,7 @@ export async function clearWishlist(): Promise<WishlistActionResponse> {
     if (userWishlist) {
       await db.delete(wishlistItems).where(eq(wishlistItems.wishlistId, userWishlist.id));
     }
-
+    revalidateTag(getWishlistTag({ userId: session.user.id }));
     return { success: true };
   } catch (error) {
     console.error("Error clearing wishlist:", error);
@@ -207,7 +212,7 @@ export async function migrateAnonymousWishlist(
         });
       }
     }
-
+    revalidateTag(getWishlistTag({ userId: session.user.id }));
     return { success: true };
   } catch (error) {
     console.error("Error migrating anonymous wishlist:", error);
@@ -222,6 +227,7 @@ export async function toggleWishlist(productId: string): Promise<WishlistActionR
     if (!session) {
       // Handle guest wishlist
       const sessionId = await getOrCreateSessionId();
+      const tag = getWishlistTag({ sessionId });
 
       // Get or create guest wishlist
       let guestWishlist = await db.query.wishlists.findFirst({
@@ -248,6 +254,7 @@ export async function toggleWishlist(productId: string): Promise<WishlistActionR
         await db
           .delete(wishlistItems)
           .where(and(eq(wishlistItems.wishlistId, guestWishlist.id), eq(wishlistItems.productId, productId)));
+        revalidateTag(tag);
         return { success: true, added: false };
       }
       // Add to wishlist
@@ -255,6 +262,7 @@ export async function toggleWishlist(productId: string): Promise<WishlistActionR
         wishlistId: guestWishlist.id,
         productId,
       });
+      revalidateTag(tag);
       return { success: true, added: true };
     }
 
@@ -283,6 +291,7 @@ export async function toggleWishlist(productId: string): Promise<WishlistActionR
       await db
         .delete(wishlistItems)
         .where(and(eq(wishlistItems.wishlistId, userWishlist.id), eq(wishlistItems.productId, productId)));
+      revalidateTag(getWishlistTag({ userId: session.user.id }));
       return { success: true, added: false };
     }
     // Add to wishlist
@@ -290,6 +299,7 @@ export async function toggleWishlist(productId: string): Promise<WishlistActionR
       wishlistId: userWishlist.id,
       productId,
     });
+    revalidateTag(getWishlistTag({ userId: session.user.id }));
     return { success: true, added: true };
   } catch (error) {
     console.error("Error toggling wishlist:", error);

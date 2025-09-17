@@ -25,6 +25,7 @@ export const FavButton = ({ productId }: Props) => {
     const checkWishlistState = async () => {
       try {
         const inWishlist = await isInWishlist(productId);
+
         setIsInWishlistState(inWishlist);
       } catch (error) {
         console.error("Error checking wishlist state:", error);
