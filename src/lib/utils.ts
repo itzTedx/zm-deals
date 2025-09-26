@@ -14,10 +14,6 @@ export function cn(...inputs: ClassValue[]) {
  * @returns The discount percentage as a number (e.g., 25 for 25% off)
  */
 export function calculateDiscount(originalPrice: number, currentPrice: number): number {
-  if (originalPrice <= 0) {
-    throw new Error("Original price must be greater than 0");
-  }
-
   if (currentPrice < 0) {
     throw new Error("Current price cannot be negative");
   }

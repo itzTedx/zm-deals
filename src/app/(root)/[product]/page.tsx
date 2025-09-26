@@ -234,6 +234,8 @@ export default async function ProductPage({ params }: Props) {
     })),
   };
 
+  console.log("Original Price: ", Number(res.compareAtPrice) > 1);
+
   return (
     <main className="">
       {/* Enhanced Structured Data */}
@@ -299,15 +301,17 @@ export default async function ProductPage({ params }: Props) {
               <span>{res.price}</span>
             </p>
 
-            <p className="text-muted-foreground text-xs line-through decoration-brand-500 sm:text-sm md:text-base">
-              {res.compareAtPrice}
-            </p>
-
-            <div className="size-0.5 rounded-full bg-gray-300 sm:size-1" />
-
-            <Badge className="text-xs sm:text-sm" size="sm" variant="destructive">
-              Save {calculateDiscount(Number(res.compareAtPrice), Number(res.price))}% Today!
-            </Badge>
+            {res.compareAtPrice && res.compareAtPrice !== null && Number(res.compareAtPrice) > 1 ? (
+              <>
+                <p className="text-muted-foreground text-xs line-through decoration-brand-500 sm:text-sm md:text-base">
+                  {res.compareAtPrice}
+                </p>
+                <div className="size-0.5 rounded-full bg-gray-300 sm:size-1" />
+                <Badge className="text-xs sm:text-sm" size="sm" variant="destructive">
+                  Save {calculateDiscount(Number(res.compareAtPrice), Number(res.price))}% Today!
+                </Badge>
+              </>
+            ) : null}
 
             <div className="size-0.5 rounded-full bg-gray-300 sm:size-1" />
 

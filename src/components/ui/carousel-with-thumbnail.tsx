@@ -80,8 +80,8 @@ const Thumb: React.FC<ThumbPropType> = (props) => {
       >
         <div
           className={cn(
-            "relative w-full overflow-hidden rounded-lg bg-gray-100",
-            selected ? "border-2 border-brand-500/50" : "",
+            "relative w-full overflow-hidden rounded-lg bg-card",
+            selected ? "border-2 border-brand-500/50" : "border border-gray-300",
             getAspectRatioClass("square")
           )}
         >
